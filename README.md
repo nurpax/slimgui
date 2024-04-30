@@ -1,6 +1,12 @@
 # slimgui: Updated ImGui bindings for Python
 
-WIP!
+Work in progress [Dear ImGui](https://github.com/ocornut/imgui) bindings for Python.  
+
+Motivation:
+- Modernized build process to support Python typings (.pyi files) to allow good IDE support (auto-complete, type checking in VSCode)
+- Closely match the Dear ImGui API but adapt for Python
+
+Very similar to [https://github.com/pyimgui/pyimgui](pyimgui/pyimugui) except built with Nanobind to better support typings.
 
 ## Development
 
