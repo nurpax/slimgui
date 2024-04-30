@@ -33,6 +33,8 @@ wheel.py-api = "cp312"
 [tool.cibuildwheel]
 # Necessary to see build output from the actual compilation
 build-verbosity = 1
+skip = ["cp38-*", "pp38-*"] # Skip CPython and PyPy 3.8
+archs = ["auto64"]          # Only target 64 bit architectures
 
 # Run pytest to ensure that the package was correctly built
 # test-command = "pytest {project}/tests"
