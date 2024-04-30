@@ -72,7 +72,11 @@ jobs:
     needs: merge_wheels
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
-
+    environment:
+      name: pypi
+      url: https://pypi.org/p/slimgui
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
     steps:
     - uses: actions/setup-python@v5
 
@@ -80,7 +84,5 @@ jobs:
       with:
         path: dist
 
-    - uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
