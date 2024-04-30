@@ -82,9 +82,13 @@ jobs:
 
     - name: Download all the dists
       uses: actions/download-artifact@v4
+      with:
+        path: dist
 
     - name: Display structure of downloaded files
       run: ls -R
 
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages-dir: dist/dist/
