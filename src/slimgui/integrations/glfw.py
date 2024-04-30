@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 import glfw
-import imgui
+import slimgui as imgui
 
 from . import compute_fb_scale
 from .opengl import ProgrammablePipelineRenderer
@@ -43,7 +43,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         # fmt: on
 
     def _map_key(self, glfw_key: int) -> imgui.Key | None:
-        from imgui import Key
+        from slimgui import Key
 
         return {
             glfw.KEY_TAB: Key.KEY_TAB,

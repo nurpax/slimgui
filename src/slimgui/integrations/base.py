@@ -1,4 +1,4 @@
-import imgui
+import slimgui as imgui
 
 
 class BaseOpenGLRenderer(object):
