@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core >=0.4.3", "nanobind@git+https://github.com/wjakob/nanobind"]
+requires = ["scikit-build-core >=0.4.3", "nanobind@git+https://github.com/wjakob/nanobind", "typing-extensions"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -33,7 +33,7 @@ wheel.py-api = "cp312"
 [tool.cibuildwheel]
 # Necessary to see build output from the actual compilation
 build-verbosity = 1
-skip = ["cp38-*", "pp38-*"] # Skip CPython and PyPy 3.8
+skip = ["cp38-*", "pp38-*", "*-macosx_*"]
 archs = ["auto64"]          # Only target 64 bit architectures
 
 # Run pytest to ensure that the package was correctly built
