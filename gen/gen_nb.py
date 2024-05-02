@@ -43,6 +43,7 @@ class GenContext:
             ("ImGuiTreeNodeFlags_", "TreeNodeFlags"),
             ("ImGuiTableFlags_", "TableFlags"),
             ("ImGuiTableRowFlags_", "TableRowFlags"),
+            ("ImGuiTableColumnFlags_", "TableColumnFlags"),
             ("ImGuiColorEditFlags_", "ColorEditFlags"),
             ("ImGuiComboFlags_", "ComboFlags"),
             ("ImGuiSelectableFlags_", "SelectableFlags"),
@@ -56,6 +57,7 @@ class GenContext:
             ("ImGuiCol_", "Col"),
             ("ImGuiDir_", "Dir"),
             ("ImGuiStyleVar_", "StyleVar"),
+            ("ImGuiTableBgTarget_", "TableBgTarget"),
         ]
         for im_name, py_name, e in [(im_name, py_name, doc["enums"][im_name]) for im_name, py_name in enum_list]:
             # Enum decl

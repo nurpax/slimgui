@@ -1275,6 +1275,100 @@ class StyleVar(enum.IntEnum):
 
     COUNT: StyleVar
 
+class TableBgTarget(enum.IntEnum):
+    _new_member_ = __new__
+
+    _use_args_: bool = True
+
+    _member_names_: list = ['NONE', 'ROW_BG0', 'ROW_BG1', 'CELL_BG']
+
+    _member_map_: dict = ...
+
+    _value2member_map_: dict = ...
+
+    _unhashable_values_: list = []
+
+    _value_repr_ = __repr__
+
+    NONE: TableBgTarget
+
+    ROW_BG0: TableBgTarget
+
+    ROW_BG1: TableBgTarget
+
+    CELL_BG: TableBgTarget
+
+class TableColumnFlags(enum.IntEnum):
+    _new_member_ = __new__
+
+    _use_args_: bool = True
+
+    _member_names_: list = ...
+
+    _member_map_: dict = ...
+
+    _value2member_map_: dict = ...
+
+    _unhashable_values_: list = []
+
+    _value_repr_ = __repr__
+
+    NONE: TableColumnFlags
+
+    DISABLED: TableColumnFlags
+
+    DEFAULT_HIDE: TableColumnFlags
+
+    DEFAULT_SORT: TableColumnFlags
+
+    WIDTH_STRETCH: TableColumnFlags
+
+    WIDTH_FIXED: TableColumnFlags
+
+    NO_RESIZE: TableColumnFlags
+
+    NO_REORDER: TableColumnFlags
+
+    NO_HIDE: TableColumnFlags
+
+    NO_CLIP: TableColumnFlags
+
+    NO_SORT: TableColumnFlags
+
+    NO_SORT_ASCENDING: TableColumnFlags
+
+    NO_SORT_DESCENDING: TableColumnFlags
+
+    NO_HEADER_LABEL: TableColumnFlags
+
+    NO_HEADER_WIDTH: TableColumnFlags
+
+    PREFER_SORT_ASCENDING: TableColumnFlags
+
+    PREFER_SORT_DESCENDING: TableColumnFlags
+
+    INDENT_ENABLE: TableColumnFlags
+
+    INDENT_DISABLE: TableColumnFlags
+
+    ANGLED_HEADER: TableColumnFlags
+
+    IS_ENABLED: TableColumnFlags
+
+    IS_VISIBLE: TableColumnFlags
+
+    IS_SORTED: TableColumnFlags
+
+    IS_HOVERED: TableColumnFlags
+
+    WIDTH_MASK_: TableColumnFlags
+
+    INDENT_MASK_: TableColumnFlags
+
+    STATUS_MASK_: TableColumnFlags
+
+    NO_DIRECT_RESIZE_: TableColumnFlags
+
 class TableFlags(enum.IntEnum):
     _new_member_ = __new__
 
@@ -1837,11 +1931,35 @@ def small_button(label: str) -> bool: ...
 
 def spacing() -> None: ...
 
+def table_angled_headers_row() -> None: ...
+
+def table_get_column_count() -> int: ...
+
+def table_get_column_flags(column_n: int = -1) -> TableColumnFlags: ...
+
+def table_get_column_index() -> int: ...
+
+def table_get_column_name(column_n: int = -1) -> str: ...
+
+def table_get_row_index() -> int: ...
+
+def table_header(label: str) -> None: ...
+
+def table_headers_row() -> None: ...
+
 def table_next_column() -> bool: ...
 
 def table_next_row(row_flags: int = 0, min_row_height: float = 0.0) -> None: ...
 
+def table_set_bg_color(target: TableBgTarget, color: tuple[float, float, float, float], column_n: int = -1) -> None: ...
+
+def table_set_column_enabled(column_n: int, v: bool) -> None: ...
+
 def table_set_column_index(column_n: int) -> bool: ...
+
+def table_setup_column(label: str, flags: int = 0, init_width_or_weight: float = 0.0, user_id: int = 0) -> None: ...
+
+def table_setup_scroll_freeze(cols: int, rows: int) -> None: ...
 
 def text(text: str) -> None: ...
 

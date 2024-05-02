@@ -565,6 +565,25 @@ NB_MODULE(slimgui_ext, m) {
     m.def("table_next_column", &ImGui::TableNextColumn);
     m.def("table_set_column_index", &ImGui::TableSetColumnIndex, "column_n"_a);
 
+    // Tables: Headers & Columns declaration
+    m.def("table_setup_column", &ImGui::TableSetupColumn, "label"_a, "flags"_a = 0, "init_width_or_weight"_a = 0.f, "user_id"_a = 0);
+    m.def("table_setup_scroll_freeze", &ImGui::TableSetupScrollFreeze, "cols"_a, "rows"_a);
+    m.def("table_header", &ImGui::TableHeader, "label"_a);
+    m.def("table_headers_row", &ImGui::TableHeadersRow);
+    m.def("table_angled_headers_row", &ImGui::TableAngledHeadersRow);
+
+    // Tables: Sorting & Miscellaneous functions
+    // IMGUI_API ImGuiTableSortSpecs*  TableGetSortSpecs();                        // get latest sort specs for the table (NULL if not sorting).  Lifetime: don't hold on this pointer over multiple frames or past any subsequent call to BeginTable().
+    m.def("table_get_column_count", &ImGui::TableGetColumnCount);
+    m.def("table_get_column_index", &ImGui::TableGetColumnIndex);
+    m.def("table_get_row_index", &ImGui::TableGetRowIndex);
+    m.def("table_get_column_name", [](int column_n) { return nb::str(ImGui::TableGetColumnName(column_n)); }, "column_n"_a = -1);
+    m.def("table_get_column_flags", [](int column_n) { return (ImGuiTableColumnFlags_)ImGui::TableGetColumnFlags(column_n); }, "column_n"_a = -1);
+    m.def("table_set_column_enabled", &ImGui::TableSetColumnEnabled, "column_n"_a, "v"_a);
+    m.def("table_set_bg_color", [](ImGuiTableBgTarget_ target, const ImVec4& col, int column_n) {
+        ImGui::TableSetBgColor(target, ImGui::ColorConvertFloat4ToU32(col), column_n);
+    }, "target"_a, "color"_a, "column_n"_a = -1);
+
     // Logging/Capture
     m.def("log_to_tty", &ImGui::LogToTTY, "auto_open_depth"_a = -1);
     m.def("log_to_file", &ImGui::LogToFile, "auto_open_depth"_a = -1, "filename"_a = nullptr);
