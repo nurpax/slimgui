@@ -589,7 +589,7 @@ NB_MODULE(slimgui_ext, m) {
     //      def is_item_clicked(flags: int = MouseButton | int) -> None: ...
     m.def("is_item_clicked", [](ImGuiMouseButton mouse_button) {
         return ImGui::IsItemClicked(mouse_button);
-    }, nb::sig("def is_item_clicked(mouse_button: MouseButton | int = MouseButton.LEFT) -> bool"), "mouse_button"_a = 0);
+    }, nb::sig("def is_item_clicked(mouse_button: slimgui_ext.MouseButton | int = slimgui_ext.MouseButton.LEFT) -> bool"), "mouse_button"_a = 0);
     m.def("is_item_visible", &ImGui::IsItemVisible);
     m.def("is_item_edited", &ImGui::IsItemEdited);
     m.def("is_item_activated", &ImGui::IsItemActivated);

@@ -2,8 +2,6 @@ from collections.abc import Iterator, Sequence
 import enum
 from typing import overload
 
-import MouseButton
-
 
 class BackendFlags(enum.IntEnum):
     _new_member_ = __new__
