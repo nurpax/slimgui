@@ -193,8 +193,6 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_draw_data", &ImGui::GetDrawData, nb::rv_policy::reference);
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);
 
-    m.def("get_time", &ImGui::GetTime);
-
     // Demo, Debug, Information
     m.def("show_user_guide", &ImGui::ShowUserGuide);
     m.def("show_style_editor", []() {
@@ -622,6 +620,23 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_item_rect_min", &ImGui::GetItemRectMin);
     m.def("get_item_rect_max", &ImGui::GetItemRectMax);
     m.def("get_item_rect_size", &ImGui::GetItemRectSize);
+
+    // Miscellaneous Utilities
+    m.def("is_rect_visible", [](const ImVec2& size) {
+        return ImGui::IsRectVisible(size);
+    }, "size"_a);
+    m.def("is_rect_visible", [](const ImVec2& rect_min, const ImVec2& rect_max) {
+        return ImGui::IsRectVisible(rect_min, rect_max);
+    }, "rect_min"_a, "rect_max"_a);
+    m.def("get_time", &ImGui::GetTime);
+    m.def("get_frame_count", &ImGui::GetFrameCount);
+    // IMGUI_API ImDrawListSharedData* GetDrawListSharedData();                                    // you may use this when creating your own ImDrawList instances.
+    // IMGUI_API const char*   GetStyleColorName(ImGuiCol idx);                                    // get a string corresponding to the enum value (for display, saving, etc.).
+    // IMGUI_API void          SetStateStorage(ImGuiStorage* storage);                             // replace current window storage with our own (if you want to manipulate it yourself, typically clear subsection of it)
+    // IMGUI_API ImGuiStorage* GetStateStorage();
+
+    // Text Utilities
+    // IMGUI_API ImVec2        CalcTextSize(const char* text, const char* text_end = NULL, bool hide_text_after_double_hash = false, float wrap_width = -1.0f);
 
     // Color utilities
     m.def("color_convert_hsv_to_rgb", [](const ImVec4& hsv) {
