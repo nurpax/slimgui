@@ -225,9 +225,53 @@ NB_MODULE(slimgui_ext, m) {
     m.def("render", &ImGui::Render);
     m.def("new_frame", &ImGui::NewFrame);
 
+
     // Window manipulation
-    m.def("set_next_window_pos", ImGui::SetNextWindowPos, "pos"_a, "cond"_a = 0, "pivot"_a = ImVec2(0,0));
-    m.def("set_next_window_size", ImGui::SetNextWindowSize, "size"_a, "cond"_a = 0);
+    // - Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).
+    // TODO how to callback
+    m.def("set_next_window_pos", ImGui::SetNextWindowPos, "pos"_a, "cond"_a = ImGuiCond_None, "pivot"_a = ImVec2(0,0));
+    m.def("set_next_window_size", ImGui::SetNextWindowSize, "size"_a, "cond"_a = ImGuiCond_None);
+    //m.def("set_next_window_size_constraints", ImGui::SetNextWindowSizeConstraints, "size_min"_a, "size_max"_a = 0, "pivot"_a = ImVec2(0,0));
+    m.def("set_next_window_content_size", ImGui::SetNextWindowContentSize, "size"_a);
+    m.def("set_next_window_collapsed", ImGui::SetNextWindowCollapsed, "collapsed"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_next_window_focus", ImGui::SetNextWindowFocus);
+    m.def("set_next_window_scroll", ImGui::SetNextWindowScroll, "scroll"_a);
+    m.def("set_next_window_bg_alpha", ImGui::SetNextWindowBgAlpha, "alpha"_a);
+    m.def("set_window_pos", [](const ImVec2& pos, ImGuiCond cond) { ImGui::SetWindowPos(pos, cond); }, "pos"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_size", [](const ImVec2& size, ImGuiCond cond) { ImGui::SetWindowSize(size, cond); }, "size"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_collapsed", [](bool collapsed, ImGuiCond cond) { ImGui::SetWindowCollapsed(collapsed, cond); }, "collapsed"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_focus", []() { ImGui::SetWindowFocus(); });
+    m.def("set_window_font_scale", [](float scale) { ImGui::SetWindowFontScale(scale); }, "scale"_a);
+    m.def("set_window_pos", [](const char* name, const ImVec2& pos, ImGuiCond cond) { ImGui::SetWindowPos(name, pos, cond); }, "name"_a, "pos"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_size", [](const char* name, const ImVec2& size, ImGuiCond cond) { ImGui::SetWindowSize(name, size, cond); }, "name"_a, "size"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_collapsed", [](const char* name, bool collapsed, ImGuiCond cond) { ImGui::SetWindowCollapsed(name, collapsed, cond); }, "name"_a, "collapsed"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_focus", [](const char* name) { ImGui::SetWindowFocus(name); }, "name"_a);
+
+    // Content region
+    // - Retrieve available space from a given point. GetContentRegionAvail() is frequently useful.
+    // - Those functions are bound to be redesigned (they are confusing, incomplete and the Min/Max return values are in local window coordinates which increases confusion)
+    m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
+    m.def("get_content_region_max", &ImGui::GetContentRegionMax);
+    m.def("get_window_content_region_min", &ImGui::GetWindowContentRegionMin);
+    m.def("get_window_content_region_max", &ImGui::GetWindowContentRegionMax);
+
+    // Windows Scrolling
+    // - Any change of Scroll will be applied at the beginning of next frame in the first call to Begin().
+    // - You may instead use SetNextWindowScroll() prior to calling Begin() to avoid this delay, as an alternative to using SetScrollX()/SetScrollY().
+    m.def("get_scroll_x", &ImGui::GetScrollX);
+    m.def("get_scroll_y", &ImGui::GetScrollY);
+    m.def("set_scroll_x", [](float scroll_x) { ImGui::SetScrollX(scroll_x); }, "scroll_x"_a);
+    m.def("set_scroll_y", [](float scroll_y) { ImGui::SetScrollY(scroll_y); }, "scroll_y"_a);
+    m.def("get_scroll_max_x", &ImGui::GetScrollMaxX);
+    m.def("get_scroll_max_y", &ImGui::GetScrollMaxY);
+    m.def("set_scroll_here_x", &ImGui::SetScrollHereX, "center_x_ratio"_a = 0.5f);
+    m.def("set_scroll_here_y", &ImGui::SetScrollHereY, "center_y_ratio"_a = 0.5f);
+    m.def("set_scroll_from_pos_x", [](float local_x, float center_x_ratio) {
+        ImGui::SetScrollFromPosX(local_x, center_x_ratio);
+    }, "local_x"_a, "center_x_ratio"_a = 0.5f);
+    m.def("set_scroll_from_pos_y", [](float local_y, float center_y_ratio) {
+        ImGui::SetScrollFromPosY(local_y, center_y_ratio);
+    }, "local_y"_a, "center_y_ratio"_a = 0.5f);
 
     // Parameters stacks (shared)
     // IMGUI_API void          PushFont(ImFont* font);                                         // use NULL as a shortcut to push default font
