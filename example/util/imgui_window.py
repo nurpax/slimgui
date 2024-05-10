@@ -1,4 +1,3 @@
-import os
 
 import glfw
 import OpenGL.GL as gl
@@ -171,16 +170,14 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
 
 
 class ImguiWindow(GlfwWindow):
-    def __init__(self, *, title="ImguiWindow", font=None, font_sizes=range(14, 24), close_on_esc=False, ini_filename: str | None=None, **glfw_kwargs):
-        # if font is None:
-        #     font = get_default_font()
+    def __init__(self, *, title="ImguiWindow", font_bytes: bytes | None=None, font_sizes=range(14, 24), close_on_esc=False, ini_filename: str | None=None, **glfw_kwargs):
         font_sizes = {int(size) for size in font_sizes}
         super().__init__(title=title, **glfw_kwargs)
 
         # Init fields.
         self._imgui_context = None
         self._imgui_renderer = None
-        self._imgui_fonts = None
+        self._imgui_fonts  = None
         self._cur_font_size = max(font_sizes)
         self._close_on_esc = close_on_esc
         self._esc_pressed = False
@@ -193,7 +190,9 @@ class ImguiWindow(GlfwWindow):
         io.config_flags |= imgui.ConfigFlags.NAV_ENABLE_KEYBOARD
 
         self._imgui_renderer = GlfwRenderer(self._glfw_window, prev_key_callback=self._glfw_key_callback)
-        # self._imgui_fonts = {size: imgui.get_io().fonts.add_font_from_file_ttf(font, size) for size in font_sizes}
+
+        if font_bytes is not None:
+            self._imgui_fonts = {size: imgui.get_io().fonts.add_font_from_memory_ttf(font_bytes, size) for size in font_sizes}
         self._imgui_renderer.refresh_font_texture()
 
     def close(self):
@@ -223,6 +222,7 @@ class ImguiWindow(GlfwWindow):
         return round(self._cur_font_size * 0.4)
 
     def set_font_size(self, target):  # Applied on next frame.
+        assert self._imgui_fonts is not None
         self._cur_font_size = min((abs(key - target), key) for key in self._imgui_fonts.keys())[1]
 
     def begin_frame(self):
@@ -231,11 +231,13 @@ class ImguiWindow(GlfwWindow):
 
         self._imgui_renderer.new_frame()
         imgui.new_frame()
-        # imgui.push_font(self._imgui_fonts[self._cur_font_size])
+        if self._imgui_fonts is not None:
+            imgui.push_font(self._imgui_fonts[self._cur_font_size])
 
     def end_frame(self):
         assert self._imgui_renderer is not None
-        # imgui.pop_font()
+        if self._imgui_fonts is not None:
+            imgui.pop_font()
         imgui.render()
         self._imgui_renderer.render(imgui.get_draw_data())
         super().end_frame()

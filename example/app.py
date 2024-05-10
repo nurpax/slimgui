@@ -1,14 +1,28 @@
-from dataclasses import dataclass
 import logging
 import os
-
-import slimgui as imgui
-from slimgui import InputTextFlags
-
-from util import imgui_window
+from dataclasses import dataclass
 
 import demo
+import requests
+import slimgui as imgui
+from slimgui import InputTextFlags
+from util import imgui_window
 
+
+def download_and_cache(url, cache_dir='cache', filename=None) -> str:
+    os.makedirs(cache_dir, exist_ok=True)
+
+    if not filename:
+        filename = os.path.basename(url)
+
+    file_path = os.path.join(cache_dir, filename)
+
+    if not os.path.isfile(file_path):
+        response = requests.get(url)
+        response.raise_for_status()
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+    return file_path
 
 @dataclass
 class State:
@@ -21,8 +35,16 @@ def run():
     # Initialize state.
     state = State()
 
+    use_ttf_font = True
+    if use_ttf_font:
+        with open(download_and_cache("https://github.com/jnmaloney/WebGui/raw/master/data/xkcd-script.ttf"), "rb") as f:
+            font_bytes = f.read()
+    else:
+        font_bytes = None
+
     # GUI boilerplate.
-    window = imgui_window.ImguiWindow(title="Prompt tool", close_on_esc=True)
+    window = imgui_window.ImguiWindow(title="Prompt tool", close_on_esc=True, font_bytes=font_bytes)
+
     while not window.should_close():
         window.begin_frame()
 

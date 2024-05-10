@@ -80,9 +80,39 @@ NB_MODULE(slimgui_ext, m) {
     m.attr("FLOAT_MAX") = FLT_MAX;
 
     nb::class_<ImFont>(m, "Font");
-    nb::class_<ImFontConfig>(m, "FontConfig");
+    nb::class_<ImFontConfig>(m, "FontConfig") // exposes only safe fields, e.g., no FontData, FontDataOwnedByAtlas, etc.
+        .def(nb::init<>())
+        .def_rw("font_no", &ImFontConfig::FontNo)
+        .def_rw("size_pixels", &ImFontConfig::SizePixels)
+        .def_rw("oversample_h", &ImFontConfig::OversampleH)
+        .def_rw("oversample_v", &ImFontConfig::OversampleV)
+        .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH)
+        .def_rw("glyph_extra_spacing", &ImFontConfig::GlyphExtraSpacing)
+        .def_rw("glyph_offset", &ImFontConfig::GlyphOffset)
+        //.def_rw("glyph_ranges", &ImFontConfig::GlyphRanges) // TODO
+        .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX)
+        .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX)
+        .def_rw("merge_mode", &ImFontConfig::MergeMode)
+        .def_rw("font_builder_flags", &ImFontConfig::FontBuilderFlags)
+        .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply)
+        .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity)
+        .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar);
+
     nb::class_<ImFontAtlas>(m, "FontAtlas")
-        .def("add_font_default", &ImFontAtlas::AddFontDefault, nb::arg("font_cfg").none())
+        .def("add_font_default", &ImFontAtlas::AddFontDefault, nb::arg("font_cfg").none() = nullptr, nb::rv_policy::reference)
+        .def("add_font_from_memory_ttf", [](ImFontAtlas* fonts, nb::bytes font_data, float size_pixels, std::optional<ImFontConfig> font_cfg) {
+            ImFontConfig cfg;
+            if (font_cfg) {
+                cfg = font_cfg.value();
+            }
+            // Copy font data, let imgui delete it after building.  Without the copy, Python
+            // might deallocate the bytes buffer before the font atlas gets built.
+            cfg.FontDataOwnedByAtlas = true;
+            void* data = IM_ALLOC(font_data.size());
+            memcpy(data, font_data.c_str(), font_data.size());
+            // TODO glyph_ranges
+            return fonts->AddFontFromMemoryTTF(data, font_data.size(), size_pixels, &cfg, nullptr);
+        }, nb::rv_policy::reference, "font_data"_a, "size_pixels"_a, nb::arg("font_cfg").none() = std::nullopt)
         .def("clear_tex_data", &ImFontAtlas::ClearTexData)
         .def("get_tex_data_as_rgba32", [](ImFontAtlas* fonts) {
             int tex_w, tex_h;
@@ -279,8 +309,8 @@ NB_MODULE(slimgui_ext, m) {
     }, "local_y"_a, "center_y_ratio"_a = 0.5f);
 
     // Parameters stacks (shared)
-    // IMGUI_API void          PushFont(ImFont* font);                                         // use NULL as a shortcut to push default font
-    // IMGUI_API void          PopFont();
+    m.def("push_font", &ImGui::PushFont, "font"_a.none());
+    m.def("pop_font", &ImGui::PopFont);
     m.def("push_style_color", [](ImGuiCol idx, ImU32 col) { ImGui::PushStyleColor(idx, col); }, "idx"_a, "col"_a);
     m.def("push_style_color", [](ImGuiCol idx, const ImVec4& col) { ImGui::PushStyleColor(idx, col); }, "idx"_a, "col"_a);
     m.def("pop_style_color", &ImGui::PopStyleColor, "count"_a = 1);
