@@ -1,17 +1,31 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
+from typing import Any, Callable
 
 import glfw
 import slimgui as imgui
 
-from . import compute_fb_scale
 from .opengl import ProgrammablePipelineRenderer
 
-
 class GlfwRenderer(ProgrammablePipelineRenderer):
-    def __init__(self, window, attach_callbacks: bool = True):
+    def __init__(
+        self,
+        window,
+        attach_callbacks: bool = True,
+        prev_key_callback: None | Callable[[Any, int, int, int, int], None] = None,
+        prev_char_callback: Callable[[Any, int], None] | None = None,
+        prev_cursor_pos_callback: Callable[[Any, float, float], None] | None = None,
+        prev_mouse_button_callback: Callable[[Any, int, int, int], None] | None = None,
+        prev_scroll_callback: Callable[[Any, float, float], None] | None = None,
+        prev_window_size_callback: Callable[[Any, int, int], None] | None = None,
+    ):
         super(GlfwRenderer, self).__init__()
         self.window = window
+
+        self._prev_key_callback = prev_key_callback
+        self._prev_char_callback = prev_char_callback
+        self._prev_cursor_pos_callback = prev_cursor_pos_callback
+        self._prev_mouse_button_callback = prev_mouse_button_callback
+        self._prev_scroll_callback = prev_scroll_callback
+        self._prev_window_size_callback = prev_window_size_callback
 
         if attach_callbacks:
             glfw.set_key_callback(self.window, self.keyboard_callback)
@@ -71,6 +85,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         }.get(glfw_key)
 
     def keyboard_callback(self, window, key, scancode, action, mods):
+        if self._prev_key_callback is not None:
+            self._prev_key_callback(window, key, scancode, action, mods)
         if action not in [glfw.PRESS, glfw.RELEASE]:
             return
         io = imgui.get_io()
@@ -80,30 +96,43 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             io.add_key_event(k, action == glfw.PRESS)
 
     def char_callback(self, window, char):
+        if self._prev_char_callback is not None:
+            self._prev_char_callback(window, char)
         io = imgui.get_io()
         io.add_input_character(char)
 
     def resize_callback(self, window, width, height):
+        if self._prev_window_size_callback is not None:
+            self._prev_window_size_callback(window, width, height)
         self.io.display_size = width, height
 
     def mouse_pos_callback(self, window, x, y):
+        if self._prev_cursor_pos_callback is not None:
+            self._prev_cursor_pos_callback(window, x, y)
         self.io.add_mouse_pos_event(x, y)
 
     def mouse_button_callback(self, window, btn, action, mods):
+        if self._prev_mouse_button_callback is not None:
+            self._prev_mouse_button_callback(window, btn, action, mods)
         self._update_mod_keys(window)
         self.io.add_mouse_button_event(btn, action != 0)
 
     def scroll_callback(self, window, x_offset, y_offset):
+        if self._prev_scroll_callback is not None:
+            self._prev_scroll_callback(window, x_offset, y_offset)
         self.io.add_mouse_wheel_event(x_offset, y_offset)
 
-    def process_inputs(self):
+    def new_frame(self):
         io = imgui.get_io()
 
         window_size = glfw.get_window_size(self.window)
-        fb_size = glfw.get_framebuffer_size(self.window)
+        display_w, display_h = glfw.get_framebuffer_size(self.window)
 
         io.display_size = window_size
-        io.display_fb_scale = compute_fb_scale(window_size, fb_size)
+
+        w, h = window_size
+        if w != 0 and h != 0:
+            io.display_fb_scale = (display_w / w, display_h / h)
 
         current_time = glfw.get_time()
         if self._gui_time:
