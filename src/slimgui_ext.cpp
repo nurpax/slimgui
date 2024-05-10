@@ -112,28 +112,33 @@ NB_MODULE(slimgui_ext, m) {
         .def("add_mouse_wheel_event", &ImGuiIO::AddMouseWheelEvent, "wheel_x"_a, "wheel_y"_a)
         .def("add_input_character", &ImGuiIO::AddInputCharacter, "c"_a)
         .def("add_key_event", &ImGuiIO::AddKeyEvent, "key"_a, "down"_a)
-        .def_prop_rw("display_size",
-            [](ImGuiIO& io) {
-                return std::pair<float, float>(io.DisplaySize.x, io.DisplaySize.y);
-            },
-            [](ImGuiIO& io, std::pair<float, float> val) {
-                io.DisplaySize.x = val.first;
-                io.DisplaySize.y = val.second;
-            }
-        )
-        .def_prop_rw("display_fb_scale",
-            [](ImGuiIO& io) {
-                return std::pair<float, float>(io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
-            },
-            [](ImGuiIO& io, std::pair<float, float> val) {
-                io.DisplayFramebufferScale.x = val.first;
-                io.DisplayFramebufferScale.y = val.second;
-            }
-        )
-        .def_rw("delta_time", &ImGuiIO::DeltaTime)
-        .def_rw("fonts", &ImGuiIO::Fonts)
         .def_rw("config_flags", &ImGuiIO::ConfigFlags)
         .def_rw("backend_flags", &ImGuiIO::BackendFlags)
+        .def_rw("display_size", &ImGuiIO::DisplaySize)
+        .def_rw("display_fb_scale", &ImGuiIO::DisplayFramebufferScale)
+        .def_rw("delta_time", &ImGuiIO::DeltaTime)
+        .def_rw("ini_saving_rate", &ImGuiIO::IniSavingRate)
+        .def_prop_rw("ini_filename",
+            [](ImGuiIO& io) { return io.IniFilename; },
+            [](ImGuiIO& io, nb::handle filename) {
+                const char* fname = !filename.is_none() ? nb::cast<const char *>(filename) : nullptr;
+                io.IniFilename = fname;
+            },
+            "ini_filename"_a.none(),
+            nb::for_getter(nb::sig("def ini_filename(self, /) -> str | None")),
+            nb::for_setter(nb::sig("def ini_filename(self, filename: str | None, /) -> None"))
+        )
+        .def_prop_rw("log_filename",
+            [](ImGuiIO& io) { return io.LogFilename; },
+            [](ImGuiIO& io, nb::handle filename) {
+                const char* fname = !filename.is_none() ? nb::cast<const char *>(filename) : nullptr;
+                io.LogFilename = fname;
+            },
+            "log_filename"_a.none(),
+            nb::for_getter(nb::sig("def log_filename(self, /) -> str | None")),
+            nb::for_setter(nb::sig("def log_filename(self, filename: str | None, /) -> None"))
+        )
+        .def_rw("fonts", &ImGuiIO::Fonts)
         .def_rw("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor)
         .def_rw("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors)
         .def_rw("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue)

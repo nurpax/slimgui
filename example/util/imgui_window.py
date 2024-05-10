@@ -171,7 +171,7 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
 
 
 class ImguiWindow(GlfwWindow):
-    def __init__(self, *, title="ImguiWindow", font=None, font_sizes=range(14, 24), close_on_esc=False, **glfw_kwargs):
+    def __init__(self, *, title="ImguiWindow", font=None, font_sizes=range(14, 24), close_on_esc=False, ini_filename: str | None=None, **glfw_kwargs):
         # if font is None:
         #     font = get_default_font()
         font_sizes = {int(size) for size in font_sizes}
@@ -188,6 +188,7 @@ class ImguiWindow(GlfwWindow):
         # Init ImGui.
         self._imgui_context = imgui.create_context()
         io = imgui.get_io()
+        io.ini_filename = None # don't save imgui.ini
         # TODO pass these in?
         io.config_flags |= imgui.ConfigFlags.NAV_ENABLE_KEYBOARD
 
@@ -211,7 +212,6 @@ class ImguiWindow(GlfwWindow):
             self._esc_pressed = True
 
     def should_close(self) -> bool:
-        # TODO esc close_on_esc
         return glfw.window_should_close(self._glfw_window) or (self._close_on_esc and self._esc_pressed)
 
     @property
