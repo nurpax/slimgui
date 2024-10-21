@@ -345,7 +345,7 @@ class ConfigFlags(enum.IntEnum):
     IS_TOUCH_SCREEN: ConfigFlags
 
 class Context:
-    pass
+    def get_io_internal(self) -> IO: ...
 
 class Dir(enum.IntEnum):
     _new_member_ = __new__

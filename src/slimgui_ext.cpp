@@ -151,6 +151,7 @@ NB_MODULE(slimgui_ext, m) {
         .def_prop_rw("ini_filename",
             [](ImGuiIO& io) { return io.IniFilename; },
             [](ImGuiIO& io, nb::handle filename) {
+                // TODO what about the lifetime of io.IniFilename?
                 const char* fname = !filename.is_none() ? nb::cast<const char *>(filename) : nullptr;
                 io.IniFilename = fname;
             },
@@ -168,7 +169,7 @@ NB_MODULE(slimgui_ext, m) {
             nb::for_getter(nb::sig("def log_filename(self, /) -> str | None")),
             nb::for_setter(nb::sig("def log_filename(self, filename: str | None, /) -> None"))
         )
-        .def_rw("fonts", &ImGuiIO::Fonts)
+        .def_rw("fonts", &ImGuiIO::Fonts, nb::rv_policy::reference_internal)
         .def_rw("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor)
         .def_rw("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors)
         .def_rw("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue)
@@ -218,9 +219,11 @@ NB_MODULE(slimgui_ext, m) {
         }, nb::keep_alive<0, 1>());
 
 #include "im_enums.inl"
+    nb::class_<ImGuiContext>(m, "Context")
+        .def("get_io_internal", [](ImGuiContext* ctx) -> ImGuiIO* {
+            return &ctx->IO;
+        }, nb::rv_policy::reference_internal);
 
-    // TODO ownership probably pretty wonky here
-    nb::class_<ImGuiContext>(m, "Context");
     m.def("create_context", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference, "create context");
     m.def("get_current_context", &ImGui::GetCurrentContext, nb::rv_policy::reference);
     m.def("destroy_context", &ImGui::DestroyContext);
