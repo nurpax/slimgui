@@ -152,6 +152,7 @@ NB_MODULE(slimgui_ext, m) {
             [](ImGuiIO& io) { return io.IniFilename; },
             [](ImGuiIO& io, nb::handle filename) {
                 // TODO what about the lifetime of io.IniFilename?
+                // Note: maybe it works with the wrapper business in https://github.com/nurpax/slimgui/issues/1?
                 const char* fname = !filename.is_none() ? nb::cast<const char *>(filename) : nullptr;
                 io.IniFilename = fname;
             },

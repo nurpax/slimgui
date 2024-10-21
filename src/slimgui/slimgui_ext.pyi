@@ -18,15 +18,15 @@ class BackendFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: BackendFlags
+    NONE = 0
 
-    HAS_GAMEPAD: BackendFlags
+    HAS_GAMEPAD = 1
 
-    HAS_MOUSE_CURSORS: BackendFlags
+    HAS_MOUSE_CURSORS = 2
 
-    HAS_SET_MOUSE_POS: BackendFlags
+    HAS_SET_MOUSE_POS = 4
 
-    RENDERER_HAS_VTX_OFFSET: BackendFlags
+    RENDERER_HAS_VTX_OFFSET = 8
 
 class ButtonFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -43,17 +43,17 @@ class ButtonFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: ButtonFlags
+    NONE = 0
 
-    MOUSE_BUTTON_LEFT: ButtonFlags
+    MOUSE_BUTTON_LEFT = 1
 
-    MOUSE_BUTTON_RIGHT: ButtonFlags
+    MOUSE_BUTTON_RIGHT = 2
 
-    MOUSE_BUTTON_MIDDLE: ButtonFlags
+    MOUSE_BUTTON_MIDDLE = 4
 
-    MOUSE_BUTTON_MASK_: ButtonFlags
+    MOUSE_BUTTON_MASK_ = 7
 
-    MOUSE_BUTTON_DEFAULT_: ButtonFlags
+    MOUSE_BUTTON_DEFAULT_ = 1
 
 class Col(enum.IntEnum):
     _new_member_ = __new__
@@ -70,113 +70,113 @@ class Col(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    TEXT: Col
+    TEXT = 0
 
-    TEXT_DISABLED: Col
+    TEXT_DISABLED = 1
 
-    WINDOW_BG: Col
+    WINDOW_BG = 2
 
-    CHILD_BG: Col
+    CHILD_BG = 3
 
-    POPUP_BG: Col
+    POPUP_BG = 4
 
-    BORDER: Col
+    BORDER = 5
 
-    BORDER_SHADOW: Col
+    BORDER_SHADOW = 6
 
-    FRAME_BG: Col
+    FRAME_BG = 7
 
-    FRAME_BG_HOVERED: Col
+    FRAME_BG_HOVERED = 8
 
-    FRAME_BG_ACTIVE: Col
+    FRAME_BG_ACTIVE = 9
 
-    TITLE_BG: Col
+    TITLE_BG = 10
 
-    TITLE_BG_ACTIVE: Col
+    TITLE_BG_ACTIVE = 11
 
-    TITLE_BG_COLLAPSED: Col
+    TITLE_BG_COLLAPSED = 12
 
-    MENU_BAR_BG: Col
+    MENU_BAR_BG = 13
 
-    SCROLLBAR_BG: Col
+    SCROLLBAR_BG = 14
 
-    SCROLLBAR_GRAB: Col
+    SCROLLBAR_GRAB = 15
 
-    SCROLLBAR_GRAB_HOVERED: Col
+    SCROLLBAR_GRAB_HOVERED = 16
 
-    SCROLLBAR_GRAB_ACTIVE: Col
+    SCROLLBAR_GRAB_ACTIVE = 17
 
-    CHECK_MARK: Col
+    CHECK_MARK = 18
 
-    SLIDER_GRAB: Col
+    SLIDER_GRAB = 19
 
-    SLIDER_GRAB_ACTIVE: Col
+    SLIDER_GRAB_ACTIVE = 20
 
-    BUTTON: Col
+    BUTTON = 21
 
-    BUTTON_HOVERED: Col
+    BUTTON_HOVERED = 22
 
-    BUTTON_ACTIVE: Col
+    BUTTON_ACTIVE = 23
 
-    HEADER: Col
+    HEADER = 24
 
-    HEADER_HOVERED: Col
+    HEADER_HOVERED = 25
 
-    HEADER_ACTIVE: Col
+    HEADER_ACTIVE = 26
 
-    SEPARATOR: Col
+    SEPARATOR = 27
 
-    SEPARATOR_HOVERED: Col
+    SEPARATOR_HOVERED = 28
 
-    SEPARATOR_ACTIVE: Col
+    SEPARATOR_ACTIVE = 29
 
-    RESIZE_GRIP: Col
+    RESIZE_GRIP = 30
 
-    RESIZE_GRIP_HOVERED: Col
+    RESIZE_GRIP_HOVERED = 31
 
-    RESIZE_GRIP_ACTIVE: Col
+    RESIZE_GRIP_ACTIVE = 32
 
-    TAB: Col
+    TAB = 33
 
-    TAB_HOVERED: Col
+    TAB_HOVERED = 34
 
-    TAB_ACTIVE: Col
+    TAB_ACTIVE = 35
 
-    TAB_UNFOCUSED: Col
+    TAB_UNFOCUSED = 36
 
-    TAB_UNFOCUSED_ACTIVE: Col
+    TAB_UNFOCUSED_ACTIVE = 37
 
-    PLOT_LINES: Col
+    PLOT_LINES = 38
 
-    PLOT_LINES_HOVERED: Col
+    PLOT_LINES_HOVERED = 39
 
-    PLOT_HISTOGRAM: Col
+    PLOT_HISTOGRAM = 40
 
-    PLOT_HISTOGRAM_HOVERED: Col
+    PLOT_HISTOGRAM_HOVERED = 41
 
-    TABLE_HEADER_BG: Col
+    TABLE_HEADER_BG = 42
 
-    TABLE_BORDER_STRONG: Col
+    TABLE_BORDER_STRONG = 43
 
-    TABLE_BORDER_LIGHT: Col
+    TABLE_BORDER_LIGHT = 44
 
-    TABLE_ROW_BG: Col
+    TABLE_ROW_BG = 45
 
-    TABLE_ROW_BG_ALT: Col
+    TABLE_ROW_BG_ALT = 46
 
-    TEXT_SELECTED_BG: Col
+    TEXT_SELECTED_BG = 47
 
-    DRAG_DROP_TARGET: Col
+    DRAG_DROP_TARGET = 48
 
-    NAV_HIGHLIGHT: Col
+    NAV_HIGHLIGHT = 49
 
-    NAV_WINDOWING_HIGHLIGHT: Col
+    NAV_WINDOWING_HIGHLIGHT = 50
 
-    NAV_WINDOWING_DIM_BG: Col
+    NAV_WINDOWING_DIM_BG = 51
 
-    MODAL_WINDOW_DIM_BG: Col
+    MODAL_WINDOW_DIM_BG = 52
 
-    COUNT: Col
+    COUNT = 53
 
 class ColorEditFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -193,63 +193,63 @@ class ColorEditFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: ColorEditFlags
+    NONE = 0
 
-    NO_ALPHA: ColorEditFlags
+    NO_ALPHA = 2
 
-    NO_PICKER: ColorEditFlags
+    NO_PICKER = 4
 
-    NO_OPTIONS: ColorEditFlags
+    NO_OPTIONS = 8
 
-    NO_SMALL_PREVIEW: ColorEditFlags
+    NO_SMALL_PREVIEW = 16
 
-    NO_INPUTS: ColorEditFlags
+    NO_INPUTS = 32
 
-    NO_TOOLTIP: ColorEditFlags
+    NO_TOOLTIP = 64
 
-    NO_LABEL: ColorEditFlags
+    NO_LABEL = 128
 
-    NO_SIDE_PREVIEW: ColorEditFlags
+    NO_SIDE_PREVIEW = 256
 
-    NO_DRAG_DROP: ColorEditFlags
+    NO_DRAG_DROP = 512
 
-    NO_BORDER: ColorEditFlags
+    NO_BORDER = 1024
 
-    ALPHA_BAR: ColorEditFlags
+    ALPHA_BAR = 65536
 
-    ALPHA_PREVIEW: ColorEditFlags
+    ALPHA_PREVIEW = 131072
 
-    ALPHA_PREVIEW_HALF: ColorEditFlags
+    ALPHA_PREVIEW_HALF = 262144
 
-    HDR: ColorEditFlags
+    HDR = 524288
 
-    DISPLAY_RGB: ColorEditFlags
+    DISPLAY_RGB = 1048576
 
-    DISPLAY_HSV: ColorEditFlags
+    DISPLAY_HSV = 2097152
 
-    DISPLAY_HEX: ColorEditFlags
+    DISPLAY_HEX = 4194304
 
-    UINT8: ColorEditFlags
+    UINT8 = 8388608
 
-    FLOAT: ColorEditFlags
+    FLOAT = 16777216
 
-    PICKER_HUE_BAR: ColorEditFlags
+    PICKER_HUE_BAR = 33554432
 
-    PICKER_HUE_WHEEL: ColorEditFlags
+    PICKER_HUE_WHEEL = 67108864
 
-    INPUT_RGB: ColorEditFlags
+    INPUT_RGB = 134217728
 
-    INPUT_HSV: ColorEditFlags
+    INPUT_HSV = 268435456
 
-    DEFAULT_OPTIONS_: ColorEditFlags
+    DEFAULT_OPTIONS_ = 177209344
 
-    DISPLAY_MASK_: ColorEditFlags
+    DISPLAY_MASK_ = 7340032
 
-    DATA_TYPE_MASK_: ColorEditFlags
+    DATA_TYPE_MASK_ = 25165824
 
-    PICKER_MASK_: ColorEditFlags
+    PICKER_MASK_ = 100663296
 
-    INPUT_MASK_: ColorEditFlags
+    INPUT_MASK_ = 402653184
 
 class ComboFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -266,25 +266,25 @@ class ComboFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: ComboFlags
+    NONE = 0
 
-    POPUP_ALIGN_LEFT: ComboFlags
+    POPUP_ALIGN_LEFT = 1
 
-    HEIGHT_SMALL: ComboFlags
+    HEIGHT_SMALL = 2
 
-    HEIGHT_REGULAR: ComboFlags
+    HEIGHT_REGULAR = 4
 
-    HEIGHT_LARGE: ComboFlags
+    HEIGHT_LARGE = 8
 
-    HEIGHT_LARGEST: ComboFlags
+    HEIGHT_LARGEST = 16
 
-    NO_ARROW_BUTTON: ComboFlags
+    NO_ARROW_BUTTON = 32
 
-    NO_PREVIEW: ComboFlags
+    NO_PREVIEW = 64
 
-    WIDTH_FIT_PREVIEW: ComboFlags
+    WIDTH_FIT_PREVIEW = 128
 
-    HEIGHT_MASK_: ComboFlags
+    HEIGHT_MASK_ = 30
 
 class Cond(enum.IntEnum):
     _new_member_ = __new__
@@ -301,15 +301,15 @@ class Cond(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: Cond
+    NONE = 0
 
-    ALWAYS: Cond
+    ALWAYS = 1
 
-    ONCE: Cond
+    ONCE = 2
 
-    FIRST_USE_EVER: Cond
+    FIRST_USE_EVER = 4
 
-    APPEARING: Cond
+    APPEARING = 8
 
 class ConfigFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -326,23 +326,23 @@ class ConfigFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: ConfigFlags
+    NONE = 0
 
-    NAV_ENABLE_KEYBOARD: ConfigFlags
+    NAV_ENABLE_KEYBOARD = 1
 
-    NAV_ENABLE_GAMEPAD: ConfigFlags
+    NAV_ENABLE_GAMEPAD = 2
 
-    NAV_ENABLE_SET_MOUSE_POS: ConfigFlags
+    NAV_ENABLE_SET_MOUSE_POS = 4
 
-    NAV_NO_CAPTURE_KEYBOARD: ConfigFlags
+    NAV_NO_CAPTURE_KEYBOARD = 8
 
-    NO_MOUSE: ConfigFlags
+    NO_MOUSE = 16
 
-    NO_MOUSE_CURSOR_CHANGE: ConfigFlags
+    NO_MOUSE_CURSOR_CHANGE = 32
 
-    IS_SRGB: ConfigFlags
+    IS_SRGB = 1048576
 
-    IS_TOUCH_SCREEN: ConfigFlags
+    IS_TOUCH_SCREEN = 2097152
 
 class Context:
     def get_io_internal(self) -> IO: ...
@@ -362,17 +362,17 @@ class Dir(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: Dir
+    NONE = -1
 
-    LEFT: Dir
+    LEFT = 0
 
-    RIGHT: Dir
+    RIGHT = 1
 
-    UP: Dir
+    UP = 2
 
-    DOWN: Dir
+    DOWN = 3
 
-    COUNT: Dir
+    COUNT = 4
 
 class DrawCmd:
     @property
@@ -411,33 +411,33 @@ class DrawFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: DrawFlags
+    NONE = 0
 
-    CLOSED: DrawFlags
+    CLOSED = 1
 
-    ROUND_CORNERS_TOP_LEFT: DrawFlags
+    ROUND_CORNERS_TOP_LEFT = 16
 
-    ROUND_CORNERS_TOP_RIGHT: DrawFlags
+    ROUND_CORNERS_TOP_RIGHT = 32
 
-    ROUND_CORNERS_BOTTOM_LEFT: DrawFlags
+    ROUND_CORNERS_BOTTOM_LEFT = 64
 
-    ROUND_CORNERS_BOTTOM_RIGHT: DrawFlags
+    ROUND_CORNERS_BOTTOM_RIGHT = 128
 
-    ROUND_CORNERS_NONE: DrawFlags
+    ROUND_CORNERS_NONE = 256
 
-    ROUND_CORNERS_TOP: DrawFlags
+    ROUND_CORNERS_TOP = 48
 
-    ROUND_CORNERS_BOTTOM: DrawFlags
+    ROUND_CORNERS_BOTTOM = 192
 
-    ROUND_CORNERS_LEFT: DrawFlags
+    ROUND_CORNERS_LEFT = 80
 
-    ROUND_CORNERS_RIGHT: DrawFlags
+    ROUND_CORNERS_RIGHT = 160
 
-    ROUND_CORNERS_ALL: DrawFlags
+    ROUND_CORNERS_ALL = 240
 
-    ROUND_CORNERS_DEFAULT_: DrawFlags
+    ROUND_CORNERS_DEFAULT_ = 240
 
-    ROUND_CORNERS_MASK_: DrawFlags
+    ROUND_CORNERS_MASK_ = 496
 
 class DrawList:
     @property
@@ -579,45 +579,45 @@ class HoveredFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: HoveredFlags
+    NONE = 0
 
-    CHILD_WINDOWS: HoveredFlags
+    CHILD_WINDOWS = 1
 
-    ROOT_WINDOW: HoveredFlags
+    ROOT_WINDOW = 2
 
-    ANY_WINDOW: HoveredFlags
+    ANY_WINDOW = 4
 
-    NO_POPUP_HIERARCHY: HoveredFlags
+    NO_POPUP_HIERARCHY = 8
 
-    ALLOW_WHEN_BLOCKED_BY_POPUP: HoveredFlags
+    ALLOW_WHEN_BLOCKED_BY_POPUP = 32
 
-    ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM: HoveredFlags
+    ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = 128
 
-    ALLOW_WHEN_OVERLAPPED_BY_ITEM: HoveredFlags
+    ALLOW_WHEN_OVERLAPPED_BY_ITEM = 256
 
-    ALLOW_WHEN_OVERLAPPED_BY_WINDOW: HoveredFlags
+    ALLOW_WHEN_OVERLAPPED_BY_WINDOW = 512
 
-    ALLOW_WHEN_DISABLED: HoveredFlags
+    ALLOW_WHEN_DISABLED = 1024
 
-    NO_NAV_OVERRIDE: HoveredFlags
+    NO_NAV_OVERRIDE = 2048
 
-    ALLOW_WHEN_OVERLAPPED: HoveredFlags
+    ALLOW_WHEN_OVERLAPPED = 768
 
-    RECT_ONLY: HoveredFlags
+    RECT_ONLY = 928
 
-    ROOT_AND_CHILD_WINDOWS: HoveredFlags
+    ROOT_AND_CHILD_WINDOWS = 3
 
-    FOR_TOOLTIP: HoveredFlags
+    FOR_TOOLTIP = 4096
 
-    STATIONARY: HoveredFlags
+    STATIONARY = 8192
 
-    DELAY_NONE: HoveredFlags
+    DELAY_NONE = 16384
 
-    DELAY_SHORT: HoveredFlags
+    DELAY_SHORT = 32768
 
-    DELAY_NORMAL: HoveredFlags
+    DELAY_NORMAL = 65536
 
-    NO_SHARED_DELAY: HoveredFlags
+    NO_SHARED_DELAY = 131072
 
 IMGUI_VERSION: str = '1.90.5'
 
@@ -789,49 +789,49 @@ class InputTextFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: InputTextFlags
+    NONE = 0
 
-    CHARS_DECIMAL: InputTextFlags
+    CHARS_DECIMAL = 1
 
-    CHARS_HEXADECIMAL: InputTextFlags
+    CHARS_HEXADECIMAL = 2
 
-    CHARS_UPPERCASE: InputTextFlags
+    CHARS_UPPERCASE = 4
 
-    CHARS_NO_BLANK: InputTextFlags
+    CHARS_NO_BLANK = 8
 
-    AUTO_SELECT_ALL: InputTextFlags
+    AUTO_SELECT_ALL = 16
 
-    ENTER_RETURNS_TRUE: InputTextFlags
+    ENTER_RETURNS_TRUE = 32
 
-    CALLBACK_COMPLETION: InputTextFlags
+    CALLBACK_COMPLETION = 64
 
-    CALLBACK_HISTORY: InputTextFlags
+    CALLBACK_HISTORY = 128
 
-    CALLBACK_ALWAYS: InputTextFlags
+    CALLBACK_ALWAYS = 256
 
-    CALLBACK_CHAR_FILTER: InputTextFlags
+    CALLBACK_CHAR_FILTER = 512
 
-    ALLOW_TAB_INPUT: InputTextFlags
+    ALLOW_TAB_INPUT = 1024
 
-    CTRL_ENTER_FOR_NEW_LINE: InputTextFlags
+    CTRL_ENTER_FOR_NEW_LINE = 2048
 
-    NO_HORIZONTAL_SCROLL: InputTextFlags
+    NO_HORIZONTAL_SCROLL = 4096
 
-    ALWAYS_OVERWRITE: InputTextFlags
+    ALWAYS_OVERWRITE = 8192
 
-    READ_ONLY: InputTextFlags
+    READ_ONLY = 16384
 
-    PASSWORD: InputTextFlags
+    PASSWORD = 32768
 
-    NO_UNDO_REDO: InputTextFlags
+    NO_UNDO_REDO = 65536
 
-    CHARS_SCIENTIFIC: InputTextFlags
+    CHARS_SCIENTIFIC = 131072
 
-    CALLBACK_RESIZE: InputTextFlags
+    CALLBACK_RESIZE = 262144
 
-    CALLBACK_EDIT: InputTextFlags
+    CALLBACK_EDIT = 524288
 
-    ESCAPE_CLEARS_ALL: InputTextFlags
+    ESCAPE_CLEARS_ALL = 1048576
 
 class Key(enum.IntEnum):
     _new_member_ = __new__
@@ -848,341 +848,341 @@ class Key(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    KEY_NONE: Key
+    KEY_NONE = 0
 
-    KEY_TAB: Key
+    KEY_TAB = 512
 
-    KEY_LEFT_ARROW: Key
+    KEY_LEFT_ARROW = 513
 
-    KEY_RIGHT_ARROW: Key
+    KEY_RIGHT_ARROW = 514
 
-    KEY_UP_ARROW: Key
+    KEY_UP_ARROW = 515
 
-    KEY_DOWN_ARROW: Key
+    KEY_DOWN_ARROW = 516
 
-    KEY_PAGE_UP: Key
+    KEY_PAGE_UP = 517
 
-    KEY_PAGE_DOWN: Key
+    KEY_PAGE_DOWN = 518
 
-    KEY_HOME: Key
+    KEY_HOME = 519
 
-    KEY_END: Key
+    KEY_END = 520
 
-    KEY_INSERT: Key
+    KEY_INSERT = 521
 
-    KEY_DELETE: Key
+    KEY_DELETE = 522
 
-    KEY_BACKSPACE: Key
+    KEY_BACKSPACE = 523
 
-    KEY_SPACE: Key
+    KEY_SPACE = 524
 
-    KEY_ENTER: Key
+    KEY_ENTER = 525
 
-    KEY_ESCAPE: Key
+    KEY_ESCAPE = 526
 
-    KEY_LEFT_CTRL: Key
+    KEY_LEFT_CTRL = 527
 
-    KEY_LEFT_SHIFT: Key
+    KEY_LEFT_SHIFT = 528
 
-    KEY_LEFT_ALT: Key
+    KEY_LEFT_ALT = 529
 
-    KEY_LEFT_SUPER: Key
+    KEY_LEFT_SUPER = 530
 
-    KEY_RIGHT_CTRL: Key
+    KEY_RIGHT_CTRL = 531
 
-    KEY_RIGHT_SHIFT: Key
+    KEY_RIGHT_SHIFT = 532
 
-    KEY_RIGHT_ALT: Key
+    KEY_RIGHT_ALT = 533
 
-    KEY_RIGHT_SUPER: Key
+    KEY_RIGHT_SUPER = 534
 
-    KEY_MENU: Key
+    KEY_MENU = 535
 
-    KEY_0: Key
+    KEY_0 = 536
 
-    KEY_1: Key
+    KEY_1 = 537
 
-    KEY_2: Key
+    KEY_2 = 538
 
-    KEY_3: Key
+    KEY_3 = 539
 
-    KEY_4: Key
+    KEY_4 = 540
 
-    KEY_5: Key
+    KEY_5 = 541
 
-    KEY_6: Key
+    KEY_6 = 542
 
-    KEY_7: Key
+    KEY_7 = 543
 
-    KEY_8: Key
+    KEY_8 = 544
 
-    KEY_9: Key
+    KEY_9 = 545
 
-    KEY_A: Key
+    KEY_A = 546
 
-    KEY_B: Key
+    KEY_B = 547
 
-    KEY_C: Key
+    KEY_C = 548
 
-    KEY_D: Key
+    KEY_D = 549
 
-    KEY_E: Key
+    KEY_E = 550
 
-    KEY_F: Key
+    KEY_F = 551
 
-    KEY_G: Key
+    KEY_G = 552
 
-    KEY_H: Key
+    KEY_H = 553
 
-    KEY_I: Key
+    KEY_I = 554
 
-    KEY_J: Key
+    KEY_J = 555
 
-    KEY_K: Key
+    KEY_K = 556
 
-    KEY_L: Key
+    KEY_L = 557
 
-    KEY_M: Key
+    KEY_M = 558
 
-    KEY_N: Key
+    KEY_N = 559
 
-    KEY_O: Key
+    KEY_O = 560
 
-    KEY_P: Key
+    KEY_P = 561
 
-    KEY_Q: Key
+    KEY_Q = 562
 
-    KEY_R: Key
+    KEY_R = 563
 
-    KEY_S: Key
+    KEY_S = 564
 
-    KEY_T: Key
+    KEY_T = 565
 
-    KEY_U: Key
+    KEY_U = 566
 
-    KEY_V: Key
+    KEY_V = 567
 
-    KEY_W: Key
+    KEY_W = 568
 
-    KEY_X: Key
+    KEY_X = 569
 
-    KEY_Y: Key
+    KEY_Y = 570
 
-    KEY_Z: Key
+    KEY_Z = 571
 
-    KEY_F1: Key
+    KEY_F1 = 572
 
-    KEY_F2: Key
+    KEY_F2 = 573
 
-    KEY_F3: Key
+    KEY_F3 = 574
 
-    KEY_F4: Key
+    KEY_F4 = 575
 
-    KEY_F5: Key
+    KEY_F5 = 576
 
-    KEY_F6: Key
+    KEY_F6 = 577
 
-    KEY_F7: Key
+    KEY_F7 = 578
 
-    KEY_F8: Key
+    KEY_F8 = 579
 
-    KEY_F9: Key
+    KEY_F9 = 580
 
-    KEY_F10: Key
+    KEY_F10 = 581
 
-    KEY_F11: Key
+    KEY_F11 = 582
 
-    KEY_F12: Key
+    KEY_F12 = 583
 
-    KEY_F13: Key
+    KEY_F13 = 584
 
-    KEY_F14: Key
+    KEY_F14 = 585
 
-    KEY_F15: Key
+    KEY_F15 = 586
 
-    KEY_F16: Key
+    KEY_F16 = 587
 
-    KEY_F17: Key
+    KEY_F17 = 588
 
-    KEY_F18: Key
+    KEY_F18 = 589
 
-    KEY_F19: Key
+    KEY_F19 = 590
 
-    KEY_F20: Key
+    KEY_F20 = 591
 
-    KEY_F21: Key
+    KEY_F21 = 592
 
-    KEY_F22: Key
+    KEY_F22 = 593
 
-    KEY_F23: Key
+    KEY_F23 = 594
 
-    KEY_F24: Key
+    KEY_F24 = 595
 
-    KEY_APOSTROPHE: Key
+    KEY_APOSTROPHE = 596
 
-    KEY_COMMA: Key
+    KEY_COMMA = 597
 
-    KEY_MINUS: Key
+    KEY_MINUS = 598
 
-    KEY_PERIOD: Key
+    KEY_PERIOD = 599
 
-    KEY_SLASH: Key
+    KEY_SLASH = 600
 
-    KEY_SEMICOLON: Key
+    KEY_SEMICOLON = 601
 
-    KEY_EQUAL: Key
+    KEY_EQUAL = 602
 
-    KEY_LEFT_BRACKET: Key
+    KEY_LEFT_BRACKET = 603
 
-    KEY_BACKSLASH: Key
+    KEY_BACKSLASH = 604
 
-    KEY_RIGHT_BRACKET: Key
+    KEY_RIGHT_BRACKET = 605
 
-    KEY_GRAVE_ACCENT: Key
+    KEY_GRAVE_ACCENT = 606
 
-    KEY_CAPS_LOCK: Key
+    KEY_CAPS_LOCK = 607
 
-    KEY_SCROLL_LOCK: Key
+    KEY_SCROLL_LOCK = 608
 
-    KEY_NUM_LOCK: Key
+    KEY_NUM_LOCK = 609
 
-    KEY_PRINT_SCREEN: Key
+    KEY_PRINT_SCREEN = 610
 
-    KEY_PAUSE: Key
+    KEY_PAUSE = 611
 
-    KEY_KEYPAD0: Key
+    KEY_KEYPAD0 = 612
 
-    KEY_KEYPAD1: Key
+    KEY_KEYPAD1 = 613
 
-    KEY_KEYPAD2: Key
+    KEY_KEYPAD2 = 614
 
-    KEY_KEYPAD3: Key
+    KEY_KEYPAD3 = 615
 
-    KEY_KEYPAD4: Key
+    KEY_KEYPAD4 = 616
 
-    KEY_KEYPAD5: Key
+    KEY_KEYPAD5 = 617
 
-    KEY_KEYPAD6: Key
+    KEY_KEYPAD6 = 618
 
-    KEY_KEYPAD7: Key
+    KEY_KEYPAD7 = 619
 
-    KEY_KEYPAD8: Key
+    KEY_KEYPAD8 = 620
 
-    KEY_KEYPAD9: Key
+    KEY_KEYPAD9 = 621
 
-    KEY_KEYPAD_DECIMAL: Key
+    KEY_KEYPAD_DECIMAL = 622
 
-    KEY_KEYPAD_DIVIDE: Key
+    KEY_KEYPAD_DIVIDE = 623
 
-    KEY_KEYPAD_MULTIPLY: Key
+    KEY_KEYPAD_MULTIPLY = 624
 
-    KEY_KEYPAD_SUBTRACT: Key
+    KEY_KEYPAD_SUBTRACT = 625
 
-    KEY_KEYPAD_ADD: Key
+    KEY_KEYPAD_ADD = 626
 
-    KEY_KEYPAD_ENTER: Key
+    KEY_KEYPAD_ENTER = 627
 
-    KEY_KEYPAD_EQUAL: Key
+    KEY_KEYPAD_EQUAL = 628
 
-    KEY_APP_BACK: Key
+    KEY_APP_BACK = 629
 
-    KEY_APP_FORWARD: Key
+    KEY_APP_FORWARD = 630
 
-    KEY_GAMEPAD_START: Key
+    KEY_GAMEPAD_START = 631
 
-    KEY_GAMEPAD_BACK: Key
+    KEY_GAMEPAD_BACK = 632
 
-    KEY_GAMEPAD_FACE_LEFT: Key
+    KEY_GAMEPAD_FACE_LEFT = 633
 
-    KEY_GAMEPAD_FACE_RIGHT: Key
+    KEY_GAMEPAD_FACE_RIGHT = 634
 
-    KEY_GAMEPAD_FACE_UP: Key
+    KEY_GAMEPAD_FACE_UP = 635
 
-    KEY_GAMEPAD_FACE_DOWN: Key
+    KEY_GAMEPAD_FACE_DOWN = 636
 
-    KEY_GAMEPAD_DPAD_LEFT: Key
+    KEY_GAMEPAD_DPAD_LEFT = 637
 
-    KEY_GAMEPAD_DPAD_RIGHT: Key
+    KEY_GAMEPAD_DPAD_RIGHT = 638
 
-    KEY_GAMEPAD_DPAD_UP: Key
+    KEY_GAMEPAD_DPAD_UP = 639
 
-    KEY_GAMEPAD_DPAD_DOWN: Key
+    KEY_GAMEPAD_DPAD_DOWN = 640
 
-    KEY_GAMEPAD_L1: Key
+    KEY_GAMEPAD_L1 = 641
 
-    KEY_GAMEPAD_R1: Key
+    KEY_GAMEPAD_R1 = 642
 
-    KEY_GAMEPAD_L2: Key
+    KEY_GAMEPAD_L2 = 643
 
-    KEY_GAMEPAD_R2: Key
+    KEY_GAMEPAD_R2 = 644
 
-    KEY_GAMEPAD_L3: Key
+    KEY_GAMEPAD_L3 = 645
 
-    KEY_GAMEPAD_R3: Key
+    KEY_GAMEPAD_R3 = 646
 
-    KEY_GAMEPAD_L_STICK_LEFT: Key
+    KEY_GAMEPAD_L_STICK_LEFT = 647
 
-    KEY_GAMEPAD_L_STICK_RIGHT: Key
+    KEY_GAMEPAD_L_STICK_RIGHT = 648
 
-    KEY_GAMEPAD_L_STICK_UP: Key
+    KEY_GAMEPAD_L_STICK_UP = 649
 
-    KEY_GAMEPAD_L_STICK_DOWN: Key
+    KEY_GAMEPAD_L_STICK_DOWN = 650
 
-    KEY_GAMEPAD_R_STICK_LEFT: Key
+    KEY_GAMEPAD_R_STICK_LEFT = 651
 
-    KEY_GAMEPAD_R_STICK_RIGHT: Key
+    KEY_GAMEPAD_R_STICK_RIGHT = 652
 
-    KEY_GAMEPAD_R_STICK_UP: Key
+    KEY_GAMEPAD_R_STICK_UP = 653
 
-    KEY_GAMEPAD_R_STICK_DOWN: Key
+    KEY_GAMEPAD_R_STICK_DOWN = 654
 
-    KEY_MOUSE_LEFT: Key
+    KEY_MOUSE_LEFT = 655
 
-    KEY_MOUSE_RIGHT: Key
+    KEY_MOUSE_RIGHT = 656
 
-    KEY_MOUSE_MIDDLE: Key
+    KEY_MOUSE_MIDDLE = 657
 
-    KEY_MOUSE_X1: Key
+    KEY_MOUSE_X1 = 658
 
-    KEY_MOUSE_X2: Key
+    KEY_MOUSE_X2 = 659
 
-    KEY_MOUSE_WHEEL_X: Key
+    KEY_MOUSE_WHEEL_X = 660
 
-    KEY_MOUSE_WHEEL_Y: Key
+    KEY_MOUSE_WHEEL_Y = 661
 
-    KEY_RESERVED_FOR_MOD_CTRL: Key
+    KEY_RESERVED_FOR_MOD_CTRL = 662
 
-    KEY_RESERVED_FOR_MOD_SHIFT: Key
+    KEY_RESERVED_FOR_MOD_SHIFT = 663
 
-    KEY_RESERVED_FOR_MOD_ALT: Key
+    KEY_RESERVED_FOR_MOD_ALT = 664
 
-    KEY_RESERVED_FOR_MOD_SUPER: Key
+    KEY_RESERVED_FOR_MOD_SUPER = 665
 
-    KEY_COUNT: Key
+    KEY_COUNT = 666
 
-    MOD_NONE: Key
+    MOD_NONE = 0
 
-    MOD_CTRL: Key
+    MOD_CTRL = 4096
 
-    MOD_SHIFT: Key
+    MOD_SHIFT = 8192
 
-    MOD_ALT: Key
+    MOD_ALT = 16384
 
-    MOD_SUPER: Key
+    MOD_SUPER = 32768
 
-    MOD_SHORTCUT: Key
+    MOD_SHORTCUT = 2048
 
-    MOD_MASK_: Key
+    MOD_MASK_ = 63488
 
-    KEY_NAMED_KEY_BEGIN: Key
+    KEY_NAMED_KEY_BEGIN = 512
 
-    KEY_NAMED_KEY_END: Key
+    KEY_NAMED_KEY_END = 666
 
-    KEY_NAMED_KEY_COUNT: Key
+    KEY_NAMED_KEY_COUNT = 154
 
-    KEY_KEYS_DATA_SIZE: Key
+    KEY_KEYS_DATA_SIZE = 666
 
-    KEY_KEYS_DATA_OFFSET: Key
+    KEY_KEYS_DATA_OFFSET = 0
 
 class MouseButton(enum.IntEnum):
     _new_member_ = __new__
@@ -1199,13 +1199,13 @@ class MouseButton(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    LEFT: MouseButton
+    LEFT = 0
 
-    RIGHT: MouseButton
+    RIGHT = 1
 
-    MIDDLE: MouseButton
+    MIDDLE = 2
 
-    COUNT: MouseButton
+    COUNT = 5
 
 class PopupFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -1222,29 +1222,29 @@ class PopupFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: PopupFlags
+    NONE = 0
 
-    MOUSE_BUTTON_LEFT: PopupFlags
+    MOUSE_BUTTON_LEFT = 0
 
-    MOUSE_BUTTON_RIGHT: PopupFlags
+    MOUSE_BUTTON_RIGHT = 1
 
-    MOUSE_BUTTON_MIDDLE: PopupFlags
+    MOUSE_BUTTON_MIDDLE = 2
 
-    MOUSE_BUTTON_MASK_: PopupFlags
+    MOUSE_BUTTON_MASK_ = 31
 
-    MOUSE_BUTTON_DEFAULT_: PopupFlags
+    MOUSE_BUTTON_DEFAULT_ = 1
 
-    NO_REOPEN: PopupFlags
+    NO_REOPEN = 32
 
-    NO_OPEN_OVER_EXISTING_POPUP: PopupFlags
+    NO_OPEN_OVER_EXISTING_POPUP = 128
 
-    NO_OPEN_OVER_ITEMS: PopupFlags
+    NO_OPEN_OVER_ITEMS = 256
 
-    ANY_POPUP_ID: PopupFlags
+    ANY_POPUP_ID = 1024
 
-    ANY_POPUP_LEVEL: PopupFlags
+    ANY_POPUP_LEVEL = 2048
 
-    ANY_POPUP: PopupFlags
+    ANY_POPUP = 3072
 
 class SelectableFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -1261,17 +1261,17 @@ class SelectableFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: SelectableFlags
+    NONE = 0
 
-    DONT_CLOSE_POPUPS: SelectableFlags
+    DONT_CLOSE_POPUPS = 1
 
-    SPAN_ALL_COLUMNS: SelectableFlags
+    SPAN_ALL_COLUMNS = 2
 
-    ALLOW_DOUBLE_CLICK: SelectableFlags
+    ALLOW_DOUBLE_CLICK = 4
 
-    DISABLED: SelectableFlags
+    DISABLED = 8
 
-    ALLOW_OVERLAP: SelectableFlags
+    ALLOW_OVERLAP = 16
 
 class SliderFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -1288,17 +1288,17 @@ class SliderFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: SliderFlags
+    NONE = 0
 
-    ALWAYS_CLAMP: SliderFlags
+    ALWAYS_CLAMP = 16
 
-    LOGARITHMIC: SliderFlags
+    LOGARITHMIC = 32
 
-    NO_ROUND_TO_FORMAT: SliderFlags
+    NO_ROUND_TO_FORMAT = 64
 
-    NO_INPUT: SliderFlags
+    NO_INPUT = 128
 
-    INVALID_MASK_: SliderFlags
+    INVALID_MASK_ = 1879048207
 
 class StyleVar(enum.IntEnum):
     _new_member_ = __new__
@@ -1315,69 +1315,69 @@ class StyleVar(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    ALPHA: StyleVar
+    ALPHA = 0
 
-    DISABLED_ALPHA: StyleVar
+    DISABLED_ALPHA = 1
 
-    WINDOW_PADDING: StyleVar
+    WINDOW_PADDING = 2
 
-    WINDOW_ROUNDING: StyleVar
+    WINDOW_ROUNDING = 3
 
-    WINDOW_BORDER_SIZE: StyleVar
+    WINDOW_BORDER_SIZE = 4
 
-    WINDOW_MIN_SIZE: StyleVar
+    WINDOW_MIN_SIZE = 5
 
-    WINDOW_TITLE_ALIGN: StyleVar
+    WINDOW_TITLE_ALIGN = 6
 
-    CHILD_ROUNDING: StyleVar
+    CHILD_ROUNDING = 7
 
-    CHILD_BORDER_SIZE: StyleVar
+    CHILD_BORDER_SIZE = 8
 
-    POPUP_ROUNDING: StyleVar
+    POPUP_ROUNDING = 9
 
-    POPUP_BORDER_SIZE: StyleVar
+    POPUP_BORDER_SIZE = 10
 
-    FRAME_PADDING: StyleVar
+    FRAME_PADDING = 11
 
-    FRAME_ROUNDING: StyleVar
+    FRAME_ROUNDING = 12
 
-    FRAME_BORDER_SIZE: StyleVar
+    FRAME_BORDER_SIZE = 13
 
-    ITEM_SPACING: StyleVar
+    ITEM_SPACING = 14
 
-    ITEM_INNER_SPACING: StyleVar
+    ITEM_INNER_SPACING = 15
 
-    INDENT_SPACING: StyleVar
+    INDENT_SPACING = 16
 
-    CELL_PADDING: StyleVar
+    CELL_PADDING = 17
 
-    SCROLLBAR_SIZE: StyleVar
+    SCROLLBAR_SIZE = 18
 
-    SCROLLBAR_ROUNDING: StyleVar
+    SCROLLBAR_ROUNDING = 19
 
-    GRAB_MIN_SIZE: StyleVar
+    GRAB_MIN_SIZE = 20
 
-    GRAB_ROUNDING: StyleVar
+    GRAB_ROUNDING = 21
 
-    TAB_ROUNDING: StyleVar
+    TAB_ROUNDING = 22
 
-    TAB_BORDER_SIZE: StyleVar
+    TAB_BORDER_SIZE = 23
 
-    TAB_BAR_BORDER_SIZE: StyleVar
+    TAB_BAR_BORDER_SIZE = 24
 
-    TABLE_ANGLED_HEADERS_ANGLE: StyleVar
+    TABLE_ANGLED_HEADERS_ANGLE = 25
 
-    BUTTON_TEXT_ALIGN: StyleVar
+    BUTTON_TEXT_ALIGN = 26
 
-    SELECTABLE_TEXT_ALIGN: StyleVar
+    SELECTABLE_TEXT_ALIGN = 27
 
-    SEPARATOR_TEXT_BORDER_SIZE: StyleVar
+    SEPARATOR_TEXT_BORDER_SIZE = 28
 
-    SEPARATOR_TEXT_ALIGN: StyleVar
+    SEPARATOR_TEXT_ALIGN = 29
 
-    SEPARATOR_TEXT_PADDING: StyleVar
+    SEPARATOR_TEXT_PADDING = 30
 
-    COUNT: StyleVar
+    COUNT = 31
 
 class TableBgTarget(enum.IntEnum):
     _new_member_ = __new__
@@ -1394,13 +1394,13 @@ class TableBgTarget(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: TableBgTarget
+    NONE = 0
 
-    ROW_BG0: TableBgTarget
+    ROW_BG0 = 1
 
-    ROW_BG1: TableBgTarget
+    ROW_BG1 = 2
 
-    CELL_BG: TableBgTarget
+    CELL_BG = 3
 
 class TableColumnFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -1417,61 +1417,61 @@ class TableColumnFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: TableColumnFlags
+    NONE = 0
 
-    DISABLED: TableColumnFlags
+    DISABLED = 1
 
-    DEFAULT_HIDE: TableColumnFlags
+    DEFAULT_HIDE = 2
 
-    DEFAULT_SORT: TableColumnFlags
+    DEFAULT_SORT = 4
 
-    WIDTH_STRETCH: TableColumnFlags
+    WIDTH_STRETCH = 8
 
-    WIDTH_FIXED: TableColumnFlags
+    WIDTH_FIXED = 16
 
-    NO_RESIZE: TableColumnFlags
+    NO_RESIZE = 32
 
-    NO_REORDER: TableColumnFlags
+    NO_REORDER = 64
 
-    NO_HIDE: TableColumnFlags
+    NO_HIDE = 128
 
-    NO_CLIP: TableColumnFlags
+    NO_CLIP = 256
 
-    NO_SORT: TableColumnFlags
+    NO_SORT = 512
 
-    NO_SORT_ASCENDING: TableColumnFlags
+    NO_SORT_ASCENDING = 1024
 
-    NO_SORT_DESCENDING: TableColumnFlags
+    NO_SORT_DESCENDING = 2048
 
-    NO_HEADER_LABEL: TableColumnFlags
+    NO_HEADER_LABEL = 4096
 
-    NO_HEADER_WIDTH: TableColumnFlags
+    NO_HEADER_WIDTH = 8192
 
-    PREFER_SORT_ASCENDING: TableColumnFlags
+    PREFER_SORT_ASCENDING = 16384
 
-    PREFER_SORT_DESCENDING: TableColumnFlags
+    PREFER_SORT_DESCENDING = 32768
 
-    INDENT_ENABLE: TableColumnFlags
+    INDENT_ENABLE = 65536
 
-    INDENT_DISABLE: TableColumnFlags
+    INDENT_DISABLE = 131072
 
-    ANGLED_HEADER: TableColumnFlags
+    ANGLED_HEADER = 262144
 
-    IS_ENABLED: TableColumnFlags
+    IS_ENABLED = 16777216
 
-    IS_VISIBLE: TableColumnFlags
+    IS_VISIBLE = 33554432
 
-    IS_SORTED: TableColumnFlags
+    IS_SORTED = 67108864
 
-    IS_HOVERED: TableColumnFlags
+    IS_HOVERED = 134217728
 
-    WIDTH_MASK_: TableColumnFlags
+    WIDTH_MASK_ = 24
 
-    INDENT_MASK_: TableColumnFlags
+    INDENT_MASK_ = 196608
 
-    STATUS_MASK_: TableColumnFlags
+    STATUS_MASK_ = 251658240
 
-    NO_DIRECT_RESIZE_: TableColumnFlags
+    NO_DIRECT_RESIZE_ = 1073741824
 
 class TableFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -1488,79 +1488,79 @@ class TableFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: TableFlags
+    NONE = 0
 
-    RESIZABLE: TableFlags
+    RESIZABLE = 1
 
-    REORDERABLE: TableFlags
+    REORDERABLE = 2
 
-    HIDEABLE: TableFlags
+    HIDEABLE = 4
 
-    SORTABLE: TableFlags
+    SORTABLE = 8
 
-    NO_SAVED_SETTINGS: TableFlags
+    NO_SAVED_SETTINGS = 16
 
-    CONTEXT_MENU_IN_BODY: TableFlags
+    CONTEXT_MENU_IN_BODY = 32
 
-    ROW_BG: TableFlags
+    ROW_BG = 64
 
-    BORDERS_INNER_H: TableFlags
+    BORDERS_INNER_H = 128
 
-    BORDERS_OUTER_H: TableFlags
+    BORDERS_OUTER_H = 256
 
-    BORDERS_INNER_V: TableFlags
+    BORDERS_INNER_V = 512
 
-    BORDERS_OUTER_V: TableFlags
+    BORDERS_OUTER_V = 1024
 
-    BORDERS_H: TableFlags
+    BORDERS_H = 384
 
-    BORDERS_V: TableFlags
+    BORDERS_V = 1536
 
-    BORDERS_INNER: TableFlags
+    BORDERS_INNER = 640
 
-    BORDERS_OUTER: TableFlags
+    BORDERS_OUTER = 1280
 
-    BORDERS: TableFlags
+    BORDERS = 1920
 
-    NO_BORDERS_IN_BODY: TableFlags
+    NO_BORDERS_IN_BODY = 2048
 
-    NO_BORDERS_IN_BODY_UNTIL_RESIZE: TableFlags
+    NO_BORDERS_IN_BODY_UNTIL_RESIZE = 4096
 
-    SIZING_FIXED_FIT: TableFlags
+    SIZING_FIXED_FIT = 8192
 
-    SIZING_FIXED_SAME: TableFlags
+    SIZING_FIXED_SAME = 16384
 
-    SIZING_STRETCH_PROP: TableFlags
+    SIZING_STRETCH_PROP = 24576
 
-    SIZING_STRETCH_SAME: TableFlags
+    SIZING_STRETCH_SAME = 32768
 
-    NO_HOST_EXTEND_X: TableFlags
+    NO_HOST_EXTEND_X = 65536
 
-    NO_HOST_EXTEND_Y: TableFlags
+    NO_HOST_EXTEND_Y = 131072
 
-    NO_KEEP_COLUMNS_VISIBLE: TableFlags
+    NO_KEEP_COLUMNS_VISIBLE = 262144
 
-    PRECISE_WIDTHS: TableFlags
+    PRECISE_WIDTHS = 524288
 
-    NO_CLIP: TableFlags
+    NO_CLIP = 1048576
 
-    PAD_OUTER_X: TableFlags
+    PAD_OUTER_X = 2097152
 
-    NO_PAD_OUTER_X: TableFlags
+    NO_PAD_OUTER_X = 4194304
 
-    NO_PAD_INNER_X: TableFlags
+    NO_PAD_INNER_X = 8388608
 
-    SCROLL_X: TableFlags
+    SCROLL_X = 16777216
 
-    SCROLL_Y: TableFlags
+    SCROLL_Y = 33554432
 
-    SORT_MULTI: TableFlags
+    SORT_MULTI = 67108864
 
-    SORT_TRISTATE: TableFlags
+    SORT_TRISTATE = 134217728
 
-    HIGHLIGHT_HOVERED_COLUMN: TableFlags
+    HIGHLIGHT_HOVERED_COLUMN = 268435456
 
-    SIZING_MASK_: TableFlags
+    SIZING_MASK_ = 57344
 
 class TableRowFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -1577,9 +1577,9 @@ class TableRowFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: TableRowFlags
+    NONE = 0
 
-    HEADERS: TableRowFlags
+    HEADERS = 1
 
 class TreeNodeFlags(enum.IntEnum):
     _new_member_ = __new__
@@ -1596,39 +1596,39 @@ class TreeNodeFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: TreeNodeFlags
+    NONE = 0
 
-    SELECTED: TreeNodeFlags
+    SELECTED = 1
 
-    FRAMED: TreeNodeFlags
+    FRAMED = 2
 
-    ALLOW_OVERLAP: TreeNodeFlags
+    ALLOW_OVERLAP = 4
 
-    NO_TREE_PUSH_ON_OPEN: TreeNodeFlags
+    NO_TREE_PUSH_ON_OPEN = 8
 
-    NO_AUTO_OPEN_ON_LOG: TreeNodeFlags
+    NO_AUTO_OPEN_ON_LOG = 16
 
-    DEFAULT_OPEN: TreeNodeFlags
+    DEFAULT_OPEN = 32
 
-    OPEN_ON_DOUBLE_CLICK: TreeNodeFlags
+    OPEN_ON_DOUBLE_CLICK = 64
 
-    OPEN_ON_ARROW: TreeNodeFlags
+    OPEN_ON_ARROW = 128
 
-    LEAF: TreeNodeFlags
+    LEAF = 256
 
-    BULLET: TreeNodeFlags
+    BULLET = 512
 
-    FRAME_PADDING: TreeNodeFlags
+    FRAME_PADDING = 1024
 
-    SPAN_AVAIL_WIDTH: TreeNodeFlags
+    SPAN_AVAIL_WIDTH = 2048
 
-    SPAN_FULL_WIDTH: TreeNodeFlags
+    SPAN_FULL_WIDTH = 4096
 
-    SPAN_ALL_COLUMNS: TreeNodeFlags
+    SPAN_ALL_COLUMNS = 8192
 
-    NAV_LEFT_JUMPS_BACK_HERE: TreeNodeFlags
+    NAV_LEFT_JUMPS_BACK_HERE = 16384
 
-    COLLAPSING_HEADER: TreeNodeFlags
+    COLLAPSING_HEADER = 26
 
 VERTEX_BUFFER_COL_OFFSET: int = 16
 
@@ -1678,63 +1678,63 @@ class WindowFlags(enum.IntEnum):
 
     _value_repr_ = __repr__
 
-    NONE: WindowFlags
+    NONE = 0
 
-    NO_TITLE_BAR: WindowFlags
+    NO_TITLE_BAR = 1
 
-    NO_RESIZE: WindowFlags
+    NO_RESIZE = 2
 
-    NO_MOVE: WindowFlags
+    NO_MOVE = 4
 
-    NO_SCROLLBAR: WindowFlags
+    NO_SCROLLBAR = 8
 
-    NO_SCROLL_WITH_MOUSE: WindowFlags
+    NO_SCROLL_WITH_MOUSE = 16
 
-    NO_COLLAPSE: WindowFlags
+    NO_COLLAPSE = 32
 
-    ALWAYS_AUTO_RESIZE: WindowFlags
+    ALWAYS_AUTO_RESIZE = 64
 
-    NO_BACKGROUND: WindowFlags
+    NO_BACKGROUND = 128
 
-    NO_SAVED_SETTINGS: WindowFlags
+    NO_SAVED_SETTINGS = 256
 
-    NO_MOUSE_INPUTS: WindowFlags
+    NO_MOUSE_INPUTS = 512
 
-    MENU_BAR: WindowFlags
+    MENU_BAR = 1024
 
-    HORIZONTAL_SCROLLBAR: WindowFlags
+    HORIZONTAL_SCROLLBAR = 2048
 
-    NO_FOCUS_ON_APPEARING: WindowFlags
+    NO_FOCUS_ON_APPEARING = 4096
 
-    NO_BRING_TO_FRONT_ON_FOCUS: WindowFlags
+    NO_BRING_TO_FRONT_ON_FOCUS = 8192
 
-    ALWAYS_VERTICAL_SCROLLBAR: WindowFlags
+    ALWAYS_VERTICAL_SCROLLBAR = 16384
 
-    ALWAYS_HORIZONTAL_SCROLLBAR: WindowFlags
+    ALWAYS_HORIZONTAL_SCROLLBAR = 32768
 
-    NO_NAV_INPUTS: WindowFlags
+    NO_NAV_INPUTS = 65536
 
-    NO_NAV_FOCUS: WindowFlags
+    NO_NAV_FOCUS = 131072
 
-    UNSAVED_DOCUMENT: WindowFlags
+    UNSAVED_DOCUMENT = 262144
 
-    NO_NAV: WindowFlags
+    NO_NAV = 196608
 
-    NO_DECORATION: WindowFlags
+    NO_DECORATION = 43
 
-    NO_INPUTS: WindowFlags
+    NO_INPUTS = 197120
 
-    NAV_FLATTENED: WindowFlags
+    NAV_FLATTENED = 8388608
 
-    CHILD_WINDOW: WindowFlags
+    CHILD_WINDOW = 16777216
 
-    TOOLTIP: WindowFlags
+    TOOLTIP = 33554432
 
-    POPUP: WindowFlags
+    POPUP = 67108864
 
-    MODAL: WindowFlags
+    MODAL = 134217728
 
-    CHILD_MENU: WindowFlags
+    CHILD_MENU = 268435456
 
 def align_text_to_frame_padding() -> None: ...
 
