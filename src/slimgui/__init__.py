@@ -6,6 +6,7 @@ from .slimgui_ext import * # type: ignore # noqa: F403
 class WrappedContext:
     def __init__(self, ctx: slimgui_ext.Context):
         self.context = ctx
+        self.io = cast(slimgui_ext.IO, WrappedIO(ctx.get_io_internal()))
 
 # Some trickery with wrapping the slimgui_ext.IO class to avoid
 # duplicating most of the properties and methods here.
@@ -53,4 +54,4 @@ def destroy_context(ctx: WrappedContext | None):
 def get_io() -> slimgui_ext.IO:
     ctx = get_current_context()
     assert ctx is not None
-    return cast(slimgui_ext.IO, WrappedIO(ctx.context.get_io_internal()))
+    return ctx.io
