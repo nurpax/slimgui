@@ -28,6 +28,7 @@ def download_and_cache(url, cache_dir='cache', filename=None) -> str:
 class State:
     click_count: int = 0
     text: str = ""
+    foo_enabled: bool = False
     saved_text: str = ""
 
 
@@ -66,6 +67,10 @@ def run():
         if submit:
             state.saved_text = state.text
         imgui.text(state.saved_text)
+
+        if (res := imgui.checkbox("Some setting", state.foo_enabled)).pressed:
+            print('checkbox state changed')
+            state.foo_enabled = res.value
 
         demo.show_demo_window(True)
 

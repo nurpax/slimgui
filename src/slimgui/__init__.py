@@ -1,4 +1,5 @@
-from typing import cast, Any
+from typing import NamedTuple, cast, Any
+
 from . import slimgui_ext # type: ignore
 # TODO declare __all__ automatically
 from .slimgui_ext import * # type: ignore # noqa: F403
@@ -55,3 +56,21 @@ def get_io() -> slimgui_ext.IO:
     ctx = get_current_context()
     assert ctx is not None
     return ctx.io
+
+# Other wrappers for improved use ergonomics.  The idea is not to invent anything
+# new here but just add a little finishing touches like using namedtuples for multiple
+# return parameters.
+
+class _CheckboxReturn(NamedTuple):
+    pressed: bool
+    value: bool
+
+def checkbox(label: str, value: bool) -> _CheckboxReturn:
+    return _CheckboxReturn(*slimgui_ext.checkbox(label, value))
+
+class _InputTextReturn(NamedTuple):
+    changed: bool
+    text: str
+
+def input_text(label: str, text: str, flags = slimgui_ext.InputTextFlags.NONE) -> _InputTextReturn:
+    return _InputTextReturn(*slimgui_ext.input_text(label, text, flags))
