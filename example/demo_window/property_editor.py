@@ -1,93 +1,68 @@
 
 import slimgui as imgui
-from slimgui import ChildFlags, WindowFlags
+from slimgui import TreeNodeFlags
 
 from .types import State
+from .utils import help_marker
 
 # //-----------------------------------------------------------------------------
 # // [SECTION] Example App: Property Editor / ShowExampleAppPropertyEditor()
 # //-----------------------------------------------------------------------------
 
+_placeholder_members = [0.0, 0.0, 1.0, 3.1416, 100.0, 999.0]
+
+def show_placeholder_object(prefix: str, uid: int):
+    imgui.push_id(uid)
+    imgui.table_next_row()
+    imgui.table_set_column_index(0)
+    imgui.align_text_to_frame_padding()
+    node_open = imgui.tree_node("Object", f'{prefix}_{uid}')
+    imgui.table_set_column_index(1)
+    imgui.text("my sailor is rich")
+    imgui.pop_id()
+
+    if node_open:
+        for i in range(8):
+            imgui.push_id(i)
+            if i < 2:
+                show_placeholder_object("Child", 424242)
+            else:
+                imgui.table_next_row()
+                imgui.table_set_column_index(0)
+                imgui.align_text_to_frame_padding()
+                flags = TreeNodeFlags.LEAF | imgui.TreeNodeFlags.NO_TREE_PUSH_ON_OPEN | TreeNodeFlags.BULLET
+                imgui.tree_node("Field", f"Field_{i}", flags)
+
+                imgui.table_set_column_index(1)
+                imgui.set_next_item_width(-imgui.FLOAT_MIN)
+
+                offs = i - 2 # Note: original code has a stack overflow here
+                if i >= 5:
+                    _placeholder_members[offs] = imgui.input_float("##value", _placeholder_members[offs], 1.0).value
+                else:
+                    _placeholder_members[offs] = imgui.drag_float("##value", _placeholder_members[offs], 0.01).value
+            imgui.pop_id()
+        imgui.tree_pop()
+
 def show_example_app_property_editor(st: State):
-    pass
+    imgui.set_next_window_size((430, 450), imgui.Cond.FIRST_USE_EVER)
+    if not imgui.begin("Example: Property editor", st.show_app_property_editor):
+        imgui.end()
+        return
 
-# static void ShowPlaceholderObject(const char* prefix, int uid)
-# {
-#     // Use object uid as identifier. Most commonly you could also use the object pointer as a base ID.
-#     ImGui::PushID(uid);
+    help_marker("This example shows how you may implement a property editor using two columns.\n"
+                "All objects/fields data are dummies here.\n")
 
-#     // Text and Tree nodes are less high than framed widgets, using AlignTextToFramePadding() we add vertical spacing to make the tree lines equal high.
-#     ImGui::TableNextRow();
-#     ImGui::TableSetColumnIndex(0);
-#     ImGui::AlignTextToFramePadding();
-#     bool node_open = ImGui::TreeNode("Object", "%s_%u", prefix, uid);
-#     ImGui::TableSetColumnIndex(1);
-#     ImGui::Text("my sailor is rich");
+    imgui.push_style_var(imgui.StyleVar.FRAME_PADDING, (2, 2))
+    if imgui.begin_table("##split", 2, imgui.TableFlags.BORDERS_OUTER | imgui.TableFlags.RESIZABLE | imgui.TableFlags.SCROLL_Y):
+        imgui.table_setup_scroll_freeze(0, 1)
+        imgui.table_setup_column("Object")
+        imgui.table_setup_column("Contents")
+        imgui.table_headers_row()
 
-#     if (node_open)
-#     {
-#         static float placeholder_members[8] = { 0.0f, 0.0f, 1.0f, 3.1416f, 100.0f, 999.0f };
-#         for (int i = 0; i < 8; i++)
-#         {
-#             ImGui::PushID(i); // Use field index as identifier.
-#             if (i < 2)
-#             {
-#                 ShowPlaceholderObject("Child", 424242);
-#             }
-#             else
-#             {
-#                 // Here we use a TreeNode to highlight on hover (we could use e.g. Selectable as well)
-#                 ImGui::TableNextRow();
-#                 ImGui::TableSetColumnIndex(0);
-#                 ImGui::AlignTextToFramePadding();
-#                 ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
-#                 ImGui::TreeNodeEx("Field", flags, "Field_%d", i);
+        for obj_i in range(4):
+            show_placeholder_object("Object", obj_i)
 
-#                 ImGui::TableSetColumnIndex(1);
-#                 ImGui::SetNextItemWidth(-FLT_MIN);
-#                 if (i >= 5)
-#                     ImGui::InputFloat("##value", &placeholder_members[i], 1.0f);
-#                 else
-#                     ImGui::DragFloat("##value", &placeholder_members[i], 0.01f);
-#                 ImGui::NextColumn();
-#             }
-#             ImGui::PopID();
-#         }
-#         ImGui::TreePop();
-#     }
-#     ImGui::PopID();
-# }
-
-# // Demonstrate create a simple property editor.
-# // This demo is a bit lackluster nowadays, would be nice to improve.
-# static void ShowExampleAppPropertyEditor(bool* p_open)
-# {
-#     ImGui::SetNextWindowSize(ImVec2(430, 450), ImGuiCond_FirstUseEver);
-#     if (!ImGui::Begin("Example: Property editor", p_open))
-#     {
-#         ImGui::End();
-#         return;
-#     }
-
-#     IMGUI_DEMO_MARKER("Examples/Property Editor");
-#     HelpMarker(
-#         "This example shows how you may implement a property editor using two columns.\n"
-#         "All objects/fields data are dummies here.\n");
-
-#     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-#     if (ImGui::BeginTable("##split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY))
-#     {
-#         ImGui::TableSetupScrollFreeze(0, 1);
-#         ImGui::TableSetupColumn("Object");
-#         ImGui::TableSetupColumn("Contents");
-#         ImGui::TableHeadersRow();
-
-#         // Iterate placeholder objects (all the same data)
-#         for (int obj_i = 0; obj_i < 4; obj_i++)
-#             ShowPlaceholderObject("Object", obj_i);
-
-#         ImGui::EndTable();
-#     }
-#     ImGui::PopStyleVar();
-#     ImGui::End();
-# }
+        imgui.end_table()
+    imgui.pop_style_var()
+    imgui.end()

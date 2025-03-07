@@ -431,7 +431,6 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_frame_height", &ImGui::GetFrameHeight);
     m.def("get_frame_height_with_spacing", &ImGui::GetFrameHeightWithSpacing);
 
-
     m.def("begin_menu_bar", &ImGui::BeginMenuBar);
     m.def("end_menu_bar", &ImGui::EndMenuBar);
     m.def("begin_main_menu_bar", &ImGui::BeginMainMenuBar);
