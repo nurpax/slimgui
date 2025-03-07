@@ -738,9 +738,9 @@ NB_MODULE(slimgui_ext, m) {
     m.def("is_item_focused", &ImGui::IsItemFocused);
     // TODO FIXME it should work to use .sig() for the argument below, but that produces:
     //      def is_item_clicked(flags: int = MouseButton | int) -> None: ...
-    m.def("is_item_clicked", [](ImGuiMouseButton mouse_button) {
+    m.def("is_item_clicked", [](ImGuiMouseButton_ mouse_button) {
         return ImGui::IsItemClicked(mouse_button);
-    }, nb::sig("def is_item_clicked(mouse_button: slimgui_ext.MouseButton | int = slimgui_ext.MouseButton.LEFT) -> bool"), "mouse_button"_a = 0);
+    }, "mouse_button"_a.sig("MouseButton.LEFT") = ImGuiMouseButton_Left);
     m.def("is_item_visible", &ImGui::IsItemVisible);
     m.def("is_item_edited", &ImGui::IsItemEdited);
     m.def("is_item_activated", &ImGui::IsItemActivated);
