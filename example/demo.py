@@ -945,7 +945,7 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
 
             items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
             preview = items[combo["item_current_idx"]]
-            if imgui.begin_combo("combo 1", preview, combo["flags"]):
+            if imgui.begin_combo("combo 1", preview, imgui.ComboFlags(combo["flags"])):
                 for n, item in enumerate(items):
                     is_selected = combo["item_current_idx"] == n
                     if imgui.selectable(item, is_selected)[0]:

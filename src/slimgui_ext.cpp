@@ -268,22 +268,28 @@ NB_MODULE(slimgui_ext, m) {
     // Window manipulation
     // - Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).
     // TODO how to callback
-    m.def("set_next_window_pos", ImGui::SetNextWindowPos, "pos"_a, "cond"_a = ImGuiCond_None, "pivot"_a = ImVec2(0,0));
-    m.def("set_next_window_size", ImGui::SetNextWindowSize, "size"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_next_window_pos", [](const ImVec2 &pos, ImGuiCond_ cond, const ImVec2 &pivot) {
+        ImGui::SetNextWindowPos(pos, cond, pivot);
+    }, "pos"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None, "pivot"_a = ImVec2(0,0));
+    m.def("set_next_window_size", [](const ImVec2 &size, ImGuiCond_ cond) {
+        ImGui::SetNextWindowSize(size, cond);
+    }, "size"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     //m.def("set_next_window_size_constraints", ImGui::SetNextWindowSizeConstraints, "size_min"_a, "size_max"_a = 0, "pivot"_a = ImVec2(0,0));
     m.def("set_next_window_content_size", ImGui::SetNextWindowContentSize, "size"_a);
-    m.def("set_next_window_collapsed", ImGui::SetNextWindowCollapsed, "collapsed"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_next_window_collapsed", [](bool collapsed, ImGuiCond_ cond) {
+        ImGui::SetNextWindowCollapsed(collapsed, cond);
+    }, "collapsed"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("set_next_window_focus", ImGui::SetNextWindowFocus);
     m.def("set_next_window_scroll", ImGui::SetNextWindowScroll, "scroll"_a);
     m.def("set_next_window_bg_alpha", ImGui::SetNextWindowBgAlpha, "alpha"_a);
-    m.def("set_window_pos", [](const ImVec2& pos, ImGuiCond cond) { ImGui::SetWindowPos(pos, cond); }, "pos"_a, "cond"_a = ImGuiCond_None);
-    m.def("set_window_size", [](const ImVec2& size, ImGuiCond cond) { ImGui::SetWindowSize(size, cond); }, "size"_a, "cond"_a = ImGuiCond_None);
-    m.def("set_window_collapsed", [](bool collapsed, ImGuiCond cond) { ImGui::SetWindowCollapsed(collapsed, cond); }, "collapsed"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_pos", [](const ImVec2& pos, ImGuiCond_ cond) { ImGui::SetWindowPos(pos, cond); }, "pos"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
+    m.def("set_window_size", [](const ImVec2& size, ImGuiCond_ cond) { ImGui::SetWindowSize(size, cond); }, "size"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
+    m.def("set_window_collapsed", [](bool collapsed, ImGuiCond_ cond) { ImGui::SetWindowCollapsed(collapsed, cond); }, "collapsed"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("set_window_focus", []() { ImGui::SetWindowFocus(); });
     m.def("set_window_font_scale", [](float scale) { ImGui::SetWindowFontScale(scale); }, "scale"_a);
-    m.def("set_window_pos", [](const char* name, const ImVec2& pos, ImGuiCond cond) { ImGui::SetWindowPos(name, pos, cond); }, "name"_a, "pos"_a, "cond"_a = ImGuiCond_None);
-    m.def("set_window_size", [](const char* name, const ImVec2& size, ImGuiCond cond) { ImGui::SetWindowSize(name, size, cond); }, "name"_a, "size"_a, "cond"_a = ImGuiCond_None);
-    m.def("set_window_collapsed", [](const char* name, bool collapsed, ImGuiCond cond) { ImGui::SetWindowCollapsed(name, collapsed, cond); }, "name"_a, "collapsed"_a, "cond"_a = ImGuiCond_None);
+    m.def("set_window_pos", [](const char* name, const ImVec2& pos, ImGuiCond_ cond) { ImGui::SetWindowPos(name, pos, cond); }, "name"_a, "pos"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
+    m.def("set_window_size", [](const char* name, const ImVec2& size, ImGuiCond_ cond) { ImGui::SetWindowSize(name, size, cond); }, "name"_a, "size"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
+    m.def("set_window_collapsed", [](const char* name, bool collapsed, ImGuiCond_ cond) { ImGui::SetWindowCollapsed(name, collapsed, cond); }, "name"_a, "collapsed"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("set_window_focus", [](const char* name) { ImGui::SetWindowFocus(name); }, "name"_a);
 
     // Content region
@@ -391,7 +397,9 @@ NB_MODULE(slimgui_ext, m) {
     }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "tint_col"_a = ImVec4(1, 1, 1, 1), "border_col"_a = ImVec4(0, 0, 0, 0));
 
     // Widgets: Combo Box (Dropdown)
-    m.def("begin_combo", &ImGui::BeginCombo, "label"_a, "preview_value"_a, "flags"_a = ImGuiComboFlags_None);
+    m.def("begin_combo", [](const char *label, const char *preview_value, ImGuiComboFlags_ flags) {
+        return ImGui::BeginCombo(label, preview_value, flags);
+    }, "label"_a, "preview_value"_a, "flags"_a.sig("ComboFlags.NONE") = ImGuiComboFlags_None);
     m.def("end_combo", &ImGui::EndCombo);
     m.def("combo", [](const char* label, int current_item, const std::vector<const char*>& items, int popup_max_height_in_items) {
         bool changed = ImGui::Combo(label, &current_item, &items[0], items.size(), popup_max_height_in_items);
@@ -446,12 +454,18 @@ NB_MODULE(slimgui_ext, m) {
     m.def("begin_item_tooltip", &ImGui::BeginItemTooltip);
     m.def("set_item_tooltip", [](const char* text) { ImGui::SetItemTooltip("%s", text);}, "text"_a);
 
-    m.def("begin_popup", &ImGui::BeginPopup, "str_id"_a, "flags"_a = ImGuiWindowFlags_None);
+    m.def("begin_popup", [](const char *str_id, ImGuiWindowFlags_ flags) {
+        return ImGui::BeginPopup(str_id, flags);
+    }, "str_id"_a, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
     // IMGUI_API bool          BeginPopupModal(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0); // return true if the modal is open, and you can start outputting to it.
     m.def("end_popup", &ImGui::EndPopup);
-    m.def("open_popup", [](const char* str_id, int flags) { ImGui::OpenPopup(str_id, flags);}, "str_id"_a, "flags"_a = ImGuiPopupFlags_None);
+    m.def("open_popup", [](const char* str_id, ImGuiPopupFlags_ flags) {
+        ImGui::OpenPopup(str_id, flags);
+    }, "str_id"_a, "flags"_a.sig("PopupFlags.NONE") = ImGuiPopupFlags_None);
     // IMGUI_API void          OpenPopup(ImGuiID id, ImGuiPopupFlags popup_flags = 0);                             // id overload to facilitate calling from nested stacks
-    m.def("open_popup_on_item_click", &ImGui::OpenPopupOnItemClick, "str_id"_a = nullptr, "flags"_a = ImGuiPopupFlags_MouseButtonRight);
+    m.def("open_popup_on_item_click", [](const char *str_id, ImGuiPopupFlags_ flags) {
+        ImGui::OpenPopupOnItemClick(str_id, flags);
+    }, "str_id"_a.none() = nullptr, "flags"_a.sig("PopupFlags.MOUSE_BUTTON_RIGHT") = ImGuiPopupFlags_MouseButtonRight);
     m.def("close_current_popup", &ImGui::CloseCurrentPopup);
 
     // // Popups: open+begin combined functions helpers
@@ -466,25 +480,27 @@ NB_MODULE(slimgui_ext, m) {
     // //  - IsPopupOpen(): return true if the popup is open at the current BeginPopup() level of the popup stack.
     // //  - IsPopupOpen() with ImGuiPopupFlags_AnyPopupId: return true if any popup is open at the current BeginPopup() level of the popup stack.
     // //  - IsPopupOpen() with ImGuiPopupFlags_AnyPopupId + ImGuiPopupFlags_AnyPopupLevel: return true if any popup is open.
-    m.def("is_popup_open", [](const char* str_id, int flags) {
+    m.def("is_popup_open", [](const char* str_id, ImGuiPopupFlags_ flags) {
         return ImGui::IsPopupOpen(str_id, flags);
-    }, "str_id"_a, "flags"_a = 0);
+    }, "str_id"_a, "flags"_a.sig("PopupFlags.NONE") = ImGuiPopupFlags_None);
 
     // Widgets: Trees
-    m.def("tree_node", [](const char* label, ImGuiTreeNodeFlags flags) {
+    m.def("tree_node", [](const char* label, ImGuiTreeNodeFlags_ flags) {
         return ImGui::TreeNodeEx(label, flags);
-    }, "label"_a, "flags"_a = 0);
-    m.def("tree_node", [](const char* str_id, const char* text, ImGuiTreeNodeFlags flags) {
+    }, "label"_a, "flags"_a.sig("TreeNodeFlags.NONE") = ImGuiTreeNodeFlags_None);
+    m.def("tree_node", [](const char* str_id, const char* text, ImGuiTreeNodeFlags_ flags) {
         return ImGui::TreeNodeEx(str_id, flags, "%s", text);
-    }, "str_id"_a, "text"_a, "flags"_a = 0);
+    }, "str_id"_a, "text"_a, "flags"_a.sig("TreeNodeFlags.NONE") = ImGuiTreeNodeFlags_None);
     m.def("tree_push", [](const char* str_id) { return ImGui::TreePush(str_id); }, "str_id"_a);
     // IMGUI_API void          TreePush(const void* ptr_id);                                       // "
     m.def("tree_pop", ImGui::TreePop);
     m.def("get_tree_node_to_label_spacing", ImGui::GetTreeNodeToLabelSpacing);
-    m.def("set_next_item_open", ImGui::SetNextItemOpen, "is_open"_a, "cond"_a = 0);
+    m.def("set_next_item_open", [](bool is_open, ImGuiCond_ cond) {
+        ImGui::SetNextItemOpen(is_open, cond);
+    }, "is_open"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     // IMGUI_API bool          CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags = 0);  // if returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call TreePop().
     // IMGUI_API bool          CollapsingHeader(const char* label, bool* p_visible, ImGuiTreeNodeFlags flags = 0); // when 'p_visible != NULL': if '*p_visible==true' display an additional small close button on upper right of the header which will set the bool to false when clicked, if '*p_visible==false' don't display the header.
-    m.def("collapsing_header", [](const char* label, nb::handle visible_h, ImGuiTreeNodeFlags flags) {
+    m.def("collapsing_header", [](const char* label, nb::handle visible_h, ImGuiTreeNodeFlags_ flags) {
         if (visible_h.is_none()) {
             bool clicked = ImGui::CollapsingHeader(label, nullptr, flags);
             return std::pair(clicked, std::optional<bool>{});
@@ -492,13 +508,13 @@ NB_MODULE(slimgui_ext, m) {
         bool inout_visible = nb::cast<bool>(visible_h);
         bool open = ImGui::CollapsingHeader(label, &inout_visible, flags);
         return std::pair(open, std::optional<bool>{inout_visible});
-    }, "label"_a, "visible"_a = nb::none(), "flags"_a = 0);
+    }, "label"_a, "visible"_a = nb::none(), "flags"_a.sig("TreeNodeFlags.NONE") = ImGuiTreeNodeFlags_None);
 
     // Widgets: Selectables
-    m.def("selectable", [](const char* label, bool selected, ImGuiSelectableFlags flags, const ImVec2& size) {
+    m.def("selectable", [](const char* label, bool selected, ImGuiSelectableFlags_ flags, const ImVec2& size) {
         bool clicked = ImGui::Selectable(label, &selected, flags, size);
         return std::pair(clicked, selected);
-    }, "label"_a, "selected"_a = false, "flags"_a = ImGuiSelectableFlags_None, "size"_a = ImVec2(0, 0));
+    }, "label"_a, "selected"_a = false, "flags"_a.sig("SelectableFlags.NONE") = ImGuiSelectableFlags_None, "size"_a = ImVec2(0, 0));
 
     // Widgets: List Boxes
     m.def("begin_list_box", &ImGui::BeginListBox, "label"_a, "size"_a = ImVec2(0, 0));
@@ -510,56 +526,56 @@ NB_MODULE(slimgui_ext, m) {
 
 
     // // Widgets: Regular Sliders
-    m.def("slider_float", [](const char* label, float v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_float", [](const char* label, float v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
         bool changed = ImGui::SliderFloat(label, &v, v_min, v_max, format, flags);
         return std::pair(changed, v);
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_float2", [](const char* label, std::tuple<float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_float2", [](const char* label, std::tuple<float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
         auto vals = tuple_to_array<float>(v);
         bool changed = ImGui::SliderFloat2(label, vals.data(), v_min, v_max, format, flags);
         return std::pair(changed, array_to_tuple<float>(vals));
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_float3", [](const char* label, std::tuple<float, float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_float3", [](const char* label, std::tuple<float, float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
         auto vals = tuple_to_array<float>(v);
         bool changed = ImGui::SliderFloat3(label, vals.data(), v_min, v_max, format, flags);
         return std::pair(changed, array_to_tuple<float>(vals));
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_float4", [](const char* label, std::tuple<float, float, float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_float4", [](const char* label, std::tuple<float, float, float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
         auto vals = tuple_to_array<float>(v);
         bool changed = ImGui::SliderFloat4(label, vals.data(), v_min, v_max, format, flags);
         return std::pair(changed, array_to_tuple<float>(vals));
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_angle", [](const char* label, float v_rad, float v_degrees_min, float v_degrees_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_angle", [](const char* label, float v_rad, float v_degrees_min, float v_degrees_max, const char* format, ImGuiSliderFlags_ flags) {
         bool changed = ImGui::SliderAngle(label, &v_rad, v_degrees_min, v_degrees_max, format, flags);
         return std::pair(changed, v_rad);
-    }, "label"_a, "v"_a, "v_degrees_min"_a = -360.f, "v_degrees_max"_a = 360.f, "format"_a = "%.0f deg", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_degrees_min"_a = -360.f, "v_degrees_max"_a = 360.f, "format"_a = "%.0f deg", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int", [](const char* label, int v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_int", [](const char* label, int v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
         bool changed = ImGui::SliderInt(label, &v, v_min, v_max, format, flags);
         return std::pair(changed, v);
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int2", [](const char* label, std::tuple<int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_int2", [](const char* label, std::tuple<int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
         auto vals = tuple_to_array<int>(v);
         bool changed = ImGui::SliderInt2(label, vals.data(), v_min, v_max, format, flags);
         return std::pair(changed, array_to_tuple<int>(vals));
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int3", [](const char* label, std::tuple<int, int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_int3", [](const char* label, std::tuple<int, int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
         auto vals = tuple_to_array<int>(v);
         bool changed = ImGui::SliderInt3(label, vals.data(), v_min, v_max, format, flags);
         return std::pair(changed, array_to_tuple<int>(vals));
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int4", [](const char* label, std::tuple<int, int, int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags) {
+    m.def("slider_int4", [](const char* label, std::tuple<int, int, int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
         auto vals = tuple_to_array<int>(v);
         bool changed = ImGui::SliderInt4(label, vals.data(), v_min, v_max, format, flags);
         return std::pair(changed, array_to_tuple<int>(vals));
-    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a = 0);
+    }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     // IMGUI_API bool          SliderScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          SliderScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);
@@ -642,14 +658,20 @@ NB_MODULE(slimgui_ext, m) {
 
 
     // Tables
-    m.def("begin_table", &ImGui::BeginTable, "str_id"_a, "column"_a, "flags"_a = 0, "outer_size"_a = ImVec2(0.f, 0.f), "inner_width"_a = 0.0f);
+    m.def("begin_table", [](const char *str_id, int column, ImGuiTableFlags_ flags, const ImVec2 &outer_size, float inner_width) {
+        return ImGui::BeginTable(str_id, column, flags, outer_size, inner_width);
+    }, "str_id"_a, "column"_a, "flags"_a.sig("TableFlags.NONE") = ImGuiTableFlags_None, "outer_size"_a = ImVec2(0.f, 0.f), "inner_width"_a = 0.0f);
     m.def("end_table", &ImGui::EndTable);
-    m.def("table_next_row", &ImGui::TableNextRow, "row_flags"_a = 0, "min_row_height"_a = 0.0f);
+    m.def("table_next_row", [](ImGuiTableRowFlags_ row_flags, float min_row_height) {
+        ImGui::TableNextRow(row_flags, min_row_height);
+    }, "flags"_a.sig("TableRowFlags.NONE") = ImGuiTableRowFlags_None, "min_row_height"_a = 0.0f);
     m.def("table_next_column", &ImGui::TableNextColumn);
     m.def("table_set_column_index", &ImGui::TableSetColumnIndex, "column_n"_a);
 
     // Tables: Headers & Columns declaration
-    m.def("table_setup_column", &ImGui::TableSetupColumn, "label"_a, "flags"_a = 0, "init_width_or_weight"_a = 0.f, "user_id"_a = 0);
+    m.def("table_setup_column", [](const char *label, ImGuiTableColumnFlags_ flags, float init_width_or_weight, ImGuiID user_id) {
+        ImGui::TableSetupColumn(label, flags, init_width_or_weight, user_id);
+    }, "label"_a, "flags"_a.sig("TableColumnFlags.NONE") = ImGuiTableColumnFlags_None, "init_width_or_weight"_a = 0.f, "user_id"_a = 0);
     m.def("table_setup_scroll_freeze", &ImGui::TableSetupScrollFreeze, "cols"_a, "rows"_a);
     m.def("table_header", &ImGui::TableHeader, "label"_a);
     m.def("table_headers_row", &ImGui::TableHeadersRow);
@@ -684,7 +706,9 @@ NB_MODULE(slimgui_ext, m) {
     m.def("set_keyboard_focus_here", &ImGui::SetKeyboardFocusHere, "offset"_a = 0);
 
     // Item/Widgets Utilities and Query Functions
-    m.def("is_item_hovered", &ImGui::IsItemHovered, "flags"_a = 0); // TODO flags type
+    m.def("is_item_hovered", [](ImGuiHoveredFlags_ flags) {
+        return ImGui::IsItemHovered(flags);
+    }, "flags"_a.sig("HoveredFlags.NONE") = ImGuiHoveredFlags_None);
     m.def("is_item_active", &ImGui::IsItemActive);
     m.def("is_item_focused", &ImGui::IsItemFocused);
     // TODO FIXME it should work to use .sig() for the argument below, but that produces:
