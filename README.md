@@ -10,6 +10,18 @@ Very similar to [https://github.com/pyimgui/pyimgui](pyimgui/pyimugui) except bu
 
 ## Development
 
+MacOS:
+
+```
+python3 -m venv .venv
+. .venv/bin/activate
+pip install git+https://github.com/wjakob/nanobind 'scikit-build-core[pyproject]' click glfw pyopengl numpy requests
+pip install --no-build-isolation -ve .
+python gen/gen_nb.py > src/im_enums.inl
+```
+
+Windows:
+
 ```
 python3 -m venv .venv
 .venv\Scripts\activate.bat

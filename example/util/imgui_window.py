@@ -24,6 +24,10 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
 
         # Create window.
         glfw.init()
+        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, glfw.TRUE)
+        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         glfw.window_hint(glfw.VISIBLE, False)
         self._glfw_window = glfw.create_window(
             width=window_width, height=window_height, title=title, monitor=None, share=None
@@ -144,19 +148,12 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
         self.make_context_current()
 
         # Initialize GL state.
-        gl.glViewport(0, 0, self.content_width, self.content_height)
-        gl.glMatrixMode(gl.GL_PROJECTION)
-        gl.glLoadIdentity()
-        gl.glTranslate(-1, 1, 0)
-        gl.glScale(2 / max(self.content_width, 1), -2 / max(self.content_height, 1), 1)
-        gl.glMatrixMode(gl.GL_MODELVIEW)
-        gl.glLoadIdentity()
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_ONE, gl.GL_ONE_MINUS_SRC_ALPHA)  # Pre-multiplied alpha.
 
         # Clear.
         gl.glClearColor(0.1, 0.2, 0.4, 1)
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        gl.glClear(int(gl.GL_COLOR_BUFFER_BIT) | int(gl.GL_DEPTH_BUFFER_BIT))
 
     def end_frame(self):
         assert self._drawing_frame
