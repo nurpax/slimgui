@@ -255,11 +255,11 @@ NB_MODULE(slimgui_ext, m) {
 
     m.def("get_version", &ImGui::GetVersion);
 
-    m.def("begin", [](const char* name, bool closable = false, int flags = 0) {
+    m.def("begin", [](const char* name, bool closable, ImGuiWindowFlags_ flags) {
         bool open = true;
         bool collapsed = ImGui::Begin(name, closable ? &open : NULL, flags);
         return std::pair<bool, bool>(collapsed, open);
-    }, "name"_a, "closable"_a = false, "flags"_a = 0);
+    }, "name"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
     m.def("end", &ImGui::End);
     m.def("render", &ImGui::Render);
     m.def("new_frame", &ImGui::NewFrame);
@@ -363,7 +363,9 @@ NB_MODULE(slimgui_ext, m) {
     // Widgets: Main
     m.def("button", &ImGui::Button, "label"_a, "size"_a = ImVec2());
     m.def("small_button", &ImGui::SmallButton, "label"_a);
-    m.def("invisible_button", &ImGui::InvisibleButton, "str_id"_a, "size"_a, "flags"_a = ImGuiButtonFlags_None);
+    m.def("invisible_button", [](const char* str_id, const ImVec2 &size, ImGuiButtonFlags_ flags) {
+        return ImGui::InvisibleButton(str_id, size, flags);
+    }, "str_id"_a, "size"_a, "flags"_a.sig("ButtonFlags.NONE") = ImGuiButtonFlags_None);
     m.def("arrow_button", &ImGui::ArrowButton, "str_id"_a, "dir"_a);
     m.def("checkbox", [](const char* label, bool v) {
         bool pressed = ImGui::Checkbox(label, &v);
@@ -589,23 +591,23 @@ NB_MODULE(slimgui_ext, m) {
     };
 
     // Widgets: Input with Keyboard
-    m.def("input_text", [&](const char* label, std::string text, ImGuiInputTextFlags flags) {
+    m.def("input_text", [&](const char* label, std::string text, ImGuiInputTextFlags_ flags) {
         return input_text_handler(label, nullptr, text, flags);
     }, "label"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    m.def("input_text_with_hint", [&](const char* label, const char* hint, std::string text, ImGuiInputTextFlags flags) {
+    m.def("input_text_with_hint", [&](const char* label, const char* hint, std::string text, ImGuiInputTextFlags_ flags) {
         return input_text_handler(label, hint, text, flags);
     }, "label"_a, "hint"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    m.def("input_int", [](const char* label, int v, int step, int step_fast, ImGuiInputTextFlags flags) {
+    m.def("input_int", [](const char* label, int v, int step, int step_fast, ImGuiInputTextFlags_ flags) {
         bool changed = ImGui::InputInt(label, &v, step, step_fast, flags);
         return std::pair(changed, v);
-    }, "label"_a, "v"_a, "step"_a = 1, "step_fast"_a = 100, "flags"_a = 0);
+    }, "label"_a, "v"_a, "step"_a = 1, "step_fast"_a = 100, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
     //IMGUI_API bool          InputTextMultiline(const char* label, char* buf, size_t buf_size, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
 
-    m.def("input_float", [](const char* label, float v, float step, float step_fast, const char* format, ImGuiInputTextFlags flags) {
+    m.def("input_float", [](const char* label, float v, float step, float step_fast, const char* format, ImGuiInputTextFlags_ flags) {
         bool changed = ImGui::InputFloat(label, &v, step, step_fast, format, flags);
         return std::pair(changed, v);
-    }, "label"_a, "v"_a, "step"_a = 0.f, "step_fast"_a = 0.f, "format"_a = "%.3f", "flags"_a = 0);
+    }, "label"_a, "v"_a, "step"_a = 0.f, "step_fast"_a = 0.f, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
     // IMGUI_API bool          InputFloat2(const char* label, float v[2], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
     // IMGUI_API bool          InputFloat3(const char* label, float v[3], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
@@ -614,21 +616,21 @@ NB_MODULE(slimgui_ext, m) {
     // IMGUI_API bool          InputInt2(const char* label, int v[2], ImGuiInputTextFlags flags = 0);
     // IMGUI_API bool          InputInt3(const char* label, int v[3], ImGuiInputTextFlags flags = 0);
     // IMGUI_API bool          InputInt4(const char* label, int v[4], ImGuiInputTextFlags flags = 0);
-    m.def("input_double", [](const char* label, double v, double step, double step_fast, const char* format, ImGuiInputTextFlags flags) {
+    m.def("input_double", [](const char* label, double v, double step, double step_fast, const char* format, ImGuiInputTextFlags_ flags) {
         bool changed = ImGui::InputDouble(label, &v, step, step_fast, format, flags);
         return std::pair(changed, v);
-    }, "label"_a, "v"_a, "step"_a = 0.0, "step_fast"_a = 0.0, "format"_a = "%.6f", "flags"_a = 0);
+    }, "label"_a, "v"_a, "step"_a = 0.0, "step_fast"_a = 0.0, "format"_a = "%.6f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
     // IMGUI_API bool          InputScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_step = NULL, const void* p_step_fast = NULL, const char* format = NULL, ImGuiInputTextFlags flags = 0);
     // IMGUI_API bool          InputScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_step = NULL, const void* p_step_fast = NULL, const char* format = NULL, ImGuiInputTextFlags flags = 0);
 
     // Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.)
-    m.def("color_edit3", [&](const char* label, const Vec3& col, ImGuiColorEditFlags flags) {
+    m.def("color_edit3", [&](const char* label, const Vec3& col, ImGuiColorEditFlags_ flags) {
         Vec3 c(col);
         bool changed = ImGui::ColorEdit3(label, &c.x, flags);
         return std::tuple(changed, c);
     }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None);
-    m.def("color_edit4", [&](const char* label, const ImVec4& col, ImGuiColorEditFlags flags) {
+    m.def("color_edit4", [&](const char* label, const ImVec4& col, ImGuiColorEditFlags_ flags) {
         ImVec4 c(col);
         bool changed = ImGui::ColorEdit4(label, &c.x, flags);
         return std::tuple(changed, c);
