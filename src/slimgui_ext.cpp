@@ -261,6 +261,14 @@ NB_MODULE(slimgui_ext, m) {
         return std::pair<bool, bool>(collapsed, open);
     }, "name"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
     m.def("end", &ImGui::End);
+
+
+    // IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);
+    m.def("begin_child", [](const char* str_id, const ImVec2& size, ImGuiChildFlags_ child_flags, ImGuiWindowFlags_ window_flags) {
+        return ImGui::BeginChild(str_id, size, child_flags, window_flags);
+    }, "str_id"_a, "size"_a =  ImVec2(0, 0), "child_flags"_a.sig("ChildFlags.NONE") = ImGuiChildFlags_None, "window_flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
+    m.def("end_child", &ImGui::EndChild);
+
     m.def("render", &ImGui::Render);
     m.def("new_frame", &ImGui::NewFrame);
 
@@ -688,6 +696,23 @@ NB_MODULE(slimgui_ext, m) {
     m.def("table_set_bg_color", [](ImGuiTableBgTarget_ target, const ImVec4& col, int column_n) {
         ImGui::TableSetBgColor(target, ImGui::ColorConvertFloat4ToU32(col), column_n);
     }, "target"_a, "color"_a, "column_n"_a = -1);
+
+    m.def("begin_tab_bar", [](const char* str_id, ImGuiTabBarFlags_ flags) {
+        return ImGui::BeginTabBar(str_id, flags);
+    }, "str_id"_a, "flags"_a.sig("TabBarFlags.NONE") = ImGuiTabBarFlags_None);
+    m.def("end_tab_bar", &ImGui::EndTabBar);
+
+    m.def("begin_tab_item", [](const char* label, bool closable, ImGuiTabItemFlags_ flags) {
+        bool open = true;
+        bool selected = ImGui::BeginTabItem(label, closable ? &open : NULL, flags);
+        return std::pair<bool, bool>(selected, open);
+    }, "str_id"_a, "closable"_a = false, "flags"_a.sig("TabItemFlags.NONE") = ImGuiTabItemFlags_None);
+    m.def("end_tab_item", &ImGui::EndTabItem);
+
+    m.def("tab_item_button", [](const char* label, ImGuiTabItemFlags_ flags) {
+        return ImGui::TabItemButton(label, flags);
+    }, "label"_a, "flags"_a.sig("TabItemFlags.NONE") = ImGuiTabItemFlags_None);
+    m.def("set_tab_item_closed", &ImGui::SetTabItemClosed, "label"_a);
 
     // Logging/Capture
     m.def("log_to_tty", &ImGui::LogToTTY, "auto_open_depth"_a = -1);

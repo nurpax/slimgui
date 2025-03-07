@@ -45,6 +45,16 @@ nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
     .value("MOUSE_BUTTON_MIDDLE", ImGuiButtonFlags_MouseButtonMiddle)
     .value("MOUSE_BUTTON_MASK_", ImGuiButtonFlags_MouseButtonMask_)
     .value("MOUSE_BUTTON_DEFAULT_", ImGuiButtonFlags_MouseButtonDefault_);
+nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
+    .value("NONE", ImGuiChildFlags_None)
+    .value("BORDER", ImGuiChildFlags_Border)
+    .value("ALWAYS_USE_WINDOW_PADDING", ImGuiChildFlags_AlwaysUseWindowPadding)
+    .value("RESIZE_X", ImGuiChildFlags_ResizeX)
+    .value("RESIZE_Y", ImGuiChildFlags_ResizeY)
+    .value("AUTO_RESIZE_X", ImGuiChildFlags_AutoResizeX)
+    .value("AUTO_RESIZE_Y", ImGuiChildFlags_AutoResizeY)
+    .value("ALWAYS_AUTO_RESIZE", ImGuiChildFlags_AlwaysAutoResize)
+    .value("FRAME_STYLE", ImGuiChildFlags_FrameStyle);
 nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiWindowFlags_None)
@@ -97,6 +107,35 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value("SPAN_ALL_COLUMNS", ImGuiTreeNodeFlags_SpanAllColumns)
     .value("NAV_LEFT_JUMPS_BACK_HERE", ImGuiTreeNodeFlags_NavLeftJumpsBackHere)
     .value("COLLAPSING_HEADER", ImGuiTreeNodeFlags_CollapsingHeader);
+nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
+                             nb::is_arithmetic())
+    .value("NONE", ImGuiTabBarFlags_None)
+    .value("REORDERABLE", ImGuiTabBarFlags_Reorderable)
+    .value("AUTO_SELECT_NEW_TABS", ImGuiTabBarFlags_AutoSelectNewTabs)
+    .value("TAB_LIST_POPUP_BUTTON", ImGuiTabBarFlags_TabListPopupButton)
+    .value("NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON",
+           ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)
+    .value("NO_TAB_LIST_SCROLLING_BUTTONS",
+           ImGuiTabBarFlags_NoTabListScrollingButtons)
+    .value("NO_TOOLTIP", ImGuiTabBarFlags_NoTooltip)
+    .value("FITTING_POLICY_RESIZE_DOWN",
+           ImGuiTabBarFlags_FittingPolicyResizeDown)
+    .value("FITTING_POLICY_SCROLL", ImGuiTabBarFlags_FittingPolicyScroll)
+    .value("FITTING_POLICY_MASK_", ImGuiTabBarFlags_FittingPolicyMask_)
+    .value("FITTING_POLICY_DEFAULT_", ImGuiTabBarFlags_FittingPolicyDefault_);
+nb::enum_<ImGuiTabItemFlags_>(m, "TabItemFlags", nb::is_flag(),
+                              nb::is_arithmetic())
+    .value("NONE", ImGuiTabItemFlags_None)
+    .value("UNSAVED_DOCUMENT", ImGuiTabItemFlags_UnsavedDocument)
+    .value("SET_SELECTED", ImGuiTabItemFlags_SetSelected)
+    .value("NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON",
+           ImGuiTabItemFlags_NoCloseWithMiddleMouseButton)
+    .value("NO_PUSH_ID", ImGuiTabItemFlags_NoPushId)
+    .value("NO_TOOLTIP", ImGuiTabItemFlags_NoTooltip)
+    .value("NO_REORDER", ImGuiTabItemFlags_NoReorder)
+    .value("LEADING", ImGuiTabItemFlags_Leading)
+    .value("TRAILING", ImGuiTabItemFlags_Trailing)
+    .value("NO_ASSUMED_CLOSURE", ImGuiTabItemFlags_NoAssumedClosure);
 nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiTableFlags_None)
     .value("RESIZABLE", ImGuiTableFlags_Resizable)

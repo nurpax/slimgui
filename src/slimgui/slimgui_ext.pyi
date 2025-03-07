@@ -93,6 +93,58 @@ class ButtonFlags(enum.IntFlag):
 
     MOUSE_BUTTON_DEFAULT_ = 1
 
+class ChildFlags(enum.IntFlag):
+    _new_member_ = __new__
+
+    _use_args_: bool = True
+
+    _member_names_: list = ...
+
+    _member_map_: dict = ...
+
+    _value2member_map_: dict = ...
+
+    _hashable_values_: list = []
+
+    _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
+
+    _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 255
+
+    _singles_mask_: int = 255
+
+    _all_bits_: int = 511
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
+
+    NONE = 0
+
+    BORDER = 1
+
+    ALWAYS_USE_WINDOW_PADDING = 2
+
+    RESIZE_X = 4
+
+    RESIZE_Y = 8
+
+    AUTO_RESIZE_X = 16
+
+    AUTO_RESIZE_Y = 32
+
+    ALWAYS_AUTO_RESIZE = 64
+
+    FRAME_STYLE = 128
+
 class Col(enum.IntEnum):
     _new_member_ = __new__
 
@@ -1612,6 +1664,116 @@ class StyleVar(enum.IntEnum):
 
     COUNT = 31
 
+class TabBarFlags(enum.IntFlag):
+    _new_member_ = __new__
+
+    _use_args_: bool = True
+
+    _member_names_: list = ...
+
+    _member_map_: dict = ...
+
+    _value2member_map_: dict = ...
+
+    _hashable_values_: list = []
+
+    _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
+
+    _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 255
+
+    _singles_mask_: int = 255
+
+    _all_bits_: int = 511
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
+
+    NONE = 0
+
+    REORDERABLE = 1
+
+    AUTO_SELECT_NEW_TABS = 2
+
+    TAB_LIST_POPUP_BUTTON = 4
+
+    NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 8
+
+    NO_TAB_LIST_SCROLLING_BUTTONS = 16
+
+    NO_TOOLTIP = 32
+
+    FITTING_POLICY_RESIZE_DOWN = 64
+
+    FITTING_POLICY_SCROLL = 128
+
+    FITTING_POLICY_MASK_ = 192
+
+    FITTING_POLICY_DEFAULT_ = 64
+
+class TabItemFlags(enum.IntFlag):
+    _new_member_ = __new__
+
+    _use_args_: bool = True
+
+    _member_names_: list = ...
+
+    _member_map_: dict = ...
+
+    _value2member_map_: dict = ...
+
+    _hashable_values_: list = []
+
+    _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
+
+    _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 511
+
+    _singles_mask_: int = 511
+
+    _all_bits_: int = 1023
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
+
+    NONE = 0
+
+    UNSAVED_DOCUMENT = 1
+
+    SET_SELECTED = 2
+
+    NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 4
+
+    NO_PUSH_ID = 8
+
+    NO_TOOLTIP = 16
+
+    NO_REORDER = 32
+
+    LEADING = 64
+
+    TRAILING = 128
+
+    NO_ASSUMED_CLOSURE = 256
+
 class TableBgTarget(enum.IntEnum):
     _new_member_ = __new__
 
@@ -2074,6 +2236,8 @@ def arrow_button(str_id: str, dir: int) -> bool: ...
 
 def begin(name: str, closable: bool = False, flags: WindowFlags = WindowFlags.NONE) -> tuple[bool, bool]: ...
 
+def begin_child(str_id: str, size: tuple[float, float] = (0.0, 0.0), child_flags: ChildFlags = ChildFlags.NONE, window_flags: WindowFlags = WindowFlags.NONE) -> bool: ...
+
 def begin_combo(label: str, preview_value: str, flags: ComboFlags = ComboFlags.NONE) -> bool: ...
 
 def begin_disabled(disabled: bool = True) -> None: ...
@@ -2091,6 +2255,10 @@ def begin_menu(label: str, enabled: bool = True) -> bool: ...
 def begin_menu_bar() -> bool: ...
 
 def begin_popup(str_id: str, flags: WindowFlags = WindowFlags.NONE) -> bool: ...
+
+def begin_tab_bar(str_id: str, flags: TabBarFlags = TabBarFlags.NONE) -> bool: ...
+
+def begin_tab_item(str_id: str, closable: bool = False, flags: TabItemFlags = TabItemFlags.NONE) -> tuple[bool, bool]: ...
 
 def begin_table(str_id: str, column: int, flags: TableFlags = TableFlags.NONE, outer_size: tuple[float, float] = (0.0, 0.0), inner_width: float = 0.0) -> bool: ...
 
@@ -2129,6 +2297,8 @@ def dummy(size: tuple[float, float]) -> None: ...
 
 def end() -> None: ...
 
+def end_child() -> None: ...
+
 def end_combo() -> None: ...
 
 def end_disabled() -> None: ...
@@ -2144,6 +2314,10 @@ def end_menu() -> None: ...
 def end_menu_bar() -> None: ...
 
 def end_popup() -> None: ...
+
+def end_tab_bar() -> None: ...
+
+def end_tab_item() -> None: ...
 
 def end_table() -> None: ...
 
@@ -2385,6 +2559,8 @@ def set_scroll_x(scroll_x: float) -> None: ...
 
 def set_scroll_y(scroll_y: float) -> None: ...
 
+def set_tab_item_closed(label: str) -> None: ...
+
 @overload
 def set_window_collapsed(collapsed: bool, cond: Cond = Cond.NONE) -> None: ...
 
@@ -2442,6 +2618,8 @@ def slider_int4(label: str, v: tuple[int, int, int, int], v_min: int, v_max: int
 def small_button(label: str) -> bool: ...
 
 def spacing() -> None: ...
+
+def tab_item_button(label: str, flags: TabItemFlags = TabItemFlags.NONE) -> bool: ...
 
 def table_angled_headers_row() -> None: ...
 

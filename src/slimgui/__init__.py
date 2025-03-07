@@ -4,6 +4,8 @@ from . import slimgui_ext # type: ignore
 # TODO declare __all__ automatically
 from .slimgui_ext import * # type: ignore # noqa: F403
 
+from .slimgui_ext import SelectableFlags, TabItemFlags
+
 class WrappedContext:
     def __init__(self, ctx: slimgui_ext.Context):
         self.context = ctx
@@ -82,3 +84,17 @@ class _MenuItemReturn(NamedTuple):
 
 def menu_item(label: str, shortcut: str | None = None, selected = False, enabled = True) -> _MenuItemReturn:
     return _MenuItemReturn(*slimgui_ext.menu_item(label, shortcut, selected, enabled))
+
+class _SelectableReturn(NamedTuple):
+    clicked: bool
+    value: bool
+
+def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> _SelectableReturn:
+    return _SelectableReturn(*slimgui_ext.selectable(label, selected, flags, size))
+
+class _BeginTabItemReturn(NamedTuple):
+    selected: bool
+    value: bool     # TODO what to call this
+
+def begin_tab_item(str_id: str, closable: bool = False, flags: TabItemFlags = TabItemFlags.NONE) -> _BeginTabItemReturn:
+    return _BeginTabItemReturn(*slimgui_ext.begin_tab_item(str_id, closable, flags))
