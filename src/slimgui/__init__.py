@@ -3,8 +3,7 @@ from typing import NamedTuple, cast, Any
 from . import slimgui_ext # type: ignore
 # TODO declare __all__ automatically
 from .slimgui_ext import * # type: ignore # noqa: F403
-
-from .slimgui_ext import SelectableFlags, TabItemFlags
+from .slimgui_ext import SelectableFlags, TabItemFlags, InputTextFlags, SliderFlags
 
 class WrappedContext:
     def __init__(self, ctx: slimgui_ext.Context):
@@ -64,6 +63,8 @@ def get_io() -> slimgui_ext.IO:
 # new here but just add a little finishing touches like using namedtuples for multiple
 # return parameters.
 
+# TODO there's too much boilerplate here, maybe we can generate these functions automatically.
+
 class _CheckboxReturn(NamedTuple):
     clicked: bool
     value: bool
@@ -73,10 +74,20 @@ def checkbox(label: str, value: bool) -> _CheckboxReturn:
 
 class _InputTextReturn(NamedTuple):
     changed: bool
-    text: str
+    value: str
 
 def input_text(label: str, text: str, flags = slimgui_ext.InputTextFlags.NONE) -> _InputTextReturn:
     return _InputTextReturn(*slimgui_ext.input_text(label, text, flags))
+
+class _InputFloatReturn(NamedTuple):
+    changed: bool
+    value: float
+
+def input_float(label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> _InputFloatReturn:
+    return _InputFloatReturn(*slimgui_ext.input_float(label, v, step, step_fast, format, flags))
+
+def drag_float(label: str, v: float, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> _InputFloatReturn:
+    return _InputFloatReturn(*slimgui_ext.drag_float(label, v, v_speed, v_min, v_max, format, flags))
 
 class _MenuItemReturn(NamedTuple):
     clicked: bool
