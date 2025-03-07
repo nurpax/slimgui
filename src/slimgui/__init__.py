@@ -63,7 +63,7 @@ def get_io() -> slimgui_ext.IO:
 # return parameters.
 
 class _CheckboxReturn(NamedTuple):
-    pressed: bool
+    clicked: bool
     value: bool
 
 def checkbox(label: str, value: bool) -> _CheckboxReturn:
@@ -75,3 +75,10 @@ class _InputTextReturn(NamedTuple):
 
 def input_text(label: str, text: str, flags = slimgui_ext.InputTextFlags.NONE) -> _InputTextReturn:
     return _InputTextReturn(*slimgui_ext.input_text(label, text, flags))
+
+class _MenuItemReturn(NamedTuple):
+    clicked: bool
+    value: bool
+
+def menu_item(label: str, shortcut: str | None = None, selected = False, enabled = True) -> _MenuItemReturn:
+    return _MenuItemReturn(*slimgui_ext.menu_item(label, shortcut, selected, enabled))
