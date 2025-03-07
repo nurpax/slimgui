@@ -5,7 +5,7 @@ import warnings
 import slimgui as imgui
 from .types import State
 from .utils import help_marker
-from . import widgets
+from . import widgets, layout
 
 st = State()
 
@@ -17,7 +17,10 @@ def show_demo_window(open: bool):
     #     if (show_app_console)             ShowExampleAppConsole(&show_app_console);
     #     if (show_app_custom_rendering)    ShowExampleAppCustomRendering(&show_app_custom_rendering);
     #     if (show_app_log)                 ShowExampleAppLog(&show_app_log);
-    #     if (show_app_layout)              ShowExampleAppLayout(&show_app_layout);
+
+    if st.show_app_layout:
+        layout.show_example_app_layout(st)
+
     #     if (show_app_property_editor)     ShowExampleAppPropertyEditor(&show_app_property_editor);
     #     if (show_app_simple_overlay)      ShowExampleAppSimpleOverlay(&show_app_simple_overlay);
     #     if (show_app_auto_resize)         ShowExampleAppAutoResize(&show_app_auto_resize);
@@ -5064,73 +5067,6 @@ def show_example_menu_file():
 
 #     // Actually call in the regular Log helper (which will Begin() into the same window as we just did)
 #     log.Draw("Example: Log", p_open);
-# }
-
-# //-----------------------------------------------------------------------------
-# // [SECTION] Example App: Simple Layout / ShowExampleAppLayout()
-# //-----------------------------------------------------------------------------
-
-# // Demonstrate create a window with multiple child windows.
-# static void ShowExampleAppLayout(bool* p_open)
-# {
-#     ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
-#     if (ImGui::Begin("Example: Simple layout", p_open, ImGuiWindowFlags_MenuBar))
-#     {
-#         IMGUI_DEMO_MARKER("Examples/Simple layout");
-#         if (ImGui::BeginMenuBar())
-#         {
-#             if (ImGui::BeginMenu("File"))
-#             {
-#                 if (ImGui::MenuItem("Close", "Ctrl+W")) { *p_open = false; }
-#                 ImGui::EndMenu();
-#             }
-#             ImGui::EndMenuBar();
-#         }
-
-#         // Left
-#         static int selected = 0;
-#         {
-#             ImGui::BeginChild("left pane", ImVec2(150, 0), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
-#             for (int i = 0; i < 100; i++)
-#             {
-#                 // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
-#                 char label[128];
-#                 sprintf(label, "MyObject %d", i);
-#                 if (ImGui::Selectable(label, selected == i))
-#                     selected = i;
-#             }
-#             ImGui::EndChild();
-#         }
-#         ImGui::SameLine();
-
-#         // Right
-#         {
-#             ImGui::BeginGroup();
-#             ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
-#             ImGui::Text("MyObject: %d", selected);
-#             ImGui::Separator();
-#             if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
-#             {
-#                 if (ImGui::BeginTabItem("Description"))
-#                 {
-#                     ImGui::TextWrapped("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ");
-#                     ImGui::EndTabItem();
-#                 }
-#                 if (ImGui::BeginTabItem("Details"))
-#                 {
-#                     ImGui::Text("ID: 0123456789");
-#                     ImGui::EndTabItem();
-#                 }
-#                 ImGui::EndTabBar();
-#             }
-#             ImGui::EndChild();
-#             if (ImGui::Button("Revert")) {}
-#             ImGui::SameLine();
-#             if (ImGui::Button("Save")) {}
-#             ImGui::EndGroup();
-#         }
-#     }
-#     ImGui::End();
 # }
 
 # //-----------------------------------------------------------------------------

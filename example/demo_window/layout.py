@@ -1,0 +1,52 @@
+import slimgui as imgui
+from slimgui import ChildFlags, WindowFlags
+
+from .types import State
+
+# //-----------------------------------------------------------------------------
+# // [SECTION] Example App: Simple Layout / ShowExampleAppLayout()
+# //-----------------------------------------------------------------------------
+
+_selected = 0
+
+def show_example_app_layout(st: State):
+    global _selected
+    imgui.set_next_window_size((500, 440), imgui.Cond.FIRST_USE_EVER)
+    if imgui.begin("Example: Simple layout", st.show_app_layout, WindowFlags.MENU_BAR):
+        #IMGUI_DEMO_MARKER("Examples/Simple layout");
+        if imgui.begin_menu_bar():
+            if imgui.begin_menu("File"):
+                if imgui.menu_item("Close", "Ctrl+W").clicked:
+                    st.show_app_layout = False
+                imgui.end_menu()
+            imgui.end_menu_bar()
+
+        # Left
+        imgui.begin_child("left pane", (150, 0), ChildFlags.BORDER | ChildFlags.RESIZE_X)
+        for i in range(100):
+            if imgui.selectable(f'MyObject{i}', _selected == i).clicked:
+                _selected = i
+        imgui.end_child()
+        imgui.same_line()
+
+        # Right
+        imgui.begin_group()
+        imgui.begin_child("item view", (0, -imgui.get_frame_height_with_spacing()))
+        imgui.text(f'MyObject: {_selected}')
+        imgui.separator()
+        if imgui.begin_tab_bar("##Tabs"):
+            if imgui.begin_tab_item("Description").selected:
+                imgui.text_wrapped("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                imgui.end_tab_item()
+            if imgui.begin_tab_item("Details").selected:
+                imgui.text("ID: 0123456789")
+                imgui.end_tab_item()
+            imgui.end_tab_bar()
+        imgui.end_child()
+        if imgui.button("Revert"):
+            pass
+        imgui.same_line()
+        if imgui.button("Save"):
+            pass
+        imgui.end_group()
+        imgui.end()
