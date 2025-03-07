@@ -61,7 +61,11 @@ class GenContext:
         ]
         for im_name, py_name, e in [(im_name, py_name, doc["enums"][im_name]) for im_name, py_name in enum_list]:
             # Enum decl
-            self.write(f'nb::enum_<{im_name}>(m, "{py_name}", nb::is_arithmetic())\n')
+            if im_name.endswith("Flags_"):
+                enum_attrs = ', nb::is_flag(), nb::is_arithmetic()'
+            else:
+                enum_attrs = ', nb::is_arithmetic()'
+            self.write(f'nb::enum_<{im_name}>(m, "{py_name}"{enum_attrs})\n')
             # Enum values
             for ev in e:
                 enum_field_py_name = camel_to_snake(ev["name"].replace(im_name, "")).upper()

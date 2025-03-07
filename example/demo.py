@@ -90,7 +90,7 @@ def show_demo_window(open: bool):
     #         ImGui::ShowAboutWindow(&show_tool_about);
 
     no_menu = st.no_menu
-    window_flags = 0
+    window_flags = imgui.WindowFlags.NONE
     if st.no_titlebar:
         window_flags |= imgui.WindowFlags.NO_TITLE_BAR
     if st.no_scrollbar:

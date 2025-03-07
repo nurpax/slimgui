@@ -1,6 +1,6 @@
 # slimgui: Updated ImGui bindings for Python
 
-Work in progress [Dear ImGui](https://github.com/ocornut/imgui) bindings for Python.  
+Work in progress [Dear ImGui](https://github.com/ocornut/imgui) bindings for Python.
 
 Motivation:
 - Modernized build process to support Python typings (.pyi files) to allow good IDE support (auto-complete, type checking in VSCode)
@@ -9,6 +9,10 @@ Motivation:
 Very similar to [https://github.com/pyimgui/pyimgui](pyimgui/pyimugui) except built with Nanobind to better support typings.
 
 ## Development
+
+Prerequisites:
+- clang-format for generating enums
+  - macOS: `brew install clang-format`
 
 MacOS:
 

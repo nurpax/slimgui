@@ -3,7 +3,7 @@ import enum
 from typing import overload
 
 
-class BackendFlags(enum.IntEnum):
+class BackendFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -12,11 +12,30 @@ class BackendFlags(enum.IntEnum):
 
     _member_map_: dict = ...
 
-    _value2member_map_: dict = ...
+    _value2member_map_: dict = {0 : 0, 1 : 1, 2 : 2, 4 : 4, 8 : 8}
+
+    _hashable_values_: list = []
 
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 15
+
+    _singles_mask_: int = 15
+
+    _all_bits_: int = 31
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -28,7 +47,7 @@ class BackendFlags(enum.IntEnum):
 
     RENDERER_HAS_VTX_OFFSET = 8
 
-class ButtonFlags(enum.IntEnum):
+class ButtonFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -37,11 +56,30 @@ class ButtonFlags(enum.IntEnum):
 
     _member_map_: dict = ...
 
-    _value2member_map_: dict = ...
+    _value2member_map_: dict = {0 : 0, 1 : 1, 2 : 2, 4 : 4, 7 : 7}
+
+    _hashable_values_: list = []
 
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 7
+
+    _singles_mask_: int = 7
+
+    _all_bits_: int = 15
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -66,7 +104,11 @@ class Col(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -178,7 +220,7 @@ class Col(enum.IntEnum):
 
     COUNT = 53
 
-class ColorEditFlags(enum.IntEnum):
+class ColorEditFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -189,9 +231,28 @@ class ColorEditFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 536807422
+
+    _singles_mask_: int = 536807422
+
+    _all_bits_: int = 1073741823
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -251,7 +312,7 @@ class ColorEditFlags(enum.IntEnum):
 
     INPUT_MASK_ = 402653184
 
-class ComboFlags(enum.IntEnum):
+class ComboFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -262,9 +323,28 @@ class ComboFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 255
+
+    _singles_mask_: int = 255
+
+    _all_bits_: int = 511
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -297,7 +377,11 @@ class Cond(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -311,7 +395,7 @@ class Cond(enum.IntEnum):
 
     APPEARING = 8
 
-class ConfigFlags(enum.IntEnum):
+class ConfigFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -322,9 +406,28 @@ class ConfigFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 3145791
+
+    _singles_mask_: int = 3145791
+
+    _all_bits_: int = 8388607
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -358,7 +461,11 @@ class Dir(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -396,7 +503,7 @@ class DrawData:
     @property
     def commands_lists(self) -> Iterator[DrawList]: ...
 
-class DrawFlags(enum.IntEnum):
+class DrawFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -407,9 +514,28 @@ class DrawFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 497
+
+    _singles_mask_: int = 497
+
+    _all_bits_: int = 1023
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -564,7 +690,7 @@ class FontConfig:
     @ellipsis_char.setter
     def ellipsis_char(self, arg: int, /) -> None: ...
 
-class HoveredFlags(enum.IntEnum):
+class HoveredFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -575,9 +701,28 @@ class HoveredFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 262063
+
+    _singles_mask_: int = 262063
+
+    _all_bits_: int = 524287
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -774,7 +919,7 @@ class IO:
     @key_repeat_rate.setter
     def key_repeat_rate(self, arg: float, /) -> None: ...
 
-class InputTextFlags(enum.IntEnum):
+class InputTextFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -785,9 +930,28 @@ class InputTextFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 2097151
+
+    _singles_mask_: int = 2097151
+
+    _all_bits_: int = 4194303
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -844,7 +1008,11 @@ class Key(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1195,7 +1363,11 @@ class MouseButton(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1207,7 +1379,7 @@ class MouseButton(enum.IntEnum):
 
     COUNT = 5
 
-class PopupFlags(enum.IntEnum):
+class PopupFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -1218,9 +1390,28 @@ class PopupFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 3519
+
+    _singles_mask_: int = 3491
+
+    _all_bits_: int = 8191
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -1246,7 +1437,7 @@ class PopupFlags(enum.IntEnum):
 
     ANY_POPUP = 3072
 
-class SelectableFlags(enum.IntEnum):
+class SelectableFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -1255,11 +1446,30 @@ class SelectableFlags(enum.IntEnum):
 
     _member_map_: dict = ...
 
-    _value2member_map_: dict = ...
+    _value2member_map_: dict = {0 : 0, 1 : 1, 2 : 2, 4 : 4, 8 : 8, 16 : 16}
+
+    _hashable_values_: list = []
 
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 31
+
+    _singles_mask_: int = 31
+
+    _all_bits_: int = 63
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -1273,7 +1483,7 @@ class SelectableFlags(enum.IntEnum):
 
     ALLOW_OVERLAP = 16
 
-class SliderFlags(enum.IntEnum):
+class SliderFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -1284,9 +1494,28 @@ class SliderFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 1879048447
+
+    _singles_mask_: int = 240
+
+    _all_bits_: int = 4294967295
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -1311,7 +1540,11 @@ class StyleVar(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1390,7 +1623,11 @@ class TableBgTarget(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
+
+    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1402,7 +1639,7 @@ class TableBgTarget(enum.IntEnum):
 
     CELL_BG = 3
 
-class TableColumnFlags(enum.IntEnum):
+class TableColumnFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -1413,9 +1650,28 @@ class TableColumnFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 1325924351
+
+    _singles_mask_: int = 1325924351
+
+    _all_bits_: int = 4294967295
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -1473,7 +1729,7 @@ class TableColumnFlags(enum.IntEnum):
 
     NO_DIRECT_RESIZE_ = 1073741824
 
-class TableFlags(enum.IntEnum):
+class TableFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -1484,9 +1740,28 @@ class TableFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 536870911
+
+    _singles_mask_: int = 536870911
+
+    _all_bits_: int = 1073741823
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -1562,26 +1837,45 @@ class TableFlags(enum.IntEnum):
 
     SIZING_MASK_ = 57344
 
-class TableRowFlags(enum.IntEnum):
+class TableRowFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
 
     _member_names_: list = ['NONE', 'HEADERS']
 
-    _member_map_: dict = ...
+    _member_map_: dict = {'NONE' : 0, 'HEADERS' : 1}
 
-    _value2member_map_: dict = ...
+    _value2member_map_: dict = {0 : 0, 1 : 1}
+
+    _hashable_values_: list = []
 
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 1
+
+    _singles_mask_: int = 1
+
+    _all_bits_: int = 3
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
     HEADERS = 1
 
-class TreeNodeFlags(enum.IntEnum):
+class TreeNodeFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -1592,9 +1886,28 @@ class TreeNodeFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 32767
+
+    _singles_mask_: int = 32767
+
+    _all_bits_: int = 65535
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -1663,7 +1976,7 @@ class Viewport:
     @work_size.setter
     def work_size(self, arg: tuple[float, float], /) -> None: ...
 
-class WindowFlags(enum.IntEnum):
+class WindowFlags(enum.IntFlag):
     _new_member_ = __new__
 
     _use_args_: bool = True
@@ -1674,9 +1987,28 @@ class WindowFlags(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
+    _hashable_values_: list = []
+
     _unhashable_values_: list = []
 
+    _unhashable_values_map_: dict = {}
+
     _value_repr_ = __repr__
+
+    _boundary_: enum.FlagBoundary = enum.FlagBoundary.KEEP
+
+    _flag_mask_: int = 529006591
+
+    _singles_mask_: int = 529006591
+
+    _all_bits_: int = 1073741823
+
+    _inverted_: None = None
+
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
 
     NONE = 0
 
@@ -1742,7 +2074,7 @@ def arrow_button(str_id: str, dir: int) -> bool: ...
 
 def begin(name: str, closable: bool = False, flags: int = 0) -> tuple[bool, bool]: ...
 
-def begin_combo(label: str, preview_value: str, flags: int = ComboFlags.NONE) -> bool: ...
+def begin_combo(label: str, preview_value: str, flags: int = 0) -> bool: ...
 
 def begin_disabled(disabled: bool = True) -> None: ...
 
@@ -1758,7 +2090,7 @@ def begin_menu(label: str, enabled: bool = True) -> bool: ...
 
 def begin_menu_bar() -> bool: ...
 
-def begin_popup(str_id: str, flags: int = WindowFlags.NONE) -> bool: ...
+def begin_popup(str_id: str, flags: int = 0) -> bool: ...
 
 def begin_table(str_id: str, column: int, flags: int = 0, outer_size: tuple[float, float] = (0.0, 0.0), inner_width: float = 0.0) -> bool: ...
 
@@ -1885,7 +2217,7 @@ def input_text(label: str, text: str, flags: int = InputTextFlags.NONE) -> tuple
 
 def input_text_with_hint(label: str, hint: str, text: str, flags: int = InputTextFlags.NONE) -> tuple[bool, str]: ...
 
-def invisible_button(str_id: str, size: tuple[float, float], flags: int = ButtonFlags.NONE) -> bool: ...
+def invisible_button(str_id: str, size: tuple[float, float], flags: int = 0) -> bool: ...
 
 def is_any_item_active() -> bool: ...
 
@@ -1951,9 +2283,9 @@ def new_frame() -> None: ...
 
 def new_line() -> None: ...
 
-def open_popup(str_id: str, flags: int = PopupFlags.NONE) -> None: ...
+def open_popup(str_id: str, flags: int = 0) -> None: ...
 
-def open_popup_on_item_click(str_id: str | None = None, flags: int = PopupFlags.MOUSE_BUTTON_RIGHT) -> None: ...
+def open_popup_on_item_click(str_id: str | None = None, flags: int = 1) -> None: ...
 
 def pop_button_repeat() -> None: ...
 
@@ -2009,7 +2341,7 @@ def render() -> None: ...
 
 def same_line(offset_from_start_x: float = 0.0, spacing: float = -1.0) -> None: ...
 
-def selectable(label: str, selected: bool = False, flags: int = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]: ...
+def selectable(label: str, selected: bool = False, flags: int = 0, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]: ...
 
 def separator() -> None: ...
 
