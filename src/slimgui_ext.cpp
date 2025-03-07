@@ -736,8 +736,6 @@ NB_MODULE(slimgui_ext, m) {
     }, "flags"_a.sig("HoveredFlags.NONE") = ImGuiHoveredFlags_None);
     m.def("is_item_active", &ImGui::IsItemActive);
     m.def("is_item_focused", &ImGui::IsItemFocused);
-    // TODO FIXME it should work to use .sig() for the argument below, but that produces:
-    //      def is_item_clicked(flags: int = MouseButton | int) -> None: ...
     m.def("is_item_clicked", [](ImGuiMouseButton_ mouse_button) {
         return ImGui::IsItemClicked(mouse_button);
     }, "mouse_button"_a.sig("MouseButton.LEFT") = ImGuiMouseButton_Left);
