@@ -2,7 +2,7 @@ import logging
 import os
 from dataclasses import dataclass
 
-import demo
+import demo_window
 import requests
 import slimgui as imgui
 from slimgui import InputTextFlags
@@ -72,7 +72,7 @@ def run():
             print('checkbox state changed')
             state.foo_enabled = res.value
 
-        demo.show_demo_window(True)
+        demo_window.show_demo_window(True)
 
         window.end_frame()
     window.close()
