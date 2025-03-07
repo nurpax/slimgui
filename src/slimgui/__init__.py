@@ -13,23 +13,24 @@ class WrappedContext:
 # duplicating most of the properties and methods here.
 class WrappedIO:
     def __init__(self, io: slimgui_ext.IO):
-        super().__setattr__('io', io)
-        self._ini_filename: str | None = None
+        super().__setattr__('_refs', {
+            'io': io,
+            'ini_filename': None,
+        })
 
     def __getattr__(self, name: str):
-        if name == 'ini_filename':
-            return self._ini_filename
-        return getattr(self.io, name)
+        refs = self._refs
+        assert name != 'io'
+        if name in refs:
+           return refs[name]
+        return getattr(refs['io'], name)
 
     def __setattr__(self, name: str, value: Any):
-        if name in ['io', '_ini_filename']: # WrappedIO class fields
-            super().__setattr__(name, value)
-        elif name == 'ini_filename':
-            super().__setattr__("_ini_filename", value)
-            self.io.ini_filename = value  # type: ignore
-        else:
-            setattr(self.io, name, value)
-
+        refs = self._refs
+        assert name != 'io'
+        if name in refs:
+            refs[name] = value
+        setattr(refs['io'], name, value)
 
 _current_context: WrappedContext | None = None
 

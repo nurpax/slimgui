@@ -59,7 +59,7 @@ def run():
         imgui.text(f"state: {state.click_count}")
 
         io = imgui.get_io()
-        io.ini_filename = 'foo'
+        io.ini_filename = None
 
         submit, state.text = imgui.input_text(
             "Prompt:", state.text, flags=InputTextFlags.ENTER_RETURNS_TRUE | InputTextFlags.AUTO_SELECT_ALL
