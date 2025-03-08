@@ -12,8 +12,8 @@ _selected = 0
 def show_example_app_layout(st: State):
     global _selected
     imgui.set_next_window_size((500, 440), imgui.Cond.FIRST_USE_EVER)
-    if imgui.begin("Example: Simple layout", st.show_app_layout, WindowFlags.MENU_BAR):
-        #IMGUI_DEMO_MARKER("Examples/Simple layout");
+    visible, st.show_app_layout = imgui.begin("Example: Simple layout", st.show_app_layout, WindowFlags.MENU_BAR)
+    if visible:
         if imgui.begin_menu_bar():
             if imgui.begin_menu("File"):
                 if imgui.menu_item("Close", "Ctrl+W").clicked:

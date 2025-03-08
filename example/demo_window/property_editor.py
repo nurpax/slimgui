@@ -46,7 +46,8 @@ def show_placeholder_object(prefix: str, uid: int):
 
 def show_example_app_property_editor(st: State):
     imgui.set_next_window_size((430, 450), imgui.Cond.FIRST_USE_EVER)
-    if not imgui.begin("Example: Property editor", st.show_app_property_editor):
+    visible, st.show_app_property_editor = imgui.begin("Example: Property editor", st.show_app_property_editor)
+    if not visible:
         imgui.end()
         return
 

@@ -3,13 +3,14 @@ import math
 import warnings
 
 import slimgui as imgui
+from slimgui import WindowFlags
 from .types import State
 from .utils import help_marker
 from . import widgets, layout, property_editor
 
 st = State()
 
-def show_demo_window(open: bool):
+def show_demo_window(show_window: bool):
     if st.show_app_main_menu_bar:
         show_example_app_main_menu_bar()
 
@@ -24,7 +25,9 @@ def show_demo_window(open: bool):
     if st.show_app_property_editor:
         property_editor.show_example_app_property_editor(st)
 
-    #     if (show_app_simple_overlay)      ShowExampleAppSimpleOverlay(&show_app_simple_overlay);
+    if st.show_app_simple_overlay:
+        show_example_app_simple_overlay(st)
+
     #     if (show_app_auto_resize)         ShowExampleAppAutoResize(&show_app_auto_resize);
     #     if (show_app_constrained_resize)  ShowExampleAppConstrainedResize(&show_app_constrained_resize);
     #     if (show_app_fullscreen)          ShowExampleAppFullscreen(&show_app_fullscreen);
@@ -73,17 +76,18 @@ def show_demo_window(open: bool):
     if st.unsaved_document:
         window_flags |= imgui.WindowFlags.UNSAVED_DOCUMENT
 
+    closable = show_window
     if st.no_close:
-        # TODO no close is not working
-        open = True # TODO FIXME is this correct? (p_open = NULL; // Don't pass our bool* to Begin)
+        closable = False
 
     main_viewport = imgui.get_main_viewport()
     imgui.set_next_window_pos((main_viewport.work_pos[0] + 650, main_viewport.work_pos[1] + 20), imgui.Cond.FIRST_USE_EVER)
     imgui.set_next_window_size((550, 680), imgui.Cond.FIRST_USE_EVER)
 
-    if not imgui.begin("Dear ImGui Demo", open, window_flags)[0]:
+    visible, show_window = imgui.begin("Dear ImGui Demo", closable=closable, flags=window_flags)
+    if not visible:
         imgui.end()
-        return
+        return show_window
 
     imgui.push_item_width(imgui.get_font_size() * -12)
 
@@ -284,6 +288,7 @@ def show_demo_window(open: bool):
 #     // End of ShowDemoWindow()
 #     ImGui::PopItemWidth();
     imgui.end()
+    return show_window
 
 #------------------------------------------------------------------------
 
@@ -5264,58 +5269,56 @@ def show_example_menu_file():
 # // [SECTION] Example App: Simple overlay / ShowExampleAppSimpleOverlay()
 # //-----------------------------------------------------------------------------
 
-# // Demonstrate creating a simple static window with no decoration
-# // + a context-menu to choose which corner of the screen to use.
-# static void ShowExampleAppSimpleOverlay(bool* p_open)
-# {
-#     static int location = 0;
-#     ImGuiIO& io = ImGui::GetIO();
-#     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-#     if (location >= 0)
-#     {
-#         const float PAD = 10.0f;
-#         const ImGuiViewport* viewport = ImGui::GetMainViewport();
-#         ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
-#         ImVec2 work_size = viewport->WorkSize;
-#         ImVec2 window_pos, window_pos_pivot;
-#         window_pos.x = (location & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
-#         window_pos.y = (location & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
-#         window_pos_pivot.x = (location & 1) ? 1.0f : 0.0f;
-#         window_pos_pivot.y = (location & 2) ? 1.0f : 0.0f;
-#         ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-#         ImGui::SetNextWindowViewport(viewport->ID);
-#         window_flags |= ImGuiWindowFlags_NoMove;
-#     }
-#     else if (location == -2)
-#     {
-#         // Center window
-#         ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-#         window_flags |= ImGuiWindowFlags_NoMove;
-#     }
-#     ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-#     if (ImGui::Begin("Example: Simple overlay", p_open, window_flags))
-#     {
-#         IMGUI_DEMO_MARKER("Examples/Simple Overlay");
-#         ImGui::Text("Simple overlay\n" "(right-click to change position)");
-#         ImGui::Separator();
-#         if (ImGui::IsMousePosValid())
-#             ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-#         else
-#             ImGui::Text("Mouse Position: <invalid>");
-#         if (ImGui::BeginPopupContextWindow())
-#         {
-#             if (ImGui::MenuItem("Custom",       NULL, location == -1)) location = -1;
-#             if (ImGui::MenuItem("Center",       NULL, location == -2)) location = -2;
-#             if (ImGui::MenuItem("Top-left",     NULL, location == 0)) location = 0;
-#             if (ImGui::MenuItem("Top-right",    NULL, location == 1)) location = 1;
-#             if (ImGui::MenuItem("Bottom-left",  NULL, location == 2)) location = 2;
-#             if (ImGui::MenuItem("Bottom-right", NULL, location == 3)) location = 3;
-#             if (p_open && ImGui::MenuItem("Close")) *p_open = false;
-#             ImGui::EndPopup();
-#         }
-#     }
-#     ImGui::End();
-# }
+_location = 0
+def show_example_app_simple_overlay(st: State):
+    global _location
+
+    window_flags = WindowFlags.NO_DECORATION | WindowFlags.ALWAYS_AUTO_RESIZE | WindowFlags.NO_SAVED_SETTINGS | WindowFlags.NO_FOCUS_ON_APPEARING | WindowFlags.NO_NAV
+    if _location >= 0:
+        pad = 10.0
+        viewport = imgui.get_main_viewport()
+        work_pos = viewport.work_pos
+        work_size = viewport.work_size
+        wpos_x = (work_pos[0] + work_size[0] - pad) if _location & 1 else work_pos[0] + pad
+        wpos_y = (work_pos[1] + work_size[1] - pad) if _location & 2 else work_pos[1] + pad
+        wpos_pivot_x = 1 if _location & 1 else 0
+        wpos_pivot_y = 1 if _location & 2 else 0
+
+        imgui.set_next_window_pos((wpos_x, wpos_y), imgui.Cond.ALWAYS, (wpos_pivot_x, wpos_pivot_y))
+        # TODO imgui.set_next_window_viewport??
+        window_flags |= WindowFlags.NO_MOVE
+    elif _location == -2:
+        imgui.set_next_window_pos(imgui.get_main_viewport().get_center(), imgui.Cond.ALWAYS, (0.5, 0.5))
+
+    imgui.set_next_window_bg_alpha(0.35)
+    visible, st.show_app_simple_overlay = imgui.begin("Example: Simple overlay", st.show_app_simple_overlay, window_flags)
+    if visible:
+        imgui.text('Simple overlay\n(right-click to change position)')
+        imgui.separator()
+
+        if imgui.is_mouse_pos_valid():
+            pos = imgui.get_mouse_pos()
+            imgui.text(f'Mouse Position: ({pos[0]:.1f},{pos[1]:.1f})')
+        else:
+            imgui.text('Mouse Position: <invalid>')
+
+        if imgui.begin_popup_context_window():
+            if imgui.menu_item('Custom', None, _location == -1).clicked:
+                _location = -1
+            if imgui.menu_item('Center', None, _location == -2).clicked:
+                _location = -2
+            if imgui.menu_item('Top-left', None, _location == 0).clicked:
+                _location = 0
+            if imgui.menu_item('Top-right', None, _location == 1).clicked:
+                _location = 1
+            if imgui.menu_item('Bottom-left', None, _location == 2).clicked:
+                _location = 2
+            if imgui.menu_item('Bottom-right', None, _location == 3).clicked:
+                _location = 3
+            # TODO close
+            imgui.end_popup()
+        imgui.end()
+
 
 # //-----------------------------------------------------------------------------
 # // [SECTION] Example App: Fullscreen window / ShowExampleAppFullscreen()
