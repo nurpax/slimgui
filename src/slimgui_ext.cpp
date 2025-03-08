@@ -134,7 +134,9 @@ NB_MODULE(slimgui_ext, m) {
         .def_rw("pos", &ImGuiViewport::Pos)
         .def_rw("size", &ImGuiViewport::Size)
         .def_rw("work_pos", &ImGuiViewport::WorkPos)
-        .def_rw("work_size", &ImGuiViewport::WorkSize);
+        .def_rw("work_size", &ImGuiViewport::WorkSize)
+        .def("get_center", &ImGuiViewport::GetCenter)
+        .def("get_work_center", &ImGuiViewport::GetWorkCenter);
 
     nb::class_<ImGuiIO>(m, "IO")
         .def("add_mouse_pos_event", &ImGuiIO::AddMousePosEvent, "x"_a, "y"_a)
@@ -257,8 +259,8 @@ NB_MODULE(slimgui_ext, m) {
 
     m.def("begin", [](const char* name, bool closable, ImGuiWindowFlags_ flags) {
         bool open = true;
-        bool collapsed = ImGui::Begin(name, closable ? &open : NULL, flags);
-        return std::pair<bool, bool>(collapsed, open);
+        bool visible = ImGui::Begin(name, closable ? &open : NULL, flags);
+        return std::pair<bool, bool>(visible, open);
     }, "name"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
     m.def("end", &ImGui::End);
 
@@ -438,10 +440,9 @@ NB_MODULE(slimgui_ext, m) {
 
     m.def("begin_menu", &ImGui::BeginMenu, "label"_a, "enabled"_a = true);
     m.def("end_menu", &ImGui::EndMenu);
-    m.def("menu_item", [](const char* label, nb::handle shortcut_h, bool selected, bool enabled) {
+    m.def("menu_item", [](const char* label, std::optional<std::string> shortcut, bool selected, bool enabled) {
         bool mut_selected = selected;
-        const char* shortcut = !shortcut_h.is_none() ? nb::cast<const char *>(shortcut_h) : nullptr;
-        bool clicked = ImGui::MenuItem(label, shortcut, &mut_selected, enabled);
+        bool clicked = ImGui::MenuItem(label, shortcut ? shortcut.value().c_str() : nullptr, &mut_selected, enabled);
         return std::pair(clicked, mut_selected);
     }, "label"_a, "shortcut"_a = nb::none(), "selected"_a = false, "enabled"_a = true);
 
@@ -470,9 +471,9 @@ NB_MODULE(slimgui_ext, m) {
         ImGui::OpenPopup(str_id, flags);
     }, "str_id"_a, "flags"_a.sig("PopupFlags.NONE") = ImGuiPopupFlags_None);
     // IMGUI_API void          OpenPopup(ImGuiID id, ImGuiPopupFlags popup_flags = 0);                             // id overload to facilitate calling from nested stacks
-    m.def("open_popup_on_item_click", [](const char *str_id, ImGuiPopupFlags_ flags) {
-        ImGui::OpenPopupOnItemClick(str_id, flags);
-    }, "str_id"_a.none() = nullptr, "flags"_a.sig("PopupFlags.MOUSE_BUTTON_RIGHT") = ImGuiPopupFlags_MouseButtonRight);
+    m.def("open_popup_on_item_click", [](std::optional<std::string> str_id, ImGuiPopupFlags_ flags) {
+        ImGui::OpenPopupOnItemClick(str_id ? str_id.value().c_str() : nullptr, flags);
+    }, "str_id"_a = nb::none(), "flags"_a.sig("PopupFlags.MOUSE_BUTTON_RIGHT") = ImGuiPopupFlags_MouseButtonRight);
     m.def("close_current_popup", &ImGui::CloseCurrentPopup);
 
     // // Popups: open+begin combined functions helpers
@@ -481,7 +482,9 @@ NB_MODULE(slimgui_ext, m) {
     // //  - IMPORTANT: Notice that BeginPopupContextXXX takes ImGuiPopupFlags just like OpenPopup() and unlike BeginPopup(). For full consistency, we may add ImGuiWindowFlags to the BeginPopupContextXXX functions in the future.
     // //  - IMPORTANT: Notice that we exceptionally default their flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter, so if you add other flags remember to re-add the ImGuiPopupFlags_MouseButtonRight.
     // IMGUI_API bool          BeginPopupContextItem(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);  // open+begin popup when clicked on last item. Use str_id==NULL to associate the popup to previous item. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!
-    // IMGUI_API bool          BeginPopupContextWindow(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);// open+begin popup when clicked on current window.
+    m.def("begin_popup_context_window", [](std::optional<std::string> str_id, ImGuiPopupFlags_ flags) {
+        return ImGui::BeginPopupContextWindow(str_id ? str_id.value().c_str() : nullptr, flags);
+    }, "str_id"_a = nb::none(), "flags"_a.sig("PopupFlags.MOUSE_BUTTON_RIGHT") = ImGuiPopupFlags_MouseButtonRight);
     // IMGUI_API bool          BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);  // open+begin popup when clicked in void (where there are no windows).
     // // Popups: query functions
     // //  - IsPopupOpen(): return true if the popup is open at the current BeginPopup() level of the popup stack.
@@ -806,5 +809,33 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_key_pressed_amount", &ImGui::GetKeyPressedAmount, "key"_a, "repeat_delay"_a, "rate"_a);
     m.def("get_key_name", &ImGui::GetKeyName, "key"_a);
     m.def("set_next_frame_want_capture_keyboard", &ImGui::SetNextFrameWantCaptureKeyboard, "want_capture_keyboard"_a);
+
+    m.def("is_mouse_down", [](ImGuiMouseButton_ button) { return ImGui::IsMouseDown(button); }, "button"_a);
+    m.def("is_mouse_clicked", [](ImGuiMouseButton_ button, bool repeat) { return ImGui::IsMouseClicked(button, repeat); }, "button"_a, "repeat"_a = false);
+    m.def("is_mouse_released", [](ImGuiMouseButton_ button) { return ImGui::IsMouseReleased(button); }, "button"_a);
+    m.def("is_mouse_double_clicked", [](ImGuiMouseButton_ button) { return ImGui::IsMouseDoubleClicked(button); }, "button"_a);
+    m.def("get_mouse_clicked_count", [](ImGuiMouseButton_ button) { return ImGui::GetMouseClickedCount(button); }, "button"_a);
+    m.def("is_mouse_hovering_rect", [](const ImVec2& r_min, const ImVec2& r_max, bool clip) { return ImGui::IsMouseHoveringRect(r_min, r_max, clip); }, "r_min"_a, "r_max"_a, "clip"_a = true);
+    m.def("is_mouse_pos_valid", [](std::optional<ImVec2> mouse_pos) {
+        if (mouse_pos) {
+            ImVec2 v = mouse_pos.value();
+            return ImGui::IsMousePosValid(&v);
+        }
+        return ImGui::IsMousePosValid(NULL);
+    }, "mouse_pos"_a.none() = std::nullopt);
+    m.def("get_mouse_pos", &ImGui::GetMousePos);
+    m.def("get_mouse_pos_on_opening_current_popup", &ImGui::GetMousePosOnOpeningCurrentPopup);
+    m.def("is_mouse_dragging", [](ImGuiMouseButton_ button, float lock_threshold) {
+        return ImGui::IsMouseDragging(button, lock_threshold);
+    }, "button"_a, "lock_threshold"_a = -1.0f);
+    m.def("get_mouse_drag_delta", [](ImGuiMouseButton_ button, float lock_threshold) {
+        return ImGui::GetMouseDragDelta(button, lock_threshold);
+    }, "button"_a, "lock_threshold"_a = -1.0f);
+    m.def("reset_mouse_drag_delta", [](ImGuiMouseButton_ button) {
+        return ImGui::ResetMouseDragDelta(button);
+    }, "button"_a.sig("MouseButton.LEFT") = ImGuiMouseButton_Left);
+    m.def("get_mouse_cursor", []() { return (ImGuiMouseCursor_)ImGui::GetMouseCursor(); });
+    m.def("set_mouse_cursor", [](ImGuiMouseCursor_ cursor_type) { ImGui::SetMouseCursor(cursor_type); }, "cursor_type"_a);
+    m.def("set_next_frame_want_capture_mouse", &ImGui::SetNextFrameWantCaptureMouse, "capture"_a);
 
 }

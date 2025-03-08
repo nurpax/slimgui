@@ -57,6 +57,7 @@ class GenContext:
             ("ImGuiSliderFlags_", "SliderFlags"),
             ("ImGuiPopupFlags_", "PopupFlags"),
             ("ImGuiMouseButton_", "MouseButton"),
+            ("ImGuiMouseCursor_", "MouseCursor"),
             ("ImGuiCol_", "Col"),
             ("ImGuiDir_", "Dir"),
             ("ImGuiStyleVar_", "StyleVar"),
