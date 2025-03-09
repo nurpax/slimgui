@@ -5,13 +5,11 @@ import OpenGL.GL as gl
 import slimgui as imgui
 from slimgui.integrations.glfw import GlfwRenderer
 
-from . import gl_utils
-
 # ----------------------------------------------------------------------------
 
 class GlfwWindow:  # pylint: disable=too-many-public-methods
     def __init__(
-        self, *, title="GlfwWindow", window_width=1920, window_height=1080, deferred_show=True
+        self, *, title="GlfwWindow", window_width=1920, window_height=1080, deferred_show=True, request_opengl_core_profile=False
     ):
         self._glfw_window = None
         self._drawing_frame = False
@@ -21,13 +19,16 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
         self._skip_frames = 0
         self._deferred_show = True
         self._drag_and_drop_paths = None
+        self._core_profile = False
 
         # Create window.
         glfw.init()
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
-        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, glfw.TRUE)
-        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+        if request_opengl_core_profile:
+            self._core_profile = True
+            glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+            glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+            glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, glfw.TRUE)
+            glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         glfw.window_hint(glfw.VISIBLE, False)
         self._glfw_window = glfw.create_window(
             width=window_width, height=window_height, title=title, monitor=None, share=None
@@ -148,6 +149,15 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
         self.make_context_current()
 
         # Initialize GL state.
+        if not self._core_profile:
+            gl.glViewport(0, 0, self.content_width, self.content_height)
+            gl.glMatrixMode(gl.GL_PROJECTION)
+            gl.glLoadIdentity()
+            gl.glTranslate(-1, 1, 0)
+            gl.glScale(2 / max(self.content_width, 1), -2 / max(self.content_height, 1), 1)
+            gl.glMatrixMode(gl.GL_MODELVIEW)
+            gl.glLoadIdentity()
+
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_ONE, gl.GL_ONE_MINUS_SRC_ALPHA)  # Pre-multiplied alpha.
 
@@ -182,7 +192,7 @@ class ImguiWindow(GlfwWindow):
         # Init ImGui.
         self._imgui_context = imgui.create_context()
         io = imgui.get_io()
-        io.ini_filename = None # don't save imgui.ini
+        io.ini_filename = ini_filename
         # TODO pass these in?
         io.config_flags |= imgui.ConfigFlags.NAV_ENABLE_KEYBOARD
 
