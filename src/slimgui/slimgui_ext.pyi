@@ -220,6 +220,15 @@ class ColorEditFlags(enum.IntFlag):
 
     INPUT_HSV = 268435456
 
+class ColorsArray:
+    def __getitem__(self, arg: Col, /) -> tuple[float, float, float, float]: ...
+
+    def __setitem__(self, arg0: Col, arg1: tuple[float, float, float, float], /) -> None: ...
+
+    def __iter__(self) -> Iterator[tuple[float, float, float, float]]: ...
+
+    def __len__(self) -> int: ...
+
 class ComboFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -1422,6 +1431,9 @@ class Style:
 
     @circle_tessellation_max_error.setter
     def circle_tessellation_max_error(self, arg: float, /) -> None: ...
+
+    @property
+    def colors(self) -> ColorsArray: ...
 
     @property
     def hover_stationary_delay(self) -> float: ...

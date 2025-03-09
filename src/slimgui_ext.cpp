@@ -1,5 +1,6 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/make_iterator.h>
+
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/tuple.h>
 #include <nanobind/stl/vector.h>
@@ -138,6 +139,26 @@ NB_MODULE(slimgui_ext, m) {
         .def("get_center", &ImGuiViewport::GetCenter)
         .def("get_work_center", &ImGuiViewport::GetWorkCenter);
 
+    // ColorsArray is just a way of providing mutable list access to
+    // the Colors array in ImGuiStyle.
+    struct ColorsArray {
+        ImVec4* data;
+        ColorsArray(ImVec4* colors) : data(colors) {}
+    };
+    nb::class_<ColorsArray>(m, "ColorsArray")
+        .def("__getitem__", [](const ColorsArray& self, ImGuiCol_ index) {
+            return self.data[index];
+        })
+        .def("__setitem__", [](ColorsArray& self, ImGuiCol_ index, ImVec4 value) {
+            self.data[index] = value;
+        })
+        .def("__iter__", [](const ColorsArray& self) {
+            return nb::make_iterator(nb::type<ImVec4>(), "iterator", self.data, self.data + (size_t)ImGuiCol_COUNT);
+        }, nb::keep_alive<0, 1>())
+        .def("__len__", [](const ColorsArray& self) {
+            return (size_t)ImGuiCol_COUNT;
+        });
+
     nb::class_<ImGuiStyle>(m, "Style")
         .def_rw("alpha", &ImGuiStyle::Alpha)
         .def_rw("disabled_alpha", &ImGuiStyle::DisabledAlpha)
@@ -184,7 +205,9 @@ NB_MODULE(slimgui_ext, m) {
         .def_rw("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill)
         .def_rw("curve_tessellation_tol", &ImGuiStyle::CurveTessellationTol)
         .def_rw("circle_tessellation_max_error", &ImGuiStyle::CircleTessellationMaxError)
-        //.def_rw("colors", &ImGuiStyle::Colors) TODO HOW TO DO THIS?
+        .def_prop_ro("colors", [](ImGuiStyle* style) -> ColorsArray {
+            return ColorsArray(style->Colors);
+        }, nb::rv_policy::reference_internal)
         .def_rw("hover_stationary_delay", &ImGuiStyle::HoverStationaryDelay)
         .def_rw("hover_delay_short", &ImGuiStyle::HoverDelayShort)
         .def_rw("hover_delay_normal", &ImGuiStyle::HoverDelayNormal)
