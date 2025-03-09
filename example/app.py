@@ -45,7 +45,7 @@ def run():
         font_bytes = None
 
     # GUI boilerplate.
-    window = imgui_window.ImguiWindow(title="Prompt tool", close_on_esc=True, font_bytes=font_bytes)
+    window = imgui_window.ImguiWindow(title="Prompt tool", close_on_esc=True, font_bytes=font_bytes, request_opengl_core_profile=True)
 
     while not window.should_close():
         window.begin_frame()
