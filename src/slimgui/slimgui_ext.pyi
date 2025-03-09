@@ -14,11 +14,7 @@ class BackendFlags(enum.IntFlag):
 
     _value2member_map_: dict = {0 : 0, 1 : 1, 2 : 2, 4 : 4, 8 : 8}
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -58,11 +54,7 @@ class ButtonFlags(enum.IntFlag):
 
     _value2member_map_: dict = {0 : 0, 1 : 1, 2 : 2, 4 : 4, 7 : 7}
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -104,11 +96,7 @@ class ChildFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -156,11 +144,7 @@ class Col(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -283,11 +267,7 @@ class ColorEditFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -375,11 +355,7 @@ class ComboFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -429,11 +405,7 @@ class Cond(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -458,11 +430,7 @@ class ConfigFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -513,11 +481,7 @@ class Dir(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -566,11 +530,7 @@ class DrawFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -753,11 +713,7 @@ class HoveredFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -982,11 +938,7 @@ class InputTextFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1060,11 +1012,7 @@ class Key(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1415,11 +1363,7 @@ class MouseButton(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1442,11 +1386,7 @@ class MouseCursor(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1483,11 +1423,7 @@ class PopupFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1541,11 +1477,7 @@ class SelectableFlags(enum.IntFlag):
 
     _value2member_map_: dict = {0 : 0, 1 : 1, 2 : 2, 4 : 4, 8 : 8, 16 : 16}
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1587,11 +1519,7 @@ class SliderFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1633,11 +1561,7 @@ class StyleVar(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1716,11 +1640,7 @@ class TabBarFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1772,11 +1692,7 @@ class TabItemFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1826,11 +1742,7 @@ class TableBgTarget(enum.IntEnum):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1853,11 +1765,7 @@ class TableColumnFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -1943,11 +1851,7 @@ class TableFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -2051,11 +1955,7 @@ class TableRowFlags(enum.IntFlag):
 
     _value2member_map_: dict = {0 : 0, 1 : 1}
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -2089,11 +1989,7 @@ class TreeNodeFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -2194,11 +2090,7 @@ class WindowFlags(enum.IntFlag):
 
     _value2member_map_: dict = ...
 
-    _hashable_values_: list = []
-
     _unhashable_values_: list = []
-
-    _unhashable_values_map_: dict = {}
 
     _value_repr_ = __repr__
 
@@ -2317,6 +2209,8 @@ def button(label: str, size: tuple[float, float] = (0.0, 0.0)) -> bool: ...
 
 def calc_item_width() -> float: ...
 
+def calc_text_size(text: str, hide_text_after_double_hash: bool = False, wrap_width: float = -1.0) -> tuple[float, float]: ...
+
 def checkbox(label: str, v: bool) -> tuple[bool, bool]: ...
 
 def checkbox_flags(label: str, flags: int, flags_value: int) -> tuple[bool, int]: ...
@@ -2377,6 +2271,16 @@ def get_content_region_avail() -> tuple[float, float]: ...
 def get_content_region_max() -> tuple[float, float]: ...
 
 def get_current_context() -> Context: ...
+
+def get_cursor_pos() -> tuple[float, float]: ...
+
+def get_cursor_pos_x() -> float: ...
+
+def get_cursor_pos_y() -> float: ...
+
+def get_cursor_screen_pos() -> tuple[float, float]: ...
+
+def get_cursor_start_pos() -> tuple[float, float]: ...
 
 def get_draw_data() -> DrawData: ...
 
@@ -2595,6 +2499,14 @@ def selectable(label: str, selected: bool = False, flags: SelectableFlags = Sele
 def separator() -> None: ...
 
 def separator_text(text: str) -> None: ...
+
+def set_cursor_pos(local_pos: tuple[float, float]) -> None: ...
+
+def set_cursor_pos_x(local_x: float) -> None: ...
+
+def set_cursor_pos_y(local_y: float) -> None: ...
+
+def set_cursor_screen_pos(pos: tuple[float, float]) -> None: ...
 
 def set_item_default_focus() -> None: ...
 

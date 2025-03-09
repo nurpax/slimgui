@@ -416,6 +416,15 @@ NB_MODULE(slimgui_ext, m) {
         return std::tuple(changed, current_item);
     }, "label"_a, "current_item"_a, "items"_a, "popup_max_height_in_items"_a = -1);
 
+    m.def("get_cursor_screen_pos", &ImGui::GetCursorScreenPos);
+    m.def("set_cursor_screen_pos", &ImGui::SetCursorScreenPos, "pos"_a);
+    m.def("get_cursor_pos", &ImGui::GetCursorPos);
+    m.def("get_cursor_pos_x", &ImGui::GetCursorPosX);
+    m.def("get_cursor_pos_y", &ImGui::GetCursorPosY);
+    m.def("set_cursor_pos", &ImGui::SetCursorPos, "local_pos"_a);
+    m.def("set_cursor_pos_x", &ImGui::SetCursorPosX, "local_x"_a);
+    m.def("set_cursor_pos_y", &ImGui::SetCursorPosY, "local_y"_a);
+    m.def("get_cursor_start_pos", &ImGui::GetCursorStartPos);
 
     // Other layout functions
     m.def("separator", &ImGui::Separator);
@@ -787,7 +796,9 @@ NB_MODULE(slimgui_ext, m) {
     // IMGUI_API ImGuiStorage* GetStateStorage();
 
     // Text Utilities
-    // IMGUI_API ImVec2        CalcTextSize(const char* text, const char* text_end = NULL, bool hide_text_after_double_hash = false, float wrap_width = -1.0f);
+    m.def("calc_text_size", [](const char* text, bool hide_text_after_double_hash, float wrap_width) {
+        return ImGui::CalcTextSize(text, nullptr, hide_text_after_double_hash, wrap_width);
+    }, "text"_a, "hide_text_after_double_hash"_a = false, "wrap_width"_a = -1.0f);
 
     // Color utilities
     m.def("color_convert_hsv_to_rgb", [](const ImVec4& hsv) {
