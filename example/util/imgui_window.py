@@ -1,4 +1,5 @@
 
+import warnings
 import glfw
 import OpenGL.GL as gl
 
@@ -24,10 +25,11 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
 
         # Create window.
         glfw.init()
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
-        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, glfw.TRUE)
-        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+        # TODO jhellsten - plotter wants an old version of OpenGL.  Add a flag?
+        # glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+        # glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+        # glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, glfw.TRUE)
+        # glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         glfw.window_hint(glfw.VISIBLE, False)
         self._glfw_window = glfw.create_window(
             width=window_width, height=window_height, title=title, monitor=None, share=None
@@ -219,8 +221,10 @@ class ImguiWindow(GlfwWindow):
         return round(self._cur_font_size * 0.4)
 
     def set_font_size(self, target):  # Applied on next frame.
-        assert self._imgui_fonts is not None
-        self._cur_font_size = min((abs(key - target), key) for key in self._imgui_fonts.keys())[1]
+        #assert self._imgui_fonts is not None
+        #self._cur_font_size = min((abs(key - target), key) for key in self._imgui_fonts.keys())[1]
+        warnings.warn("set_font_size() is not implemented yet.")
+        pass
 
     def begin_frame(self):
         assert self._imgui_renderer is not None

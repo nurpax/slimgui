@@ -28,7 +28,6 @@ nanobind_add_stub(
   OUTPUT "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext.pyi"
   PYTHON_PATH $<TARGET_FILE_DIR:slimgui_ext>
   DEPENDS slimgui_ext
-  INCLUDE_PRIVATE
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
