@@ -53,7 +53,7 @@ def destroy_context(ctx: WrappedContext | None):
         ctx = prev_ctx
     assert ctx is not None
     slimgui_ext.destroy_context(ctx.context)
-    _current_context = ctx
+    _current_context = None if ctx == prev_ctx else prev_ctx
 
 def get_io() -> slimgui_ext.IO:
     ctx = get_current_context()
