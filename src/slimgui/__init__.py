@@ -9,6 +9,7 @@ class WrappedContext:
     def __init__(self, ctx: slimgui_ext.Context):
         self.context = ctx
         self.io = cast(slimgui_ext.IO, WrappedIO(ctx.get_io_internal()))
+        self.style = ctx.get_style_internal()
 
 # Some trickery with wrapping the slimgui_ext.IO class to avoid
 # duplicating most of the properties and methods here.
@@ -58,6 +59,11 @@ def get_io() -> slimgui_ext.IO:
     ctx = get_current_context()
     assert ctx is not None
     return ctx.io
+
+def get_style() -> slimgui_ext.Style:
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.style
 
 # Other wrappers for improved use ergonomics.  The idea is not to invent anything
 # new here but just add a little finishing touches like using namedtuples for multiple

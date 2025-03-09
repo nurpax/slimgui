@@ -138,6 +138,60 @@ NB_MODULE(slimgui_ext, m) {
         .def("get_center", &ImGuiViewport::GetCenter)
         .def("get_work_center", &ImGuiViewport::GetWorkCenter);
 
+    nb::class_<ImGuiStyle>(m, "Style")
+        .def_rw("alpha", &ImGuiStyle::Alpha)
+        .def_rw("disabled_alpha", &ImGuiStyle::DisabledAlpha)
+        .def_rw("window_padding", &ImGuiStyle::WindowPadding)
+        .def_rw("window_rounding", &ImGuiStyle::WindowRounding)
+        .def_rw("window_border_size", &ImGuiStyle::WindowBorderSize)
+        .def_rw("window_min_size", &ImGuiStyle::WindowMinSize)
+        .def_rw("window_title_align", &ImGuiStyle::WindowTitleAlign)
+        .def_rw("window_menu_button_position", &ImGuiStyle::WindowMenuButtonPosition)
+        .def_rw("child_rounding", &ImGuiStyle::ChildRounding)
+        .def_rw("child_border_size", &ImGuiStyle::ChildBorderSize)
+        .def_rw("popup_rounding", &ImGuiStyle::PopupRounding)
+        .def_rw("popup_border_size", &ImGuiStyle::PopupBorderSize)
+        .def_rw("frame_padding", &ImGuiStyle::FramePadding)
+        .def_rw("frame_rounding", &ImGuiStyle::FrameRounding)
+        .def_rw("frame_border_size", &ImGuiStyle::FrameBorderSize)
+        .def_rw("item_spacing", &ImGuiStyle::ItemSpacing)
+        .def_rw("item_inner_spacing", &ImGuiStyle::ItemInnerSpacing)
+        .def_rw("cell_padding", &ImGuiStyle::CellPadding)
+        .def_rw("touch_extra_padding", &ImGuiStyle::TouchExtraPadding)
+        .def_rw("indent_spacing", &ImGuiStyle::IndentSpacing)
+        .def_rw("columns_min_spacing", &ImGuiStyle::ColumnsMinSpacing)
+        .def_rw("scrollbar_size", &ImGuiStyle::ScrollbarSize)
+        .def_rw("scrollbar_rounding", &ImGuiStyle::ScrollbarRounding)
+        .def_rw("grab_min_size", &ImGuiStyle::GrabMinSize)
+        .def_rw("grab_rounding", &ImGuiStyle::GrabRounding)
+        .def_rw("log_slider_deadzone", &ImGuiStyle::LogSliderDeadzone)
+        .def_rw("tab_rounding", &ImGuiStyle::TabRounding)
+        .def_rw("tab_border_size", &ImGuiStyle::TabBorderSize)
+        .def_rw("tab_min_width_for_close_button", &ImGuiStyle::TabMinWidthForCloseButton)
+        .def_rw("tab_bar_border_size", &ImGuiStyle::TabBarBorderSize)
+        .def_rw("table_angled_headers_angle", &ImGuiStyle::TableAngledHeadersAngle)
+        .def_rw("color_button_position", &ImGuiStyle::ColorButtonPosition)
+        .def_rw("button_text_align", &ImGuiStyle::ButtonTextAlign)
+        .def_rw("selectable_text_align", &ImGuiStyle::SelectableTextAlign)
+        .def_rw("separator_text_border_size", &ImGuiStyle::SeparatorTextBorderSize)
+        .def_rw("separator_text_align", &ImGuiStyle::SeparatorTextAlign)
+        .def_rw("separator_text_padding", &ImGuiStyle::SeparatorTextPadding)
+        .def_rw("display_window_padding", &ImGuiStyle::DisplayWindowPadding)
+        .def_rw("display_safe_area_padding", &ImGuiStyle::DisplaySafeAreaPadding)
+        .def_rw("mouse_cursor_scale", &ImGuiStyle::MouseCursorScale)
+        .def_rw("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines)
+        .def_rw("anti_aliased_lines_use_tex", &ImGuiStyle::AntiAliasedLinesUseTex)
+        .def_rw("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill)
+        .def_rw("curve_tessellation_tol", &ImGuiStyle::CurveTessellationTol)
+        .def_rw("circle_tessellation_max_error", &ImGuiStyle::CircleTessellationMaxError)
+        //.def_rw("colors", &ImGuiStyle::Colors) TODO HOW TO DO THIS?
+        .def_rw("hover_stationary_delay", &ImGuiStyle::HoverStationaryDelay)
+        .def_rw("hover_delay_short", &ImGuiStyle::HoverDelayShort)
+        .def_rw("hover_delay_normal", &ImGuiStyle::HoverDelayNormal)
+        .def_rw("hover_flags_for_tooltip_mouse", &ImGuiStyle::HoverFlagsForTooltipMouse)
+        .def_rw("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav)
+        .def("scale_all_sizes", &ImGuiStyle::ScaleAllSizes, "scale_factor"_a);
+
     nb::class_<ImGuiIO>(m, "IO")
         .def("add_mouse_pos_event", &ImGuiIO::AddMousePosEvent, "x"_a, "y"_a)
         .def("add_mouse_button_event", &ImGuiIO::AddMouseButtonEvent, "button"_a, "down"_a)
@@ -225,12 +279,16 @@ NB_MODULE(slimgui_ext, m) {
     nb::class_<ImGuiContext>(m, "Context")
         .def("get_io_internal", [](ImGuiContext* ctx) -> ImGuiIO* {
             return &ctx->IO;
+        }, nb::rv_policy::reference_internal)
+        .def("get_style_internal", [](ImGuiContext* ctx) -> ImGuiStyle* {
+            return &ctx->Style;
         }, nb::rv_policy::reference_internal);
 
     m.def("create_context", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference, "create context");
     m.def("get_current_context", &ImGui::GetCurrentContext, nb::rv_policy::reference);
     m.def("destroy_context", &ImGui::DestroyContext);
     m.def("get_io", &ImGui::GetIO, nb::rv_policy::reference);
+    m.def("get_style", &ImGui::GetStyle, nb::rv_policy::reference);
     m.def("get_draw_data", &ImGui::GetDrawData, nb::rv_policy::reference);
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);
 
@@ -739,6 +797,20 @@ NB_MODULE(slimgui_ext, m) {
         ImGui::TableSetBgColor(target, ImGui::ColorConvertFloat4ToU32(col), column_n);
     }, "target"_a, "color"_a, "column_n"_a = -1);
 
+    // Legacy Columns API (prefer using Tables!)
+    // - You can also use SameLine(pos_x) to mimic simplified columns.
+    m.def("columns", [](int count, std::optional<std::string> id, bool border) {
+        return ImGui::Columns(count, id ? id.value().c_str() : nullptr, border);
+    }, "count"_a = 1, "id"_a = nb::none(), "border"_a = true);
+    m.def("next_column", &ImGui::NextColumn);
+    m.def("get_column_index", &ImGui::GetColumnIndex);
+    m.def("get_column_width", &ImGui::GetColumnWidth, "column_index"_a = -1);
+    m.def("set_column_width", &ImGui::SetColumnWidth, "column_index"_a, "width"_a);
+    m.def("get_column_offset", &ImGui::GetColumnOffset, "column_index"_a = -1);
+    m.def("set_column_offset", &ImGui::SetColumnOffset, "column_index"_a, "offset_x"_a);
+    m.def("get_columns_count", &ImGui::GetColumnsCount);
+
+    // Tab bar
     m.def("begin_tab_bar", [](const char* str_id, ImGuiTabBarFlags_ flags) {
         return ImGui::BeginTabBar(str_id, flags);
     }, "str_id"_a, "flags"_a.sig("TabBarFlags.NONE") = ImGuiTabBarFlags_None);
