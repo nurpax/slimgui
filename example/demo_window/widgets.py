@@ -15,6 +15,7 @@ _widgets_statics = {
     "f2": (0, 0),
     "f_e0": 1.e10,
     "d0": 999999.00000001,
+    "vec3a": (0.1, 0.2, 0.3),
     "ang": 0,
     "elem": 0,
     "clicked": 0,
@@ -129,8 +130,8 @@ in imgui_demo.cpp).""")
         help_marker("""You can input value using the scientific notation,\n
 e.g. \"1e+8\" becomes \"100000000\"." """)
 
-#             static float vec4a[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
-#             ImGui::InputFloat3("input float3", vec4a);
+
+        _, statics["vec3a"] = imgui.input_float3("input float3", statics["vec3a"])
 
         imgui.separator_text("Drags")
 #         {

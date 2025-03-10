@@ -768,15 +768,27 @@ NB_MODULE(slimgui_ext, m) {
     m.def("input_text_with_hint", [&](const char* label, const char* hint, std::string text, ImGuiInputTextFlags_ flags) {
         return input_text_handler(label, hint, text, flags);
     }, "label"_a, "hint"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
+    //IMGUI_API bool          InputTextMultiline(const char* label, char* buf, size_t buf_size, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+
     m.def("input_int", [](const char* label, int v, int step, int step_fast, ImGuiInputTextFlags_ flags) {
         bool changed = ImGui::InputInt(label, &v, step, step_fast, flags);
         return std::pair(changed, v);
     }, "label"_a, "v"_a, "step"_a = 1, "step_fast"_a = 100, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    // IMGUI_API bool          InputInt2(const char* label, int v[2], ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputInt3(const char* label, int v[3], ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputInt4(const char* label, int v[4], ImGuiInputTextFlags flags = 0);
-
-    //IMGUI_API bool          InputTextMultiline(const char* label, char* buf, size_t buf_size, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+    m.def("input_int2", [](const char* label, std::tuple<int, int> v, ImGuiInputTextFlags_ flags) {
+        auto vals = tuple_to_array<int>(v);
+        bool changed = ImGui::InputInt2(label, vals.data(), flags);
+        return std::pair(changed, array_to_tuple(vals));
+    }, "label"_a, "v"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
+    m.def("input_int3", [](const char* label, std::tuple<int, int, int> v, ImGuiInputTextFlags_ flags) {
+        auto vals = tuple_to_array<int>(v);
+        bool changed = ImGui::InputInt3(label, vals.data(), flags);
+        return std::pair(changed, array_to_tuple(vals));
+    }, "label"_a, "v"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
+    m.def("input_int4", [](const char* label, std::tuple<int, int, int, int> v, ImGuiInputTextFlags_ flags) {
+        auto vals = tuple_to_array<int>(v);
+        bool changed = ImGui::InputInt4(label, vals.data(), flags);
+        return std::pair(changed, array_to_tuple(vals));
+    }, "label"_a, "v"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
     m.def("input_float", [](const char* label, float v, float step, float step_fast, const char* format, ImGuiInputTextFlags_ flags) {
         bool changed = ImGui::InputFloat(label, &v, step, step_fast, format, flags);
