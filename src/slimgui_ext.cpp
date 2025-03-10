@@ -206,9 +206,7 @@ NB_MODULE(slimgui_ext, m) {
         .def_rw("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill)
         .def_rw("curve_tessellation_tol", &ImGuiStyle::CurveTessellationTol)
         .def_rw("circle_tessellation_max_error", &ImGuiStyle::CircleTessellationMaxError)
-        .def_prop_ro("colors", [](ImGuiStyle* style) -> ColorsArray {
-            return ColorsArray(style->Colors);
-        }, nb::rv_policy::reference_internal)
+        .def_prop_ro("colors", [](ImGuiStyle* style) -> ColorsArray { return ColorsArray(style->Colors); }, nb::rv_policy::reference_internal)
         .def_rw("hover_stationary_delay", &ImGuiStyle::HoverStationaryDelay)
         .def_rw("hover_delay_short", &ImGuiStyle::HoverDelayShort)
         .def_rw("hover_delay_normal", &ImGuiStyle::HoverDelayNormal)
@@ -722,14 +720,7 @@ NB_MODULE(slimgui_ext, m) {
     };
 
     // Widgets: Drag Sliders
-    // IMGUI_API bool          DragFloat2(const char* label, float v[2], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          DragFloat3(const char* label, float v[3], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          DragFloat4(const char* label, float v[4], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", const char* format_max = NULL, ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          DragInt(const char* label, int* v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", ImGuiSliderFlags flags = 0);  // If v_min >= v_max we have no bound
-    // IMGUI_API bool          DragInt2(const char* label, int v[2], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          DragInt3(const char* label, int v[3], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          DragInt4(const char* label, int v[4], float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragIntRange2(const char* label, int* v_current_min, int* v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", const char* format_max = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragScalar(const char* label, ImGuiDataType data_type, void* p_data, float v_speed = 1.0f, const void* p_min = NULL, const void* p_max = NULL, const char* format = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, float v_speed = 1.0f, const void* p_min = NULL, const void* p_max = NULL, const char* format = NULL, ImGuiSliderFlags flags = 0);
@@ -737,6 +728,38 @@ NB_MODULE(slimgui_ext, m) {
         bool changed = ImGui::DragFloat(label, &v, v_speed, v_min, v_max, format, flags);
         return std::pair(changed, v);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_float2", [](const char* label, ImVec2 v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::DragFloat2(label, &v.x, v_speed, v_min, v_max, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_float3", [](const char* label, Vec3 v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::DragFloat3(label, &v.x, v_speed, v_min, v_max, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_float4", [](const char* label, ImVec4 v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::DragFloat4(label, &v.x, v_speed, v_min, v_max, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+
+    m.def("drag_int", [](const char* label, int v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::DragInt(label, &v, v_speed, v_min, v_max, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_int2", [](const char* label, std::tuple<int, int> v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        auto vals = tuple_to_array<int>(v);
+        bool changed = ImGui::DragInt2(label, vals.data(), v_speed, v_min, v_max, format, flags);
+        return std::pair(changed, array_to_tuple(vals));
+    }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_int3", [](const char* label, std::tuple<int, int, int> v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        auto vals = tuple_to_array<int>(v);
+        bool changed = ImGui::DragInt3(label, vals.data(), v_speed, v_min, v_max, format, flags);
+        return std::pair(changed, array_to_tuple(vals));
+    }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_int4", [](const char* label, std::tuple<int, int, int, int> v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        auto vals = tuple_to_array<int>(v);
+        bool changed = ImGui::DragInt4(label, vals.data(), v_speed, v_min, v_max, format, flags);
+        return std::pair(changed, array_to_tuple(vals));
+    }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     // Widgets: Input with Keyboard
     m.def("input_text", [&](const char* label, std::string text, ImGuiInputTextFlags_ flags) {
