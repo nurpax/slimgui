@@ -1,6 +1,8 @@
 from collections.abc import Iterator, Sequence
 import enum
-from typing import overload
+from typing import Annotated, overload
+
+from numpy.typing import ArrayLike
 
 
 class BackendFlags(enum.IntFlag):
@@ -2202,6 +2204,10 @@ def next_column() -> None: ...
 def open_popup(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> None: ...
 
 def open_popup_on_item_click(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> None: ...
+
+def plot_histogram(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None: ...
+
+def plot_lines(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None: ...
 
 def pop_button_repeat() -> None: ...
 

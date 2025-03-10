@@ -1,6 +1,6 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/make_iterator.h>
-
+#include <nanobind/ndarray.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/tuple.h>
 #include <nanobind/stl/vector.h>
@@ -628,6 +628,16 @@ NB_MODULE(slimgui_ext, m) {
         bool changed = ImGui::ListBox(label, &current_item, &items[0], items.size(), height_in_items);
         return std::tuple(changed, current_item);
     }, "label"_a, "current_item"_a, "items"_a, "height_in_items"_a = -1);
+
+
+    // Widgets: Data Plotting
+    // - Consider using ImPlot (https://github.com/epezent/implot) which is much better!
+    m.def("plot_lines", [](const char* label, const nb::ndarray<const float, nb::ndim<1>, nb::device::cpu>& arr, std::optional<std::string> overlay_text, float scale_min, float scale_max, ImVec2 graph_size) {
+        ImGui::PlotLines(label, arr.data(), arr.shape(0), 0, overlay_text ? overlay_text.value().c_str() : nullptr, scale_min, scale_max, graph_size);
+    }, "label"_a, "values"_a, "overlay_text"_a = nb::none(), "scale_min"_a = FLT_MAX, "scale_max"_a = FLT_MAX, "graph_size"_a = ImVec2(0,0));
+    m.def("plot_histogram", [](const char* label, const nb::ndarray<const float, nb::ndim<1>, nb::device::cpu>& arr, std::optional<std::string> overlay_text, float scale_min, float scale_max, ImVec2 graph_size) {
+        ImGui::PlotHistogram(label, arr.data(), arr.shape(0), 0, overlay_text ? overlay_text.value().c_str() : nullptr, scale_min, scale_max, graph_size);
+    }, "label"_a, "values"_a, "overlay_text"_a = nb::none(), "scale_min"_a = FLT_MAX, "scale_max"_a = FLT_MAX, "graph_size"_a = ImVec2(0,0));
 
 
     // // Widgets: Regular Sliders
