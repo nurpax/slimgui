@@ -40,6 +40,7 @@ class GenContext:
             ("ImGuiInputTextFlags_", "InputTextFlags"),
             ("ImGuiButtonFlags_", "ButtonFlags"),
             ("ImGuiChildFlags_", "ChildFlags"),
+            ("ImGuiDragDropFlags_", "DragDropFlags"),
             ("ImGuiWindowFlags_", "WindowFlags"),
             ("ImGuiTreeNodeFlags_", "TreeNodeFlags"),
             ("ImGuiTabBarFlags_", "TabBarFlags"),

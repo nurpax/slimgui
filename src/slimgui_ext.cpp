@@ -548,8 +548,7 @@ NB_MODULE(slimgui_ext, m) {
     // // - A tooltip window can contain items of any types. SetTooltip() is a shortcut for the 'if (BeginTooltip()) { Text(...); EndTooltip(); }' idiom.
     m.def("begin_tooltip", &ImGui::BeginTooltip);
     m.def("end_tooltip", &ImGui::EndTooltip);
-    // IMGUI_API void          SetTooltip(const char* fmt, ...) IM_FMTARGS(1);                     // set a text-only tooltip. Often used after a ImGui::IsItemHovered() check. Override any previous call to SetTooltip().
-    // IMGUI_API void          SetTooltipV(const char* fmt, va_list args) IM_FMTLIST(1);
+    m.def("set_tooltip", [](const char* text) { ImGui::SetTooltip("%s", text);}, "text"_a);
 
     // // Tooltips: helpers for showing a tooltip when hovering an item
     // // - BeginItemTooltip() is a shortcut for the 'if (IsItemHovered(ImGuiHoveredFlags_ForTooltip) && BeginTooltip())' idiom.
@@ -740,6 +739,9 @@ NB_MODULE(slimgui_ext, m) {
         bool changed = ImGui::InputInt(label, &v, step, step_fast, flags);
         return std::pair(changed, v);
     }, "label"_a, "v"_a, "step"_a = 1, "step_fast"_a = 100, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
+    // IMGUI_API bool          InputInt2(const char* label, int v[2], ImGuiInputTextFlags flags = 0);
+    // IMGUI_API bool          InputInt3(const char* label, int v[3], ImGuiInputTextFlags flags = 0);
+    // IMGUI_API bool          InputInt4(const char* label, int v[4], ImGuiInputTextFlags flags = 0);
 
     //IMGUI_API bool          InputTextMultiline(const char* label, char* buf, size_t buf_size, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
 
@@ -748,13 +750,21 @@ NB_MODULE(slimgui_ext, m) {
         return std::pair(changed, v);
     }, "label"_a, "v"_a, "step"_a = 0.f, "step_fast"_a = 0.f, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
-    // IMGUI_API bool          InputFloat2(const char* label, float v[2], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputFloat3(const char* label, float v[3], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputFloat4(const char* label, float v[4], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputInt(const char* label, int* v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputInt2(const char* label, int v[2], ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputInt3(const char* label, int v[3], ImGuiInputTextFlags flags = 0);
-    // IMGUI_API bool          InputInt4(const char* label, int v[4], ImGuiInputTextFlags flags = 0);
+    m.def("input_float2", [](const char* label, ImVec2 v, const char* format, ImGuiInputTextFlags_ flags) {
+        bool changed = ImGui::InputFloat2(label, &v.x, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "v"_a, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
+
+    m.def("input_float3", [](const char* label, Vec3 v, const char* format, ImGuiInputTextFlags_ flags) {
+        bool changed = ImGui::InputFloat3(label, &v.x, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "v"_a, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
+
+    m.def("input_float4", [](const char* label, ImVec4 v, const char* format, ImGuiInputTextFlags_ flags) {
+        bool changed = ImGui::InputFloat4(label, &v.x, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "v"_a, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
+
     m.def("input_double", [](const char* label, double v, double step, double step_fast, const char* format, ImGuiInputTextFlags_ flags) {
         bool changed = ImGui::InputDouble(label, &v, step, step_fast, format, flags);
         return std::pair(changed, v);
@@ -851,6 +861,15 @@ NB_MODULE(slimgui_ext, m) {
     m.def("log_buttons", &ImGui::LogButtons);
     m.def("log_text", [](const char* text) { ImGui::LogText("%s", text); }, "text"_a);
 
+    // Drag and Drop
+    m.def("begin_drag_drop_source", [](ImGuiDragDropFlags_ flags) { return ImGui::BeginDragDropSource(flags); }, "flags"_a.sig("DragDropFlags.NONE") = ImGuiDragDropFlags_None);
+    // IMGUI_API bool          SetDragDropPayload(const char* type, const void* data, size_t sz, ImGuiCond cond = 0);  // type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return true when payload has been accepted.
+    m.def("end_drag_drop_source", &ImGui::EndDragDropSource);
+    m.def("begin_drag_drop_target", &ImGui::BeginDragDropTarget);
+    // IMGUI_API const ImGuiPayload*   AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags = 0);          // accept contents of a given type. If ImGuiDragDropFlags_AcceptBeforeDelivery is set you can peek into the payload before the mouse button is released.
+    m.def("end_drag_drop_target", &ImGui::EndDragDropTarget);
+    // IMGUI_API const ImGuiPayload*   GetDragDropPayload();                                                           // peek directly into the current payload from anywhere. returns NULL when drag and drop is finished or inactive. use ImGuiPayload::IsDataType() to test for the payload type.
+
     // Disabling [BETA API]
     m.def("begin_disabled", &ImGui::BeginDisabled, "disabled"_a = true);
     m.def("end_disabled", &ImGui::EndDisabled);
@@ -942,7 +961,7 @@ NB_MODULE(slimgui_ext, m) {
     }, "button"_a, "lock_threshold"_a = -1.0f);
     m.def("get_mouse_drag_delta", [](ImGuiMouseButton_ button, float lock_threshold) {
         return ImGui::GetMouseDragDelta(button, lock_threshold);
-    }, "button"_a, "lock_threshold"_a = -1.0f);
+    }, "button"_a.sig("MouseButton.LEFT") = ImGuiMouseButton_Left, "lock_threshold"_a = -1.0f);
     m.def("reset_mouse_drag_delta", [](ImGuiMouseButton_ button) {
         return ImGui::ResetMouseDragDelta(button);
     }, "button"_a.sig("MouseButton.LEFT") = ImGuiMouseButton_Left);

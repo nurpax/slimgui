@@ -55,6 +55,24 @@ nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value("AUTO_RESIZE_Y", ImGuiChildFlags_AutoResizeY)
     .value("ALWAYS_AUTO_RESIZE", ImGuiChildFlags_AlwaysAutoResize)
     .value("FRAME_STYLE", ImGuiChildFlags_FrameStyle);
+nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
+                               nb::is_arithmetic())
+    .value("NONE", ImGuiDragDropFlags_None)
+    .value("SOURCE_NO_PREVIEW_TOOLTIP",
+           ImGuiDragDropFlags_SourceNoPreviewTooltip)
+    .value("SOURCE_NO_DISABLE_HOVER", ImGuiDragDropFlags_SourceNoDisableHover)
+    .value("SOURCE_NO_HOLD_TO_OPEN_OTHERS",
+           ImGuiDragDropFlags_SourceNoHoldToOpenOthers)
+    .value("SOURCE_ALLOW_NULL_ID", ImGuiDragDropFlags_SourceAllowNullID)
+    .value("SOURCE_EXTERN", ImGuiDragDropFlags_SourceExtern)
+    .value("SOURCE_AUTO_EXPIRE_PAYLOAD",
+           ImGuiDragDropFlags_SourceAutoExpirePayload)
+    .value("ACCEPT_BEFORE_DELIVERY", ImGuiDragDropFlags_AcceptBeforeDelivery)
+    .value("ACCEPT_NO_DRAW_DEFAULT_RECT",
+           ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
+    .value("ACCEPT_NO_PREVIEW_TOOLTIP",
+           ImGuiDragDropFlags_AcceptNoPreviewTooltip)
+    .value("ACCEPT_PEEK_ONLY", ImGuiDragDropFlags_AcceptPeekOnly);
 nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiWindowFlags_None)
