@@ -1,5 +1,8 @@
 
+import math
 import warnings
+
+import numpy as np
 import slimgui as imgui
 
 from .types import State
@@ -28,6 +31,9 @@ _widgets_statics = {
     "col2": (0.4, 0.7, 0, 0.5),
     "combo_item": 0,
     "listbox_item": 0,
+    "always_on": 0,
+    "closable_group": True,
+    "wrap_width": 200.0,
 }
 
 _widgets_combo = {
@@ -52,7 +58,8 @@ def show_demo_window_widgets(st: State):
     if st.widgets_disable_all:
         imgui.begin_disabled()
 
-#     IMGUI_DEMO_MARKER("Widgets/Basic");
+    #--------------------------------------------------------------------
+    # basic
     if imgui.tree_node("Basic"):
         imgui.separator_text("General")
 
@@ -198,98 +205,71 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
         )
         imgui.tree_pop()
 
-#     IMGUI_DEMO_MARKER("Widgets/Tooltips");
-#     if (ImGui::TreeNode("Tooltips"))
-#     {
-#         // Tooltips are windows following the mouse. They do not take focus away.
-#         ImGui::SeparatorText("General");
+    #--------------------------------------------------------------------
+    # tooltips
+    if imgui.tree_node("Tooltips"):
+        imgui.separator_text("General")
+        help_marker(
+            "Tooltip are typically created by using a IsItemHovered() + SetTooltip() sequence.\n\n"
+            "We provide a helper SetItemTooltip() function to perform the two with standards flags.")
 
-#         // Typical use cases:
-#         // - Short-form (text only):      SetItemTooltip("Hello");
-#         // - Short-form (any contents):   if (BeginItemTooltip()) { Text("Hello"); EndTooltip(); }
+        sz = (-imgui.FLOAT_MIN, 0)
+        imgui.button('Basic', sz)
+        imgui.set_item_tooltip('I am a tooltip')
 
-#         // - Full-form (text only):       if (IsItemHovered(...)) { SetTooltip("Hello"); }
-#         // - Full-form (any contents):    if (IsItemHovered(...) && BeginTooltip()) { Text("Hello"); EndTooltip(); }
+        imgui.button('Fancy', sz)
+        if imgui.begin_item_tooltip():
+            imgui.text("I am a fancy tooltip")
+            arr = [0.6, 0.1, 1.0, 0.5, 0.92, 0.1, 0.2]
+            imgui.plot_lines("Curve", np.array(arr, dtype=np.float32))
+            imgui.text(f"Sin(time) = {math.sin(imgui.get_time())}")
+            imgui.end_tooltip()
 
-#         HelpMarker(
-#             "Tooltip are typically created by using a IsItemHovered() + SetTooltip() sequence.\n\n"
-#             "We provide a helper SetItemTooltip() function to perform the two with standards flags.");
+        imgui.separator_text("Always On")
+        _, statics["always_on"] = imgui.radio_button("Off", statics["always_on"], 0)
+        imgui.same_line()
+        _, statics["always_on"] = imgui.radio_button("Always On (Simple)", statics["always_on"], 1)
+        imgui.same_line()
+        _, statics["always_on"] = imgui.radio_button("Always On (Advanced)", statics["always_on"], 2)
+        if statics["always_on"] == 1:
+            imgui.set_tooltip("I am following you around.")
+        elif statics["always_on"] == 2 and imgui.begin_tooltip():
+            imgui.progress_bar(math.sin(imgui.get_time()) * 0.5 + 0.5, (imgui.get_font_size() * 25, 0))
+            imgui.end_tooltip()
 
-#         ImVec2 sz = ImVec2(-FLT_MIN, 0.0f);
+        imgui.separator_text("Custom")
+        help_marker(
+            "Passing ImGuiHoveredFlags_ForTooltip to IsItemHovered() is the preferred way to standardize"
+            "tooltip activation details across your application. You may however decide to use custom"
+            "flags for a specific tooltip instance.")
 
-#         ImGui::Button("Basic", sz);
-#         ImGui::SetItemTooltip("I am a tooltip");
+        imgui.button("Manual", sz)
+        if imgui.is_item_hovered(imgui.HoveredFlags.FOR_TOOLTIP):
+            imgui.set_tooltip("I am a manually emitted tooltip.")
 
-#         ImGui::Button("Fancy", sz);
-#         if (ImGui::BeginItemTooltip())
-#         {
-#             ImGui::Text("I am a fancy tooltip");
-#             static float arr[] = { 0.6f, 0.1f, 1.0f, 0.5f, 0.92f, 0.1f, 0.2f };
-#             ImGui::PlotLines("Curve", arr, IM_ARRAYSIZE(arr));
-#             ImGui::Text("Sin(time) = %f", sinf((float)ImGui::GetTime()));
-#             ImGui::EndTooltip();
-#         }
+        imgui.button("DelayNone", sz)
+        if imgui.is_item_hovered(imgui.HoveredFlags.DELAY_NONE):
+            imgui.set_tooltip("I am a tooltip with no delay.")
 
-#         ImGui::SeparatorText("Always On");
+        imgui.button("DelayShort", sz)
+        if imgui.is_item_hovered(imgui.HoveredFlags.DELAY_SHORT | imgui.HoveredFlags.NO_SHARED_DELAY):
+            imgui.set_tooltip(f"I am a tooltip with a short delay ({imgui.get_style().hover_delay_short:.2f} sec).")
 
-#         // Showcase NOT relying on a IsItemHovered() to emit a tooltip.
-#         // Here the tooltip is always emitted when 'always_on == true'.
-#         static int always_on = 0;
-#         ImGui::RadioButton("Off", &always_on, 0);
-#         ImGui::SameLine();
-#         ImGui::RadioButton("Always On (Simple)", &always_on, 1);
-#         ImGui::SameLine();
-#         ImGui::RadioButton("Always On (Advanced)", &always_on, 2);
-#         if (always_on == 1)
-#             ImGui::SetTooltip("I am following you around.");
-#         else if (always_on == 2 && ImGui::BeginTooltip())
-#         {
-#             ImGui::ProgressBar(sinf((float)ImGui::GetTime()) * 0.5f + 0.5f, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
-#             ImGui::EndTooltip();
-#         }
+        imgui.button("DelayLong", sz)
+        if imgui.is_item_hovered(imgui.HoveredFlags.DELAY_NORMAL | imgui.HoveredFlags.NO_SHARED_DELAY):
+            imgui.set_tooltip(f"I am a tooltip with a long delay ({imgui.get_style().hover_delay_normal:.2f} sec).")
 
-#         ImGui::SeparatorText("Custom");
+        imgui.button("Stationary", sz)
+        if imgui.is_item_hovered(imgui.HoveredFlags.STATIONARY):
+            imgui.set_tooltip("I am a tooltip requiring mouse to be stationary before activating.")
 
-#         HelpMarker(
-#             "Passing ImGuiHoveredFlags_ForTooltip to IsItemHovered() is the preferred way to standardize"
-#             "tooltip activation details across your application. You may however decide to use custom"
-#             "flags for a specific tooltip instance.");
+        imgui.begin_disabled()
+        imgui.button("Disabled item", sz)
+        imgui.end_disabled()
+        if imgui.is_item_hovered(imgui.HoveredFlags.FOR_TOOLTIP):
+            imgui.set_tooltip("I am a tooltip for a disabled item.")
 
-#         // The following examples are passed for documentation purpose but may not be useful to most users.
-#         // Passing ImGuiHoveredFlags_ForTooltip to IsItemHovered() will pull ImGuiHoveredFlags flags values from
-#         // 'style.HoverFlagsForTooltipMouse' or 'style.HoverFlagsForTooltipNav' depending on whether mouse or gamepad/keyboard is being used.
-#         // With default settings, ImGuiHoveredFlags_ForTooltip is equivalent to ImGuiHoveredFlags_DelayShort + ImGuiHoveredFlags_Stationary.
-#         ImGui::Button("Manual", sz);
-#         if (ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip))
-#             ImGui::SetTooltip("I am a manually emitted tooltip.");
-
-#         ImGui::Button("DelayNone", sz);
-#         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNone))
-#             ImGui::SetTooltip("I am a tooltip with no delay.");
-
-#         ImGui::Button("DelayShort", sz);
-#         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort | ImGuiHoveredFlags_NoSharedDelay))
-#             ImGui::SetTooltip("I am a tooltip with a short delay (%0.2f sec).", ImGui::GetStyle().HoverDelayShort);
-
-#         ImGui::Button("DelayLong", sz);
-#         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay))
-#             ImGui::SetTooltip("I am a tooltip with a long delay (%0.2f sec).", ImGui::GetStyle().HoverDelayNormal);
-
-#         ImGui::Button("Stationary", sz);
-#         if (ImGui::IsItemHovered(ImGuiHoveredFlags_Stationary))
-#             ImGui::SetTooltip("I am a tooltip requiring mouse to be stationary before activating.");
-
-#         // Using ImGuiHoveredFlags_ForTooltip will pull flags from 'style.HoverFlagsForTooltipMouse' or 'style.HoverFlagsForTooltipNav',
-#         // which default value include the ImGuiHoveredFlags_AllowWhenDisabled flag.
-#         // As a result, Set
-#         ImGui::BeginDisabled();
-#         ImGui::Button("Disabled item", sz);
-#         ImGui::EndDisabled();
-#         if (ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip))
-#             ImGui::SetTooltip("I am a a tooltip for a disabled item.");
-
-#         ImGui::TreePop();
-#     }
+        imgui.tree_pop()
 
 #     // Testing ImGuiOnceUponAFrame helper.
 #     //static ImGuiOnceUponAFrame once;
@@ -406,119 +386,76 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
 #         ImGui::TreePop();
 #     }
 
-#     IMGUI_DEMO_MARKER("Widgets/Collapsing Headers");
-#     if (ImGui::TreeNode("Collapsing Headers"))
-#     {
-#         static bool closable_group = true;
-#         ImGui::Checkbox("Show 2nd header", &closable_group);
-#         if (ImGui::CollapsingHeader("Header", ImGuiTreeNodeFlags_None))
-#         {
-#             ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-#             for (int i = 0; i < 5; i++)
-#                 ImGui::Text("Some content %d", i);
-#         }
-#         if (ImGui::CollapsingHeader("Header with a close button", &closable_group))
-#         {
-#             ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-#             for (int i = 0; i < 5; i++)
-#                 ImGui::Text("More content %d", i);
-#         }
-#         /*
-#         if (ImGui::CollapsingHeader("Header with a bullet", ImGuiTreeNodeFlags_Bullet))
-#             ImGui::Text("IsItemHovered: %d", ImGui::IsItemHovered());
-#         */
-#         ImGui::TreePop();
-#     }
+    if imgui.tree_node("Collapsing Headers"):
+        _, statics['closable_group'] = imgui.checkbox("Show 2nd header", statics['closable_group'])
+        if imgui.collapsing_header("Header")[0]:
+            imgui.text(f"IsItemHovered: {imgui.is_item_hovered()}")
+            for i in range(5):
+                imgui.text(f"Some content {i}")
+        expanded, statics['closable_group'] = imgui.collapsing_header("Header with a close button", statics['closable_group'])
+        if expanded:
+            imgui.text(f"IsItemHovered: {imgui.is_item_hovered()}")
+            for i in range(5):
+                imgui.text(f"More content {i}")
+        imgui.tree_pop()
 
-#     IMGUI_DEMO_MARKER("Widgets/Bullets");
-#     if (ImGui::TreeNode("Bullets"))
-#     {
-#         ImGui::BulletText("Bullet point 1");
-#         ImGui::BulletText("Bullet point 2\nOn multiple lines");
-#         if (ImGui::TreeNode("Tree node"))
-#         {
-#             ImGui::BulletText("Another bullet point");
-#             ImGui::TreePop();
-#         }
-#         ImGui::Bullet(); ImGui::Text("Bullet point 3 (two calls)");
-#         ImGui::Bullet(); ImGui::SmallButton("Button");
-#         ImGui::TreePop();
-#     }
+    if imgui.tree_node("Bullets"):
+        imgui.bullet_text("Bullet point 1")
+        imgui.bullet_text("Bullet point 2\nOn multiple lines")
+        if imgui.tree_node("Tree node"):
+            imgui.bullet_text("Another bullet point")
+            imgui.tree_pop()
+        imgui.bullet()
+        imgui.text("Bullet point 3 (two calls)")
+        imgui.bullet()
+        imgui.small_button("Button")
+        imgui.tree_pop()
 
-#     IMGUI_DEMO_MARKER("Widgets/Text");
-#     if (ImGui::TreeNode("Text"))
-#     {
-#         IMGUI_DEMO_MARKER("Widgets/Text/Colored Text");
-#         if (ImGui::TreeNode("Colorful Text"))
-#         {
-#             // Using shortcut. You can use PushStyleColor()/PopStyleColor() for more flexibility.
-#             ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Pink");
-#             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Yellow");
-#             ImGui::TextDisabled("Disabled");
-#             ImGui::SameLine(); HelpMarker("The TextDisabled color is stored in ImGuiStyle.");
-#             ImGui::TreePop();
-#         }
+    if imgui.tree_node("Text"):
+        if imgui.tree_node("Colorful Text"):
+            imgui.text_colored((1.0, 0.0, 1.0, 1.0), "Pink")
+            imgui.text_colored((1.0, 1.0, 0.0, 1.0), "Yellow")
+            imgui.text_disabled("Disabled")
+            imgui.same_line()
+            help_marker("The TextDisabled color is stored in ImGuiStyle.")
+            imgui.tree_pop()
 
-#         IMGUI_DEMO_MARKER("Widgets/Text/Word Wrapping");
-#         if (ImGui::TreeNode("Word Wrapping"))
-#         {
-#             // Using shortcut. You can use PushTextWrapPos()/PopTextWrapPos() for more flexibility.
-#             ImGui::TextWrapped(
-#                 "This text should automatically wrap on the edge of the window. The current implementation "
-#                 "for text wrapping follows simple rules suitable for English and possibly other languages.");
-#             ImGui::Spacing();
+        if imgui.tree_node("Word Wrapping"):
+            imgui.text_wrapped(
+                "This text should automatically wrap on the edge of the window. The current implementation "
+                "for text wrapping follows simple rules suitable for English and possibly other languages.")
+            imgui.spacing()
 
-#             static float wrap_width = 200.0f;
-#             ImGui::SliderFloat("Wrap width", &wrap_width, -20, 600, "%.0f");
+            _, statics['wrap_width'] = imgui.slider_float("Wrap width", statics['wrap_width'], -20, 600, "%.0f")
+            warnings.warn('TODO draw_list business not implemented yet')
+            # draw_list = imgui.get_window_draw_list()
+            # for n in range(2):
+            #     imgui.text(f"Test paragraph {n}:")
+            #     pos = imgui.get_cursor_screen_pos()
+            #     marker_min = (pos[0] + wrap_width, pos[1])
+            #     marker_max = (pos[0] + wrap_width + 10, pos[1] + imgui.get_text_line_height())
+            #     imgui.push_text_wrap_pos(imgui.get_cursor_pos()[0] + wrap_width)
+            #     if n == 0:
+            #         imgui.text(f"The lazy dog is a good dog. This paragraph should fit within {wrap_width:.0f} pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog.")
+            #     else:
+            #         imgui.text("aaaaaaaa bbbbbbbb, c cccccccc,dddddddd. d eeeeeeee   ffffffff. gggggggg!hhhhhhhh")
 
-#             ImDrawList* draw_list = ImGui::GetWindowDrawList();
-#             for (int n = 0; n < 2; n++)
-#             {
-#                 ImGui::Text("Test paragraph %d:", n);
-#                 ImVec2 pos = ImGui::GetCursorScreenPos();
-#                 ImVec2 marker_min = ImVec2(pos.x + wrap_width, pos.y);
-#                 ImVec2 marker_max = ImVec2(pos.x + wrap_width + 10, pos.y + ImGui::GetTextLineHeight());
-#                 ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrap_width);
-#                 if (n == 0)
-#                     ImGui::Text("The lazy dog is a good dog. This paragraph should fit within %.0f pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog.", wrap_width);
-#                 else
-#                     ImGui::Text("aaaaaaaa bbbbbbbb, c cccccccc,dddddddd. d eeeeeeee   ffffffff. gggggggg!hhhhhhhh");
+            #     draw_list.add_rect(imgui.get_item_rect_min(), imgui.get_item_rect_max(), imgui.get_color_u32_rgba(255, 255, 0, 255))
+            #     draw_list.add_rect_filled(marker_min, marker_max, imgui.get_color_u32_rgba(255, 0, 255, 255))
+            #     imgui.pop_text_wrap_pos()
+            imgui.tree_pop()
 
-#                 // Draw actual text bounding box, following by marker of our expected limit (should not overlap!)
-#                 draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255));
-#                 draw_list->AddRectFilled(marker_min, marker_max, IM_COL32(255, 0, 255, 255));
-#                 ImGui::PopTextWrapPos();
-#             }
-
-#             ImGui::TreePop();
-#         }
-
-#         IMGUI_DEMO_MARKER("Widgets/Text/UTF-8 Text");
-#         if (ImGui::TreeNode("UTF-8 Text"))
-#         {
-#             // UTF-8 test with Japanese characters
-#             // (Needs a suitable font? Try "Google Noto" or "Arial Unicode". See docs/FONTS.md for details.)
-#             // - From C++11 you can use the u8"my text" syntax to encode literal strings as UTF-8
-#             // - For earlier compiler, you may be able to encode your sources as UTF-8 (e.g. in Visual Studio, you
-#             //   can save your source files as 'UTF-8 without signature').
-#             // - FOR THIS DEMO FILE ONLY, BECAUSE WE WANT TO SUPPORT OLD COMPILERS, WE ARE *NOT* INCLUDING RAW UTF-8
-#             //   CHARACTERS IN THIS SOURCE FILE. Instead we are encoding a few strings with hexadecimal constants.
-#             //   Don't do this in your application! Please use u8"text in any language" in your application!
-#             // Note that characters values are preserved even by InputText() if the font cannot be displayed,
-#             // so you can safely copy & paste garbled characters into another application.
-#             ImGui::TextWrapped(
-#                 "CJK text will only appear if the font was loaded with the appropriate CJK character ranges. "
-#                 "Call io.Fonts->AddFontFromFileTTF() manually to load extra character ranges. "
-#                 "Read docs/FONTS.md for details.");
-#             ImGui::Text("Hiragana: \xe3\x81\x8b\xe3\x81\x8d\xe3\x81\x8f\xe3\x81\x91\xe3\x81\x93 (kakikukeko)");
-#             ImGui::Text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
-#             static char buf[32] = "\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e";
-#             //static char buf[32] = u8"NIHONGO"; // <- this is how you would write it with C++11, using real kanjis
-#             ImGui::InputText("UTF-8 input", buf, IM_ARRAYSIZE(buf));
-#             ImGui::TreePop();
-#         }
-#         ImGui::TreePop();
-#     }
+        if imgui.tree_node("UTF-8 Text"):
+            imgui.text_wrapped(
+                "CJK text will only appear if the font was loaded with the appropriate CJK character ranges. "
+                "Call io.Fonts->AddFontFromFileTTF() manually to load extra character ranges. "
+                "Read docs/FONTS.md for details.")
+            imgui.text("Hiragana: かきくけこ (kakikukeko)")
+            imgui.text("Kanjis: 日本語 (nihongo)")
+            buf = "日本語"
+            buf = imgui.input_text("UTF-8 input", buf)
+            imgui.tree_pop()
+        imgui.tree_pop() # treenode: 'Text'
 
 #     IMGUI_DEMO_MARKER("Widgets/Images");
 #     if (ImGui::TreeNode("Images"))
@@ -605,68 +542,68 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
 #     }
 
 
-        if imgui.tree_node("Combo"):
-            combo = _widgets_combo
+    if imgui.tree_node("Combo"):
+        combo = _widgets_combo
 
-            _, combo["flags"] = imgui.checkbox_flags("ComboFlags.POPUP_ALIGN_LEFT", combo["flags"], imgui.ComboFlags.POPUP_ALIGN_LEFT)
-            imgui.same_line(); help_marker("Only makes a difference if the popup is larger than the combo")
-            clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.NO_ARROW_BUTTON", combo["flags"], imgui.ComboFlags.NO_ARROW_BUTTON)
-            if clicked:
-                combo["flags"] &= ~imgui.ComboFlags.NO_PREVIEW
-            clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.NO_PREVIEW", combo["flags"], imgui.ComboFlags.NO_PREVIEW)
-            if clicked:
-                combo["flags"] &= ~(imgui.ComboFlags.NO_ARROW_BUTTON | imgui.ComboFlags.WIDTH_FIT_PREVIEW)
-            clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.WIDTH_FIT_PREVIEW", combo["flags"], imgui.ComboFlags.WIDTH_FIT_PREVIEW)
-            if clicked:
-                combo["flags"] &= ~imgui.ComboFlags.NO_PREVIEW
-            # Override default popup height
-            clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_SMALL", combo["flags"], imgui.ComboFlags.HEIGHT_SMALL)
-            if clicked:
-                combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_SMALL)
-            clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_REGULAR", combo["flags"], imgui.ComboFlags.HEIGHT_REGULAR)
-            if clicked:
-                combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_REGULAR)
-            clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_LARGEST", combo["flags"], imgui.ComboFlags.HEIGHT_LARGEST)
-            if clicked:
-                combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_LARGEST)
+        _, combo["flags"] = imgui.checkbox_flags("ComboFlags.POPUP_ALIGN_LEFT", combo["flags"], imgui.ComboFlags.POPUP_ALIGN_LEFT)
+        imgui.same_line(); help_marker("Only makes a difference if the popup is larger than the combo")
+        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.NO_ARROW_BUTTON", combo["flags"], imgui.ComboFlags.NO_ARROW_BUTTON)
+        if clicked:
+            combo["flags"] &= ~imgui.ComboFlags.NO_PREVIEW
+        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.NO_PREVIEW", combo["flags"], imgui.ComboFlags.NO_PREVIEW)
+        if clicked:
+            combo["flags"] &= ~(imgui.ComboFlags.NO_ARROW_BUTTON | imgui.ComboFlags.WIDTH_FIT_PREVIEW)
+        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.WIDTH_FIT_PREVIEW", combo["flags"], imgui.ComboFlags.WIDTH_FIT_PREVIEW)
+        if clicked:
+            combo["flags"] &= ~imgui.ComboFlags.NO_PREVIEW
+        # Override default popup height
+        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_SMALL", combo["flags"], imgui.ComboFlags.HEIGHT_SMALL)
+        if clicked:
+            combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_SMALL)
+        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_REGULAR", combo["flags"], imgui.ComboFlags.HEIGHT_REGULAR)
+        if clicked:
+            combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_REGULAR)
+        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_LARGEST", combo["flags"], imgui.ComboFlags.HEIGHT_LARGEST)
+        if clicked:
+            combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_LARGEST)
 
-            items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
-            preview = items[combo["item_current_idx"]]
-            if imgui.begin_combo("combo 1", preview, imgui.ComboFlags(combo["flags"])):
-                for n, item in enumerate(items):
-                    is_selected = combo["item_current_idx"] == n
-                    if imgui.selectable(item, is_selected)[0]:
-                        combo["item_current_idx"] = n
-                    if is_selected:
-                        imgui.set_item_default_focus()
-                imgui.end_combo()
-            imgui.spacing()
-            imgui.separator_text("One-liner variants")
-            imgui.text("TBD: One liner versions removed in the Python port")
-            imgui.tree_pop()
+        items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
+        preview = items[combo["item_current_idx"]]
+        if imgui.begin_combo("combo 1", preview, imgui.ComboFlags(combo["flags"])):
+            for n, item in enumerate(items):
+                is_selected = combo["item_current_idx"] == n
+                if imgui.selectable(item, is_selected)[0]:
+                    combo["item_current_idx"] = n
+                if is_selected:
+                    imgui.set_item_default_focus()
+            imgui.end_combo()
+        imgui.spacing()
+        imgui.separator_text("One-liner variants")
+        imgui.text("TBD: One liner versions removed in the Python port")
+        imgui.tree_pop()
 
-        if imgui.tree_node("List boxes"):
-            listbox = _widgets_listbox
-            items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
-            if imgui.begin_list_box("listbox 1"):
-                for n, item in enumerate(items):
-                    is_selected = listbox["item_current_idx"] == n
-                    if imgui.selectable(item, is_selected)[0]:
-                        listbox["item_current_idx"] = n
-                    if is_selected:
-                        imgui.set_item_default_focus()
-                imgui.end_list_box()
+    if imgui.tree_node("List boxes"):
+        listbox = _widgets_listbox
+        items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
+        if imgui.begin_list_box("listbox 1"):
+            for n, item in enumerate(items):
+                is_selected = listbox["item_current_idx"] == n
+                if imgui.selectable(item, is_selected)[0]:
+                    listbox["item_current_idx"] = n
+                if is_selected:
+                    imgui.set_item_default_focus()
+            imgui.end_list_box()
 
-            imgui.text("Full-width:")
-            if imgui.begin_list_box("##listbox 2", (-imgui.FLOAT_MIN, 5 * imgui.get_text_line_height_with_spacing())):
-                for n, item in enumerate(items):
-                    is_selected = listbox["item_current_idx2"] == n
-                    if imgui.selectable(item, is_selected)[0]:
-                        listbox["item_current_idx2"] = n
-                    if is_selected:
-                        imgui.set_item_default_focus()
-                imgui.end_list_box()
-            imgui.tree_pop()
+        imgui.text("Full-width:")
+        if imgui.begin_list_box("##listbox 2", (-imgui.FLOAT_MIN, 5 * imgui.get_text_line_height_with_spacing())):
+            for n, item in enumerate(items):
+                is_selected = listbox["item_current_idx2"] == n
+                if imgui.selectable(item, is_selected)[0]:
+                    listbox["item_current_idx2"] = n
+                if is_selected:
+                    imgui.set_item_default_focus()
+            imgui.end_list_box()
+        imgui.tree_pop()
 
 #     IMGUI_DEMO_MARKER("Widgets/Selectables");
 #     if (ImGui::TreeNode("Selectables"))
