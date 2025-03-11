@@ -1134,9 +1134,9 @@ class Key(enum.IntEnum):
 
     KEY_NAMED_KEY_COUNT = 154
 
-    KEY_KEYS_DATA_SIZE = 666
+    KEY_KEYS_DATA_SIZE = 154
 
-    KEY_KEYS_DATA_OFFSET = 0
+    KEY_KEYS_DATA_OFFSET = 512
 
 class MouseButton(enum.IntEnum):
     LEFT = 0

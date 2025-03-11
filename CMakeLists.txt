@@ -10,6 +10,9 @@ find_package(Python 3.8
 # Import nanobind through CMake's find_package mechanism
 find_package(nanobind CONFIG REQUIRED)
 
+#add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1)
+add_definitions(-DIMGUI_DISABLE_OBSOLETE_KEYIO=1)
+
 nanobind_add_module(slimgui_ext
   NB_STATIC
   STABLE_ABI
