@@ -499,6 +499,11 @@ NB_MODULE(slimgui_ext, m) {
         return std::tuple(pressed, v);
     }, "label"_a, "v"_a, "v_button"_a);
 
+    m.def("progress_bar", [](float fraction, ImVec2 size_arg, std::optional<std::string> overlay) {
+        ImGui::ProgressBar(fraction, size_arg, overlay ? overlay.value().c_str() : nullptr);
+    }, "fraction"_a, "size_arg"_a = ImVec2(-FLT_MIN, 0), "overlay"_a = nb::none());
+    m.def("bullet", &ImGui::Bullet);
+
     // Widgets: Images
     m.def("image", [](uintptr_t user_texture_id, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) {
         ImGui::Image(reinterpret_cast<ImTextureID>(user_texture_id), image_size, uv0, uv1, tint_col, border_col);
