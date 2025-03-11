@@ -262,7 +262,20 @@ NB_MODULE(slimgui_ext, m) {
         .def_rw("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist)
         .def_rw("mouse_drag_threshold", &ImGuiIO::MouseDragThreshold)
         .def_rw("key_repeat_delay", &ImGuiIO::KeyRepeatDelay)
-        .def_rw("key_repeat_rate", &ImGuiIO::KeyRepeatRate);
+        .def_rw("key_repeat_rate", &ImGuiIO::KeyRepeatRate)
+        .def_ro("want_capture_mouse", &ImGuiIO::WantCaptureMouse)
+        .def_ro("want_capture_keyboard", &ImGuiIO::WantCaptureKeyboard)
+        .def_ro("want_text_input", &ImGuiIO::WantTextInput)
+        .def_ro("want_set_mouse_pos", &ImGuiIO::WantSetMousePos)
+        .def_ro("want_save_ini_settings", &ImGuiIO::WantSaveIniSettings)
+        .def_ro("nav_active", &ImGuiIO::NavActive)
+        .def_ro("nav_visible", &ImGuiIO::NavVisible)
+        .def_ro("framerate", &ImGuiIO::Framerate)
+        .def_ro("metrics_render_vertices", &ImGuiIO::MetricsRenderVertices)
+        .def_ro("metrics_render_indices", &ImGuiIO::MetricsRenderIndices)
+        .def_ro("metrics_render_windows", &ImGuiIO::MetricsRenderWindows)
+        .def_ro("metrics_active_windows", &ImGuiIO::MetricsActiveWindows)
+        .def_ro("mouse_delta", &ImGuiIO::MouseDelta);
 
     // TODO all fields
     nb::class_<ImDrawCmd>(m, "DrawCmd")
