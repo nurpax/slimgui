@@ -14,10 +14,20 @@ def camel_to_snake(name):
     return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 
-_ignored_toplevel_funcs = [
-    "mem_alloc",  # not relevant for Python
-    "mem_free",  # not relevant for Python
-]
+_ignored_toplevel_funcs = {
+    "get_allocator_functions",  # not relevant for Python
+    "set_allocator_functions",  # not relevant for Python
+    "mem_alloc",                # not relevant for Python
+    "mem_free",                 # not relevant for Python
+    "set_tooltip_v",            # varargs not relevant in Python
+    "text_v",                   # varargs not relevant in Python
+    "text_colored_v",           # varargs not relevant in Python
+    "text_disabled_v",          # varargs not relevant in Python
+    "text_unformatted",         # varargs not relevant in Python
+    "text_wrapped_v",           # varargs not relevant in Python
+    "label_text_v",             # varargs not relevant in Python
+    "bullet_text_v",            # varargs not relevant in Python
+}
 
 
 class Context:
@@ -31,12 +41,15 @@ class Context:
         members = inspect.getmembers(self.slimgui_ext)
         py_name = camel_to_snake(obj["funcname"])
 
+        # TODO overload checking
         for py_fn_sym, _ in members:
-            if py_fn_sym in _ignored_toplevel_funcs:
-                return
             if py_fn_sym == py_name:
                 warnings.warn("implement overload sanity check to check for arg names")
                 return
+
+        if py_name in _ignored_toplevel_funcs:
+            return
+
         print(f"missing: {py_name}")
 
 
