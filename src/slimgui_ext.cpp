@@ -709,29 +709,6 @@ NB_MODULE(slimgui_ext, m) {
     // IMGUI_API bool          VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          VSliderScalar(const char* label, const ImVec2& size, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);
 
-    // TODO use nb::str here?
-//    IMGUI_API bool          InputTextWithHint(const char* label, const char* hint, char* buf, size_t buf_size, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
-
-    auto input_text_handler = [](const char* label, const char* hint, std::string text, ImGuiInputTextFlags flags) {
-        IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
-        flags |= ImGuiInputTextFlags_CallbackResize;
-
-        // TODO nurpax
-        ImGuiInputTextCallback callback = nullptr;
-        void* user_data = nullptr;
-
-        InputTextCallback_UserData cb_user_data;
-        cb_user_data.Str = &text;
-        cb_user_data.ChainCallback = callback;
-
-        cb_user_data.ChainCallbackUserData = user_data;
-        bool changed = hint == nullptr ?
-            ImGui::InputText(label, (char*)text.c_str(), text.capacity() + 1, flags, InputTextCallback, &cb_user_data) :
-            ImGui::InputTextWithHint(label, hint, (char*)text.c_str(), text.capacity() + 1, flags, InputTextCallback, &cb_user_data);
-
-        return std::pair(changed, text);
-    };
-
     // Widgets: Drag Sliders
     // IMGUI_API bool          DragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", const char* format_max = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragIntRange2(const char* label, int* v_current_min, int* v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", const char* format_max = NULL, ImGuiSliderFlags flags = 0);
@@ -775,13 +752,38 @@ NB_MODULE(slimgui_ext, m) {
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     // Widgets: Input with Keyboard
+    auto input_text_handler = [](const char* label, const char* hint, std::string text, ImGuiInputTextFlags flags, bool multiline, ImVec2 size = ImVec2(0, 0)) {
+        IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+        flags |= ImGuiInputTextFlags_CallbackResize;
+
+        // TODO nurpax
+        ImGuiInputTextCallback callback = nullptr;
+        void* user_data = nullptr;
+
+        InputTextCallback_UserData cb_user_data;
+        cb_user_data.Str = &text;
+        cb_user_data.ChainCallback = callback;
+
+        cb_user_data.ChainCallbackUserData = user_data;
+        bool changed;
+        if (!multiline) {
+            changed = hint == nullptr ?
+                ImGui::InputText(label, (char*)text.c_str(), text.capacity() + 1, flags, InputTextCallback, &cb_user_data) :
+                ImGui::InputTextWithHint(label, hint, (char*)text.c_str(), text.capacity() + 1, flags, InputTextCallback, &cb_user_data);
+        } else {
+            changed = ImGui::InputTextMultiline(label, (char*)text.c_str(), text.capacity() + 1, size, flags, InputTextCallback, &cb_user_data);
+        }
+        return std::pair(changed, text);
+    };
     m.def("input_text", [&](const char* label, std::string text, ImGuiInputTextFlags_ flags) {
-        return input_text_handler(label, nullptr, text, flags);
+        return input_text_handler(label, nullptr, text, flags, false);
     }, "label"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
     m.def("input_text_with_hint", [&](const char* label, const char* hint, std::string text, ImGuiInputTextFlags_ flags) {
-        return input_text_handler(label, hint, text, flags);
+        return input_text_handler(label, hint, text, flags, false);
     }, "label"_a, "hint"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    //IMGUI_API bool          InputTextMultiline(const char* label, char* buf, size_t buf_size, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+    m.def("input_text_multiline", [&](const char* label, std::string text, ImVec2 size, ImGuiInputTextFlags_ flags) {
+        return input_text_handler(label, nullptr, text, flags, true, size);
+    }, "label"_a, "text"_a, "size"_a = ImVec2(0, 0), "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
     m.def("input_int", [](const char* label, int v, int step, int step_fast, ImGuiInputTextFlags_ flags) {
         bool changed = ImGui::InputInt(label, &v, step, step_fast, flags);

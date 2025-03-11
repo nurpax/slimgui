@@ -59,6 +59,12 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
     def _map_key(self, glfw_key: int) -> imgui.Key | None:
         from slimgui import Key
 
+        if glfw_key >= glfw.KEY_A and glfw_key <= glfw.KEY_Z:
+            return Key(Key.KEY_A + (glfw_key - glfw.KEY_A))
+        if glfw_key >= glfw.KEY_0 and glfw_key <= glfw.KEY_9:
+            return Key(Key.KEY_0 + (glfw_key - glfw.KEY_0))
+        if glfw_key >= glfw.KEY_F1 and glfw_key <= glfw.KEY_F24:
+            return Key(Key.KEY_F1 + (glfw_key - glfw.KEY_F1))
         return {
             glfw.KEY_TAB: Key.KEY_TAB,
             glfw.KEY_LEFT: Key.KEY_LEFT_ARROW,
@@ -76,12 +82,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             glfw.KEY_ENTER: Key.KEY_ENTER,
             glfw.KEY_ESCAPE: Key.KEY_ESCAPE,
             glfw.KEY_KP_ENTER: Key.KEY_KEYPAD_ENTER,
-            glfw.KEY_A: Key.KEY_A,
-            glfw.KEY_C: Key.KEY_C,
-            glfw.KEY_V: Key.KEY_V,
-            glfw.KEY_X: Key.KEY_X,
-            glfw.KEY_Y: Key.KEY_Y,
-            glfw.KEY_Z: Key.KEY_Z,
         }.get(glfw_key)
 
     def keyboard_callback(self, window, key, scancode, action, mods):
