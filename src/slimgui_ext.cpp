@@ -68,6 +68,9 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
 }
 
 NB_MODULE(slimgui_ext, m) {
+#if SLIMGUI_DISABLE_LEAK_CHECKS == 1
+    nb::set_leak_warnings(false);
+#endif
 
     m.attr("IMGUI_VERSION") = IMGUI_VERSION;
     m.attr("IMGUI_VERSION_NUM") = IMGUI_VERSION_NUM;

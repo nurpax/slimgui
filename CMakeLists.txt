@@ -16,6 +16,7 @@ add_definitions(-DIMGUI_DISABLE_OBSOLETE_KEYIO=1)
 nanobind_add_module(slimgui_ext
   NB_STATIC
   STABLE_ABI
+  NB_DOMAIN slimgui_abi_domain
 
   src/slimgui_ext.cpp
   src/c/imgui/imgui.cpp
@@ -32,6 +33,15 @@ nanobind_add_stub(
   PYTHON_PATH $<TARGET_FILE_DIR:slimgui_ext>
   DEPENDS slimgui_ext
 )
+
+# Check for an environment variable
+if (DEFINED ENV{CIBW_BUILD})
+    set(DISABLE_LEAK_CHECKS 1)
+else()
+    set(DISABLE_LEAK_CHECKS 0)
+endif()
+
+target_compile_definitions(slimgui_ext PRIVATE SLIMGUI_DISABLE_LEAK_CHECKS=${DISABLE_LEAK_CHECKS})
 
 include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
 
