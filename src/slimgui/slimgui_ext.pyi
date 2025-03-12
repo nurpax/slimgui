@@ -14,12 +14,22 @@ class BackendFlags(enum.IntFlag):
     NONE = 0
 
     HAS_GAMEPAD = 1
+    """Backend Platform supports gamepad and currently has one connected."""
 
     HAS_MOUSE_CURSORS = 2
+    """
+    Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.
+    """
 
     HAS_SET_MOUSE_POS = 4
+    """
+    Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
+    """
 
     RENDERER_HAS_VTX_OFFSET = 8
+    """
+    Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
+    """
 
 class ButtonFlags(enum.IntFlag):
     __str__ = __repr__
@@ -30,10 +40,13 @@ class ButtonFlags(enum.IntFlag):
     NONE = 0
 
     MOUSE_BUTTON_LEFT = 1
+    """React on left mouse button (default)"""
 
     MOUSE_BUTTON_RIGHT = 2
+    """React on right mouse button"""
 
     MOUSE_BUTTON_MIDDLE = 4
+    """React on center mouse button"""
 
 class ChildFlags(enum.IntFlag):
     __str__ = __repr__
@@ -44,20 +57,42 @@ class ChildFlags(enum.IntFlag):
     NONE = 0
 
     BORDER = 1
+    """
+    Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == true for legacy reason)
+    """
 
     ALWAYS_USE_WINDOW_PADDING = 2
+    """
+    Pad with style.WindowPadding even if no border are drawn (no padding by default for non-bordered child windows because it makes more sense)
+    """
 
     RESIZE_X = 4
+    """
+    Allow resize from right border (layout direction). Enable .ini saving (unless ImGuiWindowFlags_NoSavedSettings passed to window flags)
+    """
 
     RESIZE_Y = 8
+    """Allow resize from bottom border (layout direction)."""
 
     AUTO_RESIZE_X = 16
+    """
+    Enable auto-resizing width. Read IMPORTANT: Size measurement" details above.
+    """
 
     AUTO_RESIZE_Y = 32
+    """
+    Enable auto-resizing height. Read IMPORTANT: Size measurement" details above.
+    """
 
     ALWAYS_AUTO_RESIZE = 64
+    """
+    Combined with AutoResizeX/AutoResizeY. Always measure size even when child is hidden, always return true, always disable clipping optimization! NOT RECOMMENDED.
+    """
 
     FRAME_STYLE = 128
+    """
+    Style the child window like a framed item: use FrameBg, FrameRounding, FrameBorderSize, FramePadding instead of ChildBg, ChildRounding, ChildBorderSize, WindowPadding.
+    """
 
 class Col(enum.IntEnum):
     TEXT = 0
@@ -65,26 +100,33 @@ class Col(enum.IntEnum):
     TEXT_DISABLED = 1
 
     WINDOW_BG = 2
+    """Background of normal windows"""
 
     CHILD_BG = 3
+    """Background of child windows"""
 
     POPUP_BG = 4
+    """Background of popups, menus, tooltips windows"""
 
     BORDER = 5
 
     BORDER_SHADOW = 6
 
     FRAME_BG = 7
+    """Background of checkbox, radio button, plot, slider, text input"""
 
     FRAME_BG_HOVERED = 8
 
     FRAME_BG_ACTIVE = 9
 
     TITLE_BG = 10
+    """Title bar"""
 
     TITLE_BG_ACTIVE = 11
+    """Title bar when focused"""
 
     TITLE_BG_COLLAPSED = 12
+    """Title bar when collapsed"""
 
     MENU_BAR_BG = 13
 
@@ -97,6 +139,7 @@ class Col(enum.IntEnum):
     SCROLLBAR_GRAB_ACTIVE = 17
 
     CHECK_MARK = 18
+    """Checkbox tick and RadioButton circle"""
 
     SLIDER_GRAB = 19
 
@@ -109,6 +152,9 @@ class Col(enum.IntEnum):
     BUTTON_ACTIVE = 23
 
     HEADER = 24
+    """
+    Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem
+    """
 
     HEADER_HOVERED = 25
 
@@ -121,12 +167,14 @@ class Col(enum.IntEnum):
     SEPARATOR_ACTIVE = 29
 
     RESIZE_GRIP = 30
+    """Resize grip in lower-right and lower-left corners of windows."""
 
     RESIZE_GRIP_HOVERED = 31
 
     RESIZE_GRIP_ACTIVE = 32
 
     TAB = 33
+    """TabItem in a TabBar"""
 
     TAB_HOVERED = 34
 
@@ -145,26 +193,40 @@ class Col(enum.IntEnum):
     PLOT_HISTOGRAM_HOVERED = 41
 
     TABLE_HEADER_BG = 42
+    """Table header background"""
 
     TABLE_BORDER_STRONG = 43
+    """Table outer and header borders (prefer using Alpha=1.0 here)"""
 
     TABLE_BORDER_LIGHT = 44
+    """Table inner borders (prefer using Alpha=1.0 here)"""
 
     TABLE_ROW_BG = 45
+    """Table row background (even rows)"""
 
     TABLE_ROW_BG_ALT = 46
+    """Table row background (odd rows)"""
 
     TEXT_SELECTED_BG = 47
 
     DRAG_DROP_TARGET = 48
+    """Rectangle highlighting a drop target"""
 
     NAV_HIGHLIGHT = 49
+    """Gamepad/keyboard: current highlighted item"""
 
     NAV_WINDOWING_HIGHLIGHT = 50
+    """Highlight window when using CTRL+TAB"""
 
     NAV_WINDOWING_DIM_BG = 51
+    """
+    Darken/colorize entire screen behind the CTRL+TAB window list, when active
+    """
 
     MODAL_WINDOW_DIM_BG = 52
+    """
+    Darken/colorize entire screen behind a modal window, when one is active
+    """
 
     COUNT = 53
 
@@ -177,50 +239,99 @@ class ColorEditFlags(enum.IntFlag):
     NONE = 0
 
     NO_ALPHA = 2
+    """
+    ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
+    """
 
     NO_PICKER = 4
+    """ColorEdit: disable picker when clicking on color square."""
 
     NO_OPTIONS = 8
+    """
+    ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.
+    """
 
     NO_SMALL_PREVIEW = 16
+    """
+    ColorEdit, ColorPicker: disable color square preview next to the inputs. (e.g. to show only the inputs)
+    """
 
     NO_INPUTS = 32
+    """
+    ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview color square).
+    """
 
     NO_TOOLTIP = 64
+    """
+    ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
+    """
 
     NO_LABEL = 128
+    """
+    ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).
+    """
 
     NO_SIDE_PREVIEW = 256
+    """
+    ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead.
+    """
 
     NO_DRAG_DROP = 512
+    """
+    ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.
+    """
 
     NO_BORDER = 1024
+    """ColorButton: disable border (which is enforced by default)"""
 
     ALPHA_BAR = 65536
+    """ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker."""
 
     ALPHA_PREVIEW = 131072
+    """
+    ColorEdit, ColorPicker, ColorButton: display preview as a transparent color over a checkerboard, instead of opaque.
+    """
 
     ALPHA_PREVIEW_HALF = 262144
+    """
+    ColorEdit, ColorPicker, ColorButton: display half opaque / half checkerboard, instead of opaque.
+    """
 
     HDR = 524288
+    """
+    (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).
+    """
 
     DISPLAY_RGB = 1048576
+    """
+    ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex.
+    """
 
     DISPLAY_HSV = 2097152
 
     DISPLAY_HEX = 4194304
 
     UINT8 = 8388608
+    """
+    ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0..255.
+    """
 
     FLOAT = 16777216
+    """
+    ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.
+    """
 
     PICKER_HUE_BAR = 33554432
+    """ColorPicker: bar for Hue, rectangle for Sat/Value."""
 
     PICKER_HUE_WHEEL = 67108864
+    """ColorPicker: wheel for Hue, triangle for Sat/Value."""
 
     INPUT_RGB = 134217728
+    """ColorEdit, ColorPicker: input and output data in RGB format."""
 
     INPUT_HSV = 268435456
+    """ColorEdit, ColorPicker: input and output data in HSV format."""
 
 class ColorsArray:
     def __getitem__(self, arg: Col, /) -> tuple[float, float, float, float]: ...
@@ -240,31 +351,52 @@ class ComboFlags(enum.IntFlag):
     NONE = 0
 
     POPUP_ALIGN_LEFT = 1
+    """Align the popup toward the left by default"""
 
     HEIGHT_SMALL = 2
+    """
+    Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use SetNextWindowSizeConstraints() prior to calling BeginCombo()
+    """
 
     HEIGHT_REGULAR = 4
+    """Max ~8 items visible (default)"""
 
     HEIGHT_LARGE = 8
+    """Max ~20 items visible"""
 
     HEIGHT_LARGEST = 16
+    """As many fitting items as possible"""
 
     NO_ARROW_BUTTON = 32
+    """Display on the preview box without the square arrow button"""
 
     NO_PREVIEW = 64
+    """Display only a square arrow button"""
 
     WIDTH_FIT_PREVIEW = 128
+    """Width dynamically calculated from preview contents"""
 
 class Cond(enum.IntEnum):
     NONE = 0
+    """No condition (always set the variable), same as _Always"""
 
     ALWAYS = 1
+    """No condition (always set the variable), same as _None"""
 
     ONCE = 2
+    """
+    Set the variable once per runtime session (only the first call will succeed)
+    """
 
     FIRST_USE_EVER = 4
+    """
+    Set the variable if the object/window has no persistently saved data (no entry in .ini file)
+    """
 
     APPEARING = 8
+    """
+    Set the variable if the object/window is appearing after being hidden/inactive (or the first time)
+    """
 
 class ConfigFlags(enum.IntFlag):
     __str__ = __repr__
@@ -275,20 +407,40 @@ class ConfigFlags(enum.IntFlag):
     NONE = 0
 
     NAV_ENABLE_KEYBOARD = 1
+    """
+    Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.
+    """
 
     NAV_ENABLE_GAMEPAD = 2
+    """
+    Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.
+    """
 
     NAV_ENABLE_SET_MOUSE_POS = 4
+    """
+    Instruct navigation to move the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is awkward. Will update io.MousePos and set io.WantSetMousePos=true. If enabled you MUST honor io.WantSetMousePos requests in your backend, otherwise ImGui will react as if the mouse is jumping around back and forth.
+    """
 
     NAV_NO_CAPTURE_KEYBOARD = 8
+    """
+    Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.
+    """
 
     NO_MOUSE = 16
+    """
+    Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the backend.
+    """
 
     NO_MOUSE_CURSOR_CHANGE = 32
+    """
+    Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
+    """
 
     IS_SRGB = 1048576
+    """Application is SRGB-aware."""
 
     IS_TOUCH_SCREEN = 2097152
+    """Application is using a touch screen instead of a mouse."""
 
 class Context:
     def get_io_internal(self) -> IO: ...
@@ -317,24 +469,50 @@ class DragDropFlags(enum.IntFlag):
     NONE = 0
 
     SOURCE_NO_PREVIEW_TOOLTIP = 1
+    """
+    Disable preview tooltip. By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.
+    """
 
     SOURCE_NO_DISABLE_HOVER = 2
+    """
+    By default, when dragging we clear data so that IsItemHovered() will return false, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call IsItemHovered() on the source item.
+    """
 
     SOURCE_NO_HOLD_TO_OPEN_OTHERS = 4
+    """
+    Disable the behavior that allows to open tree nodes and collapsing header by holding over them while dragging a source item.
+    """
 
     SOURCE_ALLOW_NULL_ID = 8
+    """
+    Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.
+    """
 
     SOURCE_EXTERN = 16
+    """
+    External source (from outside of dear imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.
+    """
 
     SOURCE_AUTO_EXPIRE_PAYLOAD = 32
+    """
+    Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged)
+    """
 
     ACCEPT_BEFORE_DELIVERY = 1024
+    """
+    AcceptDragDropPayload() will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.
+    """
 
     ACCEPT_NO_DRAW_DEFAULT_RECT = 2048
+    """Do not draw the default highlight rectangle when hovering over target."""
 
     ACCEPT_NO_PREVIEW_TOOLTIP = 4096
+    """
+    Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.
+    """
 
     ACCEPT_PEEK_ONLY = 3072
+    """For peeking ahead and inspecting the payload before delivery."""
 
 class DrawCmd:
     @property
@@ -367,16 +545,34 @@ class DrawFlags(enum.IntFlag):
     NONE = 0
 
     CLOSED = 1
+    """
+    PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
+    """
 
     ROUND_CORNERS_TOP_LEFT = 16
+    """
+    AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01.
+    """
 
     ROUND_CORNERS_TOP_RIGHT = 32
+    """
+    AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02.
+    """
 
     ROUND_CORNERS_BOTTOM_LEFT = 64
+    """
+    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04.
+    """
 
     ROUND_CORNERS_BOTTOM_RIGHT = 128
+    """
+    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08.
+    """
 
     ROUND_CORNERS_NONE = 256
+    """
+    AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag!
+    """
 
     ROUND_CORNERS_TOP = 48
 
@@ -520,26 +716,55 @@ class HoveredFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """
+    Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.
+    """
 
     CHILD_WINDOWS = 1
+    """
+    IsWindowHovered() only: Return true if any children of the window is hovered
+    """
 
     ROOT_WINDOW = 2
+    """
+    IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)
+    """
 
     ANY_WINDOW = 4
+    """IsWindowHovered() only: Return true if any window is hovered"""
 
     NO_POPUP_HIERARCHY = 8
+    """
+    IsWindowHovered() only: Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)
+    """
 
     ALLOW_WHEN_BLOCKED_BY_POPUP = 32
+    """
+    Return true even if a popup window is normally blocking access to this item/window
+    """
 
     ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM = 128
+    """
+    Return true even if an active item is blocking access to this item/window. Useful for Drag and Drop patterns.
+    """
 
     ALLOW_WHEN_OVERLAPPED_BY_ITEM = 256
+    """
+    IsItemHovered() only: Return true even if the item uses AllowOverlap mode and is overlapped by another hoverable item.
+    """
 
     ALLOW_WHEN_OVERLAPPED_BY_WINDOW = 512
+    """
+    IsItemHovered() only: Return true even if the position is obstructed or overlapped by another window.
+    """
 
     ALLOW_WHEN_DISABLED = 1024
+    """IsItemHovered() only: Return true even if the item is disabled"""
 
     NO_NAV_OVERRIDE = 2048
+    """
+    IsItemHovered() only: Disable using gamepad/keyboard navigation state when active, always query mouse
+    """
 
     ALLOW_WHEN_OVERLAPPED = 768
 
@@ -548,16 +773,34 @@ class HoveredFlags(enum.IntFlag):
     ROOT_AND_CHILD_WINDOWS = 3
 
     FOR_TOOLTIP = 4096
+    """
+    Shortcut for standard flags when using IsItemHovered() + SetTooltip() sequence.
+    """
 
     STATIONARY = 8192
+    """
+    Require mouse to be stationary for style.HoverStationaryDelay (~0.15 sec) _at least one time_. After this, can move on same item/window. Using the stationary test tends to reduces the need for a long delay.
+    """
 
     DELAY_NONE = 16384
+    """
+    IsItemHovered() only: Return true immediately (default). As this is the default you generally ignore this.
+    """
 
     DELAY_SHORT = 32768
+    """
+    IsItemHovered() only: Return true after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).
+    """
 
     DELAY_NORMAL = 65536
+    """
+    IsItemHovered() only: Return true after style.HoverDelayNormal elapsed (~0.40 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).
+    """
 
     NO_SHARED_DELAY = 131072
+    """
+    IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
+    """
 
 IMGUI_VERSION: str = '1.90.5'
 
@@ -762,46 +1005,83 @@ class InputTextFlags(enum.IntFlag):
     NONE = 0
 
     CHARS_DECIMAL = 1
+    """Allow 0123456789.+-*/"""
 
     CHARS_HEXADECIMAL = 2
+    """Allow 0123456789ABCDEFabcdef"""
 
     CHARS_UPPERCASE = 4
+    """Turn a..z into A..Z"""
 
     CHARS_NO_BLANK = 8
+    """Filter out spaces, tabs"""
 
     AUTO_SELECT_ALL = 16
+    """Select entire text when first taking mouse focus"""
 
     ENTER_RETURNS_TRUE = 32
+    """
+    Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider looking at the IsItemDeactivatedAfterEdit() function.
+    """
 
     CALLBACK_COMPLETION = 64
+    """Callback on pressing TAB (for completion handling)"""
 
     CALLBACK_HISTORY = 128
+    """Callback on pressing Up/Down arrows (for history handling)"""
 
     CALLBACK_ALWAYS = 256
+    """
+    Callback on each iteration. User code may query cursor position, modify text buffer.
+    """
 
     CALLBACK_CHAR_FILTER = 512
+    """
+    Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.
+    """
 
     ALLOW_TAB_INPUT = 1024
+    """Pressing TAB input a '	' character into the text field"""
 
     CTRL_ENTER_FOR_NEW_LINE = 2048
+    """
+    In multi-line mode, unfocus with Enter, add new line with Ctrl+Enter (default is opposite: unfocus with Ctrl+Enter, add line with Enter).
+    """
 
     NO_HORIZONTAL_SCROLL = 4096
+    """Disable following the cursor horizontally"""
 
     ALWAYS_OVERWRITE = 8192
+    """Overwrite mode"""
 
     READ_ONLY = 16384
+    """Read-only mode"""
 
     PASSWORD = 32768
+    """Password mode, display all characters as '*'"""
 
     NO_UNDO_REDO = 65536
+    """
+    Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().
+    """
 
     CHARS_SCIENTIFIC = 131072
+    """Allow 0123456789.+-*/eE (Scientific notation input)"""
 
     CALLBACK_RESIZE = 262144
+    """
+    Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)
+    """
 
     CALLBACK_EDIT = 524288
+    """
+    Callback on any edit (note that InputText() already returns true on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)
+    """
 
     ESCAPE_CLEARS_ALL = 1048576
+    """
+    Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)
+    """
 
 class Key(enum.IntEnum):
     KEY_NONE = 0
@@ -1153,20 +1433,30 @@ class MouseCursor(enum.IntEnum):
     ARROW = 0
 
     TEXT_INPUT = 1
+    """When hovering over InputText, etc."""
 
     RESIZE_ALL = 2
+    """(Unused by Dear ImGui functions)"""
 
     RESIZE_NS = 3
+    """When hovering over a horizontal border"""
 
     RESIZE_EW = 4
+    """When hovering over a vertical border or a column"""
 
     RESIZE_NESW = 5
+    """When hovering over the bottom-left corner of a window"""
 
     RESIZE_NWSE = 6
+    """When hovering over the bottom-right corner of a window"""
 
     HAND = 7
+    """(Unused by Dear ImGui functions. Use for e.g. hyperlinks)"""
 
     NOT_ALLOWED = 8
+    """
+    When hovering something with disallowed interaction. Usually a crossed circle.
+    """
 
     COUNT = 9
 
@@ -1179,20 +1469,44 @@ class PopupFlags(enum.IntFlag):
     NONE = 0
 
     MOUSE_BUTTON_LEFT = 0
+    """
+    For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)
+    """
 
     MOUSE_BUTTON_RIGHT = 1
+    """
+    For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)
+    """
 
     MOUSE_BUTTON_MIDDLE = 2
+    """
+    For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as ImGuiMouseButton_Middle)
+    """
 
     NO_REOPEN = 32
+    """
+    For OpenPopup*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation)
+    """
 
     NO_OPEN_OVER_EXISTING_POPUP = 128
+    """
+    For OpenPopup*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack
+    """
 
     NO_OPEN_OVER_ITEMS = 256
+    """
+    For BeginPopupContextWindow(): don't return true when hovering items, only when hovering empty space
+    """
 
     ANY_POPUP_ID = 1024
+    """
+    For IsPopupOpen(): ignore the ImGuiID parameter and test for any popup.
+    """
 
     ANY_POPUP_LEVEL = 2048
+    """
+    For IsPopupOpen(): search/test at any level of the popup stack (default test in the current level)
+    """
 
     ANY_POPUP = 3072
 
@@ -1205,14 +1519,21 @@ class SelectableFlags(enum.IntFlag):
     NONE = 0
 
     DONT_CLOSE_POPUPS = 1
+    """Clicking this doesn't close parent popup window"""
 
     SPAN_ALL_COLUMNS = 2
+    """
+    Frame will span all columns of its container table (text will still fit in current column)
+    """
 
     ALLOW_DOUBLE_CLICK = 4
+    """Generate press events on double clicks too"""
 
     DISABLED = 8
+    """Cannot be selected, display grayed out text"""
 
     ALLOW_OVERLAP = 16
+    """(WIP) Hit testing to allow subsequent widgets to overlap this one"""
 
 class SliderFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1223,12 +1544,24 @@ class SliderFlags(enum.IntFlag):
     NONE = 0
 
     ALWAYS_CLAMP = 16
+    """
+    Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
+    """
 
     LOGARITHMIC = 32
+    """
+    Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.
+    """
 
     NO_ROUND_TO_FORMAT = 64
+    """
+    Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits)
+    """
 
     NO_INPUT = 128
+    """
+    Disable CTRL+Click or Enter key allowing to input text directly into the widget
+    """
 
 class Style:
     @property
@@ -1538,66 +1871,97 @@ class Style:
 
 class StyleVar(enum.IntEnum):
     ALPHA = 0
+    """float     Alpha"""
 
     DISABLED_ALPHA = 1
+    """float     DisabledAlpha"""
 
     WINDOW_PADDING = 2
+    """ImVec2    WindowPadding"""
 
     WINDOW_ROUNDING = 3
+    """float     WindowRounding"""
 
     WINDOW_BORDER_SIZE = 4
+    """float     WindowBorderSize"""
 
     WINDOW_MIN_SIZE = 5
+    """ImVec2    WindowMinSize"""
 
     WINDOW_TITLE_ALIGN = 6
+    """ImVec2    WindowTitleAlign"""
 
     CHILD_ROUNDING = 7
+    """float     ChildRounding"""
 
     CHILD_BORDER_SIZE = 8
+    """float     ChildBorderSize"""
 
     POPUP_ROUNDING = 9
+    """float     PopupRounding"""
 
     POPUP_BORDER_SIZE = 10
+    """float     PopupBorderSize"""
 
     FRAME_PADDING = 11
+    """ImVec2    FramePadding"""
 
     FRAME_ROUNDING = 12
+    """float     FrameRounding"""
 
     FRAME_BORDER_SIZE = 13
+    """float     FrameBorderSize"""
 
     ITEM_SPACING = 14
+    """ImVec2    ItemSpacing"""
 
     ITEM_INNER_SPACING = 15
+    """ImVec2    ItemInnerSpacing"""
 
     INDENT_SPACING = 16
+    """float     IndentSpacing"""
 
     CELL_PADDING = 17
+    """ImVec2    CellPadding"""
 
     SCROLLBAR_SIZE = 18
+    """float     ScrollbarSize"""
 
     SCROLLBAR_ROUNDING = 19
+    """float     ScrollbarRounding"""
 
     GRAB_MIN_SIZE = 20
+    """float     GrabMinSize"""
 
     GRAB_ROUNDING = 21
+    """float     GrabRounding"""
 
     TAB_ROUNDING = 22
+    """float     TabRounding"""
 
     TAB_BORDER_SIZE = 23
+    """float     TabBorderSize"""
 
     TAB_BAR_BORDER_SIZE = 24
+    """float     TabBarBorderSize"""
 
     TABLE_ANGLED_HEADERS_ANGLE = 25
+    """float  TableAngledHeadersAngle"""
 
     BUTTON_TEXT_ALIGN = 26
+    """ImVec2    ButtonTextAlign"""
 
     SELECTABLE_TEXT_ALIGN = 27
+    """ImVec2    SelectableTextAlign"""
 
     SEPARATOR_TEXT_BORDER_SIZE = 28
+    """float  SeparatorTextBorderSize"""
 
     SEPARATOR_TEXT_ALIGN = 29
+    """ImVec2    SeparatorTextAlign"""
 
     SEPARATOR_TEXT_PADDING = 30
+    """ImVec2    SeparatorTextPadding"""
 
     COUNT = 31
 
@@ -1610,20 +1974,34 @@ class TabBarFlags(enum.IntFlag):
     NONE = 0
 
     REORDERABLE = 1
+    """
+    Allow manually dragging tabs to re-order them + New tabs are appended at the end of list
+    """
 
     AUTO_SELECT_NEW_TABS = 2
+    """Automatically select new tabs when they appear"""
 
     TAB_LIST_POPUP_BUTTON = 4
+    """Disable buttons to open the tab list popup"""
 
     NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 8
+    """
+    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+    """
 
     NO_TAB_LIST_SCROLLING_BUTTONS = 16
+    """
+    Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)
+    """
 
     NO_TOOLTIP = 32
+    """Disable tooltips when hovering a tab"""
 
     FITTING_POLICY_RESIZE_DOWN = 64
+    """Resize tabs when they don't fit"""
 
     FITTING_POLICY_SCROLL = 128
+    """Add scroll buttons when tabs don't fit"""
 
 class TabItemFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1634,31 +2012,57 @@ class TabItemFlags(enum.IntFlag):
     NONE = 0
 
     UNSAVED_DOCUMENT = 1
+    """
+    Display a dot next to the title + set ImGuiTabItemFlags_NoAssumedClosure.
+    """
 
     SET_SELECTED = 2
+    """
+    Trigger flag to programmatically make the tab selected when calling BeginTabItem()
+    """
 
     NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 4
+    """
+    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+    """
 
     NO_PUSH_ID = 8
+    """Don't call PushID()/PopID() on BeginTabItem()/EndTabItem()"""
 
     NO_TOOLTIP = 16
+    """Disable tooltip for the given tab"""
 
     NO_REORDER = 32
+    """Disable reordering this tab or having another tab cross over this tab"""
 
     LEADING = 64
+    """
+    Enforce the tab position to the left of the tab bar (after the tab list popup button)
+    """
 
     TRAILING = 128
+    """
+    Enforce the tab position to the right of the tab bar (before the scrolling buttons)
+    """
 
     NO_ASSUMED_CLOSURE = 256
+    """
+    Tab is selected when trying to close + closure is not immediately assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.
+    """
 
 class TableBgTarget(enum.IntEnum):
     NONE = 0
 
     ROW_BG0 = 1
+    """
+    Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
+    """
 
     ROW_BG1 = 2
+    """Set row background color 1 (generally used for selection marking)"""
 
     CELL_BG = 3
+    """Set cell background color (top-most color)"""
 
 class TableColumnFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1669,50 +2073,97 @@ class TableColumnFlags(enum.IntFlag):
     NONE = 0
 
     DISABLED = 1
+    """
+    Overriding/master disable flag: hide column, won't show in context menu (unlike calling TableSetColumnEnabled() which manipulates the user accessible state)
+    """
 
     DEFAULT_HIDE = 2
+    """Default as a hidden/disabled column."""
 
     DEFAULT_SORT = 4
+    """Default as a sorting column."""
 
     WIDTH_STRETCH = 8
+    """
+    Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is _SizingStretchSame or _SizingStretchProp).
+    """
 
     WIDTH_FIXED = 16
+    """
+    Column will not stretch. Preferable with horizontal scrolling enabled (default if table sizing policy is _SizingFixedFit and table is resizable).
+    """
 
     NO_RESIZE = 32
+    """Disable manual resizing."""
 
     NO_REORDER = 64
+    """
+    Disable manual reordering this column, this will also prevent other columns from crossing over this column.
+    """
 
     NO_HIDE = 128
+    """Disable ability to hide/disable this column."""
 
     NO_CLIP = 256
+    """
+    Disable clipping for this column (all NoClip columns will render in a same draw command).
+    """
 
     NO_SORT = 512
+    """
+    Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).
+    """
 
     NO_SORT_ASCENDING = 1024
+    """Disable ability to sort in the ascending direction."""
 
     NO_SORT_DESCENDING = 2048
+    """Disable ability to sort in the descending direction."""
 
     NO_HEADER_LABEL = 4096
+    """
+    TableHeadersRow() will not submit horizontal label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers.
+    """
 
     NO_HEADER_WIDTH = 8192
+    """Disable header text width contribution to automatic column width."""
 
     PREFER_SORT_ASCENDING = 16384
+    """
+    Make the initial sort direction Ascending when first sorting on this column (default).
+    """
 
     PREFER_SORT_DESCENDING = 32768
+    """
+    Make the initial sort direction Descending when first sorting on this column.
+    """
 
     INDENT_ENABLE = 65536
+    """Use current Indent value when entering cell (default for column 0)."""
 
     INDENT_DISABLE = 131072
+    """
+    Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
+    """
 
     ANGLED_HEADER = 262144
+    """
+    TableHeadersRow() will submit an angled header row for this column. Note this will add an extra row.
+    """
 
     IS_ENABLED = 16777216
+    """
+    Status: is enabled == not hidden by user/api (referred to as "Hide" in _DefaultHide and _NoHide) flags.
+    """
 
     IS_VISIBLE = 33554432
+    """Status: is visible == is enabled AND not clipped by scrolling."""
 
     IS_SORTED = 67108864
+    """Status: is currently part of the sort specs"""
 
     IS_HOVERED = 134217728
+    """Status: is hovered by mouse"""
 
 class TableFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1723,74 +2174,155 @@ class TableFlags(enum.IntFlag):
     NONE = 0
 
     RESIZABLE = 1
+    """Enable resizing columns."""
 
     REORDERABLE = 2
+    """
+    Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
+    """
 
     HIDEABLE = 4
+    """Enable hiding/disabling columns in context menu."""
 
     SORTABLE = 8
+    """
+    Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
+    """
 
     NO_SAVED_SETTINGS = 16
+    """
+    Disable persisting columns order, width and sort settings in the .ini file.
+    """
 
     CONTEXT_MENU_IN_BODY = 32
+    """
+    Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
+    """
 
     ROW_BG = 64
+    """
+    Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
+    """
 
     BORDERS_INNER_H = 128
+    """Draw horizontal borders between rows."""
 
     BORDERS_OUTER_H = 256
+    """Draw horizontal borders at the top and bottom."""
 
     BORDERS_INNER_V = 512
+    """Draw vertical borders between columns."""
 
     BORDERS_OUTER_V = 1024
+    """Draw vertical borders on the left and right sides."""
 
     BORDERS_H = 384
+    """Draw horizontal borders."""
 
     BORDERS_V = 1536
+    """Draw vertical borders."""
 
     BORDERS_INNER = 640
+    """Draw inner borders."""
 
     BORDERS_OUTER = 1280
+    """Draw outer borders."""
 
     BORDERS = 1920
+    """Draw all borders."""
 
     NO_BORDERS_IN_BODY = 2048
+    """
+    [ALPHA] Disable vertical borders in columns Body (borders will always appear in Headers). -> May move to style
+    """
 
     NO_BORDERS_IN_BODY_UNTIL_RESIZE = 4096
+    """
+    [ALPHA] Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers). -> May move to style
+    """
 
     SIZING_FIXED_FIT = 8192
+    """
+    Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.
+    """
 
     SIZING_FIXED_SAME = 16384
+    """
+    Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.
+    """
 
     SIZING_STRETCH_PROP = 24576
+    """
+    Columns default to _WidthStretch with default weights proportional to each columns contents widths.
+    """
 
     SIZING_STRETCH_SAME = 32768
+    """
+    Columns default to _WidthStretch with default weights all equal, unless overridden by TableSetupColumn().
+    """
 
     NO_HOST_EXTEND_X = 65536
+    """
+    Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.
+    """
 
     NO_HOST_EXTEND_Y = 131072
+    """
+    Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.
+    """
 
     NO_KEEP_COLUMNS_VISIBLE = 262144
+    """
+    Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.
+    """
 
     PRECISE_WIDTHS = 524288
+    """
+    Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.
+    """
 
     NO_CLIP = 1048576
+    """
+    Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with TableSetupScrollFreeze().
+    """
 
     PAD_OUTER_X = 2097152
+    """
+    Default if BordersOuterV is on. Enable outermost padding. Generally desirable if you have headers.
+    """
 
     NO_PAD_OUTER_X = 4194304
+    """Default if BordersOuterV is off. Disable outermost padding."""
 
     NO_PAD_INNER_X = 8388608
+    """
+    Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).
+    """
 
     SCROLL_X = 16777216
+    """
+    Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this creates a child window, ScrollY is currently generally recommended when using ScrollX.
+    """
 
     SCROLL_Y = 33554432
+    """
+    Enable vertical scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size.
+    """
 
     SORT_MULTI = 67108864
+    """
+    Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).
+    """
 
     SORT_TRISTATE = 134217728
+    """
+    Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).
+    """
 
     HIGHLIGHT_HOVERED_COLUMN = 268435456
+    """
+    Highlight column headers when hovered (may evolve into a fuller highlight)
+    """
 
 class TableRowFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1801,6 +2333,9 @@ class TableRowFlags(enum.IntFlag):
     NONE = 0
 
     HEADERS = 1
+    """
+    Identify header row (set default background color + width of its contents accounted differently for auto column width)
+    """
 
 class TreeNodeFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1811,34 +2346,67 @@ class TreeNodeFlags(enum.IntFlag):
     NONE = 0
 
     SELECTED = 1
+    """Draw as selected"""
 
     FRAMED = 2
+    """Draw frame with background (e.g. for CollapsingHeader)"""
 
     ALLOW_OVERLAP = 4
+    """Hit testing to allow subsequent widgets to overlap this one"""
 
     NO_TREE_PUSH_ON_OPEN = 8
+    """
+    Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack
+    """
 
     NO_AUTO_OPEN_ON_LOG = 16
+    """
+    Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)
+    """
 
     DEFAULT_OPEN = 32
+    """Default node to be open"""
 
     OPEN_ON_DOUBLE_CLICK = 64
+    """Need double-click to open node"""
 
     OPEN_ON_ARROW = 128
+    """
+    Only open when clicking on the arrow part. If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click arrow or double-click all box to open.
+    """
 
     LEAF = 256
+    """No collapsing, no arrow (use as a convenience for leaf nodes)."""
 
     BULLET = 512
+    """
+    Display a bullet instead of arrow. IMPORTANT: node can still be marked open/close if you don't set the _Leaf flag!
+    """
 
     FRAME_PADDING = 1024
+    """
+    Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding().
+    """
 
     SPAN_AVAIL_WIDTH = 2048
+    """
+    Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line. In the future we may refactor the hit system to be front-to-back, allowing natural overlaps and then this can become the default.
+    """
 
     SPAN_FULL_WIDTH = 4096
+    """
+    Extend hit box to the left-most and right-most edges (bypass the indented area).
+    """
 
     SPAN_ALL_COLUMNS = 8192
+    """
+    Frame will span all columns of its container table (text will still fit in current column)
+    """
 
     NAV_LEFT_JUMPS_BACK_HERE = 16384
+    """
+    (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
+    """
 
     COLLAPSING_HEADER = 26
 
@@ -1888,42 +2456,77 @@ class WindowFlags(enum.IntFlag):
     NONE = 0
 
     NO_TITLE_BAR = 1
+    """Disable title-bar"""
 
     NO_RESIZE = 2
+    """Disable user resizing with the lower-right grip"""
 
     NO_MOVE = 4
+    """Disable user moving the window"""
 
     NO_SCROLLBAR = 8
+    """
+    Disable scrollbars (window can still scroll with mouse or programmatically)
+    """
 
     NO_SCROLL_WITH_MOUSE = 16
+    """
+    Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set.
+    """
 
     NO_COLLAPSE = 32
+    """
+    Disable user collapsing window by double-clicking on it. Also referred to as Window Menu Button (e.g. within a docking node).
+    """
 
     ALWAYS_AUTO_RESIZE = 64
+    """Resize every window to its content every frame"""
 
     NO_BACKGROUND = 128
+    """
+    Disable drawing background color (WindowBg, etc.) and outside border. Similar as using SetNextWindowBgAlpha(0.0f).
+    """
 
     NO_SAVED_SETTINGS = 256
+    """Never load/save settings in .ini file"""
 
     NO_MOUSE_INPUTS = 512
+    """Disable catching mouse, hovering test with pass through."""
 
     MENU_BAR = 1024
+    """Has a menu-bar"""
 
     HORIZONTAL_SCROLLBAR = 2048
+    """
+    Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
+    """
 
     NO_FOCUS_ON_APPEARING = 4096
+    """Disable taking focus when transitioning from hidden to visible state"""
 
     NO_BRING_TO_FRONT_ON_FOCUS = 8192
+    """
+    Disable bringing window to front when taking focus (e.g. clicking on it or programmatically giving it focus)
+    """
 
     ALWAYS_VERTICAL_SCROLLBAR = 16384
+    """Always show vertical scrollbar (even if ContentSize.y < Size.y)"""
 
     ALWAYS_HORIZONTAL_SCROLLBAR = 32768
+    """Always show horizontal scrollbar (even if ContentSize.x < Size.x)"""
 
     NO_NAV_INPUTS = 65536
+    """No gamepad/keyboard navigation within the window"""
 
     NO_NAV_FOCUS = 131072
+    """
+    No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
+    """
 
     UNSAVED_DOCUMENT = 262144
+    """
+    Display a dot next to the title. When used in a tab/docking context, tab is selected when clicking the X + closure is not assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.
+    """
 
     NO_NAV = 196608
 
@@ -1932,577 +2535,1315 @@ class WindowFlags(enum.IntFlag):
     NO_INPUTS = 197120
 
     NAV_FLATTENED = 8388608
+    """
+    [BETA] On child window: share focus scope, allow gamepad/keyboard navigation to cross over parent border to this child or between sibling child windows.
+    """
 
     CHILD_WINDOW = 16777216
+    """Don't use! For internal use by BeginChild()"""
 
     TOOLTIP = 33554432
+    """Don't use! For internal use by BeginTooltip()"""
 
     POPUP = 67108864
+    """Don't use! For internal use by BeginPopup()"""
 
     MODAL = 134217728
+    """Don't use! For internal use by BeginPopupModal()"""
 
     CHILD_MENU = 268435456
+    """Don't use! For internal use by BeginMenu()"""
 
-def align_text_to_frame_padding() -> None: ...
+def align_text_to_frame_padding() -> None:
+    """vertically align upcoming text baseline to FramePadding.y so that it will align properly to regularly framed items (call if you have text on a line before a framed item)"""
+    ...
 
-def arrow_button(str_id: str, dir: int) -> bool: ...
 
-def begin(name: str, closable: bool = False, flags: WindowFlags = WindowFlags.NONE) -> tuple[bool, bool]: ...
+def arrow_button(str_id: str, dir: int) -> bool:
+    """square button with an arrow shape"""
+    ...
 
-def begin_child(str_id: str, size: tuple[float, float] = (0.0, 0.0), child_flags: ChildFlags = ChildFlags.NONE, window_flags: WindowFlags = WindowFlags.NONE) -> bool: ...
 
-def begin_combo(label: str, preview_value: str, flags: ComboFlags = ComboFlags.NONE) -> bool: ...
+def begin(name: str, closable: bool = False, flags: WindowFlags = WindowFlags.NONE) -> tuple[bool, bool]:
+    ...
 
-def begin_disabled(disabled: bool = True) -> None: ...
 
-def begin_drag_drop_source(flags: DragDropFlags = DragDropFlags.NONE) -> bool: ...
+def begin_child(str_id: str, size: tuple[float, float] = (0.0, 0.0), child_flags: ChildFlags = ChildFlags.NONE, window_flags: WindowFlags = WindowFlags.NONE) -> bool:
+    ...
 
-def begin_drag_drop_target() -> bool: ...
 
-def begin_group() -> None: ...
+def begin_combo(label: str, preview_value: str, flags: ComboFlags = ComboFlags.NONE) -> bool:
+    ...
 
-def begin_item_tooltip() -> bool: ...
 
-def begin_list_box(label: str, size: tuple[float, float] = (0.0, 0.0)) -> bool: ...
+def begin_disabled(disabled: bool = True) -> None:
+    ...
 
-def begin_main_menu_bar() -> bool: ...
 
-def begin_menu(label: str, enabled: bool = True) -> bool: ...
+def begin_drag_drop_source(flags: DragDropFlags = DragDropFlags.NONE) -> bool:
+    """call after submitting an item which may be dragged. when this return true, you can call SetDragDropPayload() + EndDragDropSource()"""
+    ...
 
-def begin_menu_bar() -> bool: ...
 
-def begin_popup(str_id: str, flags: WindowFlags = WindowFlags.NONE) -> bool: ...
+def begin_drag_drop_target() -> bool:
+    """call after submitting an item that may receive a payload. If this returns true, you can call AcceptDragDropPayload() + EndDragDropTarget()"""
+    ...
 
-def begin_popup_context_window(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> bool: ...
 
-def begin_tab_bar(str_id: str, flags: TabBarFlags = TabBarFlags.NONE) -> bool: ...
+def begin_group() -> None:
+    """lock horizontal starting position"""
+    ...
 
-def begin_tab_item(str_id: str, closable: bool = False, flags: TabItemFlags = TabItemFlags.NONE) -> tuple[bool, bool]: ...
 
-def begin_table(str_id: str, column: int, flags: TableFlags = TableFlags.NONE, outer_size: tuple[float, float] = (0.0, 0.0), inner_width: float = 0.0) -> bool: ...
+def begin_item_tooltip() -> bool:
+    """begin/append a tooltip window if preceding item was hovered."""
+    ...
 
-def begin_tooltip() -> bool: ...
 
-def bullet() -> None: ...
+def begin_list_box(label: str, size: tuple[float, float] = (0.0, 0.0)) -> bool:
+    ...
 
-def bullet_text(text: str) -> None: ...
 
-def button(label: str, size: tuple[float, float] = (0.0, 0.0)) -> bool: ...
+def begin_main_menu_bar() -> bool:
+    """create and append to a full screen menu-bar."""
+    ...
 
-def calc_item_width() -> float: ...
 
-def calc_text_size(text: str, hide_text_after_double_hash: bool = False, wrap_width: float = -1.0) -> tuple[float, float]: ...
+def begin_menu(label: str, enabled: bool = True) -> bool:
+    """create a sub-menu entry. only call EndMenu() if this returns true!"""
+    ...
 
-def checkbox(label: str, v: bool) -> tuple[bool, bool]: ...
 
-def checkbox_flags(label: str, flags: int, flags_value: int) -> tuple[bool, int]: ...
+def begin_menu_bar() -> bool:
+    """append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window)."""
+    ...
 
-def close_current_popup() -> None: ...
 
-def collapsing_header(label: str, visible: object | None = None, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> tuple[bool, bool | None]: ...
+def begin_popup(str_id: str, flags: WindowFlags = WindowFlags.NONE) -> bool:
+    """return true if the popup is open, and you can start outputting to it."""
+    ...
 
-def color_convert_hsv_to_rgb(hsv: tuple[float, float, float, float]) -> tuple[float, float, float, float]: ...
 
-def color_convert_rgb_to_hsv(rgba: tuple[float, float, float, float]) -> tuple[float, float, float, float]: ...
+def begin_popup_context_window(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> bool:
+    """open+begin popup when clicked on current window."""
+    ...
 
-def color_edit3(label: str, col: tuple[float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float]]: ...
 
-def color_edit4(label: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]: ...
+def begin_tab_bar(str_id: str, flags: TabBarFlags = TabBarFlags.NONE) -> bool:
+    """create and append into a TabBar"""
+    ...
 
-def columns(count: int = 1, id: str | None = None, border: bool = True) -> None: ...
 
-def combo(label: str, current_item: int, items: Sequence[str], popup_max_height_in_items: int = -1) -> tuple[bool, int]: ...
+def begin_tab_item(str_id: str, closable: bool = False, flags: TabItemFlags = TabItemFlags.NONE) -> tuple[bool, bool]:
+    """create a Tab. Returns true if the Tab is selected."""
+    ...
+
+
+def begin_table(str_id: str, column: int, flags: TableFlags = TableFlags.NONE, outer_size: tuple[float, float] = (0.0, 0.0), inner_width: float = 0.0) -> bool:
+    ...
+
+
+def begin_tooltip() -> bool:
+    """begin/append a tooltip window."""
+    ...
+
+
+def bullet() -> None:
+    """draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses"""
+    ...
+
+
+def bullet_text(text: str) -> None:
+    ...
+
+
+def button(label: str, size: tuple[float, float] = (0.0, 0.0)) -> bool:
+    ...
+
+
+def calc_item_width() -> float:
+    """width of item given pushed settings and current cursor position. NOT necessarily the width of last item unlike most 'Item' functions."""
+    ...
+
+
+def calc_text_size(text: str, hide_text_after_double_hash: bool = False, wrap_width: float = -1.0) -> tuple[float, float]:
+    ...
+
+
+def checkbox(label: str, v: bool) -> tuple[bool, bool]:
+    ...
+
+
+def checkbox_flags(label: str, flags: int, flags_value: int) -> tuple[bool, int]:
+    ...
+
+
+def close_current_popup() -> None:
+    """manually close the popup we have begin-ed into."""
+    ...
+
+
+def collapsing_header(label: str, visible: object | None = None, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> tuple[bool, bool | None]:
+    """when 'p_visible != NULL': if '*p_visible==true' display an additional small close button on upper right of the header which will set the bool to false when clicked, if '*p_visible==false' don't display the header."""
+    ...
+
+
+def color_convert_hsv_to_rgb(hsv: tuple[float, float, float, float]) -> tuple[float, float, float, float]:
+    ...
+
+
+def color_convert_rgb_to_hsv(rgba: tuple[float, float, float, float]) -> tuple[float, float, float, float]:
+    ...
+
+
+def color_edit3(label: str, col: tuple[float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+    ...
+
+
+def color_edit4(label: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+    ...
+
+
+def columns(count: int = 1, id: str | None = None, border: bool = True) -> None:
+    ...
+
+
+def combo(label: str, current_item: int, items: Sequence[str], popup_max_height_in_items: int = -1) -> tuple[bool, int]:
+    ...
+
 
 def create_context(shared_font_atlas: FontAtlas | None = None) -> Context:
-    """create context"""
+    ...
 
-def destroy_context(arg: Context, /) -> None: ...
 
-def drag_float(label: str, v: float, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]: ...
+def destroy_context(arg: Context, /) -> None:
+    """NULL = destroy current context"""
+    ...
 
-def drag_float2(label: str, v: tuple[float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float]]: ...
 
-def drag_float3(label: str, v: tuple[float, float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float]]: ...
+def drag_float(label: str, v: float, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]:
+    """If v_min >= v_max we have no bound"""
+    ...
 
-def drag_float4(label: str, v: tuple[float, float, float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]: ...
 
-def drag_int(label: str, v: int, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]: ...
+def drag_float2(label: str, v: tuple[float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float]]:
+    ...
 
-def drag_int2(label: str, v: tuple[int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int]]: ...
 
-def drag_int3(label: str, v: tuple[int, int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int]]: ...
+def drag_float3(label: str, v: tuple[float, float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+    ...
 
-def drag_int4(label: str, v: tuple[int, int, int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]: ...
 
-def dummy(size: tuple[float, float]) -> None: ...
+def drag_float4(label: str, v: tuple[float, float, float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+    ...
 
-def end() -> None: ...
 
-def end_child() -> None: ...
+def drag_int(label: str, v: int, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]:
+    """If v_min >= v_max we have no bound"""
+    ...
 
-def end_combo() -> None: ...
 
-def end_disabled() -> None: ...
+def drag_int2(label: str, v: tuple[int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int]]:
+    ...
 
-def end_drag_drop_source() -> None: ...
 
-def end_drag_drop_target() -> None: ...
+def drag_int3(label: str, v: tuple[int, int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int]]:
+    ...
 
-def end_group() -> None: ...
 
-def end_list_box() -> None: ...
+def drag_int4(label: str, v: tuple[int, int, int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]:
+    ...
 
-def end_main_menu_bar() -> None: ...
 
-def end_menu() -> None: ...
+def dummy(size: tuple[float, float]) -> None:
+    """add a dummy item of given size. unlike InvisibleButton(), Dummy() won't take the mouse click or be navigable into."""
+    ...
 
-def end_menu_bar() -> None: ...
 
-def end_popup() -> None: ...
+def end() -> None:
+    """Automatically called on the last call of Step() that returns false."""
+    ...
 
-def end_tab_bar() -> None: ...
 
-def end_tab_item() -> None: ...
+def end_child() -> None:
+    ...
 
-def end_table() -> None: ...
 
-def end_tooltip() -> None: ...
+def end_combo() -> None:
+    """only call EndCombo() if BeginCombo() returns true!"""
+    ...
 
-def get_column_index() -> int: ...
 
-def get_column_offset(column_index: int = -1) -> float: ...
+def end_disabled() -> None:
+    ...
 
-def get_column_width(column_index: int = -1) -> float: ...
 
-def get_columns_count() -> int: ...
+def end_drag_drop_source() -> None:
+    """only call EndDragDropSource() if BeginDragDropSource() returns true!"""
+    ...
 
-def get_content_region_avail() -> tuple[float, float]: ...
 
-def get_content_region_max() -> tuple[float, float]: ...
+def end_drag_drop_target() -> None:
+    """only call EndDragDropTarget() if BeginDragDropTarget() returns true!"""
+    ...
 
-def get_current_context() -> Context: ...
 
-def get_cursor_pos() -> tuple[float, float]: ...
+def end_group() -> None:
+    """unlock horizontal starting position + capture the whole group bounding box into one \"item\" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)"""
+    ...
 
-def get_cursor_pos_x() -> float: ...
 
-def get_cursor_pos_y() -> float: ...
+def end_list_box() -> None:
+    """only call EndListBox() if BeginListBox() returned true!"""
+    ...
 
-def get_cursor_screen_pos() -> tuple[float, float]: ...
 
-def get_cursor_start_pos() -> tuple[float, float]: ...
+def end_main_menu_bar() -> None:
+    """only call EndMainMenuBar() if BeginMainMenuBar() returns true!"""
+    ...
 
-def get_draw_data() -> DrawData: ...
 
-def get_font_size() -> float: ...
+def end_menu() -> None:
+    """only call EndMenu() if BeginMenu() returns true!"""
+    ...
 
-def get_font_tex_uv_white_pixel() -> tuple[float, float]: ...
 
-def get_frame_count() -> int: ...
+def end_menu_bar() -> None:
+    """only call EndMenuBar() if BeginMenuBar() returns true!"""
+    ...
 
-def get_frame_height() -> float: ...
 
-def get_frame_height_with_spacing() -> float: ...
+def end_popup() -> None:
+    """only call EndPopup() if BeginPopupXXX() returns true!"""
+    ...
 
-def get_io() -> IO: ...
 
-def get_item_rect_max() -> tuple[float, float]: ...
+def end_tab_bar() -> None:
+    """only call EndTabBar() if BeginTabBar() returns true!"""
+    ...
 
-def get_item_rect_min() -> tuple[float, float]: ...
 
-def get_item_rect_size() -> tuple[float, float]: ...
+def end_tab_item() -> None:
+    """only call EndTabItem() if BeginTabItem() returns true!"""
+    ...
 
-def get_key_name(key: Key) -> str: ...
 
-def get_key_pressed_amount(key: Key, repeat_delay: float, rate: float) -> int: ...
+def end_table() -> None:
+    """only call EndTable() if BeginTable() returns true!"""
+    ...
 
-def get_main_viewport() -> Viewport: ...
 
-def get_mouse_clicked_count(button: MouseButton) -> int: ...
+def end_tooltip() -> None:
+    """only call EndTooltip() if BeginTooltip()/BeginItemTooltip() returns true!"""
+    ...
 
-def get_mouse_cursor() -> MouseCursor: ...
 
-def get_mouse_drag_delta(button: MouseButton = MouseButton.LEFT, lock_threshold: float = -1.0) -> tuple[float, float]: ...
+def get_column_index() -> int:
+    """get current column index"""
+    ...
 
-def get_mouse_pos() -> tuple[float, float]: ...
 
-def get_mouse_pos_on_opening_current_popup() -> tuple[float, float]: ...
+def get_column_offset(column_index: int = -1) -> float:
+    """get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..GetColumnsCount() inclusive. column 0 is typically 0.0f"""
+    ...
 
-def get_scroll_max_x() -> float: ...
 
-def get_scroll_max_y() -> float: ...
+def get_column_width(column_index: int = -1) -> float:
+    """get column width (in pixels). pass -1 to use current column"""
+    ...
 
-def get_scroll_x() -> float: ...
 
-def get_scroll_y() -> float: ...
+def get_columns_count() -> int:
+    ...
 
-def get_style() -> Style: ...
 
-def get_style_color_vec4(col: Col) -> tuple[float, float, float, float]: ...
+def get_content_region_avail() -> tuple[float, float]:
+    """== GetContentRegionMax() - GetCursorPos()"""
+    ...
 
-def get_text_line_height() -> float: ...
 
-def get_text_line_height_with_spacing() -> float: ...
+def get_content_region_max() -> tuple[float, float]:
+    """current content boundaries (typically window boundaries including scrolling, or current column boundaries), in windows coordinates"""
+    ...
 
-def get_time() -> float: ...
 
-def get_tree_node_to_label_spacing() -> float: ...
+def get_current_context() -> Context:
+    ...
 
-def get_version() -> str: ...
 
-def get_window_content_region_max() -> tuple[float, float]: ...
+def get_cursor_pos() -> tuple[float, float]:
+    """[window-local] cursor position in window coordinates (relative to window position)"""
+    ...
 
-def get_window_content_region_min() -> tuple[float, float]: ...
 
-def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0), border_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)) -> None: ...
+def get_cursor_pos_x() -> float:
+    """[window-local] \""""
+    ...
 
-def indent(indent_w: float = 0.0) -> None: ...
 
-def input_double(label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = '%.6f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, float]: ...
+def get_cursor_pos_y() -> float:
+    """[window-local] \""""
+    ...
 
-def input_float(label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, float]: ...
 
-def input_float2(label: str, v: tuple[float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float]]: ...
+def get_cursor_screen_pos() -> tuple[float, float]:
+    """cursor position in absolute coordinates (prefer using this, also more useful to work with ImDrawList API)."""
+    ...
 
-def input_float3(label: str, v: tuple[float, float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float, float]]: ...
 
-def input_float4(label: str, v: tuple[float, float, float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]: ...
+def get_cursor_start_pos() -> tuple[float, float]:
+    """[window-local] initial cursor position, in window coordinates"""
+    ...
 
-def input_int(label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, int]: ...
 
-def input_int2(label: str, v: tuple[int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int]]: ...
+def get_draw_data() -> DrawData:
+    """valid after Render() and until the next call to NewFrame(). this is what you have to render."""
+    ...
 
-def input_int3(label: str, v: tuple[int, int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int, int]]: ...
 
-def input_int4(label: str, v: tuple[int, int, int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]: ...
+def get_font_size() -> float:
+    """get current font size (= height in pixels) of current font with current scale applied"""
+    ...
 
-def input_text(label: str, text: str, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]: ...
 
-def input_text_multiline(label: str, text: str, size: tuple[float, float] = (0.0, 0.0), flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]: ...
+def get_font_tex_uv_white_pixel() -> tuple[float, float]:
+    """get UV coordinate for a while pixel, useful to draw custom shapes via the ImDrawList API"""
+    ...
 
-def input_text_with_hint(label: str, hint: str, text: str, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]: ...
 
-def invisible_button(str_id: str, size: tuple[float, float], flags: ButtonFlags = ButtonFlags.NONE) -> bool: ...
+def get_frame_count() -> int:
+    """get global imgui frame count. incremented by 1 every frame."""
+    ...
 
-def is_any_item_active() -> bool: ...
 
-def is_any_item_focused() -> bool: ...
+def get_frame_height() -> float:
+    """~ FontSize + style.FramePadding.y * 2"""
+    ...
 
-def is_any_item_hovered() -> bool: ...
 
-def is_item_activated() -> bool: ...
+def get_frame_height_with_spacing() -> float:
+    """~ FontSize + style.FramePadding.y * 2 + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of framed widgets)"""
+    ...
 
-def is_item_active() -> bool: ...
 
-def is_item_clicked(mouse_button: MouseButton = MouseButton.LEFT) -> bool: ...
+def get_io() -> IO:
+    """access the IO structure (mouse/keyboard/gamepad inputs, time, various configuration options/flags)"""
+    ...
 
-def is_item_deactivated() -> bool: ...
 
-def is_item_deactivated_after_edit() -> bool: ...
+def get_item_rect_max() -> tuple[float, float]:
+    """get lower-right bounding rectangle of the last item (screen space)"""
+    ...
 
-def is_item_edited() -> bool: ...
 
-def is_item_focused() -> bool: ...
+def get_item_rect_min() -> tuple[float, float]:
+    """get upper-left bounding rectangle of the last item (screen space)"""
+    ...
 
-def is_item_hovered(flags: HoveredFlags = HoveredFlags.NONE) -> bool: ...
 
-def is_item_toggled_open() -> bool: ...
+def get_item_rect_size() -> tuple[float, float]:
+    """get size of last item"""
+    ...
 
-def is_item_visible() -> bool: ...
 
-def is_key_chord_pressed(key_chord: Key) -> bool: ...
+def get_key_name(key: Key) -> str:
+    """[DEBUG] returns English name of the key. Those names a provided for debugging purpose and are not meant to be saved persistently not compared."""
+    ...
 
-def is_key_down(key: Key) -> bool: ...
 
-def is_key_pressed(key: Key, repeat: bool = True) -> bool: ...
+def get_key_pressed_amount(key: Key, repeat_delay: float, rate: float) -> int:
+    """uses provided repeat rate/delay. return a count, most often 0 or 1 but might be >1 if RepeatRate is small enough that DeltaTime > RepeatRate"""
+    ...
 
-def is_key_released(key: Key) -> bool: ...
 
-def is_mouse_clicked(button: MouseButton, repeat: bool = False) -> bool: ...
+def get_main_viewport() -> Viewport:
+    """return primary/default viewport. This can never be NULL."""
+    ...
 
-def is_mouse_double_clicked(button: MouseButton) -> bool: ...
 
-def is_mouse_down(button: MouseButton) -> bool: ...
+def get_mouse_clicked_count(button: MouseButton) -> int:
+    """return the number of successive mouse-clicks at the time where a click happen (otherwise 0)."""
+    ...
 
-def is_mouse_dragging(button: MouseButton, lock_threshold: float = -1.0) -> bool: ...
 
-def is_mouse_hovering_rect(r_min: tuple[float, float], r_max: tuple[float, float], clip: bool = True) -> bool: ...
+def get_mouse_cursor() -> MouseCursor:
+    """get desired mouse cursor shape. Important: reset in ImGui::NewFrame(), this is updated during the frame. valid before Render(). If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you"""
+    ...
 
-def is_mouse_pos_valid(mouse_pos: tuple[float, float] | None = None) -> bool: ...
 
-def is_mouse_released(button: MouseButton) -> bool: ...
+def get_mouse_drag_delta(button: MouseButton = MouseButton.LEFT, lock_threshold: float = -1.0) -> tuple[float, float]:
+    """return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (if lock_threshold < -1.0f, uses io.MouseDraggingThreshold)"""
+    ...
 
-def is_popup_open(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> bool: ...
+
+def get_mouse_pos() -> tuple[float, float]:
+    """shortcut to ImGui::GetIO().MousePos provided by user, to be consistent with other calls"""
+    ...
+
+
+def get_mouse_pos_on_opening_current_popup() -> tuple[float, float]:
+    """retrieve mouse position at the time of opening popup we have BeginPopup() into (helper to avoid user backing that value themselves)"""
+    ...
+
+
+def get_scroll_max_x() -> float:
+    """get maximum scrolling amount ~~ ContentSize.x - WindowSize.x - DecorationsSize.x"""
+    ...
+
+
+def get_scroll_max_y() -> float:
+    """get maximum scrolling amount ~~ ContentSize.y - WindowSize.y - DecorationsSize.y"""
+    ...
+
+
+def get_scroll_x() -> float:
+    """get scrolling amount [0 .. GetScrollMaxX()]"""
+    ...
+
+
+def get_scroll_y() -> float:
+    """get scrolling amount [0 .. GetScrollMaxY()]"""
+    ...
+
+
+def get_style() -> Style:
+    """access the Style structure (colors, sizes). Always use PushStyleColor(), PushStyleVar() to modify style mid-frame!"""
+    ...
+
+
+def get_style_color_vec4(col: Col) -> tuple[float, float, float, float]:
+    """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in."""
+    ...
+
+
+def get_text_line_height() -> float:
+    """~ FontSize"""
+    ...
+
+
+def get_text_line_height_with_spacing() -> float:
+    """~ FontSize + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of text)"""
+    ...
+
+
+def get_time() -> float:
+    """get global imgui time. incremented by io.DeltaTime every frame."""
+    ...
+
+
+def get_tree_node_to_label_spacing() -> float:
+    """horizontal distance preceding label when using TreeNode*() or Bullet() == (g.FontSize + style.FramePadding.x*2) for a regular unframed TreeNode"""
+    ...
+
+
+def get_version() -> str:
+    """get the compiled version string e.g. \"1.80 WIP\" (essentially the value for IMGUI_VERSION from the compiled version of imgui.cpp)"""
+    ...
+
+
+def get_window_content_region_max() -> tuple[float, float]:
+    """content boundaries max for the full window (roughly (0,0)+Size-Scroll) where Size can be overridden with SetNextWindowContentSize(), in window coordinates"""
+    ...
+
+
+def get_window_content_region_min() -> tuple[float, float]:
+    """content boundaries min for the full window (roughly (0,0)-Scroll), in window coordinates"""
+    ...
+
+
+def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0), border_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)) -> None:
+    ...
+
+
+def indent(indent_w: float = 0.0) -> None:
+    """move content position toward the right, by indent_w, or style.IndentSpacing if indent_w <= 0"""
+    ...
+
+
+def input_double(label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = '%.6f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, float]:
+    ...
+
+
+def input_float(label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, float]:
+    ...
+
+
+def input_float2(label: str, v: tuple[float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float]]:
+    ...
+
+
+def input_float3(label: str, v: tuple[float, float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+    ...
+
+
+def input_float4(label: str, v: tuple[float, float, float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+    ...
+
+
+def input_int(label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, int]:
+    ...
+
+
+def input_int2(label: str, v: tuple[int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int]]:
+    ...
+
+
+def input_int3(label: str, v: tuple[int, int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int, int]]:
+    ...
+
+
+def input_int4(label: str, v: tuple[int, int, int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]:
+    ...
+
+
+def input_text(label: str, text: str, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]:
+    ...
+
+
+def input_text_multiline(label: str, text: str, size: tuple[float, float] = (0.0, 0.0), flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]:
+    ...
+
+
+def input_text_with_hint(label: str, hint: str, text: str, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]:
+    ...
+
+
+def invisible_button(str_id: str, size: tuple[float, float], flags: ButtonFlags = ButtonFlags.NONE) -> bool:
+    """flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)"""
+    ...
+
+
+def is_any_item_active() -> bool:
+    """is any item active?"""
+    ...
+
+
+def is_any_item_focused() -> bool:
+    """is any item focused?"""
+    ...
+
+
+def is_any_item_hovered() -> bool:
+    """is any item hovered?"""
+    ...
+
+
+def is_item_activated() -> bool:
+    """was the last item just made active (item was previously inactive)."""
+    ...
+
+
+def is_item_active() -> bool:
+    """is the last item active? (e.g. button being held, text field being edited. This will continuously return true while holding mouse button on an item. Items that don't interact will always return false)"""
+    ...
+
+
+def is_item_clicked(mouse_button: MouseButton = MouseButton.LEFT) -> bool:
+    """is the last item hovered and mouse clicked on? (**)  == IsMouseClicked(mouse_button) && IsItemHovered()Important. (**) this is NOT equivalent to the behavior of e.g. Button(). Read comments in function definition."""
+    ...
+
+
+def is_item_deactivated() -> bool:
+    """was the last item just made inactive (item was previously active). Useful for Undo/Redo patterns with widgets that require continuous editing."""
+    ...
+
+
+def is_item_deactivated_after_edit() -> bool:
+    """was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). Useful for Undo/Redo patterns with widgets that require continuous editing. Note that you may get false positives (some widgets such as Combo()/ListBox()/Selectable() will return true even when clicking an already selected item)."""
+    ...
+
+
+def is_item_edited() -> bool:
+    """did the last item modify its underlying value this frame? or was pressed? This is generally the same as the \"bool\" return value of many widgets."""
+    ...
+
+
+def is_item_focused() -> bool:
+    """is the last item focused for keyboard/gamepad navigation?"""
+    ...
+
+
+def is_item_hovered(flags: HoveredFlags = HoveredFlags.NONE) -> bool:
+    """is the last item hovered? (and usable, aka not blocked by a popup, etc.). See ImGuiHoveredFlags for more options."""
+    ...
+
+
+def is_item_toggled_open() -> bool:
+    """was the last item open state toggled? set by TreeNode()."""
+    ...
+
+
+def is_item_visible() -> bool:
+    """is the last item visible? (items may be out of sight because of clipping/scrolling)"""
+    ...
+
+
+def is_key_chord_pressed(key_chord: Key) -> bool:
+    """was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using Shortcut() function instead."""
+    ...
+
+
+def is_key_down(key: Key) -> bool:
+    """is key being held."""
+    ...
+
+
+def is_key_pressed(key: Key, repeat: bool = True) -> bool:
+    """was key pressed (went from !Down to Down)? if repeat=true, uses io.KeyRepeatDelay / KeyRepeatRate"""
+    ...
+
+
+def is_key_released(key: Key) -> bool:
+    """was key released (went from Down to !Down)?"""
+    ...
+
+
+def is_mouse_clicked(button: MouseButton, repeat: bool = False) -> bool:
+    """did mouse button clicked? (went from !Down to Down). Same as GetMouseClickedCount() == 1."""
+    ...
+
+
+def is_mouse_double_clicked(button: MouseButton) -> bool:
+    """did mouse button double-clicked? Same as GetMouseClickedCount() == 2. (note that a double-click will also report IsMouseClicked() == true)"""
+    ...
+
+
+def is_mouse_down(button: MouseButton) -> bool:
+    """is mouse button held?"""
+    ...
+
+
+def is_mouse_dragging(button: MouseButton, lock_threshold: float = -1.0) -> bool:
+    """is mouse dragging? (if lock_threshold < -1.0f, uses io.MouseDraggingThreshold)"""
+    ...
+
+
+def is_mouse_hovering_rect(r_min: tuple[float, float], r_max: tuple[float, float], clip: bool = True) -> bool:
+    """is mouse hovering given bounding rect (in screen space). clipped by current clipping settings, but disregarding of other consideration of focus/window ordering/popup-block."""
+    ...
+
+
+def is_mouse_pos_valid(mouse_pos: tuple[float, float] | None = None) -> bool:
+    """by convention we use (-FLT_MAX,-FLT_MAX) to denote that there is no mouse available"""
+    ...
+
+
+def is_mouse_released(button: MouseButton) -> bool:
+    """did mouse button released? (went from Down to !Down)"""
+    ...
+
+
+def is_popup_open(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> bool:
+    """return true if the popup is open."""
+    ...
+
 
 @overload
-def is_rect_visible(size: tuple[float, float]) -> bool: ...
+def is_rect_visible(size: tuple[float, float]) -> bool:
+    """test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."""
+    ...
+
 
 @overload
-def is_rect_visible(rect_min: tuple[float, float], rect_max: tuple[float, float]) -> bool: ...
+def is_rect_visible(rect_min: tuple[float, float], rect_max: tuple[float, float]) -> bool:
+    """test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."""
+    ...
 
-def label_text(label: str, text: str) -> None: ...
 
-def list_box(label: str, current_item: int, items: Sequence[str], height_in_items: int = -1) -> tuple[bool, int]: ...
+def label_text(label: str, text: str) -> None:
+    ...
 
-def log_buttons() -> None: ...
 
-def log_finish() -> None: ...
+def list_box(label: str, current_item: int, items: Sequence[str], height_in_items: int = -1) -> tuple[bool, int]:
+    ...
 
-def log_text(text: str) -> None: ...
 
-def log_to_clipboard(auto_open_depth: int = -1) -> None: ...
+def log_buttons() -> None:
+    """helper to display buttons for logging to tty/file/clipboard"""
+    ...
 
-def log_to_file(auto_open_depth: int = -1, filename: str | None = None) -> None: ...
 
-def log_to_tty(auto_open_depth: int = -1) -> None: ...
+def log_finish() -> None:
+    """stop logging (close file, etc.)"""
+    ...
 
-def menu_item(label: str, shortcut: str | None = None, selected: bool = False, enabled: bool = True) -> tuple[bool, bool]: ...
 
-def new_frame() -> None: ...
+def log_text(text: str) -> None:
+    ...
 
-def new_line() -> None: ...
 
-def next_column() -> None: ...
+def log_to_clipboard(auto_open_depth: int = -1) -> None:
+    """start logging to OS clipboard"""
+    ...
 
-def open_popup(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> None: ...
 
-def open_popup_on_item_click(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> None: ...
+def log_to_file(auto_open_depth: int = -1, filename: str | None = None) -> None:
+    """start logging to file"""
+    ...
 
-def plot_histogram(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None: ...
 
-def plot_lines(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None: ...
+def log_to_tty(auto_open_depth: int = -1) -> None:
+    """start logging to tty (stdout)"""
+    ...
 
-def pop_button_repeat() -> None: ...
 
-def pop_font() -> None: ...
+def menu_item(label: str, shortcut: str | None = None, selected: bool = False, enabled: bool = True) -> tuple[bool, bool]:
+    """return true when activated + toggle (*p_selected) if p_selected != NULL"""
+    ...
 
-def pop_id() -> None: ...
 
-def pop_item_width() -> None: ...
+def new_frame() -> None:
+    """start a new Dear ImGui frame, you can submit any command from this point until Render()/EndFrame()."""
+    ...
 
-def pop_style_color(count: int = 1) -> None: ...
 
-def pop_style_var(count: int = 1) -> None: ...
+def new_line() -> None:
+    """undo a SameLine() or force a new line when in a horizontal-layout context."""
+    ...
 
-def pop_tab_stop() -> None: ...
 
-def pop_text_wrap_pos() -> None: ...
+def next_column() -> None:
+    """next column, defaults to current row or next row if the current row is finished"""
+    ...
 
-def progress_bar(fraction: float, size_arg: tuple[float, float] = (-1.1754943508222875e-38, 0.0), overlay: str | None = None) -> None: ...
 
-def push_button_repeat(repeat: bool) -> None: ...
+def open_popup(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> None:
+    """id overload to facilitate calling from nested stacks"""
+    ...
 
-def push_font(font: Font | None) -> None: ...
+
+def open_popup_on_item_click(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> None:
+    """helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)"""
+    ...
+
+
+def plot_histogram(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
+    ...
+
+
+def plot_lines(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
+    ...
+
+
+def pop_button_repeat() -> None:
+    ...
+
+
+def pop_font() -> None:
+    ...
+
+
+def pop_id() -> None:
+    """pop from the ID stack."""
+    ...
+
+
+def pop_item_width() -> None:
+    ...
+
+
+def pop_style_color(count: int = 1) -> None:
+    ...
+
+
+def pop_style_var(count: int = 1) -> None:
+    ...
+
+
+def pop_tab_stop() -> None:
+    ...
+
+
+def pop_text_wrap_pos() -> None:
+    ...
+
+
+def progress_bar(fraction: float, size_arg: tuple[float, float] = (-1.1754943508222875e-38, 0.0), overlay: str | None = None) -> None:
+    ...
+
+
+def push_button_repeat(repeat: bool) -> None:
+    """in 'repeat' mode, Button*() functions return repeated true in a typematic manner (using io.KeyRepeatDelay/io.KeyRepeatRate setting). Note that you can call IsItemActive() after any Button() to tell if the button is held in the current frame."""
+    ...
+
+
+def push_font(font: Font | None) -> None:
+    """use NULL as a shortcut to push default font"""
+    ...
+
 
 @overload
-def push_id(str_id: str) -> None: ...
+def push_id(str_id: str) -> None:
+    """push integer into the ID stack (will hash integer)."""
+    ...
+
 
 @overload
-def push_id(int_id: int) -> None: ...
+def push_id(int_id: int) -> None:
+    """push integer into the ID stack (will hash integer)."""
+    ...
 
-def push_item_width(item_width: float) -> None: ...
 
-@overload
-def push_style_color(idx: Col, col: int) -> None: ...
+def push_item_width(item_width: float) -> None:
+    """push width of items for common large \"item+label\" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)."""
+    ...
 
-@overload
-def push_style_color(idx: Col, col: tuple[float, float, float, float]) -> None: ...
-
-@overload
-def push_style_color(idx: Col, col: tuple[float, float, float]) -> None: ...
 
 @overload
-def push_style_var(idx: int, val: float) -> None: ...
+def push_style_color(idx: Col, col: int) -> None:
+    ...
+
 
 @overload
-def push_style_var(idx: int, val: tuple[float, float]) -> None: ...
+def push_style_color(idx: Col, col: tuple[float, float, float, float]) -> None:
+    ...
 
-def push_tab_stop(tab_stop: bool) -> None: ...
-
-def push_text_wrap_pos(wrap_local_pos_x: float = 0.0) -> None: ...
 
 @overload
-def radio_button(label: str, active: bool) -> bool: ...
+def push_style_color(idx: Col, col: tuple[float, float, float]) -> None:
+    ...
+
 
 @overload
-def radio_button(label: str, v: int, v_button: int) -> tuple[bool, int]: ...
+def push_style_var(idx: int, val: float) -> None:
+    """modify a style ImVec2 variable. always use this if you modify the style after NewFrame()."""
+    ...
 
-def render() -> None: ...
-
-def reset_mouse_drag_delta(button: MouseButton = MouseButton.LEFT) -> None: ...
-
-def same_line(offset_from_start_x: float = 0.0, spacing: float = -1.0) -> None: ...
-
-def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]: ...
-
-def separator() -> None: ...
-
-def separator_text(text: str) -> None: ...
-
-def set_column_offset(column_index: int, offset_x: float) -> None: ...
-
-def set_column_width(column_index: int, width: float) -> None: ...
-
-def set_cursor_pos(local_pos: tuple[float, float]) -> None: ...
-
-def set_cursor_pos_x(local_x: float) -> None: ...
-
-def set_cursor_pos_y(local_y: float) -> None: ...
-
-def set_cursor_screen_pos(pos: tuple[float, float]) -> None: ...
-
-def set_item_default_focus() -> None: ...
-
-def set_item_tooltip(text: str) -> None: ...
-
-def set_keyboard_focus_here(offset: int = 0) -> None: ...
-
-def set_mouse_cursor(cursor_type: MouseCursor) -> None: ...
-
-def set_next_frame_want_capture_keyboard(want_capture_keyboard: bool) -> None: ...
-
-def set_next_frame_want_capture_mouse(capture: bool) -> None: ...
-
-def set_next_item_open(is_open: bool, cond: Cond = Cond.NONE) -> None: ...
-
-def set_next_item_width(item_width: float) -> None: ...
-
-def set_next_window_bg_alpha(alpha: float) -> None: ...
-
-def set_next_window_collapsed(collapsed: bool, cond: Cond = Cond.NONE) -> None: ...
-
-def set_next_window_content_size(size: tuple[float, float]) -> None: ...
-
-def set_next_window_focus() -> None: ...
-
-def set_next_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE, pivot: tuple[float, float] = (0.0, 0.0)) -> None: ...
-
-def set_next_window_scroll(scroll: tuple[float, float]) -> None: ...
-
-def set_next_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None: ...
-
-def set_scroll_from_pos_x(local_x: float, center_x_ratio: float = 0.5) -> None: ...
-
-def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None: ...
-
-def set_scroll_here_x(center_x_ratio: float = 0.5) -> None: ...
-
-def set_scroll_here_y(center_y_ratio: float = 0.5) -> None: ...
-
-def set_scroll_x(scroll_x: float) -> None: ...
-
-def set_scroll_y(scroll_y: float) -> None: ...
-
-def set_tab_item_closed(label: str) -> None: ...
-
-def set_tooltip(text: str) -> None: ...
 
 @overload
-def set_window_collapsed(collapsed: bool, cond: Cond = Cond.NONE) -> None: ...
+def push_style_var(idx: int, val: tuple[float, float]) -> None:
+    """modify a style ImVec2 variable. always use this if you modify the style after NewFrame()."""
+    ...
+
+
+def push_tab_stop(tab_stop: bool) -> None:
+    """== tab stop enable. Allow focusing using TAB/Shift-TAB, enabled by default but you can disable it for certain widgets"""
+    ...
+
+
+def push_text_wrap_pos(wrap_local_pos_x: float = 0.0) -> None:
+    ...
+
 
 @overload
-def set_window_collapsed(name: str, collapsed: bool, cond: Cond = Cond.NONE) -> None: ...
+def radio_button(label: str, active: bool) -> bool:
+    """shortcut to handle the above pattern when value is an integer"""
+    ...
+
 
 @overload
-def set_window_focus() -> None: ...
+def radio_button(label: str, v: int, v_button: int) -> tuple[bool, int]:
+    """shortcut to handle the above pattern when value is an integer"""
+    ...
+
+
+def render() -> None:
+    """ends the Dear ImGui frame, finalize the draw data. You can then get call GetDrawData()."""
+    ...
+
+
+def reset_mouse_drag_delta(button: MouseButton = MouseButton.LEFT) -> None:
+    ...
+
+
+def same_line(offset_from_start_x: float = 0.0, spacing: float = -1.0) -> None:
+    """call between widgets or groups to layout them horizontally. X position given in window coordinates."""
+    ...
+
+
+def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]:
+    ...
+
+
+def separator() -> None:
+    """separator, generally horizontal. inside a menu bar or in horizontal layout mode, this becomes a vertical separator."""
+    ...
+
+
+def separator_text(text: str) -> None:
+    """currently: formatted text with an horizontal line"""
+    ...
+
+
+def set_column_offset(column_index: int, offset_x: float) -> None:
+    """set position of column line (in pixels, from the left side of the contents region). pass -1 to use current column"""
+    ...
+
+
+def set_column_width(column_index: int, width: float) -> None:
+    """set column width (in pixels). pass -1 to use current column"""
+    ...
+
+
+def set_cursor_pos(local_pos: tuple[float, float]) -> None:
+    """[window-local] \""""
+    ...
+
+
+def set_cursor_pos_x(local_x: float) -> None:
+    """[window-local] \""""
+    ...
+
+
+def set_cursor_pos_y(local_y: float) -> None:
+    """[window-local] \""""
+    ...
+
+
+def set_cursor_screen_pos(pos: tuple[float, float]) -> None:
+    """cursor position in absolute coordinates"""
+    ...
+
+
+def set_item_default_focus() -> None:
+    """make last item the default focused item of a window."""
+    ...
+
+
+def set_item_tooltip(text: str) -> None:
+    ...
+
+
+def set_keyboard_focus_here(offset: int = 0) -> None:
+    """focus keyboard on the next widget. Use positive 'offset' to access sub components of a multiple component widget. Use -1 to access previous widget."""
+    ...
+
+
+def set_mouse_cursor(cursor_type: MouseCursor) -> None:
+    """set desired mouse cursor shape"""
+    ...
+
+
+def set_next_frame_want_capture_keyboard(want_capture_keyboard: bool) -> None:
+    ...
+
+
+def set_next_frame_want_capture_mouse(capture: bool) -> None:
+    ...
+
+
+def set_next_item_open(is_open: bool, cond: Cond = Cond.NONE) -> None:
+    """set next TreeNode/CollapsingHeader open state."""
+    ...
+
+
+def set_next_item_width(item_width: float) -> None:
+    """set width of the _next_ common large \"item+label\" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)"""
+    ...
+
+
+def set_next_window_bg_alpha(alpha: float) -> None:
+    """set next window background color alpha. helper to easily override the Alpha component of ImGuiCol_WindowBg/ChildBg/PopupBg. you may also use ImGuiWindowFlags_NoBackground."""
+    ...
+
+
+def set_next_window_collapsed(collapsed: bool, cond: Cond = Cond.NONE) -> None:
+    """set next window collapsed state. call before Begin()"""
+    ...
+
+
+def set_next_window_content_size(size: tuple[float, float]) -> None:
+    """set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before Begin()"""
+    ...
+
+
+def set_next_window_focus() -> None:
+    """set next window to be focused / top-most. call before Begin()"""
+    ...
+
+
+def set_next_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE, pivot: tuple[float, float] = (0.0, 0.0)) -> None:
+    ...
+
+
+def set_next_window_scroll(scroll: tuple[float, float]) -> None:
+    """set next window scrolling value (use < 0.0f to not affect a given axis)."""
+    ...
+
+
+def set_next_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
+    """set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()"""
+    ...
+
+
+def set_scroll_from_pos_x(local_x: float, center_x_ratio: float = 0.5) -> None:
+    """adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position."""
+    ...
+
+
+def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None:
+    """adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position."""
+    ...
+
+
+def set_scroll_here_x(center_x_ratio: float = 0.5) -> None:
+    """adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a \"default/current item\" visible, consider using SetItemDefaultFocus() instead."""
+    ...
+
+
+def set_scroll_here_y(center_y_ratio: float = 0.5) -> None:
+    """adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a \"default/current item\" visible, consider using SetItemDefaultFocus() instead."""
+    ...
+
+
+def set_scroll_x(scroll_x: float) -> None:
+    """set scrolling amount [0 .. GetScrollMaxX()]"""
+    ...
+
+
+def set_scroll_y(scroll_y: float) -> None:
+    """set scrolling amount [0 .. GetScrollMaxY()]"""
+    ...
+
+
+def set_tab_item_closed(label: str) -> None:
+    """notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after BeginTabBar() and before Tab submissions. Otherwise call with a window name."""
+    ...
+
+
+def set_tooltip(text: str) -> None:
+    ...
+
 
 @overload
-def set_window_focus(name: str) -> None: ...
+def set_window_collapsed(collapsed: bool, cond: Cond = Cond.NONE) -> None:
+    """set named window collapsed state"""
+    ...
 
-def set_window_font_scale(scale: float) -> None: ...
-
-@overload
-def set_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE) -> None: ...
 
 @overload
-def set_window_pos(name: str, pos: tuple[float, float], cond: Cond = Cond.NONE) -> None: ...
+def set_window_collapsed(name: str, collapsed: bool, cond: Cond = Cond.NONE) -> None:
+    """set named window collapsed state"""
+    ...
+
 
 @overload
-def set_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None: ...
+def set_window_focus() -> None:
+    """set named window to be focused / top-most. use NULL to remove focus."""
+    ...
+
 
 @overload
-def set_window_size(name: str, size: tuple[float, float], cond: Cond = Cond.NONE) -> None: ...
+def set_window_focus(name: str) -> None:
+    """set named window to be focused / top-most. use NULL to remove focus."""
+    ...
 
-def show_debug_log_window(closable: bool = False) -> bool: ...
 
-def show_id_stack_tool_window(closable: bool = False) -> bool: ...
+def set_window_font_scale(scale: float) -> None:
+    """[OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild ImFontAtlas + call style.ScaleAllSizes()."""
+    ...
 
-def show_metrics_window(closable: bool = False) -> bool: ...
-
-def show_style_editor() -> None: ...
-
-def show_user_guide() -> None: ...
-
-def slider_angle(label: str, v: float, v_degrees_min: float = -360.0, v_degrees_max: float = 360.0, format: str = '%.0f deg', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]: ...
-
-def slider_float(label: str, v: float, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]: ...
-
-def slider_float2(label: str, v: tuple[float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float]]: ...
-
-def slider_float3(label: str, v: tuple[float, float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float]]: ...
-
-def slider_float4(label: str, v: tuple[float, float, float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]: ...
-
-def slider_int(label: str, v: int, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]: ...
-
-def slider_int2(label: str, v: tuple[int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int]]: ...
-
-def slider_int3(label: str, v: tuple[int, int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int]]: ...
-
-def slider_int4(label: str, v: tuple[int, int, int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]: ...
-
-def small_button(label: str) -> bool: ...
-
-def spacing() -> None: ...
-
-def tab_item_button(label: str, flags: TabItemFlags = TabItemFlags.NONE) -> bool: ...
-
-def table_angled_headers_row() -> None: ...
-
-def table_get_column_count() -> int: ...
-
-def table_get_column_flags(column_n: int = -1) -> TableColumnFlags: ...
-
-def table_get_column_index() -> int: ...
-
-def table_get_column_name(column_n: int = -1) -> str: ...
-
-def table_get_row_index() -> int: ...
-
-def table_header(label: str) -> None: ...
-
-def table_headers_row() -> None: ...
-
-def table_next_column() -> bool: ...
-
-def table_next_row(flags: TableRowFlags = TableRowFlags.NONE, min_row_height: float = 0.0) -> None: ...
-
-def table_set_bg_color(target: TableBgTarget, color: tuple[float, float, float, float], column_n: int = -1) -> None: ...
-
-def table_set_column_enabled(column_n: int, v: bool) -> None: ...
-
-def table_set_column_index(column_n: int) -> bool: ...
-
-def table_setup_column(label: str, flags: TableColumnFlags = TableColumnFlags.NONE, init_width_or_weight: float = 0.0, user_id: int = 0) -> None: ...
-
-def table_setup_scroll_freeze(cols: int, rows: int) -> None: ...
-
-def text(text: str) -> None: ...
-
-def text_colored(col: tuple[float, float, float, float], text: str) -> None: ...
-
-def text_disabled(text: str) -> None: ...
-
-def text_wrapped(text: str) -> None: ...
 
 @overload
-def tree_node(label: str, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> bool: ...
+def set_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE) -> None:
+    """set named window position."""
+    ...
+
 
 @overload
-def tree_node(str_id: str, text: str, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> bool: ...
+def set_window_pos(name: str, pos: tuple[float, float], cond: Cond = Cond.NONE) -> None:
+    """set named window position."""
+    ...
 
-def tree_pop() -> None: ...
 
-def tree_push(str_id: str) -> None: ...
+@overload
+def set_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
+    """set named window size. set axis to 0.0f to force an auto-fit on this axis."""
+    ...
 
-def unindent(indent_w: float = 0.0) -> None: ...
+
+@overload
+def set_window_size(name: str, size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
+    """set named window size. set axis to 0.0f to force an auto-fit on this axis."""
+    ...
+
+
+def show_debug_log_window(closable: bool = False) -> bool:
+    """create Debug Log window. display a simplified log of important dear imgui events."""
+    ...
+
+
+def show_id_stack_tool_window(closable: bool = False) -> bool:
+    """create Stack Tool window. hover items with mouse to query information about the source of their unique ID."""
+    ...
+
+
+def show_metrics_window(closable: bool = False) -> bool:
+    """create Metrics/Debugger window. display Dear ImGui internals: windows, draw commands, various internal state, etc."""
+    ...
+
+
+def show_style_editor() -> None:
+    """add style editor block (not a window). you can pass in a reference ImGuiStyle structure to compare to, revert to and save to (else it uses the default style)"""
+    ...
+
+
+def show_user_guide() -> None:
+    """add basic help/info block (not a window): how to manipulate ImGui as an end-user (mouse/keyboard controls)."""
+    ...
+
+
+def slider_angle(label: str, v: float, v_degrees_min: float = -360.0, v_degrees_max: float = 360.0, format: str = '%.0f deg', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]:
+    ...
+
+
+def slider_float(label: str, v: float, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]:
+    """adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display."""
+    ...
+
+
+def slider_float2(label: str, v: tuple[float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float]]:
+    ...
+
+
+def slider_float3(label: str, v: tuple[float, float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+    ...
+
+
+def slider_float4(label: str, v: tuple[float, float, float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+    ...
+
+
+def slider_int(label: str, v: int, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]:
+    ...
+
+
+def slider_int2(label: str, v: tuple[int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int]]:
+    ...
+
+
+def slider_int3(label: str, v: tuple[int, int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int]]:
+    ...
+
+
+def slider_int4(label: str, v: tuple[int, int, int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]:
+    ...
+
+
+def small_button(label: str) -> bool:
+    """button with (FramePadding.y == 0) to easily embed within text"""
+    ...
+
+
+def spacing() -> None:
+    """add vertical spacing."""
+    ...
+
+
+def tab_item_button(label: str, flags: TabItemFlags = TabItemFlags.NONE) -> bool:
+    """create a Tab behaving like a button. return true when clicked. cannot be selected in the tab bar."""
+    ...
+
+
+def table_angled_headers_row() -> None:
+    """submit a row with angled headers for every column with the ImGuiTableColumnFlags_AngledHeader flag. MUST BE FIRST ROW."""
+    ...
+
+
+def table_get_column_count() -> int:
+    """return number of columns (value passed to BeginTable)"""
+    ...
+
+
+def table_get_column_flags(column_n: int = -1) -> TableColumnFlags:
+    """return column flags so you can query their Enabled/Visible/Sorted/Hovered status flags. Pass -1 to use current column."""
+    ...
+
+
+def table_get_column_index() -> int:
+    """return current column index."""
+    ...
+
+
+def table_get_column_name(column_n: int = -1) -> str:
+    """return \"\" if column didn't have a name declared by TableSetupColumn(). Pass -1 to use current column."""
+    ...
+
+
+def table_get_row_index() -> int:
+    """return current row index."""
+    ...
+
+
+def table_header(label: str) -> None:
+    """submit one header cell manually (rarely used)"""
+    ...
+
+
+def table_headers_row() -> None:
+    """submit a row with headers cells based on data provided to TableSetupColumn() + submit context menu"""
+    ...
+
+
+def table_next_column() -> bool:
+    """append into the next column (or first column of next row if currently in last column). Return true when column is visible."""
+    ...
+
+
+def table_next_row(flags: TableRowFlags = TableRowFlags.NONE, min_row_height: float = 0.0) -> None:
+    """append into the first cell of a new row."""
+    ...
+
+
+def table_set_bg_color(target: TableBgTarget, color: tuple[float, float, float, float], column_n: int = -1) -> None:
+    """change the color of a cell, row, or column. See ImGuiTableBgTarget_ flags for details."""
+    ...
+
+
+def table_set_column_enabled(column_n: int, v: bool) -> None:
+    """change user accessible enabled/disabled state of a column. Set to false to hide the column. User can use the context menu to change this themselves (right-click in headers, or right-click in columns body with ImGuiTableFlags_ContextMenuInBody)"""
+    ...
+
+
+def table_set_column_index(column_n: int) -> bool:
+    """append into the specified column. Return true when column is visible."""
+    ...
+
+
+def table_setup_column(label: str, flags: TableColumnFlags = TableColumnFlags.NONE, init_width_or_weight: float = 0.0, user_id: int = 0) -> None:
+    ...
+
+
+def table_setup_scroll_freeze(cols: int, rows: int) -> None:
+    """lock columns/rows so they stay visible when scrolled."""
+    ...
+
+
+def text(text: str) -> None:
+    ...
+
+
+def text_colored(col: tuple[float, float, float, float], text: str) -> None:
+    ...
+
+
+def text_disabled(text: str) -> None:
+    ...
+
+
+def text_wrapped(text: str) -> None:
+    ...
+
+
+@overload
+def tree_node(label: str, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> bool:
+    ...
+
+
+@overload
+def tree_node(str_id: str, text: str, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> bool:
+    ...
+
+
+def tree_pop() -> None:
+    """~ Unindent()+PopID()"""
+    ...
+
+
+def tree_push(str_id: str) -> None:
+    ...
+
+
+def unindent(indent_w: float = 0.0) -> None:
+    """move content position back to the left, by indent_w, or style.IndentSpacing if indent_w <= 0"""
+    ...

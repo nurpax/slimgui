@@ -8,11 +8,7 @@ import warnings
 
 import click
 
-
-def camel_to_snake(name):
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
-
+from gen_utils import camel_to_snake
 
 _ignored_toplevel_funcs = {
     "get_allocator_functions",  # not relevant for Python

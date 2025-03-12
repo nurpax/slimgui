@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8" />
+  <title>$title$</title>
+  <meta property="og:title" content="$title$">
+  <meta property="og:description" content="$subtitle$">
+
+<style type='text/css'>
+
+:root {
+    --func-vert-padding: 0.5em;
+}
+
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #000;
+    line-height: 1.5;
+}
+
+.tocstyle nav {
+    display: table;
+    padding: .4em 2em .5em 0;
+    margin-top: 1em;
+    background-color: #f6f8fa;
+    border: 1px solid DarkSlateGray;
+}
+header {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+header h1 {
+    font-size: 2em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    color: #333;
+}
+
+h1 {
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.2;
+    font-size: 3em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+h2, h3, h4, h5, h6 {
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 600;
+    margin-bottom: 0.1em;
+    color: DarkSlateGray;
+}
+
+h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding-top: 0;
+}
+
+h2, h3 { border-bottom: 1px solid #ccc; }
+p {
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+.max-width {
+    margin: 1em;
+}
+
+@media screen and (min-width: 680px) {
+    .max-width {
+       margin-left: auto;
+       margin-right: auto;
+       margin-top: 20px;
+       margin-bottom: 20px;
+       max-width: 800px;
+    }
+}
+
+.pixelated {
+    image-rendering: pixelated;
+}
+
+strong {
+    font-weight: 600;
+}
+
+.title { text-align: center; }
+
+.subtitle {
+    font-size: 1.25em;
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #ccc;
+    color: #444;
+}
+
+.centered { text-align: center; }
+
+.spaced {
+    margin: 2em 0;
+}
+.no-bottom-margin {
+    margin-bottom: 0;
+}
+.top-lined {
+    padding-top: 2em;
+    border-top: 1px solid #000;
+}
+.bottom-lined {
+    padding-bottom: 2em;
+    border-bottom: 1px solid #888;
+}
+
+.permalinked {
+    color: #222;
+    text-decoration: none;
+}
+.permalinked:hover,
+.permalinked:focus {
+    text-decoration: underline;
+}
+.flattr-note {
+    vertical-align: top;
+}
+
+pre {
+  font-family: 'Consolas', monospace, sans-serif;
+  font-size: 10pt;
+  font-weight: normal;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  padding: 6px;
+  line-height: 1.2;
+  overflow-x:auto;
+  white-space: pre-wrap;
+}
+
+code {
+  font-family: 'Consolas', monospace, sans-serif;
+  font-size: 11pt;
+  font-weight: normal;
+  line-height: 1.3;
+  white-space: pre;
+}
+
+/* Styles for API reference */
+div.apifunc {
+    margin-bottom: 1.0em;
+}
+
+.apifunc p {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 2em;
+    font-size: 11pt;
+}
+
+.apifunc pre {
+    color: #000;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+}
+
+.apifunc code {
+    font-size: 11pt;
+    color: #555;
+}
+
+.apifunc code span.keyword {
+    color: #444;
+}
+
+.apifunc code span.func_name {
+    color: #000;
+    font-weight: bold;
+}
+
+.apifunc code span.arg_name {
+    color: #000;
+}
+
+
+</style>
+<link href="https://fonts.googleapis.com/css?family=Montserrat|Segoe+UI" rel="stylesheet">
+</head>
+
+<body class='max-width'>
+    <header id='title-block-header'>
+        <h1>$title$ documentation</h1>
+        <p class='subtitle'>$subtitle$</p>
+    </header>
+
+$if(toc)$
+<h2 style='border-bottom: 0; padding-bottom: 0;'>Table of contents</h2>
+<div class="tocstyle">
+<nav id="$idprefix$TOC">
+$table-of-contents$
+</nav></div>
+$endif$
+
+$body$
+</body>
+
+</html>

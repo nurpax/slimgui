@@ -322,7 +322,7 @@ NB_MODULE(slimgui_ext, m) {
             return &ctx->Style;
         }, nb::rv_policy::reference_internal);
 
-    m.def("create_context", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference, "create context");
+    m.def("create_context", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
     m.def("get_current_context", &ImGui::GetCurrentContext, nb::rv_policy::reference);
     m.def("destroy_context", &ImGui::DestroyContext);
     m.def("get_io", &ImGui::GetIO, nb::rv_policy::reference);
