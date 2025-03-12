@@ -10,8 +10,15 @@ find_package(Python 3.8
 # Import nanobind through CMake's find_package mechanism
 find_package(nanobind CONFIG REQUIRED)
 
+# Disable leak checks if requested (usually by cibuildwheel in CI)
+if (DEFINED ENV{SLIMGUI_DISABLE_LEAK_CHECKS})
+    set(DISABLE_LEAK_CHECKS 1)
+else()
+    set(DISABLE_LEAK_CHECKS 0)
+endif()
+
 #add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1)
-add_definitions(-DIMGUI_DISABLE_OBSOLETE_KEYIO=1)
+add_definitions(-DIMGUI_DISABLE_OBSOLETE_KEYIO=1 -DSLIMGUI_DISABLE_LEAK_CHECKS=${DISABLE_LEAK_CHECKS})
 
 nanobind_add_module(slimgui_ext
   NB_STATIC
@@ -33,15 +40,6 @@ nanobind_add_stub(
   PYTHON_PATH $<TARGET_FILE_DIR:slimgui_ext>
   DEPENDS slimgui_ext
 )
-
-# Check for an environment variable
-if (DEFINED ENV{CIBW_BUILD})
-    set(DISABLE_LEAK_CHECKS 1)
-else()
-    set(DISABLE_LEAK_CHECKS 0)
-endif()
-
-target_compile_definitions(slimgui_ext PRIVATE SLIMGUI_DISABLE_LEAK_CHECKS=${DISABLE_LEAK_CHECKS})
 
 include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
 
