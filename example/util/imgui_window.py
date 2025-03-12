@@ -177,7 +177,7 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
 
 
 class ImguiWindow(GlfwWindow):
-    def __init__(self, *, title="ImguiWindow", font_bytes: bytes | None=None, font_sizes=range(14, 24), close_on_esc=False, ini_filename: str | None=None, **glfw_kwargs):
+    def __init__(self, *, title="ImguiWindow", font_bytes: bytes | None=None, font_sizes=range(14, 24), close_on_esc=False, ini_filename: str | None=None, mouse_wheel_multiplier: float = 1, **glfw_kwargs):
         font_sizes = {int(size) for size in font_sizes}
         super().__init__(title=title, **glfw_kwargs)
 
@@ -196,7 +196,11 @@ class ImguiWindow(GlfwWindow):
         # TODO pass these in?
         io.config_flags |= imgui.ConfigFlags.NAV_ENABLE_KEYBOARD
 
-        self._imgui_renderer = GlfwRenderer(self._glfw_window, prev_key_callback=self._glfw_key_callback)
+        self._imgui_renderer = GlfwRenderer(
+            self._glfw_window,
+            mouse_wheel_multiplier=mouse_wheel_multiplier,
+            prev_key_callback=self._glfw_key_callback,
+        )
 
         if font_bytes is not None:
             self._imgui_fonts = {size: imgui.get_io().fonts.add_font_from_memory_ttf(font_bytes, size) for size in font_sizes}

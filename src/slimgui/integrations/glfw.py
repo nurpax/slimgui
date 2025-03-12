@@ -10,6 +10,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self,
         window,
         attach_callbacks: bool = True,
+        mouse_wheel_multiplier: float = 1.0,
         prev_key_callback: None | Callable[[Any, int, int, int, int], None] = None,
         prev_char_callback: Callable[[Any, int], None] | None = None,
         prev_cursor_pos_callback: Callable[[Any, float, float], None] | None = None,
@@ -19,6 +20,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
     ):
         super(GlfwRenderer, self).__init__()
         self.window = window
+        self.mouse_wheel_multiplier = mouse_wheel_multiplier
 
         self._prev_key_callback = prev_key_callback
         self._prev_char_callback = prev_char_callback
@@ -120,6 +122,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
     def scroll_callback(self, window, x_offset, y_offset):
         if self._prev_scroll_callback is not None:
             self._prev_scroll_callback(window, x_offset, y_offset)
+        x_offset *= self.mouse_wheel_multiplier
+        y_offset *= self.mouse_wheel_multiplier
         self.io.add_mouse_wheel_event(x_offset, y_offset)
 
     def new_frame(self):

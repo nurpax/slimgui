@@ -45,7 +45,12 @@ def run():
         font_bytes = None
 
     # GUI boilerplate.
-    window = imgui_window.ImguiWindow(title="Prompt tool", close_on_esc=True, font_bytes=font_bytes, request_opengl_core_profile=True)
+    window = imgui_window.ImguiWindow(
+        title="Prompt tool",
+        close_on_esc=True,
+        font_bytes=font_bytes,
+        request_opengl_core_profile=True,
+    )
 
     # Make title bar semi-transparent to test out the style colors array access.
     prev_col = imgui.get_style().colors[imgui.Col.TITLE_BG_ACTIVE]
