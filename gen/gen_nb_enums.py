@@ -37,10 +37,21 @@ enum_list = [
     ("ImGuiMouseButton_", "MouseButton"),
     ("ImGuiMouseCursor_", "MouseCursor"),
     ("ImGuiCol_", "Col"),
-    ("ImGuiDir_", "Dir"),
+    ("ImGuiDir", "Dir"),
     ("ImGuiStyleVar_", "StyleVar"),
     ("ImGuiTableBgTarget_", "TableBgTarget"),
 ]
+
+# Extra enum values for backwards compatibility.  These get dropped in cimgui generated
+# structs_and_enums.json.
+enum_compat = {
+    'ImGuiChildFlags_': [
+      {
+        "name": "ImGuiChildFlags_Border",
+        "value": "ImGuiChildFlags_Borders"
+      },
+    ]
+}
 
 class GenContext:
     def __init__(self, cimgui_defs_dir: str):
@@ -76,8 +87,9 @@ class GenContext:
 
             enum_docs = dict(syms.enums.get(im_name, []) if syms else {})
             # Enum values
-            for ev in e:
+            for ev in e + enum_compat.get(im_name, []):
                 enum_field_py_name = camel_to_snake(ev["name"].replace(im_name, "")).upper()
+                enum_field_py_name = enum_field_py_name.lstrip("_")
                 enum_field_cimgui_name = ev["name"]
                 doc_string = enum_docs.get(enum_field_cimgui_name, "")
                 doc_part = f', "{doc_string}"' if doc_string else ""
@@ -97,17 +109,6 @@ class GenContext:
             self.write(f'.value("{enum_field_py_name}", {enum_field_cimgui_name})\n')
         self.write(";")
 
-    def generate_funcs(self):
-        with open(os.path.join(self._defs_dir, "definitions.json"), "rt", encoding="utf-8") as f:
-            doc = json.load(f)
-
-        func_list = ["igCreateContext"]
-        for e in [doc[x] for x in func_list]:
-            e = e[0]  # TODO first overload
-            name = e["funcname"]
-            cimgui_name = e["cimguiname"]
-            py_name = camel_to_snake(name)
-            self.write(f'm.def("{py_name}", &{cimgui_name});')
 
 def best_effort_imgui_parse(header_path: str):
     with open(header_path, "rt", encoding="utf-8") as f:
@@ -147,7 +148,6 @@ def main(cimgui_defs_dir, imgui_h: str | None):
         syms = None
     ctx = GenContext(cimgui_defs_dir)
     ctx.generate_enums(syms)
-    # ctx.generate_funcs()
     print(ctx.source())
 
 

@@ -39,16 +39,48 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
            "Allow 0123456789.+-*/")
     .value("CHARS_HEXADECIMAL", ImGuiInputTextFlags_CharsHexadecimal,
            "Allow 0123456789ABCDEFabcdef")
+    .value("CHARS_SCIENTIFIC", ImGuiInputTextFlags_CharsScientific,
+           "Allow 0123456789.+-*/eE (Scientific notation input)")
     .value("CHARS_UPPERCASE", ImGuiInputTextFlags_CharsUppercase,
            "Turn a..z into A..Z")
     .value("CHARS_NO_BLANK", ImGuiInputTextFlags_CharsNoBlank,
            "Filter out spaces, tabs")
-    .value("AUTO_SELECT_ALL", ImGuiInputTextFlags_AutoSelectAll,
-           "Select entire text when first taking mouse focus")
+    .value("ALLOW_TAB_INPUT", ImGuiInputTextFlags_AllowTabInput,
+           "Pressing TAB input a '\t' character into the text field")
     .value("ENTER_RETURNS_TRUE", ImGuiInputTextFlags_EnterReturnsTrue,
            "Return 'true' when Enter is pressed (as opposed to every time the "
-           "value was modified). Consider looking at the "
-           "IsItemDeactivatedAfterEdit() function.")
+           "value was modified). Consider using IsItemDeactivatedAfterEdit() "
+           "instead!")
+    .value("ESCAPE_CLEARS_ALL", ImGuiInputTextFlags_EscapeClearsAll,
+           "Escape key clears content if not empty, and deactivate otherwise "
+           "(contrast to default behavior of Escape to revert)")
+    .value(
+        "CTRL_ENTER_FOR_NEW_LINE", ImGuiInputTextFlags_CtrlEnterForNewLine,
+        "In multi-line mode, validate with Enter, add new line with Ctrl+Enter "
+        "(default is opposite: validate with Ctrl+Enter, add line with Enter).")
+    .value("READ_ONLY", ImGuiInputTextFlags_ReadOnly, "Read-only mode")
+    .value("PASSWORD", ImGuiInputTextFlags_Password,
+           "Password mode, display all characters as '*', disable copy")
+    .value("ALWAYS_OVERWRITE", ImGuiInputTextFlags_AlwaysOverwrite,
+           "Overwrite mode")
+    .value("AUTO_SELECT_ALL", ImGuiInputTextFlags_AutoSelectAll,
+           "Select entire text when first taking mouse focus")
+    .value("PARSE_EMPTY_REF_VAL", ImGuiInputTextFlags_ParseEmptyRefVal,
+           "InputFloat(), InputInt(), InputScalar() etc. only: parse empty "
+           "string as zero value.")
+    .value("DISPLAY_EMPTY_REF_VAL", ImGuiInputTextFlags_DisplayEmptyRefVal,
+           "InputFloat(), InputInt(), InputScalar() etc. only: when value is "
+           "zero, do not display it. Generally used with "
+           "ImGuiInputTextFlags_ParseEmptyRefVal.")
+    .value("NO_HORIZONTAL_SCROLL", ImGuiInputTextFlags_NoHorizontalScroll,
+           "Disable following the cursor horizontally")
+    .value("NO_UNDO_REDO", ImGuiInputTextFlags_NoUndoRedo,
+           "Disable undo/redo. Note that input text owns the text data while "
+           "active, if you want to provide your own undo/redo stack you need "
+           "e.g. to call ClearActiveID().")
+    .value("ELIDE_LEFT", ImGuiInputTextFlags_ElideLeft,
+           "When text doesn't fit, elide left side to ensure right side stays "
+           "visible. Useful for path/filenames. Single-line only!")
     .value("CALLBACK_COMPLETION", ImGuiInputTextFlags_CallbackCompletion,
            "Callback on pressing TAB (for completion handling)")
     .value("CALLBACK_HISTORY", ImGuiInputTextFlags_CallbackHistory,
@@ -60,25 +92,6 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
            "Callback on character inputs to replace or discard them. Modify "
            "'EventChar' to replace or discard, or return 1 in callback to "
            "discard.")
-    .value("ALLOW_TAB_INPUT", ImGuiInputTextFlags_AllowTabInput,
-           "Pressing TAB input a '\t' character into the text field")
-    .value(
-        "CTRL_ENTER_FOR_NEW_LINE", ImGuiInputTextFlags_CtrlEnterForNewLine,
-        "In multi-line mode, unfocus with Enter, add new line with Ctrl+Enter "
-        "(default is opposite: unfocus with Ctrl+Enter, add line with Enter).")
-    .value("NO_HORIZONTAL_SCROLL", ImGuiInputTextFlags_NoHorizontalScroll,
-           "Disable following the cursor horizontally")
-    .value("ALWAYS_OVERWRITE", ImGuiInputTextFlags_AlwaysOverwrite,
-           "Overwrite mode")
-    .value("READ_ONLY", ImGuiInputTextFlags_ReadOnly, "Read-only mode")
-    .value("PASSWORD", ImGuiInputTextFlags_Password,
-           "Password mode, display all characters as '*'")
-    .value("NO_UNDO_REDO", ImGuiInputTextFlags_NoUndoRedo,
-           "Disable undo/redo. Note that input text owns the text data while "
-           "active, if you want to provide your own undo/redo stack you need "
-           "e.g. to call ClearActiveID().")
-    .value("CHARS_SCIENTIFIC", ImGuiInputTextFlags_CharsScientific,
-           "Allow 0123456789.+-*/eE (Scientific notation input)")
     .value(
         "CALLBACK_RESIZE", ImGuiInputTextFlags_CallbackResize,
         "Callback on buffer capacity changes request (beyond 'buf_size' "
@@ -87,12 +100,9 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
         "Size). You will be provided a new BufSize in the callback and NEED to "
         "honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)")
     .value("CALLBACK_EDIT", ImGuiInputTextFlags_CallbackEdit,
-           "Callback on any edit (note that InputText() already returns true "
-           "on edit, the callback is useful mainly to manipulate the "
-           "underlying buffer while focus is active)")
-    .value("ESCAPE_CLEARS_ALL", ImGuiInputTextFlags_EscapeClearsAll,
-           "Escape key clears content if not empty, and deactivate otherwise "
-           "(contrast to default behavior of Escape to revert)");
+           "Callback on any edit. Note that InputText() already returns true "
+           "on edit + you can always use IsItemEdited(). The callback is "
+           "useful to manipulate the underlying buffer while focus is active.");
 nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiButtonFlags_None)
@@ -102,11 +112,14 @@ nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
            "React on right mouse button")
     .value("MOUSE_BUTTON_MIDDLE", ImGuiButtonFlags_MouseButtonMiddle,
            "React on center mouse button")
-    .value("MOUSE_BUTTON_MASK_", ImGuiButtonFlags_MouseButtonMask_)
-    .value("MOUSE_BUTTON_DEFAULT_", ImGuiButtonFlags_MouseButtonDefault_);
+    .value("MOUSE_BUTTON_MASK_", ImGuiButtonFlags_MouseButtonMask_,
+           "[Internal]")
+    .value("ENABLE_NAV", ImGuiButtonFlags_EnableNav,
+           "InvisibleButton(): do not disable navigation/tabbing. Otherwise "
+           "disabled by default.");
 nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiChildFlags_None)
-    .value("BORDER", ImGuiChildFlags_Border,
+    .value("BORDERS", ImGuiChildFlags_Borders,
            "Show an outer border and enable WindowPadding. (IMPORTANT: this is "
            "always == 1 == true for legacy reason)")
     .value("ALWAYS_USE_WINDOW_PADDING", ImGuiChildFlags_AlwaysUseWindowPadding,
@@ -132,7 +145,13 @@ nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value("FRAME_STYLE", ImGuiChildFlags_FrameStyle,
            "Style the child window like a framed item: use FrameBg, "
            "FrameRounding, FrameBorderSize, FramePadding instead of ChildBg, "
-           "ChildRounding, ChildBorderSize, WindowPadding.");
+           "ChildRounding, ChildBorderSize, WindowPadding.")
+    .value(
+        "NAV_FLATTENED", ImGuiChildFlags_NavFlattened,
+        "[BETA] Share focus scope, allow keyboard/gamepad navigation to cross "
+        "over parent border to this child or between sibling child windows.")
+    .value("BORDER", ImGuiChildFlags_Border,
+           "Renamed in 1.91.1 (August 2024) for consistency.");
 nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
                                nb::is_arithmetic())
     .value("NONE", ImGuiDragDropFlags_None)
@@ -159,10 +178,15 @@ nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
            "External source (from outside of dear imgui), won't attempt to "
            "read current item/window info. Will always return true. Only one "
            "Extern source can be active simultaneously.")
-    .value("SOURCE_AUTO_EXPIRE_PAYLOAD",
-           ImGuiDragDropFlags_SourceAutoExpirePayload,
+    .value("PAYLOAD_AUTO_EXPIRE", ImGuiDragDropFlags_PayloadAutoExpire,
            "Automatically expire the payload if the source cease to be "
            "submitted (otherwise payloads are persisting while being dragged)")
+    .value("PAYLOAD_NO_CROSS_CONTEXT", ImGuiDragDropFlags_PayloadNoCrossContext,
+           "Hint to specify that the payload may not be copied outside current "
+           "dear imgui context.")
+    .value("PAYLOAD_NO_CROSS_PROCESS", ImGuiDragDropFlags_PayloadNoCrossProcess,
+           "Hint to specify that the payload may not be copied outside current "
+           "process.")
     .value("ACCEPT_BEFORE_DELIVERY", ImGuiDragDropFlags_AcceptBeforeDelivery,
            "AcceptDragDropPayload() will returns true even before the mouse "
            "button is released. You can then call IsDelivery() to test if the "
@@ -222,9 +246,9 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
            ImGuiWindowFlags_AlwaysHorizontalScrollbar,
            "Always show horizontal scrollbar (even if ContentSize.x < Size.x)")
     .value("NO_NAV_INPUTS", ImGuiWindowFlags_NoNavInputs,
-           "No gamepad/keyboard navigation within the window")
+           "No keyboard/gamepad navigation within the window")
     .value("NO_NAV_FOCUS", ImGuiWindowFlags_NoNavFocus,
-           "No focusing toward this window with gamepad/keyboard navigation "
+           "No focusing toward this window with keyboard/gamepad navigation "
            "(e.g. skipped by CTRL+TAB)")
     .value("UNSAVED_DOCUMENT", ImGuiWindowFlags_UnsavedDocument,
            "Display a dot next to the title. When used in a tab/docking "
@@ -235,10 +259,6 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
     .value("NO_NAV", ImGuiWindowFlags_NoNav)
     .value("NO_DECORATION", ImGuiWindowFlags_NoDecoration)
     .value("NO_INPUTS", ImGuiWindowFlags_NoInputs)
-    .value("NAV_FLATTENED", ImGuiWindowFlags_NavFlattened,
-           "[BETA] On child window: share focus scope, allow gamepad/keyboard "
-           "navigation to cross over parent border to this child or between "
-           "sibling child windows.")
     .value("CHILD_WINDOW", ImGuiWindowFlags_ChildWindow,
            "Don't use! For internal use by BeginChild()")
     .value("TOOLTIP", ImGuiWindowFlags_Tooltip,
@@ -266,11 +286,13 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value("DEFAULT_OPEN", ImGuiTreeNodeFlags_DefaultOpen,
            "Default node to be open")
     .value("OPEN_ON_DOUBLE_CLICK", ImGuiTreeNodeFlags_OpenOnDoubleClick,
-           "Need double-click to open node")
+           "Open on double-click instead of simple click (default for "
+           "multi-select unless any _OpenOnXXX behavior is set explicitly). "
+           "Both behaviors may be combined.")
     .value("OPEN_ON_ARROW", ImGuiTreeNodeFlags_OpenOnArrow,
-           "Only open when clicking on the arrow part. If "
-           "ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click "
-           "arrow or double-click all box to open.")
+           "Open when clicking on the arrow part (default for multi-select "
+           "unless any _OpenOnXXX behavior is set explicitly). Both behaviors "
+           "may be combined.")
     .value("LEAF", ImGuiTreeNodeFlags_Leaf,
            "No collapsing, no arrow (use as a convenience for leaf nodes).")
     .value("BULLET", ImGuiTreeNodeFlags_Bullet,
@@ -279,19 +301,22 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value("FRAME_PADDING", ImGuiTreeNodeFlags_FramePadding,
            "Use FramePadding (even for an unframed text node) to vertically "
            "align text baseline to regular widget height. Equivalent to "
-           "calling AlignTextToFramePadding().")
+           "calling AlignTextToFramePadding() before the node.")
     .value("SPAN_AVAIL_WIDTH", ImGuiTreeNodeFlags_SpanAvailWidth,
            "Extend hit box to the right-most edge, even if not framed. This is "
            "not the default in order to allow adding other items on the same "
-           "line. In the future we may refactor the hit system to be "
-           "front-to-back, allowing natural overlaps and then this can become "
-           "the default.")
+           "line without using AllowOverlap mode.")
     .value("SPAN_FULL_WIDTH", ImGuiTreeNodeFlags_SpanFullWidth,
-           "Extend hit box to the left-most and right-most edges (bypass the "
-           "indented area).")
+           "Extend hit box to the left-most and right-most edges (cover the "
+           "indent area).")
+    .value("SPAN_LABEL_WIDTH", ImGuiTreeNodeFlags_SpanLabelWidth,
+           "Narrow hit box + narrow hovering highlight, will only cover the "
+           "label text.")
     .value("SPAN_ALL_COLUMNS", ImGuiTreeNodeFlags_SpanAllColumns,
-           "Frame will span all columns of its container table (text will "
+           "Frame will span all columns of its container table (label will "
            "still fit in current column)")
+    .value("LABEL_SPAN_ALL_COLUMNS", ImGuiTreeNodeFlags_LabelSpanAllColumns,
+           "Label will span all columns of its container table")
     .value("NAV_LEFT_JUMPS_BACK_HERE", ImGuiTreeNodeFlags_NavLeftJumpsBackHere,
            "(WIP) Nav: left direction may move to this TreeNode() from any of "
            "its child (items submitted between TreeNode and TreePop)")
@@ -318,6 +343,8 @@ nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
            "ImGuiTabBarFlags_FittingPolicyScroll)")
     .value("NO_TOOLTIP", ImGuiTabBarFlags_NoTooltip,
            "Disable tooltips when hovering a tab")
+    .value("DRAW_SELECTED_OVERLINE", ImGuiTabBarFlags_DrawSelectedOverline,
+           "Draw selected overline markers over selected tab")
     .value("FITTING_POLICY_RESIZE_DOWN",
            ImGuiTabBarFlags_FittingPolicyResizeDown,
            "Resize tabs when they don't fit")
@@ -505,10 +532,12 @@ nb::enum_<ImGuiTableColumnFlags_>(m, "TableColumnFlags", nb::is_flag(),
            "Disable ability to sort in the ascending direction.")
     .value("NO_SORT_DESCENDING", ImGuiTableColumnFlags_NoSortDescending,
            "Disable ability to sort in the descending direction.")
-    .value("NO_HEADER_LABEL", ImGuiTableColumnFlags_NoHeaderLabel,
-           "TableHeadersRow() will not submit horizontal label for this "
-           "column. Convenient for some small columns. Name will still appear "
-           "in context menu or in angled headers.")
+    .value(
+        "NO_HEADER_LABEL", ImGuiTableColumnFlags_NoHeaderLabel,
+        "TableHeadersRow() will submit an empty label for this column. "
+        "Convenient for some small columns. Name will still appear in context "
+        "menu or in angled headers. You may append into this cell by calling "
+        "TableSetColumnIndex() right after the TableHeadersRow() call.")
     .value("NO_HEADER_WIDTH", ImGuiTableColumnFlags_NoHeaderWidth,
            "Disable header text width contribution to automatic column width.")
     .value("PREFER_SORT_ASCENDING", ImGuiTableColumnFlags_PreferSortAscending,
@@ -573,15 +602,20 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
            "and drop source.")
     .value("NO_BORDER", ImGuiColorEditFlags_NoBorder,
            "ColorButton: disable border (which is enforced by default)")
+    .value("ALPHA_OPAQUE", ImGuiColorEditFlags_AlphaOpaque,
+           "ColorEdit, ColorPicker, ColorButton: disable alpha in the "
+           "preview,. Contrary to _NoAlpha it may still be edited when calling "
+           "ColorEdit4()/ColorPicker4(). For ColorButton() this does the same "
+           "as _NoAlpha.")
+    .value("ALPHA_NO_BG", ImGuiColorEditFlags_AlphaNoBg,
+           "ColorEdit, ColorPicker, ColorButton: disable rendering a "
+           "checkerboard background behind transparent color.")
+    .value("ALPHA_PREVIEW_HALF", ImGuiColorEditFlags_AlphaPreviewHalf,
+           "ColorEdit, ColorPicker, ColorButton: display half opaque / half "
+           "transparent preview.")
     .value(
         "ALPHA_BAR", ImGuiColorEditFlags_AlphaBar,
         "ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.")
-    .value("ALPHA_PREVIEW", ImGuiColorEditFlags_AlphaPreview,
-           "ColorEdit, ColorPicker, ColorButton: display preview as a "
-           "transparent color over a checkerboard, instead of opaque.")
-    .value("ALPHA_PREVIEW_HALF", ImGuiColorEditFlags_AlphaPreviewHalf,
-           "ColorEdit, ColorPicker, ColorButton: display half opaque / half "
-           "checkerboard, instead of opaque.")
     .value("HDR", ImGuiColorEditFlags_HDR,
            "(WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA "
            "edition (note: you probably want to use ImGuiColorEditFlags_Float "
@@ -607,6 +641,7 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
     .value("INPUT_HSV", ImGuiColorEditFlags_InputHSV,
            "ColorEdit, ColorPicker: input and output data in HSV format.")
     .value("DEFAULT_OPTIONS_", ImGuiColorEditFlags_DefaultOptions_)
+    .value("ALPHA_MASK_", ImGuiColorEditFlags_AlphaMask_)
     .value("DISPLAY_MASK_", ImGuiColorEditFlags_DisplayMask_)
     .value("DATA_TYPE_MASK_", ImGuiColorEditFlags_DataTypeMask_)
     .value("PICKER_MASK_", ImGuiColorEditFlags_PickerMask_)
@@ -634,8 +669,9 @@ nb::enum_<ImGuiComboFlags_>(m, "ComboFlags", nb::is_flag(), nb::is_arithmetic())
 nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags", nb::is_flag(),
                                  nb::is_arithmetic())
     .value("NONE", ImGuiSelectableFlags_None)
-    .value("DONT_CLOSE_POPUPS", ImGuiSelectableFlags_DontClosePopups,
-           "Clicking this doesn't close parent popup window")
+    .value("NO_AUTO_CLOSE_POPUPS", ImGuiSelectableFlags_NoAutoClosePopups,
+           "Clicking this doesn't close parent popup window (overrides "
+           "ImGuiItemFlags_AutoClosePopups)")
     .value("SPAN_ALL_COLUMNS", ImGuiSelectableFlags_SpanAllColumns,
            "Frame will span all columns of its container table (text will "
            "still fit in current column)")
@@ -644,7 +680,9 @@ nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags", nb::is_flag(),
     .value("DISABLED", ImGuiSelectableFlags_Disabled,
            "Cannot be selected, display grayed out text")
     .value("ALLOW_OVERLAP", ImGuiSelectableFlags_AllowOverlap,
-           "(WIP) Hit testing to allow subsequent widgets to overlap this one");
+           "(WIP) Hit testing to allow subsequent widgets to overlap this one")
+    .value("HIGHLIGHT", ImGuiSelectableFlags_Highlight,
+           "Make the item be displayed as if it is hovered");
 nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiConfigFlags_None)
@@ -654,24 +692,18 @@ nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags", nb::is_flag(),
     .value("NAV_ENABLE_GAMEPAD", ImGuiConfigFlags_NavEnableGamepad,
            "Master gamepad navigation enable flag. Backend also needs to set "
            "ImGuiBackendFlags_HasGamepad.")
-    .value("NAV_ENABLE_SET_MOUSE_POS", ImGuiConfigFlags_NavEnableSetMousePos,
-           "Instruct navigation to move the mouse cursor. May be useful on "
-           "TV/console systems where moving a virtual mouse is awkward. Will "
-           "update io.MousePos and set io.WantSetMousePos=true. If enabled you "
-           "MUST honor io.WantSetMousePos requests in your backend, otherwise "
-           "ImGui will react as if the mouse is jumping around back and forth.")
-    .value("NAV_NO_CAPTURE_KEYBOARD", ImGuiConfigFlags_NavNoCaptureKeyboard,
-           "Instruct navigation to not set the io.WantCaptureKeyboard flag "
-           "when io.NavActive is set.")
     .value("NO_MOUSE", ImGuiConfigFlags_NoMouse,
-           "Instruct imgui to clear mouse position/buttons in NewFrame(). This "
-           "allows ignoring the mouse information set by the backend.")
+           "Instruct dear imgui to disable mouse inputs and interactions.")
     .value("NO_MOUSE_CURSOR_CHANGE", ImGuiConfigFlags_NoMouseCursorChange,
            "Instruct backend to not alter mouse cursor shape and visibility. "
            "Use if the backend cursor changes are interfering with yours and "
            "you don't want to use SetMouseCursor() to change mouse cursor. You "
            "may want to honor requests from imgui by reading GetMouseCursor() "
            "yourself instead.")
+    .value(
+        "NO_KEYBOARD", ImGuiConfigFlags_NoKeyboard,
+        "Instruct dear imgui to disable keyboard inputs and interactions. This "
+        "is done by ignoring keyboard events and clearing existing states.")
     .value("IS_SRGB", ImGuiConfigFlags_IsSRGB, "Application is SRGB-aware.")
     .value("IS_TOUCH_SCREEN", ImGuiConfigFlags_IsTouchScreen,
            "Application is using a touch screen instead of a mouse.");
@@ -686,7 +718,7 @@ nb::enum_<ImGuiBackendFlags_>(m, "BackendFlags", nb::is_flag(),
     .value("HAS_SET_MOUSE_POS", ImGuiBackendFlags_HasSetMousePos,
            "Backend Platform supports io.WantSetMousePos requests to "
            "reposition the OS mouse position (only used if "
-           "ImGuiConfigFlags_NavEnableSetMousePos is set).")
+           "io.ConfigNavMoveSetMousePos is set).")
     .value(
         "RENDERER_HAS_VTX_OFFSET", ImGuiBackendFlags_RendererHasVtxOffset,
         "Backend Renderer supports ImDrawCmd::VtxOffset. This enables output "
@@ -742,7 +774,7 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
     .value("ALLOW_WHEN_DISABLED", ImGuiHoveredFlags_AllowWhenDisabled,
            "IsItemHovered() only: Return true even if the item is disabled")
     .value("NO_NAV_OVERRIDE", ImGuiHoveredFlags_NoNavOverride,
-           "IsItemHovered() only: Disable using gamepad/keyboard navigation "
+           "IsItemHovered() only: Disable using keyboard/gamepad navigation "
            "state when active, always query mouse")
     .value("ALLOW_WHEN_OVERLAPPED", ImGuiHoveredFlags_AllowWhenOverlapped)
     .value("RECT_ONLY", ImGuiHoveredFlags_RectOnly)
@@ -773,9 +805,6 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
 nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiSliderFlags_None)
-    .value("ALWAYS_CLAMP", ImGuiSliderFlags_AlwaysClamp,
-           "Clamp value to min/max bounds when input manually with CTRL+Click. "
-           "By default CTRL+Click allows going out of bounds.")
     .value("LOGARITHMIC", ImGuiSliderFlags_Logarithmic,
            "Make the widget logarithmic (linear otherwise). Consider using "
            "ImGuiSliderFlags_NoRoundToFormat with this if using a "
@@ -783,10 +812,24 @@ nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
     .value(
         "NO_ROUND_TO_FORMAT", ImGuiSliderFlags_NoRoundToFormat,
         "Disable rounding underlying value to match precision of the display "
-        "format string (e.g. %.3f values are rounded to those 3 digits)")
+        "format string (e.g. %.3f values are rounded to those 3 digits).")
     .value("NO_INPUT", ImGuiSliderFlags_NoInput,
            "Disable CTRL+Click or Enter key allowing to input text directly "
-           "into the widget")
+           "into the widget.")
+    .value("WRAP_AROUND", ImGuiSliderFlags_WrapAround,
+           "Enable wrapping around from max to min and from min to max. Only "
+           "supported by DragXXX() functions for now.")
+    .value("CLAMP_ON_INPUT", ImGuiSliderFlags_ClampOnInput,
+           "Clamp value to min/max bounds when input manually with CTRL+Click. "
+           "By default CTRL+Click allows going out of bounds.")
+    .value("CLAMP_ZERO_RANGE", ImGuiSliderFlags_ClampZeroRange,
+           "Clamp even if min==max==0.0f. Otherwise due to legacy reason "
+           "DragXXX functions don't clamp with those values. When your "
+           "clamping limits are dynamic you almost always want to use it.")
+    .value("NO_SPEED_TWEAKS", ImGuiSliderFlags_NoSpeedTweaks,
+           "Disable keyboard modifiers altering tweak speed. Useful if you "
+           "want to alter tweak speed yourself based on your own logic.")
+    .value("ALWAYS_CLAMP", ImGuiSliderFlags_AlwaysClamp)
     .value("INVALID_MASK_", ImGuiSliderFlags_InvalidMask_,
            "[Internal] We treat using those bits as being potentially a 'float "
            "power' argument from the previous API that has got miscast to this "
@@ -843,6 +886,11 @@ nb::enum_<ImGuiMouseCursor_>(m, "MouseCursor", nb::is_arithmetic())
            "When hovering over the bottom-right corner of a window")
     .value("HAND", ImGuiMouseCursor_Hand,
            "(Unused by Dear ImGui functions. Use for e.g. hyperlinks)")
+    .value("WAIT", ImGuiMouseCursor_Wait,
+           "When waiting for something to process/load.")
+    .value("PROGRESS", ImGuiMouseCursor_Progress,
+           "When waiting for something to process/load, but application is "
+           "still interactive.")
     .value("NOT_ALLOWED", ImGuiMouseCursor_NotAllowed,
            "When hovering something with disallowed interaction. Usually a "
            "crossed circle.")
@@ -888,11 +936,18 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
            "Resize grip in lower-right and lower-left corners of windows.")
     .value("RESIZE_GRIP_HOVERED", ImGuiCol_ResizeGripHovered)
     .value("RESIZE_GRIP_ACTIVE", ImGuiCol_ResizeGripActive)
-    .value("TAB", ImGuiCol_Tab, "TabItem in a TabBar")
-    .value("TAB_HOVERED", ImGuiCol_TabHovered)
-    .value("TAB_ACTIVE", ImGuiCol_TabActive)
-    .value("TAB_UNFOCUSED", ImGuiCol_TabUnfocused)
-    .value("TAB_UNFOCUSED_ACTIVE", ImGuiCol_TabUnfocusedActive)
+    .value("TAB_HOVERED", ImGuiCol_TabHovered, "Tab background, when hovered")
+    .value("TAB", ImGuiCol_Tab,
+           "Tab background, when tab-bar is focused & tab is unselected")
+    .value("TAB_SELECTED", ImGuiCol_TabSelected,
+           "Tab background, when tab-bar is focused & tab is selected")
+    .value("TAB_SELECTED_OVERLINE", ImGuiCol_TabSelectedOverline,
+           "Tab horizontal overline, when tab-bar is focused & tab is selected")
+    .value("TAB_DIMMED", ImGuiCol_TabDimmed,
+           "Tab background, when tab-bar is unfocused & tab is unselected")
+    .value("TAB_DIMMED_SELECTED", ImGuiCol_TabDimmedSelected,
+           "Tab background, when tab-bar is unfocused & tab is selected")
+    .value("TAB_DIMMED_SELECTED_OVERLINE", ImGuiCol_TabDimmedSelectedOverline)
     .value("PLOT_LINES", ImGuiCol_PlotLines)
     .value("PLOT_LINES_HOVERED", ImGuiCol_PlotLinesHovered)
     .value("PLOT_HISTOGRAM", ImGuiCol_PlotHistogram)
@@ -906,11 +961,13 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
            "Table row background (even rows)")
     .value("TABLE_ROW_BG_ALT", ImGuiCol_TableRowBgAlt,
            "Table row background (odd rows)")
+    .value("TEXT_LINK", ImGuiCol_TextLink, "Hyperlink color")
     .value("TEXT_SELECTED_BG", ImGuiCol_TextSelectedBg)
     .value("DRAG_DROP_TARGET", ImGuiCol_DragDropTarget,
            "Rectangle highlighting a drop target")
-    .value("NAV_HIGHLIGHT", ImGuiCol_NavHighlight,
-           "Gamepad/keyboard: current highlighted item")
+    .value(
+        "NAV_CURSOR", ImGuiCol_NavCursor,
+        "Color of keyboard/gamepad navigation cursor/rectangle, when visible")
     .value("NAV_WINDOWING_HIGHLIGHT", ImGuiCol_NavWindowingHighlight,
            "Highlight window when using CTRL+TAB")
     .value("NAV_WINDOWING_DIM_BG", ImGuiCol_NavWindowingDimBg,
@@ -920,7 +977,7 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
            "Darken/colorize entire screen behind a modal window, when one is "
            "active")
     .value("COUNT", ImGuiCol_COUNT);
-nb::enum_<ImGuiDir_>(m, "Dir", nb::is_arithmetic())
+nb::enum_<ImGuiDir>(m, "Dir", nb::is_arithmetic())
     .value("NONE", ImGuiDir_None)
     .value("LEFT", ImGuiDir_Left)
     .value("RIGHT", ImGuiDir_Right)
@@ -968,19 +1025,26 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
     .value("GRAB_MIN_SIZE", ImGuiStyleVar_GrabMinSize, "float     GrabMinSize")
     .value("GRAB_ROUNDING", ImGuiStyleVar_GrabRounding,
            "float     GrabRounding")
+    .value("IMAGE_BORDER_SIZE", ImGuiStyleVar_ImageBorderSize,
+           "float     ImageBorderSize")
     .value("TAB_ROUNDING", ImGuiStyleVar_TabRounding, "float     TabRounding")
     .value("TAB_BORDER_SIZE", ImGuiStyleVar_TabBorderSize,
            "float     TabBorderSize")
     .value("TAB_BAR_BORDER_SIZE", ImGuiStyleVar_TabBarBorderSize,
            "float     TabBarBorderSize")
+    .value("TAB_BAR_OVERLINE_SIZE", ImGuiStyleVar_TabBarOverlineSize,
+           "float     TabBarOverlineSize")
     .value("TABLE_ANGLED_HEADERS_ANGLE", ImGuiStyleVar_TableAngledHeadersAngle,
-           "float  TableAngledHeadersAngle")
+           "float     TableAngledHeadersAngle")
+    .value("TABLE_ANGLED_HEADERS_TEXT_ALIGN",
+           ImGuiStyleVar_TableAngledHeadersTextAlign,
+           "ImVec2  TableAngledHeadersTextAlign")
     .value("BUTTON_TEXT_ALIGN", ImGuiStyleVar_ButtonTextAlign,
            "ImVec2    ButtonTextAlign")
     .value("SELECTABLE_TEXT_ALIGN", ImGuiStyleVar_SelectableTextAlign,
            "ImVec2    SelectableTextAlign")
     .value("SEPARATOR_TEXT_BORDER_SIZE", ImGuiStyleVar_SeparatorTextBorderSize,
-           "float  SeparatorTextBorderSize")
+           "float     SeparatorTextBorderSize")
     .value("SEPARATOR_TEXT_ALIGN", ImGuiStyleVar_SeparatorTextAlign,
            "ImVec2    SeparatorTextAlign")
     .value("SEPARATOR_TEXT_PADDING", ImGuiStyleVar_SeparatorTextPadding,
@@ -997,6 +1061,7 @@ nb::enum_<ImGuiTableBgTarget_>(m, "TableBgTarget", nb::is_arithmetic())
            "Set cell background color (top-most color)");
 nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())
     .value("KEY_NONE", ImGuiKey_None)
+    .value("KEY_NAMED_KEY_BEGIN", ImGuiKey_NamedKey_BEGIN)
     .value("KEY_TAB", ImGuiKey_Tab)
     .value("KEY_LEFT_ARROW", ImGuiKey_LeftArrow)
     .value("KEY_RIGHT_ARROW", ImGuiKey_RightArrow)
@@ -1116,6 +1181,7 @@ nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())
     .value("KEY_KEYPAD_EQUAL", ImGuiKey_KeypadEqual)
     .value("KEY_APP_BACK", ImGuiKey_AppBack)
     .value("KEY_APP_FORWARD", ImGuiKey_AppForward)
+    .value("KEY_OEM102", ImGuiKey_Oem102)
     .value("KEY_GAMEPAD_START", ImGuiKey_GamepadStart)
     .value("KEY_GAMEPAD_BACK", ImGuiKey_GamepadBack)
     .value("KEY_GAMEPAD_FACE_LEFT", ImGuiKey_GamepadFaceLeft)
@@ -1151,16 +1217,11 @@ nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())
     .value("KEY_RESERVED_FOR_MOD_SHIFT", ImGuiKey_ReservedForModShift)
     .value("KEY_RESERVED_FOR_MOD_ALT", ImGuiKey_ReservedForModAlt)
     .value("KEY_RESERVED_FOR_MOD_SUPER", ImGuiKey_ReservedForModSuper)
-    .value("KEY_COUNT", ImGuiKey_COUNT)
+    .value("KEY_NAMED_KEY_END", ImGuiKey_NamedKey_END)
     .value("MOD_NONE", ImGuiMod_None)
     .value("MOD_CTRL", ImGuiMod_Ctrl)
     .value("MOD_SHIFT", ImGuiMod_Shift)
     .value("MOD_ALT", ImGuiMod_Alt)
     .value("MOD_SUPER", ImGuiMod_Super)
-    .value("MOD_SHORTCUT", ImGuiMod_Shortcut)
     .value("MOD_MASK_", ImGuiMod_Mask_)
-    .value("KEY_NAMED_KEY_BEGIN", ImGuiKey_NamedKey_BEGIN)
-    .value("KEY_NAMED_KEY_END", ImGuiKey_NamedKey_END)
-    .value("KEY_NAMED_KEY_COUNT", ImGuiKey_NamedKey_COUNT)
-    .value("KEY_KEYS_DATA_SIZE", ImGuiKey_KeysData_SIZE)
-    .value("KEY_KEYS_DATA_OFFSET", ImGuiKey_KeysData_OFFSET);
+    .value("KEY_NAMED_KEY_COUNT", ImGuiKey_NamedKey_COUNT);

@@ -91,7 +91,6 @@ NB_MODULE(slimgui_ext, m) {
         .def_rw("oversample_h", &ImFontConfig::OversampleH)
         .def_rw("oversample_v", &ImFontConfig::OversampleV)
         .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH)
-        .def_rw("glyph_extra_spacing", &ImFontConfig::GlyphExtraSpacing)
         .def_rw("glyph_offset", &ImFontConfig::GlyphOffset)
         //.def_rw("glyph_ranges", &ImFontConfig::GlyphRanges) // TODO
         .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX)
@@ -125,12 +124,8 @@ NB_MODULE(slimgui_ext, m) {
             return std::tuple(tex_w, tex_h, nb::bytes(tex_pixels, tex_w*tex_h*4));
         })
         .def_prop_rw("texture_id",
-            [](ImFontAtlas& a) {
-                return reinterpret_cast<uintptr_t>(a.TexID);
-            },
-            [](ImFontAtlas& a, uintptr_t texID) {
-                a.SetTexID(reinterpret_cast<ImTextureID>(texID));
-            }
+            [](ImFontAtlas& a) { return a.TexID; },
+            [](ImFontAtlas& a, ImU64 texID) { a.SetTexID(texID); }
         );
 
     // TODO incomplete
@@ -192,7 +187,8 @@ NB_MODULE(slimgui_ext, m) {
         .def_rw("log_slider_deadzone", &ImGuiStyle::LogSliderDeadzone)
         .def_rw("tab_rounding", &ImGuiStyle::TabRounding)
         .def_rw("tab_border_size", &ImGuiStyle::TabBorderSize)
-        .def_rw("tab_min_width_for_close_button", &ImGuiStyle::TabMinWidthForCloseButton)
+        .def_rw("tab_close_button_min_width_selected", &ImGuiStyle::TabCloseButtonMinWidthSelected)
+        .def_rw("tab_close_button_min_width_unselected", &ImGuiStyle::TabCloseButtonMinWidthUnselected)
         .def_rw("tab_bar_border_size", &ImGuiStyle::TabBarBorderSize)
         .def_rw("table_angled_headers_angle", &ImGuiStyle::TableAngledHeadersAngle)
         .def_rw("color_button_position", &ImGuiStyle::ColorButtonPosition)
@@ -325,7 +321,6 @@ NB_MODULE(slimgui_ext, m) {
     m.def("create_context", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
     m.def("get_current_context", &ImGui::GetCurrentContext, nb::rv_policy::reference);
     m.def("destroy_context", &ImGui::DestroyContext);
-    m.def("get_io", &ImGui::GetIO, nb::rv_policy::reference);
     m.def("get_style", &ImGui::GetStyle, nb::rv_policy::reference);
     m.def("get_draw_data", &ImGui::GetDrawData, nb::rv_policy::reference);
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);
@@ -508,8 +503,8 @@ NB_MODULE(slimgui_ext, m) {
     m.def("bullet", &ImGui::Bullet);
 
     // Widgets: Images
-    m.def("image", [](uintptr_t user_texture_id, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) {
-        ImGui::Image(reinterpret_cast<ImTextureID>(user_texture_id), image_size, uv0, uv1, tint_col, border_col);
+    m.def("image", [](ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) {
+        ImGui::Image(user_texture_id, image_size, uv0, uv1, tint_col, border_col);
     }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "tint_col"_a = ImVec4(1, 1, 1, 1), "border_col"_a = ImVec4(0, 0, 0, 0));
 
     // Widgets: Combo Box (Dropdown)

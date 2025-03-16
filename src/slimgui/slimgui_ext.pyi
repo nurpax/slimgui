@@ -23,7 +23,7 @@ class BackendFlags(enum.IntFlag):
 
     HAS_SET_MOUSE_POS = 4
     """
-    Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if ImGuiConfigFlags_NavEnableSetMousePos is set).
+    Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if io.ConfigNavMoveSetMousePos is set).
     """
 
     RENDERER_HAS_VTX_OFFSET = 8
@@ -48,6 +48,11 @@ class ButtonFlags(enum.IntFlag):
     MOUSE_BUTTON_MIDDLE = 4
     """React on center mouse button"""
 
+    ENABLE_NAV = 8
+    """
+    InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.
+    """
+
 class ChildFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -56,7 +61,7 @@ class ChildFlags(enum.IntFlag):
 
     NONE = 0
 
-    BORDER = 1
+    BORDERS = 1
     """
     Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == true for legacy reason)
     """
@@ -93,6 +98,14 @@ class ChildFlags(enum.IntFlag):
     """
     Style the child window like a framed item: use FrameBg, FrameRounding, FrameBorderSize, FramePadding instead of ChildBg, ChildRounding, ChildBorderSize, WindowPadding.
     """
+
+    NAV_FLATTENED = 256
+    """
+    [BETA] Share focus scope, allow keyboard/gamepad navigation to cross over parent border to this child or between sibling child windows.
+    """
+
+    BORDER = 1
+    """Renamed in 1.91.1 (August 2024) for consistency."""
 
 class Col(enum.IntEnum):
     TEXT = 0
@@ -173,62 +186,74 @@ class Col(enum.IntEnum):
 
     RESIZE_GRIP_ACTIVE = 32
 
-    TAB = 33
-    """TabItem in a TabBar"""
+    TAB_HOVERED = 33
+    """Tab background, when hovered"""
 
-    TAB_HOVERED = 34
+    TAB = 34
+    """Tab background, when tab-bar is focused & tab is unselected"""
 
-    TAB_ACTIVE = 35
+    TAB_SELECTED = 35
+    """Tab background, when tab-bar is focused & tab is selected"""
 
-    TAB_UNFOCUSED = 36
+    TAB_SELECTED_OVERLINE = 36
+    """Tab horizontal overline, when tab-bar is focused & tab is selected"""
 
-    TAB_UNFOCUSED_ACTIVE = 37
+    TAB_DIMMED = 37
+    """Tab background, when tab-bar is unfocused & tab is unselected"""
 
-    PLOT_LINES = 38
+    TAB_DIMMED_SELECTED = 38
+    """Tab background, when tab-bar is unfocused & tab is selected"""
 
-    PLOT_LINES_HOVERED = 39
+    TAB_DIMMED_SELECTED_OVERLINE = 39
 
-    PLOT_HISTOGRAM = 40
+    PLOT_LINES = 40
 
-    PLOT_HISTOGRAM_HOVERED = 41
+    PLOT_LINES_HOVERED = 41
 
-    TABLE_HEADER_BG = 42
+    PLOT_HISTOGRAM = 42
+
+    PLOT_HISTOGRAM_HOVERED = 43
+
+    TABLE_HEADER_BG = 44
     """Table header background"""
 
-    TABLE_BORDER_STRONG = 43
+    TABLE_BORDER_STRONG = 45
     """Table outer and header borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_BORDER_LIGHT = 44
+    TABLE_BORDER_LIGHT = 46
     """Table inner borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_ROW_BG = 45
+    TABLE_ROW_BG = 47
     """Table row background (even rows)"""
 
-    TABLE_ROW_BG_ALT = 46
+    TABLE_ROW_BG_ALT = 48
     """Table row background (odd rows)"""
 
-    TEXT_SELECTED_BG = 47
+    TEXT_LINK = 49
+    """Hyperlink color"""
 
-    DRAG_DROP_TARGET = 48
+    TEXT_SELECTED_BG = 50
+
+    DRAG_DROP_TARGET = 51
     """Rectangle highlighting a drop target"""
 
-    NAV_HIGHLIGHT = 49
-    """Gamepad/keyboard: current highlighted item"""
+    NAV_CURSOR = 52
+    """Color of keyboard/gamepad navigation cursor/rectangle, when visible"""
 
-    NAV_WINDOWING_HIGHLIGHT = 50
+    NAV_WINDOWING_HIGHLIGHT = 53
     """Highlight window when using CTRL+TAB"""
 
-    NAV_WINDOWING_DIM_BG = 51
+    NAV_WINDOWING_DIM_BG = 54
     """
     Darken/colorize entire screen behind the CTRL+TAB window list, when active
     """
 
-    MODAL_WINDOW_DIM_BG = 52
+    MODAL_WINDOW_DIM_BG = 55
     """
     Darken/colorize entire screen behind a modal window, when one is active
     """
 
-    COUNT = 53
+    COUNT = 56
 
 class ColorEditFlags(enum.IntFlag):
     __str__ = __repr__
@@ -284,18 +309,23 @@ class ColorEditFlags(enum.IntFlag):
     NO_BORDER = 1024
     """ColorButton: disable border (which is enforced by default)"""
 
+    ALPHA_OPAQUE = 2048
+    """
+    ColorEdit, ColorPicker, ColorButton: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling ColorEdit4()/ColorPicker4(). For ColorButton() this does the same as _NoAlpha.
+    """
+
+    ALPHA_NO_BG = 4096
+    """
+    ColorEdit, ColorPicker, ColorButton: disable rendering a checkerboard background behind transparent color.
+    """
+
+    ALPHA_PREVIEW_HALF = 8192
+    """
+    ColorEdit, ColorPicker, ColorButton: display half opaque / half transparent preview.
+    """
+
     ALPHA_BAR = 65536
     """ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker."""
-
-    ALPHA_PREVIEW = 131072
-    """
-    ColorEdit, ColorPicker, ColorButton: display preview as a transparent color over a checkerboard, instead of opaque.
-    """
-
-    ALPHA_PREVIEW_HALF = 262144
-    """
-    ColorEdit, ColorPicker, ColorButton: display half opaque / half checkerboard, instead of opaque.
-    """
 
     HDR = 524288
     """
@@ -416,24 +446,17 @@ class ConfigFlags(enum.IntFlag):
     Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.
     """
 
-    NAV_ENABLE_SET_MOUSE_POS = 4
-    """
-    Instruct navigation to move the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is awkward. Will update io.MousePos and set io.WantSetMousePos=true. If enabled you MUST honor io.WantSetMousePos requests in your backend, otherwise ImGui will react as if the mouse is jumping around back and forth.
-    """
-
-    NAV_NO_CAPTURE_KEYBOARD = 8
-    """
-    Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.
-    """
-
     NO_MOUSE = 16
-    """
-    Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the backend.
-    """
+    """Instruct dear imgui to disable mouse inputs and interactions."""
 
     NO_MOUSE_CURSOR_CHANGE = 32
     """
     Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
+    """
+
+    NO_KEYBOARD = 64
+    """
+    Instruct dear imgui to disable keyboard inputs and interactions. This is done by ignoring keyboard events and clearing existing states.
     """
 
     IS_SRGB = 1048576
@@ -493,9 +516,19 @@ class DragDropFlags(enum.IntFlag):
     External source (from outside of dear imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.
     """
 
-    SOURCE_AUTO_EXPIRE_PAYLOAD = 32
+    PAYLOAD_AUTO_EXPIRE = 32
     """
     Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged)
+    """
+
+    PAYLOAD_NO_CROSS_CONTEXT = 64
+    """
+    Hint to specify that the payload may not be copied outside current dear imgui context.
+    """
+
+    PAYLOAD_NO_CROSS_PROCESS = 128
+    """
+    Hint to specify that the payload may not be copied outside current process.
     """
 
     ACCEPT_BEFORE_DELIVERY = 1024
@@ -656,12 +689,6 @@ class FontConfig:
     def pixel_snap_h(self, arg: bool, /) -> None: ...
 
     @property
-    def glyph_extra_spacing(self) -> tuple[float, float]: ...
-
-    @glyph_extra_spacing.setter
-    def glyph_extra_spacing(self, arg: tuple[float, float], /) -> None: ...
-
-    @property
     def glyph_offset(self) -> tuple[float, float]: ...
 
     @glyph_offset.setter
@@ -763,7 +790,7 @@ class HoveredFlags(enum.IntFlag):
 
     NO_NAV_OVERRIDE = 2048
     """
-    IsItemHovered() only: Disable using gamepad/keyboard navigation state when active, always query mouse
+    IsItemHovered() only: Disable using keyboard/gamepad navigation state when active, always query mouse
     """
 
     ALLOW_WHEN_OVERLAPPED = 768
@@ -802,9 +829,9 @@ class HoveredFlags(enum.IntFlag):
     IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
     """
 
-IMGUI_VERSION: str = '1.90.5'
+IMGUI_VERSION: str = '1.91.9'
 
-IMGUI_VERSION_NUM: int = 19050
+IMGUI_VERSION_NUM: int = 19190
 
 INDEX_SIZE: int = 2
 
@@ -1010,81 +1037,98 @@ class InputTextFlags(enum.IntFlag):
     CHARS_HEXADECIMAL = 2
     """Allow 0123456789ABCDEFabcdef"""
 
-    CHARS_UPPERCASE = 4
+    CHARS_SCIENTIFIC = 4
+    """Allow 0123456789.+-*/eE (Scientific notation input)"""
+
+    CHARS_UPPERCASE = 8
     """Turn a..z into A..Z"""
 
-    CHARS_NO_BLANK = 8
+    CHARS_NO_BLANK = 16
     """Filter out spaces, tabs"""
 
-    AUTO_SELECT_ALL = 16
-    """Select entire text when first taking mouse focus"""
-
-    ENTER_RETURNS_TRUE = 32
-    """
-    Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider looking at the IsItemDeactivatedAfterEdit() function.
-    """
-
-    CALLBACK_COMPLETION = 64
-    """Callback on pressing TAB (for completion handling)"""
-
-    CALLBACK_HISTORY = 128
-    """Callback on pressing Up/Down arrows (for history handling)"""
-
-    CALLBACK_ALWAYS = 256
-    """
-    Callback on each iteration. User code may query cursor position, modify text buffer.
-    """
-
-    CALLBACK_CHAR_FILTER = 512
-    """
-    Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.
-    """
-
-    ALLOW_TAB_INPUT = 1024
+    ALLOW_TAB_INPUT = 32
     """Pressing TAB input a '	' character into the text field"""
 
-    CTRL_ENTER_FOR_NEW_LINE = 2048
+    ENTER_RETURNS_TRUE = 64
     """
-    In multi-line mode, unfocus with Enter, add new line with Ctrl+Enter (default is opposite: unfocus with Ctrl+Enter, add line with Enter).
+    Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using IsItemDeactivatedAfterEdit() instead!
     """
 
-    NO_HORIZONTAL_SCROLL = 4096
-    """Disable following the cursor horizontally"""
+    ESCAPE_CLEARS_ALL = 128
+    """
+    Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)
+    """
 
-    ALWAYS_OVERWRITE = 8192
-    """Overwrite mode"""
+    CTRL_ENTER_FOR_NEW_LINE = 256
+    """
+    In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter).
+    """
 
-    READ_ONLY = 16384
+    READ_ONLY = 512
     """Read-only mode"""
 
-    PASSWORD = 32768
-    """Password mode, display all characters as '*'"""
+    PASSWORD = 1024
+    """Password mode, display all characters as '*', disable copy"""
+
+    ALWAYS_OVERWRITE = 2048
+    """Overwrite mode"""
+
+    AUTO_SELECT_ALL = 4096
+    """Select entire text when first taking mouse focus"""
+
+    PARSE_EMPTY_REF_VAL = 8192
+    """
+    InputFloat(), InputInt(), InputScalar() etc. only: parse empty string as zero value.
+    """
+
+    DISPLAY_EMPTY_REF_VAL = 16384
+    """
+    InputFloat(), InputInt(), InputScalar() etc. only: when value is zero, do not display it. Generally used with ImGuiInputTextFlags_ParseEmptyRefVal.
+    """
+
+    NO_HORIZONTAL_SCROLL = 32768
+    """Disable following the cursor horizontally"""
 
     NO_UNDO_REDO = 65536
     """
     Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().
     """
 
-    CHARS_SCIENTIFIC = 131072
-    """Allow 0123456789.+-*/eE (Scientific notation input)"""
+    ELIDE_LEFT = 131072
+    """
+    When text doesn't fit, elide left side to ensure right side stays visible. Useful for path/filenames. Single-line only!
+    """
 
-    CALLBACK_RESIZE = 262144
+    CALLBACK_COMPLETION = 262144
+    """Callback on pressing TAB (for completion handling)"""
+
+    CALLBACK_HISTORY = 524288
+    """Callback on pressing Up/Down arrows (for history handling)"""
+
+    CALLBACK_ALWAYS = 1048576
+    """
+    Callback on each iteration. User code may query cursor position, modify text buffer.
+    """
+
+    CALLBACK_CHAR_FILTER = 2097152
+    """
+    Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.
+    """
+
+    CALLBACK_RESIZE = 4194304
     """
     Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)
     """
 
-    CALLBACK_EDIT = 524288
+    CALLBACK_EDIT = 8388608
     """
-    Callback on any edit (note that InputText() already returns true on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)
-    """
-
-    ESCAPE_CLEARS_ALL = 1048576
-    """
-    Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)
+    Callback on any edit. Note that InputText() already returns true on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.
     """
 
 class Key(enum.IntEnum):
     KEY_NONE = 0
+
+    KEY_NAMED_KEY_BEGIN = 512
 
     KEY_TAB = 512
 
@@ -1324,77 +1368,79 @@ class Key(enum.IntEnum):
 
     KEY_APP_FORWARD = 630
 
-    KEY_GAMEPAD_START = 631
+    KEY_OEM102 = 631
 
-    KEY_GAMEPAD_BACK = 632
+    KEY_GAMEPAD_START = 632
 
-    KEY_GAMEPAD_FACE_LEFT = 633
+    KEY_GAMEPAD_BACK = 633
 
-    KEY_GAMEPAD_FACE_RIGHT = 634
+    KEY_GAMEPAD_FACE_LEFT = 634
 
-    KEY_GAMEPAD_FACE_UP = 635
+    KEY_GAMEPAD_FACE_RIGHT = 635
 
-    KEY_GAMEPAD_FACE_DOWN = 636
+    KEY_GAMEPAD_FACE_UP = 636
 
-    KEY_GAMEPAD_DPAD_LEFT = 637
+    KEY_GAMEPAD_FACE_DOWN = 637
 
-    KEY_GAMEPAD_DPAD_RIGHT = 638
+    KEY_GAMEPAD_DPAD_LEFT = 638
 
-    KEY_GAMEPAD_DPAD_UP = 639
+    KEY_GAMEPAD_DPAD_RIGHT = 639
 
-    KEY_GAMEPAD_DPAD_DOWN = 640
+    KEY_GAMEPAD_DPAD_UP = 640
 
-    KEY_GAMEPAD_L1 = 641
+    KEY_GAMEPAD_DPAD_DOWN = 641
 
-    KEY_GAMEPAD_R1 = 642
+    KEY_GAMEPAD_L1 = 642
 
-    KEY_GAMEPAD_L2 = 643
+    KEY_GAMEPAD_R1 = 643
 
-    KEY_GAMEPAD_R2 = 644
+    KEY_GAMEPAD_L2 = 644
 
-    KEY_GAMEPAD_L3 = 645
+    KEY_GAMEPAD_R2 = 645
 
-    KEY_GAMEPAD_R3 = 646
+    KEY_GAMEPAD_L3 = 646
 
-    KEY_GAMEPAD_L_STICK_LEFT = 647
+    KEY_GAMEPAD_R3 = 647
 
-    KEY_GAMEPAD_L_STICK_RIGHT = 648
+    KEY_GAMEPAD_L_STICK_LEFT = 648
 
-    KEY_GAMEPAD_L_STICK_UP = 649
+    KEY_GAMEPAD_L_STICK_RIGHT = 649
 
-    KEY_GAMEPAD_L_STICK_DOWN = 650
+    KEY_GAMEPAD_L_STICK_UP = 650
 
-    KEY_GAMEPAD_R_STICK_LEFT = 651
+    KEY_GAMEPAD_L_STICK_DOWN = 651
 
-    KEY_GAMEPAD_R_STICK_RIGHT = 652
+    KEY_GAMEPAD_R_STICK_LEFT = 652
 
-    KEY_GAMEPAD_R_STICK_UP = 653
+    KEY_GAMEPAD_R_STICK_RIGHT = 653
 
-    KEY_GAMEPAD_R_STICK_DOWN = 654
+    KEY_GAMEPAD_R_STICK_UP = 654
 
-    KEY_MOUSE_LEFT = 655
+    KEY_GAMEPAD_R_STICK_DOWN = 655
 
-    KEY_MOUSE_RIGHT = 656
+    KEY_MOUSE_LEFT = 656
 
-    KEY_MOUSE_MIDDLE = 657
+    KEY_MOUSE_RIGHT = 657
 
-    KEY_MOUSE_X1 = 658
+    KEY_MOUSE_MIDDLE = 658
 
-    KEY_MOUSE_X2 = 659
+    KEY_MOUSE_X1 = 659
 
-    KEY_MOUSE_WHEEL_X = 660
+    KEY_MOUSE_X2 = 660
 
-    KEY_MOUSE_WHEEL_Y = 661
+    KEY_MOUSE_WHEEL_X = 661
 
-    KEY_RESERVED_FOR_MOD_CTRL = 662
+    KEY_MOUSE_WHEEL_Y = 662
 
-    KEY_RESERVED_FOR_MOD_SHIFT = 663
+    KEY_RESERVED_FOR_MOD_CTRL = 663
 
-    KEY_RESERVED_FOR_MOD_ALT = 664
+    KEY_RESERVED_FOR_MOD_SHIFT = 664
 
-    KEY_RESERVED_FOR_MOD_SUPER = 665
+    KEY_RESERVED_FOR_MOD_ALT = 665
 
-    KEY_COUNT = 666
+    KEY_RESERVED_FOR_MOD_SUPER = 666
+
+    KEY_NAMED_KEY_END = 667
 
     MOD_NONE = 0
 
@@ -1406,17 +1452,7 @@ class Key(enum.IntEnum):
 
     MOD_SUPER = 32768
 
-    MOD_SHORTCUT = 2048
-
-    KEY_NAMED_KEY_BEGIN = 512
-
-    KEY_NAMED_KEY_END = 666
-
-    KEY_NAMED_KEY_COUNT = 154
-
-    KEY_KEYS_DATA_SIZE = 154
-
-    KEY_KEYS_DATA_OFFSET = 512
+    KEY_NAMED_KEY_COUNT = 155
 
 class MouseButton(enum.IntEnum):
     LEFT = 0
@@ -1453,12 +1489,20 @@ class MouseCursor(enum.IntEnum):
     HAND = 7
     """(Unused by Dear ImGui functions. Use for e.g. hyperlinks)"""
 
-    NOT_ALLOWED = 8
+    WAIT = 8
+    """When waiting for something to process/load."""
+
+    PROGRESS = 9
+    """
+    When waiting for something to process/load, but application is still interactive.
+    """
+
+    NOT_ALLOWED = 10
     """
     When hovering something with disallowed interaction. Usually a crossed circle.
     """
 
-    COUNT = 9
+    COUNT = 11
 
 class PopupFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1518,8 +1562,10 @@ class SelectableFlags(enum.IntFlag):
 
     NONE = 0
 
-    DONT_CLOSE_POPUPS = 1
-    """Clicking this doesn't close parent popup window"""
+    NO_AUTO_CLOSE_POPUPS = 1
+    """
+    Clicking this doesn't close parent popup window (overrides ImGuiItemFlags_AutoClosePopups)
+    """
 
     SPAN_ALL_COLUMNS = 2
     """
@@ -1535,6 +1581,9 @@ class SelectableFlags(enum.IntFlag):
     ALLOW_OVERLAP = 16
     """(WIP) Hit testing to allow subsequent widgets to overlap this one"""
 
+    HIGHLIGHT = 32
+    """Make the item be displayed as if it is hovered"""
+
 class SliderFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -1543,11 +1592,6 @@ class SliderFlags(enum.IntFlag):
 
     NONE = 0
 
-    ALWAYS_CLAMP = 16
-    """
-    Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
-    """
-
     LOGARITHMIC = 32
     """
     Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.
@@ -1555,13 +1599,35 @@ class SliderFlags(enum.IntFlag):
 
     NO_ROUND_TO_FORMAT = 64
     """
-    Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits)
+    Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits).
     """
 
     NO_INPUT = 128
     """
-    Disable CTRL+Click or Enter key allowing to input text directly into the widget
+    Disable CTRL+Click or Enter key allowing to input text directly into the widget.
     """
+
+    WRAP_AROUND = 256
+    """
+    Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now.
+    """
+
+    CLAMP_ON_INPUT = 512
+    """
+    Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
+    """
+
+    CLAMP_ZERO_RANGE = 1024
+    """
+    Clamp even if min==max==0.0f. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it.
+    """
+
+    NO_SPEED_TWEAKS = 2048
+    """
+    Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic.
+    """
+
+    ALWAYS_CLAMP = 1536
 
 class Style:
     @property
@@ -1607,10 +1673,10 @@ class Style:
     def window_title_align(self, arg: tuple[float, float], /) -> None: ...
 
     @property
-    def window_menu_button_position(self) -> int: ...
+    def window_menu_button_position(self) -> Dir: ...
 
     @window_menu_button_position.setter
-    def window_menu_button_position(self, arg: int, /) -> None: ...
+    def window_menu_button_position(self, arg: Dir, /) -> None: ...
 
     @property
     def child_rounding(self) -> float: ...
@@ -1733,10 +1799,16 @@ class Style:
     def tab_border_size(self, arg: float, /) -> None: ...
 
     @property
-    def tab_min_width_for_close_button(self) -> float: ...
+    def tab_close_button_min_width_selected(self) -> float: ...
 
-    @tab_min_width_for_close_button.setter
-    def tab_min_width_for_close_button(self, arg: float, /) -> None: ...
+    @tab_close_button_min_width_selected.setter
+    def tab_close_button_min_width_selected(self, arg: float, /) -> None: ...
+
+    @property
+    def tab_close_button_min_width_unselected(self) -> float: ...
+
+    @tab_close_button_min_width_unselected.setter
+    def tab_close_button_min_width_unselected(self, arg: float, /) -> None: ...
 
     @property
     def tab_bar_border_size(self) -> float: ...
@@ -1751,10 +1823,10 @@ class Style:
     def table_angled_headers_angle(self, arg: float, /) -> None: ...
 
     @property
-    def color_button_position(self) -> int: ...
+    def color_button_position(self) -> Dir: ...
 
     @color_button_position.setter
-    def color_button_position(self, arg: int, /) -> None: ...
+    def color_button_position(self, arg: Dir, /) -> None: ...
 
     @property
     def button_text_align(self) -> tuple[float, float]: ...
@@ -1936,34 +2008,43 @@ class StyleVar(enum.IntEnum):
     GRAB_ROUNDING = 21
     """float     GrabRounding"""
 
-    TAB_ROUNDING = 22
+    IMAGE_BORDER_SIZE = 22
+    """float     ImageBorderSize"""
+
+    TAB_ROUNDING = 23
     """float     TabRounding"""
 
-    TAB_BORDER_SIZE = 23
+    TAB_BORDER_SIZE = 24
     """float     TabBorderSize"""
 
-    TAB_BAR_BORDER_SIZE = 24
+    TAB_BAR_BORDER_SIZE = 25
     """float     TabBarBorderSize"""
 
-    TABLE_ANGLED_HEADERS_ANGLE = 25
-    """float  TableAngledHeadersAngle"""
+    TAB_BAR_OVERLINE_SIZE = 26
+    """float     TabBarOverlineSize"""
 
-    BUTTON_TEXT_ALIGN = 26
+    TABLE_ANGLED_HEADERS_ANGLE = 27
+    """float     TableAngledHeadersAngle"""
+
+    TABLE_ANGLED_HEADERS_TEXT_ALIGN = 28
+    """ImVec2  TableAngledHeadersTextAlign"""
+
+    BUTTON_TEXT_ALIGN = 29
     """ImVec2    ButtonTextAlign"""
 
-    SELECTABLE_TEXT_ALIGN = 27
+    SELECTABLE_TEXT_ALIGN = 30
     """ImVec2    SelectableTextAlign"""
 
-    SEPARATOR_TEXT_BORDER_SIZE = 28
-    """float  SeparatorTextBorderSize"""
+    SEPARATOR_TEXT_BORDER_SIZE = 31
+    """float     SeparatorTextBorderSize"""
 
-    SEPARATOR_TEXT_ALIGN = 29
+    SEPARATOR_TEXT_ALIGN = 32
     """ImVec2    SeparatorTextAlign"""
 
-    SEPARATOR_TEXT_PADDING = 30
+    SEPARATOR_TEXT_PADDING = 33
     """ImVec2    SeparatorTextPadding"""
 
-    COUNT = 31
+    COUNT = 34
 
 class TabBarFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1997,10 +2078,13 @@ class TabBarFlags(enum.IntFlag):
     NO_TOOLTIP = 32
     """Disable tooltips when hovering a tab"""
 
-    FITTING_POLICY_RESIZE_DOWN = 64
+    DRAW_SELECTED_OVERLINE = 64
+    """Draw selected overline markers over selected tab"""
+
+    FITTING_POLICY_RESIZE_DOWN = 128
     """Resize tabs when they don't fit"""
 
-    FITTING_POLICY_SCROLL = 128
+    FITTING_POLICY_SCROLL = 256
     """Add scroll buttons when tabs don't fit"""
 
 class TabItemFlags(enum.IntFlag):
@@ -2122,7 +2206,7 @@ class TableColumnFlags(enum.IntFlag):
 
     NO_HEADER_LABEL = 4096
     """
-    TableHeadersRow() will not submit horizontal label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers.
+    TableHeadersRow() will submit an empty label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers. You may append into this cell by calling TableSetColumnIndex() right after the TableHeadersRow() call.
     """
 
     NO_HEADER_WIDTH = 8192
@@ -2368,11 +2452,13 @@ class TreeNodeFlags(enum.IntFlag):
     """Default node to be open"""
 
     OPEN_ON_DOUBLE_CLICK = 64
-    """Need double-click to open node"""
+    """
+    Open on double-click instead of simple click (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined.
+    """
 
     OPEN_ON_ARROW = 128
     """
-    Only open when clicking on the arrow part. If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click arrow or double-click all box to open.
+    Open when clicking on the arrow part (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined.
     """
 
     LEAF = 256
@@ -2385,25 +2471,33 @@ class TreeNodeFlags(enum.IntFlag):
 
     FRAME_PADDING = 1024
     """
-    Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding().
+    Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding() before the node.
     """
 
     SPAN_AVAIL_WIDTH = 2048
     """
-    Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line. In the future we may refactor the hit system to be front-to-back, allowing natural overlaps and then this can become the default.
+    Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line without using AllowOverlap mode.
     """
 
     SPAN_FULL_WIDTH = 4096
     """
-    Extend hit box to the left-most and right-most edges (bypass the indented area).
+    Extend hit box to the left-most and right-most edges (cover the indent area).
     """
 
-    SPAN_ALL_COLUMNS = 8192
+    SPAN_LABEL_WIDTH = 8192
     """
-    Frame will span all columns of its container table (text will still fit in current column)
+    Narrow hit box + narrow hovering highlight, will only cover the label text.
     """
 
-    NAV_LEFT_JUMPS_BACK_HERE = 16384
+    SPAN_ALL_COLUMNS = 16384
+    """
+    Frame will span all columns of its container table (label will still fit in current column)
+    """
+
+    LABEL_SPAN_ALL_COLUMNS = 32768
+    """Label will span all columns of its container table"""
+
+    NAV_LEFT_JUMPS_BACK_HERE = 131072
     """
     (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
     """
@@ -2516,11 +2610,11 @@ class WindowFlags(enum.IntFlag):
     """Always show horizontal scrollbar (even if ContentSize.x < Size.x)"""
 
     NO_NAV_INPUTS = 65536
-    """No gamepad/keyboard navigation within the window"""
+    """No keyboard/gamepad navigation within the window"""
 
     NO_NAV_FOCUS = 131072
     """
-    No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)
+    No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by CTRL+TAB)
     """
 
     UNSAVED_DOCUMENT = 262144
@@ -2533,11 +2627,6 @@ class WindowFlags(enum.IntFlag):
     NO_DECORATION = 43
 
     NO_INPUTS = 197120
-
-    NAV_FLATTENED = 8388608
-    """
-    [BETA] On child window: share focus scope, allow gamepad/keyboard navigation to cross over parent border to this child or between sibling child windows.
-    """
 
     CHILD_WINDOW = 16777216
     """Don't use! For internal use by BeginChild()"""
@@ -2559,7 +2648,7 @@ def align_text_to_frame_padding() -> None:
     ...
 
 
-def arrow_button(str_id: str, dir: int) -> bool:
+def arrow_button(str_id: str, dir: Dir) -> bool:
     """square button with an arrow shape"""
     ...
 
@@ -2858,12 +2947,12 @@ def get_columns_count() -> int:
 
 
 def get_content_region_avail() -> tuple[float, float]:
-    """== GetContentRegionMax() - GetCursorPos()"""
+    """available space from current position. THIS IS YOUR BEST FRIEND."""
     ...
 
 
 def get_content_region_max() -> tuple[float, float]:
-    """current content boundaries (typically window boundaries including scrolling, or current column boundaries), in windows coordinates"""
+    """Content boundaries max (e.g. window boundaries including scrolling, or current column boundaries). You should never need this. Always use GetCursorScreenPos() and GetContentRegionAvail()!"""
     ...
 
 
@@ -2872,7 +2961,7 @@ def get_current_context() -> Context:
 
 
 def get_cursor_pos() -> tuple[float, float]:
-    """[window-local] cursor position in window coordinates (relative to window position)"""
+    """[window-local] cursor position in window-local coordinates. This is not your best friend."""
     ...
 
 
@@ -2887,12 +2976,12 @@ def get_cursor_pos_y() -> float:
 
 
 def get_cursor_screen_pos() -> tuple[float, float]:
-    """cursor position in absolute coordinates (prefer using this, also more useful to work with ImDrawList API)."""
+    """cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND (prefer using this rather than GetCursorPos(), also more useful to work with ImDrawList API)."""
     ...
 
 
 def get_cursor_start_pos() -> tuple[float, float]:
-    """[window-local] initial cursor position, in window coordinates"""
+    """[window-local] initial cursor position, in window-local coordinates. Call GetCursorScreenPos() after Begin() to get the absolute coordinates version."""
     ...
 
 
@@ -2907,7 +2996,7 @@ def get_font_size() -> float:
 
 
 def get_font_tex_uv_white_pixel() -> tuple[float, float]:
-    """get UV coordinate for a while pixel, useful to draw custom shapes via the ImDrawList API"""
+    """get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API"""
     ...
 
 
@@ -2923,11 +3012,6 @@ def get_frame_height() -> float:
 
 def get_frame_height_with_spacing() -> float:
     """~ FontSize + style.FramePadding.y * 2 + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of framed widgets)"""
-    ...
-
-
-def get_io() -> IO:
-    """access the IO structure (mouse/keyboard/gamepad inputs, time, various configuration options/flags)"""
     ...
 
 
@@ -2947,7 +3031,7 @@ def get_item_rect_size() -> tuple[float, float]:
 
 
 def get_key_name(key: Key) -> str:
-    """[DEBUG] returns English name of the key. Those names a provided for debugging purpose and are not meant to be saved persistently not compared."""
+    """[DEBUG] returns English name of the key. Those names are provided for debugging purpose and are not meant to be saved persistently nor compared."""
     ...
 
 
@@ -2972,7 +3056,7 @@ def get_mouse_cursor() -> MouseCursor:
 
 
 def get_mouse_drag_delta(button: MouseButton = MouseButton.LEFT, lock_threshold: float = -1.0) -> tuple[float, float]:
-    """return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (if lock_threshold < -1.0f, uses io.MouseDraggingThreshold)"""
+    """return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)"""
     ...
 
 
@@ -3042,16 +3126,17 @@ def get_version() -> str:
 
 
 def get_window_content_region_max() -> tuple[float, float]:
-    """content boundaries max for the full window (roughly (0,0)+Size-Scroll) where Size can be overridden with SetNextWindowContentSize(), in window coordinates"""
+    """Content boundaries max for the window (roughly (0,0)+Size-Scroll), in window-local coordinates. You should never need this. Always use GetCursorScreenPos() and GetContentRegionAvail()!"""
     ...
 
 
 def get_window_content_region_min() -> tuple[float, float]:
-    """content boundaries min for the full window (roughly (0,0)-Scroll), in window coordinates"""
+    """Content boundaries min for the window (roughly (0,0)-Scroll), in window-local coordinates. You should never need this. Always use GetCursorScreenPos() and GetContentRegionAvail()!"""
     ...
 
 
 def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0), border_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)) -> None:
+    """<-- border_col was removed in favor of ImGuiCol_ImageBorder."""
     ...
 
 
@@ -3214,7 +3299,7 @@ def is_mouse_down(button: MouseButton) -> bool:
 
 
 def is_mouse_dragging(button: MouseButton, lock_threshold: float = -1.0) -> bool:
-    """is mouse dragging? (if lock_threshold < -1.0f, uses io.MouseDraggingThreshold)"""
+    """is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)"""
     ...
 
 
@@ -3363,7 +3448,6 @@ def progress_bar(fraction: float, size_arg: tuple[float, float] = (-1.1754943508
 
 
 def push_button_repeat(repeat: bool) -> None:
-    """in 'repeat' mode, Button*() functions return repeated true in a typematic manner (using io.KeyRepeatDelay/io.KeyRepeatRate setting). Note that you can call IsItemActive() after any Button() to tell if the button is held in the current frame."""
     ...
 
 
@@ -3406,18 +3490,17 @@ def push_style_color(idx: Col, col: tuple[float, float, float]) -> None:
 
 @overload
 def push_style_var(idx: int, val: float) -> None:
-    """modify a style ImVec2 variable. always use this if you modify the style after NewFrame()."""
+    """modify a style ImVec2 variable. \""""
     ...
 
 
 @overload
 def push_style_var(idx: int, val: tuple[float, float]) -> None:
-    """modify a style ImVec2 variable. always use this if you modify the style after NewFrame()."""
+    """modify a style ImVec2 variable. \""""
     ...
 
 
 def push_tab_stop(tab_stop: bool) -> None:
-    """== tab stop enable. Allow focusing using TAB/Shift-TAB, enabled by default but you can disable it for certain widgets"""
     ...
 
 
@@ -3461,7 +3544,7 @@ def separator() -> None:
 
 
 def separator_text(text: str) -> None:
-    """currently: formatted text with an horizontal line"""
+    """currently: formatted text with a horizontal line"""
     ...
 
 
@@ -3491,12 +3574,12 @@ def set_cursor_pos_y(local_y: float) -> None:
 
 
 def set_cursor_screen_pos(pos: tuple[float, float]) -> None:
-    """cursor position in absolute coordinates"""
+    """cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND."""
     ...
 
 
 def set_item_default_focus() -> None:
-    """make last item the default focused item of a window."""
+    """make last item the default focused item of a newly appearing window."""
     ...
 
 
