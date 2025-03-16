@@ -7,7 +7,7 @@ ImColor_ImColor	5
 5	nil	ImColor_ImColor_U32 (ImU32)
 ImDrawList_AddText	2
 1	void	ImDrawList_AddText_Vec2 (const ImVec2,ImU32,const char*,const char*)
-2	void	ImDrawList_AddText_FontPtr (const ImFont*,float,const ImVec2,ImU32,const char*,const char*,float,const ImVec4*)
+2	void	ImDrawList_AddText_FontPtr (ImFont*,float,const ImVec2,ImU32,const char*,const char*,float,const ImVec4*)
 ImGuiPtrOrIndex_ImGuiPtrOrIndex	2
 1	nil	ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr (void*)
 2	nil	ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int (int)
@@ -119,16 +119,23 @@ igGetForegroundDrawList	3
 1	ImDrawList*	igGetForegroundDrawList_Nil ()
 2	ImDrawList*	igGetForegroundDrawList_WindowPtr (ImGuiWindow*)
 3	ImDrawList*	igGetForegroundDrawList_ViewportPtr (ImGuiViewport*)
-igGetID	3
+igGetID	4
 1	ImGuiID	igGetID_Str (const char*)
 2	ImGuiID	igGetID_StrStr (const char*,const char*)
 3	ImGuiID	igGetID_Ptr (const void*)
+4	ImGuiID	igGetID_Int (int)
 igGetIDWithSeed	2
 1	ImGuiID	igGetIDWithSeed_Str (const char*,const char*,ImGuiID)
 2	ImGuiID	igGetIDWithSeed_Int (int,ImGuiID)
+igGetIO	2
+1	ImGuiIO*	igGetIO_Nil ()
+2	ImGuiIO*	igGetIO_ContextPtr (ImGuiContext*)
 igGetKeyData	2
 1	ImGuiKeyData*	igGetKeyData_ContextPtr (ImGuiContext*,ImGuiKey)
 2	ImGuiKeyData*	igGetKeyData_Key (ImGuiKey)
+igGetPlatformIO	2
+1	ImGuiPlatformIO*	igGetPlatformIO_Nil ()
+2	ImGuiPlatformIO*	igGetPlatformIO_ContextPtr (ImGuiContext*)
 igImAbs	3
 1	int	igImAbs_Int (int)
 2	float	igImAbs_Float (float)
@@ -163,19 +170,19 @@ igImTrunc	2
 2	ImVec2	igImTrunc_Vec2 (const ImVec2)
 igIsKeyChordPressed	2
 1	bool	igIsKeyChordPressed_Nil (ImGuiKeyChord)
-2	bool	igIsKeyChordPressed_ID (ImGuiKeyChord,ImGuiID,ImGuiInputFlags)
+2	bool	igIsKeyChordPressed_InputFlags (ImGuiKeyChord,ImGuiInputFlags,ImGuiID)
 igIsKeyDown	2
 1	bool	igIsKeyDown_Nil (ImGuiKey)
 2	bool	igIsKeyDown_ID (ImGuiKey,ImGuiID)
 igIsKeyPressed	2
 1	bool	igIsKeyPressed_Bool (ImGuiKey,bool)
-2	bool	igIsKeyPressed_ID (ImGuiKey,ImGuiID,ImGuiInputFlags)
+2	bool	igIsKeyPressed_InputFlags (ImGuiKey,ImGuiInputFlags,ImGuiID)
 igIsKeyReleased	2
 1	bool	igIsKeyReleased_Nil (ImGuiKey)
 2	bool	igIsKeyReleased_ID (ImGuiKey,ImGuiID)
 igIsMouseClicked	2
 1	bool	igIsMouseClicked_Bool (ImGuiMouseButton,bool)
-2	bool	igIsMouseClicked_ID (ImGuiMouseButton,ImGuiID,ImGuiInputFlags)
+2	bool	igIsMouseClicked_InputFlags (ImGuiMouseButton,ImGuiInputFlags,ImGuiID)
 igIsMouseDoubleClicked	2
 1	bool	igIsMouseDoubleClicked_Nil (ImGuiMouseButton)
 2	bool	igIsMouseDoubleClicked_ID (ImGuiMouseButton,ImGuiID)
@@ -229,6 +236,9 @@ igRadioButton	2
 igSelectable	2
 1	bool	igSelectable_Bool (const char*,bool,ImGuiSelectableFlags,const ImVec2)
 2	bool	igSelectable_BoolPtr (const char*,bool*,ImGuiSelectableFlags,const ImVec2)
+igSetItemKeyOwner	2
+1	void	igSetItemKeyOwner_Nil (ImGuiKey)
+2	void	igSetItemKeyOwner_InputFlags (ImGuiKey,ImGuiInputFlags)
 igSetScrollFromPosX	2
 1	void	igSetScrollFromPosX_Float (float,float)
 2	void	igSetScrollFromPosX_WindowPtr (ImGuiWindow*,float,float)
@@ -256,6 +266,12 @@ igSetWindowSize	3
 1	void	igSetWindowSize_Vec2 (const ImVec2,ImGuiCond)
 2	void	igSetWindowSize_Str (const char*,const ImVec2,ImGuiCond)
 3	void	igSetWindowSize_WindowPtr (ImGuiWindow*,const ImVec2,ImGuiCond)
+igShortcut	2
+1	bool	igShortcut_Nil (ImGuiKeyChord,ImGuiInputFlags)
+2	bool	igShortcut_ID (ImGuiKeyChord,ImGuiInputFlags,ImGuiID)
+igTabBarQueueFocus	2
+1	void	igTabBarQueueFocus_TabItemPtr (ImGuiTabBar*,ImGuiTabItem*)
+2	void	igTabBarQueueFocus_Str (ImGuiTabBar*,const char*)
 igTabItemCalcSize	2
 1	ImVec2	igTabItemCalcSize_Str (const char*,bool)
 2	ImVec2	igTabItemCalcSize_WindowPtr (ImGuiWindow*)
@@ -287,4 +303,4 @@ igValue	4
 2	void	igValue_Int (const char*,int)
 3	void	igValue_Uint (const char*,unsigned int)
 4	void	igValue_Float (const char*,float,const char*)
-201 overloaded
+212 overloaded
