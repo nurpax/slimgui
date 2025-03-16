@@ -1,14 +1,19 @@
+# Note: this script runs in CI and should run on the lowest Python version
+# that the library is being built for.
 
+# This script reads the comments from the ImGui header file and adds them to the
+# corresponding functions in the pyi file.
 import argparse
 import re
+from typing import Dict, Union
 
 import gen_utils
 
-def parse_func_line_comments(header_path: str) -> dict[str, str | None]:
+def parse_func_line_comments(header_path: str) -> Dict[str, Union[str, None]]:
     with open(header_path, "rt", encoding="utf-8") as f:
         lines = f.readlines()
 
-    func_line_comments: dict[str, str | None] = {}
+    func_line_comments: Dict[str, Union[str, None]] = {}
     for line in lines:
         line = line.rstrip()
         # IMGUI_API void          SetItemDefaultFocus();      // make last item the default focused item of a window.
