@@ -220,7 +220,6 @@ whereas "str_id" denote a string that is only used as an ID and not normally dis
 #### Functions
 <div class="raw-html-insert" data-apirefs="input_text, input_text_multiline, input_text_with_hint, input_float, input_float2, input_float3, input_float4, input_int, input_int2, input_int3, input_int4, input_double, input_scalar, input_scalar_n"></div>
 
-*
 ### Widgets: Color Editor/Picker
 
 - The ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.
