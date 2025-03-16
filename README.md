@@ -40,6 +40,11 @@ python gen\gen_nb_enums.py > src\im_enums.inl
 npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_docs.py --pyi-file src/slimgui/slimgui_ext.pyi --output docs/apiref.html docs/apiref.md
 ```
 
-## Cimgui outputs for some API generation
+### Updating cimgui metainfo when upgrading imgui
 
-Switch to v1.90.5 branch for imgui before running generator.bat.
+```
+- git clone https://github.com/cimgui/cimgui
+- update the imgui folder in the cimgui checkout with an imgui source release
+- cd generator && ./generator
+- dump the generator/output contents into gen/cimgui
+```
