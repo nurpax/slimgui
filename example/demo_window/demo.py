@@ -164,8 +164,6 @@ def show_demo_window(show_window: bool):
             imgui.same_line(); help_marker("Enable keyboard controls.")
             _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NAV_ENABLE_GAMEPAD", io.config_flags, imgui.ConfigFlags.NAV_ENABLE_GAMEPAD)
             imgui.same_line(); help_marker("Enable gamepad controls. Require backend to set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NAV_ENABLE_SET_MOUSE_POS", io.config_flags, imgui.ConfigFlags.NAV_ENABLE_SET_MOUSE_POS)
-            imgui.same_line(); help_marker("Instruct navigation to move the mouse cursor. See comment for imgui.ConfigFlags.NAV_ENABLE_SET_MOUSE_POS.")
             _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NO_MOUSE", io.config_flags, imgui.ConfigFlags.NO_MOUSE)
             if (io.config_flags & imgui.ConfigFlags.NO_MOUSE) != 0:
                 if math.fmod(imgui.get_time(), 0.40) < 0.2:

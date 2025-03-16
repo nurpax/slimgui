@@ -57,7 +57,7 @@ def show_example_app_property_editor(st: State):
     imgui.push_style_var(imgui.StyleVar.FRAME_PADDING, (2, 2))
     if imgui.begin_table("##split", 2, imgui.TableFlags.BORDERS_OUTER | imgui.TableFlags.RESIZABLE | imgui.TableFlags.SCROLL_Y):
         imgui.table_setup_scroll_freeze(0, 1)
-        imgui.table_setup_column("Object")
+        imgui.table_setup_column("Object##table")
         imgui.table_setup_column("Contents")
         imgui.table_headers_row()
 
