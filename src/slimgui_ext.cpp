@@ -540,12 +540,10 @@ NB_MODULE(slimgui_ext, m) {
         bool pressed = ImGui::Checkbox(label, &v);
         return std::tuple(pressed, v);
     }, "label"_a, "v"_a);
-
     m.def("checkbox_flags", [](const char* label, ImU64 flags, ImU64 flags_value) {
         bool pressed = ImGui::CheckboxFlags(label, &flags, flags_value);
         return std::tuple(pressed, flags);
     }, "label"_a, "flags"_a, "flags_value"_a);
-
     m.def("radio_button", [](const char* label, bool active) {
         return ImGui::RadioButton(label, active);
     }, "label"_a, "active"_a);
@@ -553,11 +551,12 @@ NB_MODULE(slimgui_ext, m) {
         bool pressed = ImGui::RadioButton(label, &v, v_button);
         return std::tuple(pressed, v);
     }, "label"_a, "v"_a, "v_button"_a);
-
     m.def("progress_bar", [](float fraction, ImVec2 size_arg, std::optional<std::string> overlay) {
         ImGui::ProgressBar(fraction, size_arg, overlay ? overlay.value().c_str() : nullptr);
     }, "fraction"_a, "size_arg"_a = ImVec2(-FLT_MIN, 0), "overlay"_a = nb::none());
     m.def("bullet", &ImGui::Bullet);
+    m.def("text_link", [](const char* label) { ImGui::TextLink(label); }, "label"_a);
+    m.def("text_link_open_url", [](const char* label, std::optional<const char*> url) { ImGui::TextLinkOpenURL(label, url ? url.value() : nullptr); }, "label"_a, "url"_a = nb::none());
 
     // Widgets: Images
     m.def("image", [](ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) {

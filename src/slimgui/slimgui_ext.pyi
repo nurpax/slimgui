@@ -4005,6 +4005,16 @@ def text_disabled(text: str) -> None:
     ...
 
 
+def text_link(label: str) -> None:
+    """hyperlink text button, return true when clicked"""
+    ...
+
+
+def text_link_open_url(label: str, url: str | None = None) -> None:
+    """hyperlink text button, automatically open file/url when clicked"""
+    ...
+
+
 def text_wrapped(text: str) -> None:
     ...
 

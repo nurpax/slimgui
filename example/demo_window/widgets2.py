@@ -16,3 +16,6 @@ def show():
     _c, editing_col = imgui.color_picker4("##picker4", editing_col, imgui.ColorEditFlags.NO_SMALL_PREVIEW, refcol)
     imgui.text('Color btn'); imgui.same_line(); imgui.color_button("##color_button", editing_col)
     _c, col3 = imgui.color_picker3("##picker3", col3)
+
+    # Text links & open URL
+    imgui.text_link("Link##link"); imgui.same_line(); imgui.text_link_open_url("URL##url", "https://github.com/nurpax/slimgui")
