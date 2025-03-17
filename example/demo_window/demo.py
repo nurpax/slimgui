@@ -6,7 +6,7 @@ import slimgui as imgui
 from slimgui import WindowFlags
 from .types import State
 from .utils import help_marker
-from . import widgets, layout, property_editor
+from . import widgets, widgets2, layout, property_editor
 
 st = State()
 
@@ -248,6 +248,8 @@ def show_demo_window(show_window: bool):
 
 #     // All demo contents
     widgets.show_demo_window_widgets(st)
+    widgets2.show()
+
 #     ShowDemoWindowLayout();
 #     ShowDemoWindowPopups();
 #     ShowDemoWindowTables();

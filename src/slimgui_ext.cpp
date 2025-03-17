@@ -894,21 +894,31 @@ NB_MODULE(slimgui_ext, m) {
     // IMGUI_API bool          InputScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_step = NULL, const void* p_step_fast = NULL, const char* format = NULL, ImGuiInputTextFlags flags = 0);
 
     // Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.)
-    m.def("color_edit3", [&](const char* label, const Vec3& col, ImGuiColorEditFlags_ flags) {
+    m.def("color_edit3", [](const char* label, const Vec3& col, ImGuiColorEditFlags_ flags) {
         Vec3 c(col);
         bool changed = ImGui::ColorEdit3(label, &c.x, flags);
         return std::tuple(changed, c);
     }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None);
-    m.def("color_edit4", [&](const char* label, const ImVec4& col, ImGuiColorEditFlags_ flags) {
+    m.def("color_edit4", [](const char* label, const ImVec4& col, ImGuiColorEditFlags_ flags) {
         ImVec4 c(col);
         bool changed = ImGui::ColorEdit4(label, &c.x, flags);
         return std::tuple(changed, c);
     }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None);
-    // IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);
-    // IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);
-    // IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0)); // display a color square/button, hover for details, return true when pressed.
-    // IMGUI_API void          SetColorEditOptions(ImGuiColorEditFlags flags);                     // initialize current options (generally on application startup) if you want to select a default format, picker type, etc. User will be able to change many settings, unless you pass the _NoOptions flag to your calls.
-
+    m.def("color_picker3", [](const char* label, const Vec3& col, ImGuiColorEditFlags_ flags) {
+        Vec3 c(col);
+        bool changed = ImGui::ColorPicker3(label, &c.x, flags);
+        return std::tuple(changed, c);
+    }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None);
+    m.def("color_picker4", [](const char* label, const ImVec4& col, ImGuiColorEditFlags_ flags, std::optional<ImVec4> ref_col) {
+        ImVec4 c(col);
+        ImVec4 ref = ref_col ? ref_col.value() : ImVec4(0, 1, 0, 0);
+        bool changed = ImGui::ColorPicker4(label, &c.x, flags, ref_col ? &ref.x : nullptr);
+        return std::tuple(changed, c);
+    }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None, "ref_col"_a = nb::none());
+    m.def("color_button", [](const char* desc_id, const ImVec4& col, ImGuiColorEditFlags_ flags, const ImVec2& size) {
+        return ImGui::ColorButton(desc_id, col, flags, size);
+    }, "desc_id"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None, "size"_a = ImVec2(0, 0));
+    m.def("set_color_edit_options", [](ImGuiColorEditFlags_ flags) { ImGui::SetColorEditOptions(flags); }, "flags"_a);
 
     // Tables
     m.def("begin_table", [](const char *str_id, int column, ImGuiTableFlags_ flags, const ImVec2 &outer_size, float inner_width) {

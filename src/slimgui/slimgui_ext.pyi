@@ -2803,6 +2803,10 @@ def collapsing_header(label: str, visible: object | None = None, flags: TreeNode
     ...
 
 
+def color_button(desc_id: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> bool:
+    ...
+
+
 def color_convert_hsv_to_rgb(hsv: tuple[float, float, float, float]) -> tuple[float, float, float, float]:
     ...
 
@@ -2816,6 +2820,14 @@ def color_edit3(label: str, col: tuple[float, float, float], flags: ColorEditFla
 
 
 def color_edit4(label: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+    ...
+
+
+def color_picker3(label: str, col: tuple[float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+    ...
+
+
+def color_picker4(label: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE, ref_col: tuple[float, float, float, float] | None = None) -> tuple[bool, tuple[float, float, float, float]]:
     ...
 
 
@@ -3609,6 +3621,11 @@ def separator() -> None:
 
 def separator_text(text: str) -> None:
     """currently: formatted text with a horizontal line"""
+    ...
+
+
+def set_color_edit_options(flags: ColorEditFlags) -> None:
+    """initialize current options (generally on application startup) if you want to select a default format, picker type, etc. User will be able to change many settings, unless you pass the _NoOptions flag to your calls."""
     ...
 
 

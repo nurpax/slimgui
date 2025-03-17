@@ -56,6 +56,7 @@ def run():
     prev_col = imgui.get_style().colors[imgui.Col.TITLE_BG_ACTIVE]
     imgui.get_style().colors[imgui.Col.TITLE_BG_ACTIVE] = (*prev_col[:3], 0.75)
 
+
     while not window.should_close():
         window.begin_frame()
 

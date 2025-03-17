@@ -111,6 +111,8 @@ template <> struct nanobind::detail::type_caster<ImVec4> {
     static constexpr auto Name =
         const_name(NB_TYPING_TUPLE "[") + concat(Caster::Name, Caster::Name, Caster::Name, Caster::Name) + const_name("]");
 
+    template <typename T_> static constexpr bool can_cast() { return true; }
+
     bool from_python(handle src, uint8_t flags,
                      cleanup_list *cleanup) noexcept {
         PyObject *temp; // always initialized by the following line
