@@ -46,6 +46,36 @@ struct InputTextCallback_UserData
     void*                   ChainCallbackUserData;
 };
 
+// Function to find the Nth occurrence of '/' or '\' from the end of the string
+// Returns the original string if none are found.
+const char* shortenPath(const char* str, int n) {
+    int count = 0;
+    const char* end = str + strlen(str) - 1;
+
+    // Traverse the string backwards
+    while (end >= str) {
+        if (*end == '/' || *end == '\\') {
+            count++;
+            if (count == n) {
+                return end + 1;
+            }
+        }
+        end--;
+    }
+    return str;
+}
+
+// Used by IM_ASSERT to throw an exception.  It's not a particularly
+// safe way to handle errors, but it's better than crashing Python without
+// an error or a backtrace.
+void slimgui_assert(const char* file, int line, const char* expr)
+{
+    static char expr_buf[1024];
+    snprintf(expr_buf, sizeof(expr_buf), "%s:%d: Assertion failed: %s", shortenPath(file, 4), line, expr);
+    throw std::runtime_error(expr_buf);
+}
+
+
 static int InputTextCallback(ImGuiInputTextCallbackData* data)
 {
     InputTextCallback_UserData* user_data = (InputTextCallback_UserData*)data->UserData;

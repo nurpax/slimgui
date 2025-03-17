@@ -40,7 +40,9 @@ python gen\gen_nb_enums.py > src\im_enums.inl
 npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_docs.py --pyi-file src/slimgui/slimgui_ext.pyi --output docs/apiref.html docs/apiref.md
 ```
 
-### Updating cimgui metainfo when upgrading imgui
+### Updating imgui and cimgui metainfo when upgrading imgui
+
+NOTE NOTE! imconfig.h contains slimgui changes!  Review after updating imgui.
 
 ```
 - git clone https://github.com/cimgui/cimgui
