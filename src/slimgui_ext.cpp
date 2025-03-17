@@ -322,6 +322,8 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_current_context", &ImGui::GetCurrentContext, nb::rv_policy::reference);
     m.def("destroy_context", &ImGui::DestroyContext);
     m.def("get_style", &ImGui::GetStyle, nb::rv_policy::reference);
+    m.def("render", &ImGui::Render);
+    m.def("new_frame", &ImGui::NewFrame);
     m.def("get_draw_data", &ImGui::GetDrawData, nb::rv_policy::reference);
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);
 
@@ -362,9 +364,16 @@ NB_MODULE(slimgui_ext, m) {
     }, "str_id"_a, "size"_a =  ImVec2(0, 0), "child_flags"_a.sig("ChildFlags.NONE") = ImGuiChildFlags_None, "window_flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
     m.def("end_child", &ImGui::EndChild);
 
-    m.def("render", &ImGui::Render);
-    m.def("new_frame", &ImGui::NewFrame);
-
+    // Windows Utilities
+    m.def("is_window_appearing", &ImGui::IsWindowAppearing);
+    m.def("is_window_collapsed", &ImGui::IsWindowCollapsed);
+    m.def("is_window_focused", [](ImGuiFocusedFlags_ flags) { return ImGui::IsWindowFocused(flags); }, "flags"_a.sig("FocusedFlags.NONE") = ImGuiFocusedFlags_None);
+    m.def("is_window_hovered", [](ImGuiHoveredFlags_ flags) { return ImGui::IsWindowHovered(flags); }, "flags"_a.sig("HoveredFlags.NONE") = ImGuiHoveredFlags_None);
+    // IMGUI_API ImDrawList*   GetWindowDrawList();                        // get draw list associated to the current window, to append your own drawing primitives
+    m.def("get_window_pos", &ImGui::GetWindowPos);
+    m.def("get_window_size", &ImGui::GetWindowSize);
+    m.def("get_window_width", &ImGui::GetWindowWidth);
+    m.def("get_window_height", &ImGui::GetWindowHeight);
 
     // Window manipulation
     // - Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).

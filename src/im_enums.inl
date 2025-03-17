@@ -201,6 +201,21 @@ nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
            "BeginDragDropTarget site.")
     .value("ACCEPT_PEEK_ONLY", ImGuiDragDropFlags_AcceptPeekOnly,
            "For peeking ahead and inspecting the payload before delivery.");
+nb::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags", nb::is_flag(),
+                              nb::is_arithmetic())
+    .value("NONE", ImGuiFocusedFlags_None)
+    .value("CHILD_WINDOWS", ImGuiFocusedFlags_ChildWindows,
+           "Return true if any children of the window is focused")
+    .value("ROOT_WINDOW", ImGuiFocusedFlags_RootWindow,
+           "Test from root window (top most parent of the current hierarchy)")
+    .value("ANY_WINDOW", ImGuiFocusedFlags_AnyWindow,
+           "Return true if any window is focused. Important: If you are trying "
+           "to tell how to dispatch your low-level inputs, do NOT use this. "
+           "Use 'io.WantCaptureMouse' instead! Please read the FAQ!")
+    .value("NO_POPUP_HIERARCHY", ImGuiFocusedFlags_NoPopupHierarchy,
+           "Do not consider popup hierarchy (do not treat popup emitter as "
+           "parent of popup) (when used with _ChildWindows or _RootWindow)")
+    .value("ROOT_AND_CHILD_WINDOWS", ImGuiFocusedFlags_RootAndChildWindows);
 nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiWindowFlags_None)

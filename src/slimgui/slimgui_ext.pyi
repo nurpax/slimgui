@@ -637,6 +637,32 @@ FLOAT_MAX: float = 3.4028234663852886e+38
 
 FLOAT_MIN: float = 1.1754943508222875e-38
 
+class FocusedFlags(enum.IntFlag):
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
+
+    NONE = 0
+
+    CHILD_WINDOWS = 1
+    """Return true if any children of the window is focused"""
+
+    ROOT_WINDOW = 2
+    """Test from root window (top most parent of the current hierarchy)"""
+
+    ANY_WINDOW = 4
+    """
+    Return true if any window is focused. Important: If you are trying to tell how to dispatch your low-level inputs, do NOT use this. Use 'io.WantCaptureMouse' instead! Please read the FAQ!
+    """
+
+    NO_POPUP_HIERARCHY = 8
+    """
+    Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)
+    """
+
+    ROOT_AND_CHILD_WINDOWS = 3
+
 class Font:
     pass
 
@@ -3135,6 +3161,26 @@ def get_window_content_region_min() -> tuple[float, float]:
     ...
 
 
+def get_window_height() -> float:
+    """get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for GetWindowSize().y."""
+    ...
+
+
+def get_window_pos() -> tuple[float, float]:
+    """get current window position in screen space (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using GetCursorScreenPos() and GetContentRegionAvail() instead)"""
+    ...
+
+
+def get_window_size() -> tuple[float, float]:
+    """get current window size (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using GetCursorScreenPos() and GetContentRegionAvail() instead)"""
+    ...
+
+
+def get_window_width() -> float:
+    """get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for GetWindowSize().x."""
+    ...
+
+
 def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0), border_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)) -> None:
     """<-- border_col was removed in favor of ImGuiCol_ImageBorder."""
     ...
@@ -3332,6 +3378,24 @@ def is_rect_visible(size: tuple[float, float]) -> bool:
 @overload
 def is_rect_visible(rect_min: tuple[float, float], rect_max: tuple[float, float]) -> bool:
     """test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."""
+    ...
+
+
+def is_window_appearing() -> bool:
+    ...
+
+
+def is_window_collapsed() -> bool:
+    ...
+
+
+def is_window_focused(flags: FocusedFlags = FocusedFlags.NONE) -> bool:
+    """is current window focused? or its root/child, depending on flags. see flags for options."""
+    ...
+
+
+def is_window_hovered(flags: HoveredFlags = HoveredFlags.NONE) -> bool:
+    """is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See ImGuiHoveredFlags_ for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry \"How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?\" for details."""
     ...
 
 

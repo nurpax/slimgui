@@ -18,6 +18,7 @@ enum_list = [
     ("ImGuiButtonFlags_", "ButtonFlags"),
     ("ImGuiChildFlags_", "ChildFlags"),
     ("ImGuiDragDropFlags_", "DragDropFlags"),
+    ("ImGuiFocusedFlags_", "FocusedFlags"),
     ("ImGuiWindowFlags_", "WindowFlags"),
     ("ImGuiTreeNodeFlags_", "TreeNodeFlags"),
     ("ImGuiTabBarFlags_", "TabBarFlags"),
