@@ -249,8 +249,14 @@ NB_MODULE(slimgui_ext, m) {
         .def("add_mouse_wheel_event", &ImGuiIO::AddMouseWheelEvent, "wheel_x"_a, "wheel_y"_a)
         .def("add_input_character", &ImGuiIO::AddInputCharacter, "c"_a)
         .def("add_key_event", &ImGuiIO::AddKeyEvent, "key"_a, "down"_a)
-        .def_rw("config_flags", &ImGuiIO::ConfigFlags)
-        .def_rw("backend_flags", &ImGuiIO::BackendFlags)
+        .def_prop_rw("config_flags",
+            [](ImGuiIO& io) { return (ImGuiConfigFlags_)io.ConfigFlags; },
+            [](ImGuiIO& io, ImGuiConfigFlags_ flags) { io.ConfigFlags = flags; }
+        )
+        .def_prop_rw("backend_flags",
+            [](ImGuiIO& io) { return (ImGuiBackendFlags_)io.BackendFlags; },
+            [](ImGuiIO& io, ImGuiBackendFlags_ flags) { io.BackendFlags = flags; }
+        )
         .def_rw("display_size", &ImGuiIO::DisplaySize)
         .def_rw("display_fb_scale", &ImGuiIO::DisplayFramebufferScale)
         .def_rw("delta_time", &ImGuiIO::DeltaTime)

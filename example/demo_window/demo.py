@@ -142,18 +142,20 @@ def show_demo_window(show_window: bool):
         io = imgui.get_io()
         if imgui.tree_node("Configuration##2"):
             imgui.separator_text("General")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NAV_ENABLE_KEYBOARD", io.config_flags, imgui.ConfigFlags.NAV_ENABLE_KEYBOARD)
+            config_flags = int(io.config_flags)
+            _, config_flags = imgui.checkbox_flags("io.ConfigFlags: NAV_ENABLE_KEYBOARD", config_flags, imgui.ConfigFlags.NAV_ENABLE_KEYBOARD)
             imgui.same_line(); help_marker("Enable keyboard controls.")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NAV_ENABLE_GAMEPAD", io.config_flags, imgui.ConfigFlags.NAV_ENABLE_GAMEPAD)
+            _, config_flags = imgui.checkbox_flags("io.ConfigFlags: NAV_ENABLE_GAMEPAD", config_flags, imgui.ConfigFlags.NAV_ENABLE_GAMEPAD)
             imgui.same_line(); help_marker("Enable gamepad controls. Require backend to set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NO_MOUSE", io.config_flags, imgui.ConfigFlags.NO_MOUSE)
-            if (io.config_flags & imgui.ConfigFlags.NO_MOUSE) != 0:
+            _, config_flags = imgui.checkbox_flags("io.ConfigFlags: NO_MOUSE", config_flags, imgui.ConfigFlags.NO_MOUSE)
+            if (config_flags & imgui.ConfigFlags.NO_MOUSE) != 0:
                 if math.fmod(imgui.get_time(), 0.40) < 0.2:
                     imgui.same_line()
                     imgui.text("<<PRESS SPACE TO DISABLE>>")
                     if imgui.is_key_pressed(imgui.Key.KEY_SPACE):
-                        io.config_flags &= ~imgui.ConfigFlags.NO_MOUSE
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NO_MOUSE_CURSOR_CHANGE", io.config_flags, imgui.ConfigFlags.NO_MOUSE_CURSOR_CHANGE)
+                        config_flags &= ~imgui.ConfigFlags.NO_MOUSE
+            _, config_flags = imgui.checkbox_flags("io.ConfigFlags: NO_MOUSE_CURSOR_CHANGE", config_flags, imgui.ConfigFlags.NO_MOUSE_CURSOR_CHANGE)
+            io.config_flags = imgui.ConfigFlags(config_flags)
             imgui.same_line(); help_marker("Instruct backend to not alter mouse cursor shape and visibility.")
             imgui.tree_pop()
             imgui.spacing()
