@@ -38,6 +38,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
+        self.io.backend_flags |= imgui.BackendFlags.RENDERER_HAS_VTX_OFFSET
         self._gui_time = None
         # FIXME nurpax
         # self.io.get_clipboard_text_fn = self._get_clipboard_text

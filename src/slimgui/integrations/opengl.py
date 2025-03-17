@@ -228,9 +228,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
                 else:
                     gltype = gl.GL_UNSIGNED_INT
 
-                gl.glDrawElements(
-                    gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(command.idx_offset * imgui.INDEX_SIZE)
-                )
+                gl.glDrawElementsBaseVertex(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(command.idx_offset * imgui.INDEX_SIZE), command.vtx_offset)
 
         # restore modified GL state
         restore_common_gl_state(common_gl_state_tuple)
