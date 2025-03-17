@@ -34,5 +34,6 @@ class State:
     show_tool_id_stack_tool = False
     show_tool_style_editor = False
     show_tool_about = False
+    show_native_imgui_demo_window = False
 
     widgets_disable_all = False

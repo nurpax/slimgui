@@ -14,11 +14,6 @@ def show_demo_window(show_window: bool):
     if st.show_app_main_menu_bar:
         show_example_app_main_menu_bar()
 
-    #     if (show_app_documents)           ShowExampleAppDocuments(&show_app_documents);     // Process the Document app next, as it may also use a DockSpace()
-    #     if (show_app_console)             ShowExampleAppConsole(&show_app_console);
-    #     if (show_app_custom_rendering)    ShowExampleAppCustomRendering(&show_app_custom_rendering);
-    #     if (show_app_log)                 ShowExampleAppLog(&show_app_log);
-
     if st.show_app_layout:
         layout.show_example_app_layout(st)
 
@@ -27,14 +22,6 @@ def show_demo_window(show_window: bool):
 
     if st.show_app_simple_overlay:
         show_example_app_simple_overlay(st)
-
-    #     if (show_app_auto_resize)         ShowExampleAppAutoResize(&show_app_auto_resize);
-    #     if (show_app_constrained_resize)  ShowExampleAppConstrainedResize(&show_app_constrained_resize);
-    #     if (show_app_fullscreen)          ShowExampleAppFullscreen(&show_app_fullscreen);
-    #     if (show_app_long_text)           ShowExampleAppLongText(&show_app_long_text);
-    #     if (show_app_window_titles)       ShowExampleAppWindowTitles(&show_app_window_titles);
-
-    #     // Dear ImGui Tools (accessible from the "Tools" menu)
 
     if st.show_tool_metrics:
         st.show_tool_metrics = imgui.show_metrics_window(closable=True)
@@ -50,8 +37,11 @@ def show_demo_window(show_window: bool):
         imgui.show_style_editor()
         imgui.end()
 
-    #     if (show_tool_about)
-    #         ImGui::ShowAboutWindow(&show_tool_about);
+    if st.show_tool_about:
+        st.show_tool_about = imgui.show_about_window(closable=True)
+
+    if st.show_native_imgui_demo_window:
+        st.show_native_imgui_demo_window = imgui.show_demo_window(closable=True)
 
     no_menu = st.no_menu
     window_flags = imgui.WindowFlags.NONE
@@ -84,7 +74,7 @@ def show_demo_window(show_window: bool):
     imgui.set_next_window_pos((main_viewport.work_pos[0] + 650, main_viewport.work_pos[1] + 20), imgui.Cond.FIRST_USE_EVER)
     imgui.set_next_window_size((550, 680), imgui.Cond.FIRST_USE_EVER)
 
-    visible, show_window = imgui.begin("Dear ImGui Demo", closable=closable, flags=window_flags)
+    visible, show_window = imgui.begin("Python mini-port of Dear ImGui Demo", closable=closable, flags=window_flags)
     if not visible:
         imgui.end()
         return show_window
@@ -93,12 +83,10 @@ def show_demo_window(show_window: bool):
 
     if imgui.begin_menu_bar():
         if imgui.begin_menu("Menu"):
-            # IMGUI_DEMO_MARKER("Menu/File");
             show_example_menu_file()
             imgui.end_menu()
 
         if imgui.begin_menu("Examples"):
-            # IMGUI_DEMO_MARKER("Menu/Examples");
             _, st.show_app_main_menu_bar = imgui.menu_item("Main menu bar", selected=st.show_app_main_menu_bar)
             imgui.separator_text("Mini apps")
             _, st.show_app_console = imgui.menu_item("Console", selected=st.show_app_console)
@@ -121,6 +109,9 @@ def show_demo_window(show_window: bool):
             _, st.show_tool_debug_log = imgui.menu_item("Debug Log", selected=st.show_tool_debug_log)
             _, st.show_tool_id_stack_tool = imgui.menu_item("ID Stack Tool", selected=st.show_tool_id_stack_tool)
             _, st.show_tool_style_editor = imgui.menu_item("Style Editor", selected=st.show_tool_style_editor)
+            _, st.show_tool_about = imgui.menu_item("About Dear ImGui", selected=st.show_tool_about)
+            imgui.separator()
+            _, st.show_native_imgui_demo_window = imgui.menu_item("ImGui Native Demo Window", selected=st.show_native_imgui_demo_window)
             imgui.end_menu()
         imgui.end_menu_bar()
 

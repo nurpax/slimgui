@@ -26,7 +26,7 @@ def download_and_cache(url, cache_dir='cache', filename=None) -> str:
 
 @dataclass
 class State:
-    show_demo_window = True
+    show_python_demo_window = True
     click_count: int = 0
     text: str = ""
     foo_enabled: bool = False
@@ -82,8 +82,8 @@ def run():
             print('checkbox state changed')
             state.foo_enabled = res.value
 
-        if state.show_demo_window:
-            state.show_demo_window = demo_window.show_demo_window(state.show_demo_window)
+        if state.show_python_demo_window:
+            state.show_python_demo_window = demo_window.show_demo_window(state.show_python_demo_window)
 
         window.end_frame()
     window.close()

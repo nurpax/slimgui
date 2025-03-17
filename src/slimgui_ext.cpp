@@ -358,10 +358,11 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);
 
     // Demo, Debug, Information
-    m.def("show_user_guide", &ImGui::ShowUserGuide);
-    m.def("show_style_editor", []() {
-        ImGui::ShowStyleEditor(nullptr); // TODO styleref
-    });
+    m.def("show_demo_window", [](bool closable) {
+        bool open = true;
+        ImGui::ShowDemoWindow(closable ? &open : nullptr);
+        return open;
+    }, "closable"_a = false);
     m.def("show_metrics_window", [](bool closable) {
         bool open = true;
         ImGui::ShowMetricsWindow(closable ? &open : nullptr);
@@ -377,9 +378,20 @@ NB_MODULE(slimgui_ext, m) {
         ImGui::ShowIDStackToolWindow(closable ? &open : nullptr);
         return open;
     }, "closable"_a = false);
-
+    m.def("show_about_window", [](bool closable) {
+        bool open = true;
+        ImGui::ShowAboutWindow(closable ? &open : nullptr);
+        return open;
+    }, "closable"_a = false);
+    m.def("show_style_editor", []() {
+        ImGui::ShowStyleEditor(nullptr); // TODO styleref
+    });
+    m.def("show_style_selector", &ImGui::ShowStyleSelector, "label"_a);
+    m.def("show_font_selector", &ImGui::ShowFontSelector, "label"_a);
+    m.def("show_user_guide", &ImGui::ShowUserGuide);
     m.def("get_version", &ImGui::GetVersion);
 
+    // ...
     m.def("begin", [](const char* name, bool closable, ImGuiWindowFlags_ flags) {
         bool open = true;
         bool visible = ImGui::Begin(name, closable ? &open : NULL, flags);

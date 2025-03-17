@@ -3805,8 +3805,23 @@ def set_window_size(name: str, size: tuple[float, float], cond: Cond = Cond.NONE
     ...
 
 
+def show_about_window(closable: bool = False) -> bool:
+    """create About window. display Dear ImGui version, credits and build/system information."""
+    ...
+
+
 def show_debug_log_window(closable: bool = False) -> bool:
     """create Debug Log window. display a simplified log of important dear imgui events."""
+    ...
+
+
+def show_demo_window(closable: bool = False) -> bool:
+    """create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!"""
+    ...
+
+
+def show_font_selector(label: str) -> None:
+    """add font selector block (not a window), essentially a combo listing the loaded fonts."""
     ...
 
 
@@ -3822,6 +3837,11 @@ def show_metrics_window(closable: bool = False) -> bool:
 
 def show_style_editor() -> None:
     """add style editor block (not a window). you can pass in a reference ImGuiStyle structure to compare to, revert to and save to (else it uses the default style)"""
+    ...
+
+
+def show_style_selector(label: str) -> bool:
+    """add style selector block (not a window), essentially a combo listing the default styles."""
     ...
 
 
