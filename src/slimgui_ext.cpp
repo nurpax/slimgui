@@ -1061,7 +1061,7 @@ NB_MODULE(slimgui_ext, m) {
         return hsv;
     }, "rgba"_a);
 
-    // // Inputs Utilities: Keyboard/Mouse/Gamepad
+    // Inputs Utilities: Keyboard/Mouse/Gamepad
     m.def("is_key_down", [](ImGuiKey key) { return ImGui::IsKeyDown(key); }, "key"_a);
     m.def("is_key_pressed", [](ImGuiKey key, bool repeat) { return ImGui::IsKeyPressed(key, repeat); }, "key"_a, "repeat"_a = true);
     m.def("is_key_released", [](ImGuiKey key) { return ImGui::IsKeyReleased(key); }, "key"_a);
@@ -1070,6 +1070,7 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_key_name", &ImGui::GetKeyName, "key"_a);
     m.def("set_next_frame_want_capture_keyboard", &ImGui::SetNextFrameWantCaptureKeyboard, "want_capture_keyboard"_a);
 
+    // Input Utilities: Mouse
     m.def("is_mouse_down", [](ImGuiMouseButton_ button) { return ImGui::IsMouseDown(button); }, "button"_a);
     m.def("is_mouse_clicked", [](ImGuiMouseButton_ button, bool repeat) { return ImGui::IsMouseClicked(button, repeat); }, "button"_a, "repeat"_a = false);
     m.def("is_mouse_released", [](ImGuiMouseButton_ button) { return ImGui::IsMouseReleased(button); }, "button"_a);
