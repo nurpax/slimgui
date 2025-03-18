@@ -17,7 +17,7 @@ def parse_func_line_comments(header_path: str) -> Dict[str, Union[str, None]]:
     for line in lines:
         line = line.rstrip()
         # IMGUI_API void          SetItemDefaultFocus();      // make last item the default focused item of a window.
-        if (m := re.match(r"^\s*IMGUI_API.* (\w+)\(.*;(.*)", line)) is not None:
+        if (m := re.match(r"^\s*IMGUI_API .*? (\w+)\(.*;(.*)", line)) is not None:
             comment = None
             func_name = gen_utils.camel_to_snake(m.group(1))
             trail = m.group(2)

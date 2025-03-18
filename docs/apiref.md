@@ -38,7 +38,7 @@ A detailed enum and class reference can be found here: [Enum Reference](#enum-re
 
 ## Dear ImGui API functions
 
-The following documentation is primarily adapted from [`imgui.h`](https://github.com/ocornut/imgui/blob/master/imgui.h),
+The following documentation is primarily adapted from Dear ImGui main header [imgui.h](https://github.com/ocornut/imgui/blob/master/imgui.h),
 with minor modifications to adapt symbol naming to Pythonic snake case.
 
 ### Context creation and access

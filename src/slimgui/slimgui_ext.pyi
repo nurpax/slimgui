@@ -2716,6 +2716,7 @@ def begin_item_tooltip() -> bool:
 
 
 def begin_list_box(label: str, size: tuple[float, float] = (0.0, 0.0)) -> bool:
+    """open a framed scrolling region"""
     ...
 
 
@@ -2769,10 +2770,12 @@ def bullet() -> None:
 
 
 def bullet_text(text: str) -> None:
+    """shortcut for Bullet()+Text()"""
     ...
 
 
 def button(label: str, size: tuple[float, float] = (0.0, 0.0)) -> bool:
+    """button"""
     ...
 
 
@@ -2804,6 +2807,7 @@ def collapsing_header(label: str, visible: object | None = None, flags: TreeNode
 
 
 def color_button(desc_id: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> bool:
+    """display a color square/button, hover for details, return true when pressed."""
     ...
 
 
@@ -3412,6 +3416,7 @@ def is_window_hovered(flags: HoveredFlags = HoveredFlags.NONE) -> bool:
 
 
 def label_text(label: str, text: str) -> None:
+    """display text+label aligned the same way as value+label widgets"""
     ...
 
 
@@ -3430,6 +3435,7 @@ def log_finish() -> None:
 
 
 def log_text(text: str) -> None:
+    """pass text data straight to log (without being displayed)"""
     ...
 
 
@@ -3611,6 +3617,7 @@ def same_line(offset_from_start_x: float = 0.0, spacing: float = -1.0) -> None:
 
 
 def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]:
+    """\"bool* p_selected\" point to the selection state (read-write), as a convenient helper."""
     ...
 
 
@@ -3665,6 +3672,7 @@ def set_item_default_focus() -> None:
 
 
 def set_item_tooltip(text: str) -> None:
+    """set a text-only tooltip if preceding item was hovered. override any previous call to SetTooltip()."""
     ...
 
 
@@ -3717,6 +3725,7 @@ def set_next_window_focus() -> None:
 
 
 def set_next_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE, pivot: tuple[float, float] = (0.0, 0.0)) -> None:
+    """set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc."""
     ...
 
 
@@ -3766,6 +3775,7 @@ def set_tab_item_closed(label: str) -> None:
 
 
 def set_tooltip(text: str) -> None:
+    """set a text-only tooltip. Often used after a ImGui::IsItemHovered() check. Override any previous call to SetTooltip()."""
     ...
 
 
@@ -3994,6 +4004,7 @@ def table_setup_scroll_freeze(cols: int, rows: int) -> None:
 
 
 def text(text: str) -> None:
+    """formatted text"""
     ...
 
 
