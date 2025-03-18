@@ -2,13 +2,19 @@
 
 Work in progress [Dear ImGui](https://github.com/ocornut/imgui) bindings for Python.
 
+### Getting started
+
+- [Slimgui documentation](https://nurpax.github.io/slimgui/)
+
+### Background
+
 Motivation:
 - Modernized build process to support Python typings (.pyi files) to allow good IDE support (auto-complete, type checking in VSCode)
 - Closely match the Dear ImGui API but adapt for Python as necessary.  Don't invent new API concepts.
 
 Very similar to [https://github.com/pyimgui/pyimgui](pyimgui/pyimugui) except built with Nanobind to better support typings.
 
-## Development
+### Development
 
 Prerequisites:
 - clang-format for generating enums
@@ -34,13 +40,13 @@ pip install --no-build-isolation -ve .
 python gen\gen_nb_enums.py > src\im_enums.inl
 ```
 
-### Docs build with filewatching
+#### Docs build with filewatching
 
 ```
 npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_docs.py --pyi-file src/slimgui/slimgui_ext.pyi --output docs/index.html docs/apiref.md
 ```
 
-### Updating imgui and cimgui metainfo when upgrading imgui
+#### Updating imgui and cimgui metainfo when upgrading imgui
 
 NOTE NOTE! imconfig.h contains slimgui changes!  Review after updating imgui.
 
