@@ -1,31 +1,44 @@
 
 local api_html = nil
 local func_dict = {}
+local class_dict = {}
 
 function load_api_html()
     local fh = io.open(api_html)
     local str = fh:read('*all')
     fh:close()
-    local func_code = ""
-    local in_func = false
-    local func_name = nil
+    local code = ""
+    local in_state = nil
+    local sym_name = nil
     for line in str:gmatch("[^\r\n]+") do
-        if not in_func then
-            func_name = line:match("%$%$func=([%w_]+)")
-            if func_name then
-                in_func = true
+        if in_state == nil then
+            local tmp_func = line:match("%$%$func=([%w_]+)")
+            local tmp_class = line:match("%$%$class=([%w_]+)")
+            if tmp_func then
+                in_state = "class"
+                sym_name = tmp_func
+            elseif tmp_class then
+                in_state = "class"
+                sym_name = tmp_class
             end
-        else
+        elseif in_state == "class" then
             if line:match("%$%$end") then
-                in_func = false
-                func_dict[func_name] = func_code
-                func_code = ""
+                in_state = nil
+                class_dict[sym_name] = code
+                code = ""
             else
-                func_code = func_code .. line .. "\n"
+                code = code .. line .. "\n"
+            end
+        elseif in_state == "func" then
+            if line:match("%$%$end") then
+                in_state = nil
+                func_dict[sym_name] = code
+                code = ""
+            else
+                code = code .. line .. "\n"
             end
         end
     end
-
 end
 
 function get_vars (meta)
@@ -40,18 +53,19 @@ end
 -- Replace divs with 'raw-html-insert' class in them with raw HTML from a file
 function div (el)
     local funcrefs = el.attributes['data-apirefs']
-    local func_html = ""
+    local out_html = ""
     for func in string.gmatch(funcrefs, '([^,]+)') do
-        func = func:match("^%s*(.-)%s*$") -- strip ws
-
-        if func_dict[func] then
-            func_html = func_html .. func_dict[func]
+        name = func:match("^%s*(.-)%s*$") -- strip ws
+        if func_dict[name] then
+            out_html = out_html .. func_dict[name]
+        elseif class_dict[name] then
+            out_html = out_html .. class_dict[name]
         else
-            print("[WARN] No function found for " .. func)
+            print("[WARN] No function found for " .. name)
         end
     end
     return {
-        pandoc.RawBlock('html', func_html)
+        pandoc.RawBlock('html', out_html)
     }
 end
 

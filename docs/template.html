@@ -20,6 +20,8 @@ div.column{display: inline-block; vertical-align: top; width: 50%;}
 body {
     font-family: 'Segoe UI', sans-serif;
     color: #000;
+    margin: 0;
+    padding: 0;
     line-height: 1.5;
 }
 
@@ -84,18 +86,17 @@ p {
   margin-bottom: 0.75em;
 }
 
-.max-width {
-    margin: 1em;
+li {
+    margin-bottom: 0.75em;
 }
 
-@media screen and (min-width: 680px) {
-    .max-width {
-       margin-left: auto;
-       margin-right: auto;
-       margin-top: 20px;
-       margin-bottom: 20px;
-       max-width: 800px;
-    }
+.max-width {
+    margin: 1em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 4em;
+    margin-right: 4em;
+    max-width: 1000px;
 }
 
 .pixelated {
@@ -160,49 +161,98 @@ pre {
 }
 
 code {
-  font-family: 'Consolas', monospace, sans-serif;
-  font-size: 11pt;
-  font-weight: normal;
-  line-height: 1.3;
-  white-space: pre;
+    margin-left: 1px;
+    margin-right: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 3px;
+
+    font-family: 'Consolas', monospace, sans-serif;
+    font-size: 10pt;
+    font-weight: normal;
+    line-height: 1.3;
+    white-space: pre;
+    color:rgb(133, 18, 0);
+    background-color: #f0f2f5;
 }
 
 /* Styles for API reference */
-div.apifunc {
+div.api {
     margin-bottom: 1.0em;
 }
 
-.apifunc p {
+.api p {
     margin-top: 0;
     margin-bottom: 0;
     margin-left: 2em;
     font-size: 11pt;
 }
 
-.apifunc pre {
+.api, pre {
     color: #000;
     margin-top: 0.3em;
     margin-bottom: 0.3em;
 }
 
-.apifunc code {
+.api code {
     font-size: 11pt;
     color: #555;
 }
 
-.apifunc code span.keyword {
+.api code span.keyword {
     color: #444;
 }
 
-.apifunc code span.func_name {
+.api code span.func_name {
     color: #000;
     font-weight: bold;
 }
 
-.apifunc code span.arg_name {
+.api code span.arg_name {
     color: #000;
 }
 
+.api code span.class_name {
+    color: #000;
+    font-weight: bold;
+}
+
+.api table {
+    border: none;
+    font-size: 10pt;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.5;
+    border-collapse: collapse;
+}
+
+.api table tr td:first-child,
+.api table tr th:first-child {
+    width: 250px;
+    max-width: 300px;
+    min-width: 250px;
+}
+
+.api table tr {
+    border: none;
+}
+
+.api table tr:nth-child(even) {
+    background-color: #f0f0f0; /* Light gray for even rows */
+}
+
+.api table tr:nth-child(odd) {
+    background-color: #fff; /* White for odd rows */
+}
+
+.api table td {
+    margin-left: 0;
+    padding-left: 0;
+    border: none;
+    padding-right: 0.75em;
+}
 
 </style>
 <link href="https://fonts.googleapis.com/css?family=Montserrat|Segoe+UI" rel="stylesheet">

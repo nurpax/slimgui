@@ -33,7 +33,7 @@ def _highlight_def_line(line: str) -> str:
     tokens = _tokenize_code(line)
 
     # Initialize the highlighted output
-    highlighted_output = []
+    output = []
     last_index = 0
 
     # Loop over the tokens and apply highlighting
@@ -43,28 +43,26 @@ def _highlight_def_line(line: str) -> str:
         end_index = start_index + len(token_value)
 
         # Add any non-highlighted text before the token
-        highlighted_output.append(line[last_index:start_index])
+        output.append(line[last_index:start_index])
 
         if token_type == 'ws':
             # don't spanify whitespace
-            highlighted_output.append(' ')
+            output.append(' ')
         else:
             if token_type == 'symbol':
                 prev_toks = tokens[idx-2:idx]
                 next_tok = tokens[idx+1:idx+2]
                 if len(prev_toks) >= 2 and prev_toks[0][0] == 'keyword' and prev_toks[0][1] == 'def':
-                    highlighted_output.append(f"<span class='func_name'>{token_value}</span>")
+                    output.append(f"<span class='func_name'>{token_value}</span>")
                 elif len(next_tok) > 0 and next_tok[0][0] == 'special' and next_tok[0][1] == ':':
-                    highlighted_output.append(f"<span class='arg_name'>{token_value}</span>")
+                    output.append(f"<span class='arg_name'>{token_value}</span>")
                 else:
-                    highlighted_output.append(f"<span class='{token_type}'>{token_value}</span>")
+                    output.append(f"<span class='{token_type}'>{token_value}</span>")
             else:
-                highlighted_output.append(f"<span class='{token_type}'>{token_value}</span>")
+                output.append(f"<span class='{token_type}'>{token_value}</span>")
 
-        # Update the last index
         last_index = end_index
-
-    return ''.join(highlighted_output)
+    return ''.join(output)
 
 # Parse a .pyi file to extract top-level symbols, their args and return
 # values.  Documentation renderer will use this information to generate
@@ -80,13 +78,11 @@ def pyi_to_html_lookup(file_path, outf):
     for node in tree.body:
         source_line = file_content.splitlines()[node.lineno - 1]
         if isinstance(node, ast.FunctionDef):
-
             docstring = ast.get_docstring(node)
-
             outf.write(f'$$func={node.name}\n')
             source_line = source_line.rstrip(": ...")
 
-            outf.write('<div class="apifunc">\n')
+            outf.write('<div class="api">\n')
             outf.write(f'  <code>{_highlight_def_line(source_line)}</code>\n')
             if docstring:
                 outf.write(f'  <p>{docstring}</p>\n')
@@ -94,8 +90,43 @@ def pyi_to_html_lookup(file_path, outf):
 
             outf.write('$$end\n')
         elif isinstance(node, ast.ClassDef):
-            #print(f"Class: {node.name}")
-            pass
+            if not any(ty in source_line for ty in ['(enum.IntFlag)', '(enum.IntFlag)']):
+                continue
+            outf.write(f'$$class={node.name}\n')
+            outf.write('<div class="api">\n')
+            outf.write(f'  <code><span class="class_name">{node.name}</span> (enum)</code>\n')
+
+            outf.write('  <table>\n')
+
+            expr_for_assign = {}
+            prev_assign = None
+            for class_node in node.body:
+                if isinstance(class_node, ast.Expr):
+                    expr_for_assign[prev_assign] = class_node
+                    prev_assign = None
+                elif isinstance(class_node, ast.Assign):
+                    prev_assign = class_node
+
+            for class_node in node.body:
+                if isinstance(class_node, ast.Assign):
+                    for target in class_node.targets:
+                        if any(x in target.id for x in ['__repr__', '__str__']):
+                            continue
+
+                        doc_string = ''
+                        if (expr := expr_for_assign.get(class_node)) is not None:
+                            doc_string = expr.value.value
+                            if doc_string is None:
+                                doc_string = ''
+                            doc_string = doc_string.strip()
+
+                        if isinstance(target, ast.Name):
+                            outf.write(f'  <tr><td class="field">{target.id}</td><td class="fielddoc">{doc_string}</td></tr>\n')
+
+            outf.write('  </table>\n')
+
+            outf.write('</div>\n')
+            outf.write('$$end\n')
 
 
 def main():
@@ -119,16 +150,18 @@ def main():
         api_html = f'{tmpdir}/api_mockup.html'
         with open(api_html, 'wt', encoding='utf-8') as file:
             pyi_to_html_lookup(args.pyi_file, file)
-            if args.print_pyi_html:
-                print('Generated HTML API ref content:')
-                with open(api_html, 'rt', encoding='utf-8') as file:
-                    print(file.read())
-                exit()
 
+        if args.print_pyi_html:
+            print('Generated HTML API ref content:')
+            with open(api_html, 'rt', encoding='utf-8') as file:
+                print(file.read())
+            exit()
+
+        # Add '--toc' if you want table of contents
         subprocess.run(["pandoc",
             args.input_file, "-o", args.output,
             '--template', f'{docs_basedir}/template.html',
-            '--standalone', '--toc', '--wrap=none',
+            '--standalone', '--wrap=none',
             '--lua-filter', lua_filter,
             '--metadata', f'api_html={api_html}',
         ], check=True)
