@@ -79,9 +79,10 @@ def run():
             state.saved_text = state.text
         imgui.text(state.saved_text)
 
-        if (res := imgui.checkbox("Some setting", state.foo_enabled)).clicked:
+        clicked, v = imgui.checkbox("Some setting", state.foo_enabled)
+        if clicked:
             print('checkbox state changed')
-            state.foo_enabled = res.value
+            state.foo_enabled = v
 
         if state.show_python_demo_window:
             state.show_python_demo_window = demo_window.show_demo_window(state.show_python_demo_window)

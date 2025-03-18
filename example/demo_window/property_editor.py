@@ -38,9 +38,9 @@ def show_placeholder_object(prefix: str, uid: int):
 
                 offs = i - 2 # Note: original code has a stack overflow here
                 if i >= 5:
-                    _placeholder_members[offs] = imgui.input_float("##value", _placeholder_members[offs], 1.0).value
+                    _placeholder_members[offs] = imgui.input_float("##value", _placeholder_members[offs], 1.0)[1]
                 else:
-                    _placeholder_members[offs] = imgui.drag_float("##value", _placeholder_members[offs], 0.01).value
+                    _placeholder_members[offs] = imgui.drag_float("##value", _placeholder_members[offs], 0.01)[1]
             imgui.pop_id()
         imgui.tree_pop()
 

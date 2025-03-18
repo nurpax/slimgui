@@ -16,7 +16,7 @@ def show_example_app_layout(st: State):
     if visible:
         if imgui.begin_menu_bar():
             if imgui.begin_menu("File"):
-                if imgui.menu_item("Close", "Ctrl+W").clicked:
+                if imgui.menu_item("Close", "Ctrl+W")[0]:
                     st.show_app_layout = False
                 imgui.end_menu()
             imgui.end_menu_bar()
@@ -24,7 +24,7 @@ def show_example_app_layout(st: State):
         # Left
         imgui.begin_child("left pane", (150, 0), ChildFlags.BORDER | ChildFlags.RESIZE_X)
         for i in range(100):
-            if imgui.selectable(f'MyObject{i}', _selected == i).clicked:
+            if imgui.selectable(f'MyObject{i}', _selected == i)[0]:
                 _selected = i
         imgui.end_child()
         imgui.same_line()
@@ -35,10 +35,10 @@ def show_example_app_layout(st: State):
         imgui.text(f'MyObject: {_selected}')
         imgui.separator()
         if imgui.begin_tab_bar("##Tabs"):
-            if imgui.begin_tab_item("Description").selected:
+            if imgui.begin_tab_item("Description")[0]:
                 imgui.text_wrapped("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
                 imgui.end_tab_item()
-            if imgui.begin_tab_item("Details").selected:
+            if imgui.begin_tab_item("Details")[0]:
                 imgui.text("ID: 0123456789")
                 imgui.end_tab_item()
             imgui.end_tab_bar()

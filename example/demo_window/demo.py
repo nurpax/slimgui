@@ -325,17 +325,17 @@ def show_example_app_simple_overlay(st: State):
             imgui.text('Mouse Position: <invalid>')
 
         if imgui.begin_popup_context_window():
-            if imgui.menu_item('Custom', None, _location == -1).clicked:
+            if imgui.menu_item('Custom', None, _location == -1)[0]:
                 _location = -1
-            if imgui.menu_item('Center', None, _location == -2).clicked:
+            if imgui.menu_item('Center', None, _location == -2)[0]:
                 _location = -2
-            if imgui.menu_item('Top-left', None, _location == 0).clicked:
+            if imgui.menu_item('Top-left', None, _location == 0)[0]:
                 _location = 0
-            if imgui.menu_item('Top-right', None, _location == 1).clicked:
+            if imgui.menu_item('Top-right', None, _location == 1)[0]:
                 _location = 1
-            if imgui.menu_item('Bottom-left', None, _location == 2).clicked:
+            if imgui.menu_item('Bottom-left', None, _location == 2)[0]:
                 _location = 2
-            if imgui.menu_item('Bottom-right', None, _location == 3).clicked:
+            if imgui.menu_item('Bottom-right', None, _location == 3)[0]:
                 _location = 3
             # TODO close
             imgui.end_popup()
