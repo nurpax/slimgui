@@ -1,4 +1,4 @@
-# slimgui: Updated ImGui bindings for Python
+# slimgui 
 
 Work in progress [Dear ImGui](https://github.com/ocornut/imgui) bindings for Python.
 
