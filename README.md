@@ -34,10 +34,10 @@ pip install --no-build-isolation -ve .
 python gen\gen_nb_enums.py > src\im_enums.inl
 ```
 
-### Doc build with filewatching
+### Docs build with filewatching
 
 ```
-npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_docs.py --pyi-file src/slimgui/slimgui_ext.pyi --output docs/apiref.html docs/apiref.md
+npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_docs.py --pyi-file src/slimgui/slimgui_ext.pyi --output docs/index.html docs/apiref.md
 ```
 
 ### Updating imgui and cimgui metainfo when upgrading imgui

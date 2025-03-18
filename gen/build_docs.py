@@ -90,11 +90,11 @@ def pyi_to_html_lookup(file_path, outf):
 
             outf.write('$$end\n')
         elif isinstance(node, ast.ClassDef):
-            if not any(ty in source_line for ty in ['(enum.IntFlag)', '(enum.IntFlag)']):
+            if not any(ty in source_line for ty in ['(enum.IntEnum)', '(enum.IntFlag)']):
                 continue
             outf.write(f'$$class={node.name}\n')
             outf.write('<div class="api">\n')
-            outf.write(f'  <code><span class="class_name">{node.name}</span> (enum)</code>\n')
+            outf.write(f'  <div><span class="class_name">{node.name}</span> (enum)</div>\n')
 
             outf.write('  <table>\n')
 

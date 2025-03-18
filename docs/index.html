@@ -197,7 +197,7 @@ div.api {
     color: #000;
 }
 
-.api code span.class_name {
+.api div span.class_name {
     color: #000;
     font-weight: bold;
 }
@@ -270,7 +270,7 @@ div.api {
 <!-- could list enums here like in a forward decl? -->
 <p>A detailed enum and class reference can be found here: <a href="#enum-reference">Enum Reference</a></p>
 <h2 id="dear-imgui-api-functions">Dear ImGui API functions</h2>
-<p>The following documentation is primarily adapted from <a href="https://github.com/ocornut/imgui/blob/master/imgui.h"><code>imgui.h</code></a>, with minor modifications to adapt symbol naming to Pythonic snake case.</p>
+<p>The following documentation is primarily adapted from Dear ImGui main header <a href="https://github.com/ocornut/imgui/blob/master/imgui.h">imgui.h</a>, with minor modifications to adapt symbol naming to Pythonic snake case.</p>
 <h3 id="context-creation-and-access">Context creation and access</h3>
 <ul>
 <li>Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between contexts.</li>
@@ -427,6 +427,7 @@ div.api {
 <h4 id="functions-7">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_pos</span>(<span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>pivot</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
+  <p>set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_size</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
@@ -773,6 +774,7 @@ div.api {
 <h4 id="functions-16">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>text</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
+  <p>formatted text</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>text_colored</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
@@ -785,9 +787,11 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>label_text</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
+  <p>display text+label aligned the same way as value+label widgets</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>bullet_text</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
+  <p>shortcut for Bullet()+Text()</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>separator_text</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
@@ -802,6 +806,7 @@ div.api {
 <h4 id="functions-17">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>button</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>bool</span></code>
+  <p>button</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>small_button</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='symbol'>bool</span></code>
@@ -999,6 +1004,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>color_button</span>(<span class='arg_name'>desc_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ColorEditFlags</span> = <span class='symbol'>ColorEditFlags</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>bool</span></code>
+  <p>display a color square/button, hover for details, return true when pressed.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_color_edit_options</span>(<span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ColorEditFlags</span>) -> <span class='keyword'>None</span></code>
@@ -1041,6 +1047,7 @@ div.api {
 <h4 id="functions-25">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>selectable</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>selected</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SelectableFlags</span> = <span class='symbol'>SelectableFlags</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span><span class='special'>]</span></code>
+  <p>"bool* p_selected" point to the selection state (read-write), as a convenient helper.</p>
 </div>
 
 <h3 id="widgets-list-boxes">Widgets: List Boxes</h3>
@@ -1054,6 +1061,7 @@ div.api {
 <h4 id="functions-26">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_list_box</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>bool</span></code>
+  <p>open a framed scrolling region</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_list_box</span>() -> <span class='keyword'>None</span></code>
@@ -1136,6 +1144,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_item_tooltip</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
+  <p>set a text-only tooltip if preceding item was hovered. override any previous call to SetTooltip().</p>
 </div>
 
 <h3 id="popups-modals">Popups, Modals</h3>
@@ -1645,7 +1654,7 @@ div.api {
 
 <h2 id="enum-reference">Enum Reference</h2>
 <div class="api">
-  <code><span class="class_name">BackendFlags</span> (enum)</code>
+  <div><span class="class_name">BackendFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">HAS_GAMEPAD</td><td class="fielddoc">Backend Platform supports gamepad and currently has one connected.</td></tr>
@@ -1655,7 +1664,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">ButtonFlags</span> (enum)</code>
+  <div><span class="class_name">ButtonFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">MOUSE_BUTTON_LEFT</td><td class="fielddoc">React on left mouse button (default)</td></tr>
@@ -1665,7 +1674,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">ChildFlags</span> (enum)</code>
+  <div><span class="class_name">ChildFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">BORDERS</td><td class="fielddoc">Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == true for legacy reason)</td></tr>
@@ -1681,7 +1690,69 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">ColorEditFlags</span> (enum)</code>
+  <div><span class="class_name">Col</span> (enum)</div>
+  <table>
+  <tr><td class="field">TEXT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">TEXT_DISABLED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">WINDOW_BG</td><td class="fielddoc">Background of normal windows</td></tr>
+  <tr><td class="field">CHILD_BG</td><td class="fielddoc">Background of child windows</td></tr>
+  <tr><td class="field">POPUP_BG</td><td class="fielddoc">Background of popups, menus, tooltips windows</td></tr>
+  <tr><td class="field">BORDER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">BORDER_SHADOW</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">FRAME_BG</td><td class="fielddoc">Background of checkbox, radio button, plot, slider, text input</td></tr>
+  <tr><td class="field">FRAME_BG_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">FRAME_BG_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">TITLE_BG</td><td class="fielddoc">Title bar</td></tr>
+  <tr><td class="field">TITLE_BG_ACTIVE</td><td class="fielddoc">Title bar when focused</td></tr>
+  <tr><td class="field">TITLE_BG_COLLAPSED</td><td class="fielddoc">Title bar when collapsed</td></tr>
+  <tr><td class="field">MENU_BAR_BG</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SCROLLBAR_BG</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SCROLLBAR_GRAB</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SCROLLBAR_GRAB_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SCROLLBAR_GRAB_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">CHECK_MARK</td><td class="fielddoc">Checkbox tick and RadioButton circle</td></tr>
+  <tr><td class="field">SLIDER_GRAB</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SLIDER_GRAB_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">BUTTON</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">BUTTON_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">BUTTON_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">HEADER</td><td class="fielddoc">Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem</td></tr>
+  <tr><td class="field">HEADER_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">HEADER_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SEPARATOR</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SEPARATOR_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SEPARATOR_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">RESIZE_GRIP</td><td class="fielddoc">Resize grip in lower-right and lower-left corners of windows.</td></tr>
+  <tr><td class="field">RESIZE_GRIP_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">RESIZE_GRIP_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">TAB_HOVERED</td><td class="fielddoc">Tab background, when hovered</td></tr>
+  <tr><td class="field">TAB</td><td class="fielddoc">Tab background, when tab-bar is focused & tab is unselected</td></tr>
+  <tr><td class="field">TAB_SELECTED</td><td class="fielddoc">Tab background, when tab-bar is focused & tab is selected</td></tr>
+  <tr><td class="field">TAB_SELECTED_OVERLINE</td><td class="fielddoc">Tab horizontal overline, when tab-bar is focused & tab is selected</td></tr>
+  <tr><td class="field">TAB_DIMMED</td><td class="fielddoc">Tab background, when tab-bar is unfocused & tab is unselected</td></tr>
+  <tr><td class="field">TAB_DIMMED_SELECTED</td><td class="fielddoc">Tab background, when tab-bar is unfocused & tab is selected</td></tr>
+  <tr><td class="field">TAB_DIMMED_SELECTED_OVERLINE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">PLOT_LINES</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">PLOT_LINES_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">PLOT_HISTOGRAM</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">PLOT_HISTOGRAM_HOVERED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">TABLE_HEADER_BG</td><td class="fielddoc">Table header background</td></tr>
+  <tr><td class="field">TABLE_BORDER_STRONG</td><td class="fielddoc">Table outer and header borders (prefer using Alpha=1.0 here)</td></tr>
+  <tr><td class="field">TABLE_BORDER_LIGHT</td><td class="fielddoc">Table inner borders (prefer using Alpha=1.0 here)</td></tr>
+  <tr><td class="field">TABLE_ROW_BG</td><td class="fielddoc">Table row background (even rows)</td></tr>
+  <tr><td class="field">TABLE_ROW_BG_ALT</td><td class="fielddoc">Table row background (odd rows)</td></tr>
+  <tr><td class="field">TEXT_LINK</td><td class="fielddoc">Hyperlink color</td></tr>
+  <tr><td class="field">TEXT_SELECTED_BG</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">DRAG_DROP_TARGET</td><td class="fielddoc">Rectangle highlighting a drop target</td></tr>
+  <tr><td class="field">NAV_CURSOR</td><td class="fielddoc">Color of keyboard/gamepad navigation cursor/rectangle, when visible</td></tr>
+  <tr><td class="field">NAV_WINDOWING_HIGHLIGHT</td><td class="fielddoc">Highlight window when using CTRL+TAB</td></tr>
+  <tr><td class="field">NAV_WINDOWING_DIM_BG</td><td class="fielddoc">Darken/colorize entire screen behind the CTRL+TAB window list, when active</td></tr>
+  <tr><td class="field">MODAL_WINDOW_DIM_BG</td><td class="fielddoc">Darken/colorize entire screen behind a modal window, when one is active</td></tr>
+  <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">ColorEditFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NO_ALPHA</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).</td></tr>
@@ -1711,7 +1782,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">ComboFlags</span> (enum)</code>
+  <div><span class="class_name">ComboFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">POPUP_ALIGN_LEFT</td><td class="fielddoc">Align the popup toward the left by default</td></tr>
@@ -1725,7 +1796,17 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">ConfigFlags</span> (enum)</code>
+  <div><span class="class_name">Cond</span> (enum)</div>
+  <table>
+  <tr><td class="field">NONE</td><td class="fielddoc">No condition (always set the variable), same as _Always</td></tr>
+  <tr><td class="field">ALWAYS</td><td class="fielddoc">No condition (always set the variable), same as _None</td></tr>
+  <tr><td class="field">ONCE</td><td class="fielddoc">Set the variable once per runtime session (only the first call will succeed)</td></tr>
+  <tr><td class="field">FIRST_USE_EVER</td><td class="fielddoc">Set the variable if the object/window has no persistently saved data (no entry in .ini file)</td></tr>
+  <tr><td class="field">APPEARING</td><td class="fielddoc">Set the variable if the object/window is appearing after being hidden/inactive (or the first time)</td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">ConfigFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NAV_ENABLE_KEYBOARD</td><td class="fielddoc">Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.</td></tr>
@@ -1738,7 +1819,18 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">DragDropFlags</span> (enum)</code>
+  <div><span class="class_name">Dir</span> (enum)</div>
+  <table>
+  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">LEFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">RIGHT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">UP</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">DOWN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">DragDropFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">SOURCE_NO_PREVIEW_TOOLTIP</td><td class="fielddoc">Disable preview tooltip. By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.</td></tr>
@@ -1756,7 +1848,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">DrawFlags</span> (enum)</code>
+  <div><span class="class_name">DrawFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">CLOSED</td><td class="fielddoc">PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)</td></tr>
@@ -1773,7 +1865,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">FocusedFlags</span> (enum)</code>
+  <div><span class="class_name">FocusedFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">CHILD_WINDOWS</td><td class="fielddoc">Return true if any children of the window is focused</td></tr>
@@ -1784,7 +1876,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">HoveredFlags</span> (enum)</code>
+  <div><span class="class_name">HoveredFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc">Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.</td></tr>
   <tr><td class="field">CHILD_WINDOWS</td><td class="fielddoc">IsWindowHovered() only: Return true if any children of the window is hovered</td></tr>
@@ -1809,7 +1901,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">InputTextFlags</span> (enum)</code>
+  <div><span class="class_name">InputTextFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">CHARS_DECIMAL</td><td class="fielddoc">Allow 0123456789.+-*/</td></tr>
@@ -1839,7 +1931,203 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">PopupFlags</span> (enum)</code>
+  <div><span class="class_name">Key</span> (enum)</div>
+  <table>
+  <tr><td class="field">KEY_NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_NAMED_KEY_BEGIN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_TAB</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_LEFT_ARROW</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RIGHT_ARROW</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_UP_ARROW</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_DOWN_ARROW</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_PAGE_UP</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_PAGE_DOWN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_HOME</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_END</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_INSERT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_DELETE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_BACKSPACE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_SPACE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_ENTER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_ESCAPE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_LEFT_CTRL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_LEFT_SHIFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_LEFT_ALT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_LEFT_SUPER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RIGHT_CTRL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RIGHT_SHIFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RIGHT_ALT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RIGHT_SUPER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MENU</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_0</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_1</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_2</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_3</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_4</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_5</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_6</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_7</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_8</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_9</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_A</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_B</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_C</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_D</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_E</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_G</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_H</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_I</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_J</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_K</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_L</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_M</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_N</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_O</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_P</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_Q</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_R</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_S</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_T</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_U</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_V</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_W</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_X</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_Y</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_Z</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F1</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F2</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F3</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F4</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F5</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F6</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F7</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F8</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F9</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F10</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F11</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F12</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F13</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F14</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F15</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F16</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F17</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F18</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F19</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F20</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F21</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F22</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F23</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_F24</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_APOSTROPHE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_COMMA</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MINUS</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_PERIOD</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_SLASH</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_SEMICOLON</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_EQUAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_LEFT_BRACKET</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_BACKSLASH</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RIGHT_BRACKET</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GRAVE_ACCENT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_CAPS_LOCK</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_SCROLL_LOCK</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_NUM_LOCK</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_PRINT_SCREEN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_PAUSE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD0</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD1</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD2</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD3</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD4</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD5</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD6</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD7</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD8</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD9</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD_DECIMAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD_DIVIDE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD_MULTIPLY</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD_SUBTRACT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD_ADD</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD_ENTER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_KEYPAD_EQUAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_APP_BACK</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_APP_FORWARD</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_OEM102</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_START</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_BACK</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_FACE_LEFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_FACE_RIGHT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_FACE_UP</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_FACE_DOWN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_DPAD_LEFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_DPAD_RIGHT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_DPAD_UP</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_DPAD_DOWN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_L1</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_R1</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_L2</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_R2</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_L3</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_R3</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_L_STICK_LEFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_L_STICK_RIGHT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_L_STICK_UP</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_L_STICK_DOWN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_R_STICK_LEFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_R_STICK_RIGHT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_R_STICK_UP</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_GAMEPAD_R_STICK_DOWN</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MOUSE_LEFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MOUSE_RIGHT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MOUSE_MIDDLE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MOUSE_X1</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MOUSE_X2</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MOUSE_WHEEL_X</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_MOUSE_WHEEL_Y</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RESERVED_FOR_MOD_CTRL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RESERVED_FOR_MOD_SHIFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RESERVED_FOR_MOD_ALT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_RESERVED_FOR_MOD_SUPER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_NAMED_KEY_END</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">MOD_NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">MOD_CTRL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">MOD_SHIFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">MOD_ALT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">MOD_SUPER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_NAMED_KEY_COUNT</td><td class="fielddoc"></td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">MouseButton</span> (enum)</div>
+  <table>
+  <tr><td class="field">LEFT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">RIGHT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">MIDDLE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">MouseCursor</span> (enum)</div>
+  <table>
+  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">ARROW</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">TEXT_INPUT</td><td class="fielddoc">When hovering over InputText, etc.</td></tr>
+  <tr><td class="field">RESIZE_ALL</td><td class="fielddoc">(Unused by Dear ImGui functions)</td></tr>
+  <tr><td class="field">RESIZE_NS</td><td class="fielddoc">When hovering over a horizontal border</td></tr>
+  <tr><td class="field">RESIZE_EW</td><td class="fielddoc">When hovering over a vertical border or a column</td></tr>
+  <tr><td class="field">RESIZE_NESW</td><td class="fielddoc">When hovering over the bottom-left corner of a window</td></tr>
+  <tr><td class="field">RESIZE_NWSE</td><td class="fielddoc">When hovering over the bottom-right corner of a window</td></tr>
+  <tr><td class="field">HAND</td><td class="fielddoc">(Unused by Dear ImGui functions. Use for e.g. hyperlinks)</td></tr>
+  <tr><td class="field">WAIT</td><td class="fielddoc">When waiting for something to process/load.</td></tr>
+  <tr><td class="field">PROGRESS</td><td class="fielddoc">When waiting for something to process/load, but application is still interactive.</td></tr>
+  <tr><td class="field">NOT_ALLOWED</td><td class="fielddoc">When hovering something with disallowed interaction. Usually a crossed circle.</td></tr>
+  <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">PopupFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">MOUSE_BUTTON_LEFT</td><td class="fielddoc">For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)</td></tr>
@@ -1854,7 +2142,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">SelectableFlags</span> (enum)</code>
+  <div><span class="class_name">SelectableFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NO_AUTO_CLOSE_POPUPS</td><td class="fielddoc">Clicking this doesn't close parent popup window (overrides ImGuiItemFlags_AutoClosePopups)</td></tr>
@@ -1866,7 +2154,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">SliderFlags</span> (enum)</code>
+  <div><span class="class_name">SliderFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">LOGARITHMIC</td><td class="fielddoc">Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.</td></tr>
@@ -1880,7 +2168,47 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">TabBarFlags</span> (enum)</code>
+  <div><span class="class_name">StyleVar</span> (enum)</div>
+  <table>
+  <tr><td class="field">ALPHA</td><td class="fielddoc">float     Alpha</td></tr>
+  <tr><td class="field">DISABLED_ALPHA</td><td class="fielddoc">float     DisabledAlpha</td></tr>
+  <tr><td class="field">WINDOW_PADDING</td><td class="fielddoc">ImVec2    WindowPadding</td></tr>
+  <tr><td class="field">WINDOW_ROUNDING</td><td class="fielddoc">float     WindowRounding</td></tr>
+  <tr><td class="field">WINDOW_BORDER_SIZE</td><td class="fielddoc">float     WindowBorderSize</td></tr>
+  <tr><td class="field">WINDOW_MIN_SIZE</td><td class="fielddoc">ImVec2    WindowMinSize</td></tr>
+  <tr><td class="field">WINDOW_TITLE_ALIGN</td><td class="fielddoc">ImVec2    WindowTitleAlign</td></tr>
+  <tr><td class="field">CHILD_ROUNDING</td><td class="fielddoc">float     ChildRounding</td></tr>
+  <tr><td class="field">CHILD_BORDER_SIZE</td><td class="fielddoc">float     ChildBorderSize</td></tr>
+  <tr><td class="field">POPUP_ROUNDING</td><td class="fielddoc">float     PopupRounding</td></tr>
+  <tr><td class="field">POPUP_BORDER_SIZE</td><td class="fielddoc">float     PopupBorderSize</td></tr>
+  <tr><td class="field">FRAME_PADDING</td><td class="fielddoc">ImVec2    FramePadding</td></tr>
+  <tr><td class="field">FRAME_ROUNDING</td><td class="fielddoc">float     FrameRounding</td></tr>
+  <tr><td class="field">FRAME_BORDER_SIZE</td><td class="fielddoc">float     FrameBorderSize</td></tr>
+  <tr><td class="field">ITEM_SPACING</td><td class="fielddoc">ImVec2    ItemSpacing</td></tr>
+  <tr><td class="field">ITEM_INNER_SPACING</td><td class="fielddoc">ImVec2    ItemInnerSpacing</td></tr>
+  <tr><td class="field">INDENT_SPACING</td><td class="fielddoc">float     IndentSpacing</td></tr>
+  <tr><td class="field">CELL_PADDING</td><td class="fielddoc">ImVec2    CellPadding</td></tr>
+  <tr><td class="field">SCROLLBAR_SIZE</td><td class="fielddoc">float     ScrollbarSize</td></tr>
+  <tr><td class="field">SCROLLBAR_ROUNDING</td><td class="fielddoc">float     ScrollbarRounding</td></tr>
+  <tr><td class="field">GRAB_MIN_SIZE</td><td class="fielddoc">float     GrabMinSize</td></tr>
+  <tr><td class="field">GRAB_ROUNDING</td><td class="fielddoc">float     GrabRounding</td></tr>
+  <tr><td class="field">IMAGE_BORDER_SIZE</td><td class="fielddoc">float     ImageBorderSize</td></tr>
+  <tr><td class="field">TAB_ROUNDING</td><td class="fielddoc">float     TabRounding</td></tr>
+  <tr><td class="field">TAB_BORDER_SIZE</td><td class="fielddoc">float     TabBorderSize</td></tr>
+  <tr><td class="field">TAB_BAR_BORDER_SIZE</td><td class="fielddoc">float     TabBarBorderSize</td></tr>
+  <tr><td class="field">TAB_BAR_OVERLINE_SIZE</td><td class="fielddoc">float     TabBarOverlineSize</td></tr>
+  <tr><td class="field">TABLE_ANGLED_HEADERS_ANGLE</td><td class="fielddoc">float     TableAngledHeadersAngle</td></tr>
+  <tr><td class="field">TABLE_ANGLED_HEADERS_TEXT_ALIGN</td><td class="fielddoc">ImVec2  TableAngledHeadersTextAlign</td></tr>
+  <tr><td class="field">BUTTON_TEXT_ALIGN</td><td class="fielddoc">ImVec2    ButtonTextAlign</td></tr>
+  <tr><td class="field">SELECTABLE_TEXT_ALIGN</td><td class="fielddoc">ImVec2    SelectableTextAlign</td></tr>
+  <tr><td class="field">SEPARATOR_TEXT_BORDER_SIZE</td><td class="fielddoc">float     SeparatorTextBorderSize</td></tr>
+  <tr><td class="field">SEPARATOR_TEXT_ALIGN</td><td class="fielddoc">ImVec2    SeparatorTextAlign</td></tr>
+  <tr><td class="field">SEPARATOR_TEXT_PADDING</td><td class="fielddoc">ImVec2    SeparatorTextPadding</td></tr>
+  <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">TabBarFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">REORDERABLE</td><td class="fielddoc">Allow manually dragging tabs to re-order them + New tabs are appended at the end of list</td></tr>
@@ -1895,7 +2223,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">TabItemFlags</span> (enum)</code>
+  <div><span class="class_name">TabItemFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">UNSAVED_DOCUMENT</td><td class="fielddoc">Display a dot next to the title + set ImGuiTabItemFlags_NoAssumedClosure.</td></tr>
@@ -1910,7 +2238,16 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">TableColumnFlags</span> (enum)</code>
+  <div><span class="class_name">TableBgTarget</span> (enum)</div>
+  <table>
+  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">ROW_BG0</td><td class="fielddoc">Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)</td></tr>
+  <tr><td class="field">ROW_BG1</td><td class="fielddoc">Set row background color 1 (generally used for selection marking)</td></tr>
+  <tr><td class="field">CELL_BG</td><td class="fielddoc">Set cell background color (top-most color)</td></tr>
+  </table>
+</div>
+<div class="api">
+  <div><span class="class_name">TableColumnFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">DISABLED</td><td class="fielddoc">Overriding/master disable flag: hide column, won't show in context menu (unlike calling TableSetColumnEnabled() which manipulates the user accessible state)</td></tr>
@@ -1939,7 +2276,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">TableFlags</span> (enum)</code>
+  <div><span class="class_name">TableFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">RESIZABLE</td><td class="fielddoc">Enable resizing columns.</td></tr>
@@ -1980,14 +2317,14 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">TableRowFlags</span> (enum)</code>
+  <div><span class="class_name">TableRowFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">HEADERS</td><td class="fielddoc">Identify header row (set default background color + width of its contents accounted differently for auto column width)</td></tr>
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">TreeNodeFlags</span> (enum)</code>
+  <div><span class="class_name">TreeNodeFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">SELECTED</td><td class="fielddoc">Draw as selected</td></tr>
@@ -2011,7 +2348,7 @@ div.api {
   </table>
 </div>
 <div class="api">
-  <code><span class="class_name">WindowFlags</span> (enum)</code>
+  <div><span class="class_name">WindowFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NO_TITLE_BAR</td><td class="fielddoc">Disable title-bar</td></tr>
