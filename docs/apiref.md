@@ -13,6 +13,14 @@ developed with the following goals in mind:
 
 The project source code is hosted on [github.com/nurpax/slimgui](https://github.com/nurpax/slimgui).
 
+### Getting started
+
+Installation: `pip install slimgui`
+
+Try it out: `python -m slimgui.demo` <!-- todo actually implement this -->
+
+Read the example code: [example/](https://github.com/nurpax/slimgui/blob/main/example/)
+
 ### Binding considerations
 
 The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) except somewhat modernized:
