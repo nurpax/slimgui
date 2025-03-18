@@ -3,7 +3,9 @@ title: 'slimgui'
 subtitle: 'Python bindings for Dear ImGui'
 ---
 
-## Overview of slimgui
+# slimgui - Python bindings for Dear ImGui
+
+## Overview
 
 The Slimgui package provides modern Python bindings for the [Dear ImGui](https://github.com/ocornut/imgui) library.  Slimgui has been
 developed with the following goals in mind:
@@ -17,7 +19,7 @@ The project source code is hosted on [github.com/nurpax/slimgui](https://github.
 
 Installation: `pip install slimgui`
 
-Try it out: `python -m slimgui.demo` <!-- todo actually implement this -->
+<!-- Try it out: `python -m slimgui.demo` --> <!-- todo actually implement this -->
 
 Read the example code: [example/](https://github.com/nurpax/slimgui/blob/main/example/)
 
@@ -25,9 +27,9 @@ Read the example code: [example/](https://github.com/nurpax/slimgui/blob/main/ex
 
 The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) except somewhat modernized:
 
-- Expose ImGui's enums as typed Python enums using `enum.IntEnum` and `enum.IntFlag` to enable type checking and clarity on valid enum values for ImGui API functions.
-- ImGui vector types `ImVec2`, `ImVec4`, `float*` arrays are converted to Python tuples such as `tuple[float, float]` (for `ImVec2`), `tuple[float, float, float, float]` (for `ImVec4`).
-- Where ImGui takes as input a mutable boolean parameter such as `bool* p_open`, Slimgui passes the initial value of `open` as a boolean and returns its modified value as the second value in a 2-tuple.  For example `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]` that returns a 2-tuple where the first element is the boolean return value of `bool ImGui::Checkbox()` and the second element is the new value of the checkbox state.
+- Enums in ImGui are exposed as typed Python enums using `enum.IntEnum` and `enum.IntFlag` to make it clear which API functions consume what type of enums.
+- Vector types such as `ImVec2`, `ImVec4`, and `float*` arrays are converted to Python tuples such as `tuple[float, float]` (for `ImVec2`), `tuple[float, float, float, float]` (for `ImVec4`).
+- Mutable bool args such as `bool* p_open` are input as normal `bool` values and returned as the second element of a 2-tuple.  For example `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]` that returns a 2-tuple where the first element is the boolean return value of `bool ImGui::Checkbox()` and the second element is the new value of the checkbox state.
 
 ## Dear ImGui Enums
 

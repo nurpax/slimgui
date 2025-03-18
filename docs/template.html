@@ -32,34 +32,17 @@ body {
     background-color: #f6f8fa;
     border: 1px solid DarkSlateGray;
 }
-header {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-}
 
-header h1 {
-    font-size: 2em;
-    margin-top: 1em;
-    margin-bottom: 0.5em;
-    font-weight: 600;
-    color: #333;
-}
-
-h1 {
-    font-family: 'Segoe UI', sans-serif;
-    line-height: 1.2;
-    font-size: 3em;
-    margin-top: 0em;
-    margin-bottom: 0em;
-}
-h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6 {
     font-family: 'Segoe UI', sans-serif;
     font-weight: 600;
     margin-bottom: 0.1em;
     color: DarkSlateGray;
 }
+
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.25em; }
 
 h2 {
     margin-top: 1em;
@@ -228,15 +211,16 @@ div.api {
     border-collapse: collapse;
 }
 
+.api table tr {
+    border: none;
+    margin-top: 2em;
+}
+
 .api table tr td:first-child,
 .api table tr th:first-child {
     width: 250px;
     max-width: 300px;
     min-width: 250px;
-}
-
-.api table tr {
-    border: none;
 }
 
 .api table tr:nth-child(even) {
@@ -252,6 +236,8 @@ div.api {
     padding-left: 0;
     border: none;
     padding-right: 0.75em;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 </style>
@@ -259,11 +245,6 @@ div.api {
 </head>
 
 <body class='max-width'>
-    <header id='title-block-header'>
-        <h1>$title$ documentation</h1>
-        <p class='subtitle'>$subtitle$</p>
-    </header>
-
 $if(toc)$
 <h2 style='border-bottom: 0; padding-bottom: 0;'>Table of contents</h2>
 <div class="tocstyle">
