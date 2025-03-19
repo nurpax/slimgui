@@ -4,13 +4,15 @@ import json
 import re
 from typing import Any, Dict, Optional, Set
 
+cimgui_definitions_path = 'gen/cimgui/definitions.json'
+
 def camel_to_snake(name):
     s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
     return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 @lru_cache
 def get_definitions() -> Dict[str, Any]:
-    with open('gen/cimgui/definitions.json', 'rt', encoding='utf-8') as f:
+    with open(cimgui_definitions_path, 'rt', encoding='utf-8') as f:
         return json.load(f)
 
 @lru_cache

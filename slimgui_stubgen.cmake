@@ -57,7 +57,7 @@ function (slimgui_add_stub name)
   file(TO_CMAKE_PATH ${Python_EXECUTABLE} NB_Python_EXECUTABLE)
 
   set(NB_STUBGEN_CMD "${NB_Python_EXECUTABLE}" "${NB_STUBGEN}" ${NB_STUBGEN_ARGS})
-  set(NB_STUBGEN_POSTPROC_CMD "${NB_Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/gen/amend_func_docs.py" --imgui-h "${CMAKE_SOURCE_DIR}/src/c/imgui/imgui.h" --pyi-file "${ARG_OUTPUT}" -o "${ARG_OUTPUT}")
+  set(NB_STUBGEN_POSTPROC_CMD "${NB_Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/gen/amend_func_docs.py" --cimgui-definitions-file "${CMAKE_SOURCE_DIR}/gen/cimgui/definitions.json" --imgui-h "${CMAKE_SOURCE_DIR}/src/c/imgui/imgui.h" --pyi-file "${ARG_OUTPUT}" -o "${ARG_OUTPUT}")
 
   add_custom_command(
     OUTPUT ${NB_STUBGEN_OUTPUTS}

@@ -31,8 +31,11 @@ def main():
     parser = argparse.ArgumentParser(description="Extract doc comments from imgui.h")
     parser.add_argument('--imgui-h', type=str, default='src/c/imgui/imgui.h')
     parser.add_argument('--pyi-file', type=str, default='src/slimgui/slimgui_ext.pyi')
+    parser.add_argument('--cimgui-definitions-file', type=str, default='gen/cimgui/definitions.json')
     parser.add_argument('-o', dest='output', type=str, help="If not specified, output to stdout.  Otherwise, write to this file.  Output can be the same as input.")
     args = parser.parse_args()
+
+    gen_utils.cimgui_definitions_path = args.cimgui_definitions_file
 
     syms = parse_func_line_comments(args.imgui_h)
 
@@ -52,7 +55,7 @@ def main():
                         comment = '' # remove spurious double quotes
                     comment = comment.replace('"', '\\"')
                     if comment != '':
-                        out_lines.append(f'    """{comment}"""')
+                        out_lines.append(f'    """{gen_utils.docstring_fixer(comment)}"""')
                 out_lines.append('    ...\n')
             else:
                 out_lines.append(line)

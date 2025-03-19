@@ -298,19 +298,19 @@ div.api {
 <h4 id="functions-1">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_style</span>() -> <span class='symbol'>Style</span></code>
-  <p>access the Style structure (colors, sizes). Always use PushStyleColor(), PushStyleVar() to modify style mid-frame!</p>
+  <p>access the Style structure (colors, sizes). Always use <code>push_style_color()</code>, <code>push_style_var()</code> to modify style mid-frame!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>new_frame</span>() -> <span class='keyword'>None</span></code>
-  <p>start a new Dear ImGui frame, you can submit any command from this point until Render()/EndFrame().</p>
+  <p>start a new Dear ImGui frame, you can submit any command from this point until <code>render()</code>/<code>end_frame()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>render</span>() -> <span class='keyword'>None</span></code>
-  <p>ends the Dear ImGui frame, finalize the draw data. You can then get call GetDrawData().</p>
+  <p>ends the Dear ImGui frame, finalize the draw data. You can then get call <code>get_draw_data()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_draw_data</span>() -> <span class='symbol'>DrawData</span></code>
-  <p>valid after Render() and until the next call to NewFrame(). this is what you have to render.</p>
+  <p>valid after <code>render()</code> and until the next call to <code>new_frame()</code>. this is what you have to render.</p>
 </div>
 
 <h3 id="demo-debug-information">Demo, Debug, Information</h3>
@@ -414,19 +414,19 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_window_pos</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
-  <p>get current window position in screen space (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using GetCursorScreenPos() and GetContentRegionAvail() instead)</p>
+  <p>get current window position in screen space (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using <code>get_cursor_screen_pos()</code> and <code>get_content_region_avail()</code> instead)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_window_size</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
-  <p>get current window size (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using GetCursorScreenPos() and GetContentRegionAvail() instead)</p>
+  <p>get current window size (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using <code>get_cursor_screen_pos()</code> and <code>get_content_region_avail()</code> instead)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_window_width</span>() -> <span class='symbol'>float</span></code>
-  <p>get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for GetWindowSize().x.</p>
+  <p>get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). <code>shortcut</code> for <code>get_window_size()</code>.x.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_window_height</span>() -> <span class='symbol'>float</span></code>
-  <p>get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for GetWindowSize().y.</p>
+  <p>get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). <code>shortcut</code> for <code>get_window_size()</code>.y.</p>
 </div>
 
 <h3 id="window-manipulation">Window Manipulation</h3>
@@ -436,23 +436,23 @@ div.api {
 <h4 id="functions-7">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_pos</span>(<span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>pivot</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
-  <p>set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc.</p>
+  <p>set next window position. call before <code>begin()</code>. use pivot=(0.5f,0.5f) to center on given point, etc.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_size</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()</p>
+  <p>set next window size. set axis to 0.0f to force an auto-fit on this axis. call before <code>begin()</code></p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_content_size</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
-  <p>set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before Begin()</p>
+  <p>set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before <code>begin()</code></p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_collapsed</span>(<span class='arg_name'>collapsed</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>set next window collapsed state. call before Begin()</p>
+  <p>set next window collapsed state. call before <code>begin()</code></p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_focus</span>() -> <span class='keyword'>None</span></code>
-  <p>set next window to be focused / top-most. call before Begin()</p>
+  <p>set next window to be focused / top-most. call before <code>begin()</code></p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_scroll</span>(<span class='arg_name'>scroll</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
@@ -511,19 +511,19 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_scroll_x</span>() -> <span class='symbol'>float</span></code>
-  <p>get scrolling amount [0 .. GetScrollMaxX()]</p>
+  <p>get scrolling amount [0 .. <code>get_scroll_max_x()</code>]</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_scroll_y</span>() -> <span class='symbol'>float</span></code>
-  <p>get scrolling amount [0 .. GetScrollMaxY()]</p>
+  <p>get scrolling amount [0 .. <code>get_scroll_max_y()</code>]</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_scroll_x</span>(<span class='arg_name'>scroll_x</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
-  <p>set scrolling amount [0 .. GetScrollMaxX()]</p>
+  <p>set scrolling amount [0 .. <code>get_scroll_max_x()</code>]</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_scroll_y</span>(<span class='arg_name'>scroll_y</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
-  <p>set scrolling amount [0 .. GetScrollMaxY()]</p>
+  <p>set scrolling amount [0 .. <code>get_scroll_max_y()</code>]</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_scroll_max_x</span>() -> <span class='symbol'>float</span></code>
@@ -535,19 +535,19 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_scroll_here_x</span>(<span class='arg_name'>center_x_ratio</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>5</span>) -> <span class='keyword'>None</span></code>
-  <p>adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.</p>
+  <p>adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a "default/current item" visible, consider using <code>set_item_default_focus()</code> instead.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_scroll_here_y</span>(<span class='arg_name'>center_y_ratio</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>5</span>) -> <span class='keyword'>None</span></code>
-  <p>adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.</p>
+  <p>adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using <code>set_item_default_focus()</code> instead.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_scroll_from_pos_x</span>(<span class='arg_name'>local_x</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>center_x_ratio</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>5</span>) -> <span class='keyword'>None</span></code>
-  <p>adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.</p>
+  <p>adjust scrolling amount to make given position visible. Generally <code>get_cursor_start_pos()</code> + offset to compute a valid position.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_scroll_from_pos_y</span>(<span class='arg_name'>local_y</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>center_y_ratio</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>5</span>) -> <span class='keyword'>None</span></code>
-  <p>adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.</p>
+  <p>adjust scrolling amount to make given position visible. Generally <code>get_cursor_start_pos()</code> + offset to compute a valid position.</p>
 </div>
 
 <h3 id="parameter-stacks-shared">Parameter stacks (shared)</h3>
@@ -624,7 +624,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_style_color_vec4</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>Col</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
-  <p>retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.</p>
+  <p>retrieve style color as stored in ImGuiStyle structure. use to feed back into <code>push_style_color()</code>, otherwise use <code>get_color_u32()</code> to get style color with style alpha baked in.</p>
 </div>
 
 <h3 id="layout-cursor-positioning">Layout cursor positioning</h3>
@@ -644,7 +644,7 @@ div.api {
 <h4 id="functions-12">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_cursor_screen_pos</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
-  <p>cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND (prefer using this rather than GetCursorPos(), also more useful to work with ImDrawList API).</p>
+  <p>cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND (prefer using this rather than <code>get_cursor_pos()</code>, also more useful to work with ImDrawList API).</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_cursor_screen_pos</span>(<span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
@@ -680,7 +680,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_cursor_start_pos</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
-  <p>[window-local] initial cursor position, in window-local coordinates. Call GetCursorScreenPos() after Begin() to get the absolute coordinates version.</p>
+  <p>[window-local] initial cursor position, in window-local coordinates. Call <code>get_cursor_screen_pos()</code> after <code>begin()</code> to get the absolute coordinates version.</p>
 </div>
 
 <h3 id="other-layout-functions">Other layout functions</h3>
@@ -695,7 +695,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>new_line</span>() -> <span class='keyword'>None</span></code>
-  <p>undo a SameLine() or force a new line when in a horizontal-layout context.</p>
+  <p>undo a <code>same_line()</code> or force a new line when in a horizontal-layout context.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>spacing</span>() -> <span class='keyword'>None</span></code>
@@ -703,7 +703,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>dummy</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
-  <p>add a dummy item of given size. unlike InvisibleButton(), Dummy() won't take the mouse click or be navigable into.</p>
+  <p>add a dummy item of given size. unlike <code>invisible_button()</code>, <code>dummy()</code> won't take the mouse click or be navigable into.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>indent</span>(<span class='arg_name'>indent_w</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
@@ -719,7 +719,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_group</span>() -> <span class='keyword'>None</span></code>
-  <p>unlock horizontal starting position + capture the whole group bounding box into one "item" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)</p>
+  <p>unlock horizontal starting position + capture the whole group bounding box into one "item" (so you can use <code>is_item_hovered()</code> or layout primitives such as <code>same_line()</code> on whole group, etc.)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>align_text_to_frame_padding</span>() -> <span class='keyword'>None</span></code>
@@ -784,7 +784,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>bullet_text</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
-  <p>shortcut for Bullet()+Text()</p>
+  <p>shortcut for <code>bullet()</code>+<code>text()</code></p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>separator_text</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
@@ -807,7 +807,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>invisible_button</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ButtonFlags</span> = <span class='symbol'>ButtonFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
-  <p>flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)</p>
+  <p>flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with <code>is_item_active</code>, <code>is_item_hovered</code>, etc.)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>arrow_button</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>dir</span><span class='special'>:</span> <span class='symbol'>Dir</span>) -> <span class='symbol'>bool</span></code>
@@ -828,7 +828,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>bullet</span>() -> <span class='keyword'>None</span></code>
-  <p>draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses</p>
+  <p>draw a small circle + keep the cursor on the same line. advance cursor x position by <code>get_tree_node_to_label_spacing()</code>, same distance that <code>tree_node()</code> uses</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>text_link</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
@@ -865,7 +865,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_combo</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndCombo() if BeginCombo() returns true!</p>
+  <p>only call <code>end_combo()</code> if <code>begin_combo()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>combo</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>current_item</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>items</span><span class='special'>:</span> <span class='symbol'>Sequence</span><span class='special'>[</span><span class='symbol'>str</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>popup_max_height_in_items</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span></code>
@@ -1025,11 +1025,11 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>tree_pop</span>() -> <span class='keyword'>None</span></code>
-  <p>~ Unindent()+PopID()</p>
+  <p>~ <code>unindent()</code>+<code>pop_id()</code></p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_tree_node_to_label_spacing</span>() -> <span class='symbol'>float</span></code>
-  <p>horizontal distance preceding label when using TreeNode*() or Bullet() == (g.FontSize + style.FramePadding.x*2) for a regular unframed TreeNode</p>
+  <p>horizontal distance preceding label when using <code>tree_node</code>*() or <code>bullet()</code> == (g.FontSize + style.FramePadding.x*2) for a regular unframed <code>tree_node</code></p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>collapsing_header</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>visible</span><span class='special'>:</span> <span class='symbol'>object</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TreeNodeFlags</span> = <span class='symbol'>TreeNodeFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span> | <span class='keyword'>None</span><span class='special'>]</span></code>
@@ -1037,7 +1037,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_item_open</span>(<span class='arg_name'>is_open</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>set next TreeNode/CollapsingHeader open state.</p>
+  <p>set next <code>tree_node</code>/<code>collapsing_header</code> open state.</p>
 </div>
 
 <h3 id="widgets-selectables">Widgets: Selectables</h3>
@@ -1086,7 +1086,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_list_box</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndListBox() if BeginListBox() returned true!</p>
+  <p>only call <code>end_list_box()</code> if <code>begin_list_box()</code> returned true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>list_box</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>current_item</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>items</span><span class='special'>:</span> <span class='symbol'>Sequence</span><span class='special'>[</span><span class='symbol'>str</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>height_in_items</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span></code>
@@ -1120,7 +1120,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_menu_bar</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndMenuBar() if BeginMenuBar() returns true!</p>
+  <p>only call <code>end_menu_bar()</code> if <code>begin_menu_bar()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_main_menu_bar</span>() -> <span class='symbol'>bool</span></code>
@@ -1128,15 +1128,15 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_main_menu_bar</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndMainMenuBar() if BeginMainMenuBar() returns true!</p>
+  <p>only call <code>end_main_menu_bar()</code> if <code>begin_main_menu_bar()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_menu</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>enabled</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>True</span>) -> <span class='symbol'>bool</span></code>
-  <p>create a sub-menu entry. only call EndMenu() if this returns true!</p>
+  <p>create a sub-menu entry. only call <code>end_menu()</code> if this returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_menu</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndMenu() if BeginMenu() returns true!</p>
+  <p>only call <code>end_menu()</code> if <code>begin_menu()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>menu_item</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>shortcut</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>selected</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span><span class='special'>,</span> <span class='arg_name'>enabled</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>True</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span><span class='special'>]</span></code>
@@ -1158,11 +1158,11 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_tooltip</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndTooltip() if BeginTooltip()/BeginItemTooltip() returns true!</p>
+  <p>only call <code>end_tooltip()</code> if <code>begin_tooltip()</code>/<code>begin_item_tooltip()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_tooltip</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
-  <p>set a text-only tooltip. Often used after a ImGui::IsItemHovered() check. Override any previous call to SetTooltip().</p>
+  <p>set a text-only tooltip. Often used after a ImGui::<code>is_item_hovered()</code> check. Override any previous call to <code>set_tooltip()</code>.</p>
 </div>
 
 <h3 id="tooltip-helpers">Tooltip helpers</h3>
@@ -1179,7 +1179,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_item_tooltip</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
-  <p>set a text-only tooltip if preceding item was hovered. override any previous call to SetTooltip().</p>
+  <p>set a text-only tooltip if preceding item was hovered. override any previous call to <code>set_tooltip()</code>.</p>
 </div>
 
 <h3 id="popups-modals">Popups, Modals</h3>
@@ -1200,7 +1200,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_popup</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndPopup() if BeginPopupXXX() returns true!</p>
+  <p>only call <code>end_popup()</code> if BeginPopupXXX() returns true!</p>
 </div>
 
 <h3 id="popups-openclose-functions">Popups: open/close functions</h3>
@@ -1285,7 +1285,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_table</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndTable() if BeginTable() returns true!</p>
+  <p>only call <code>end_table()</code> if <code>begin_table()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_next_row</span>(<span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TableRowFlags</span> = <span class='symbol'>TableRowFlags</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>min_row_height</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
@@ -1321,7 +1321,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_headers_row</span>() -> <span class='keyword'>None</span></code>
-  <p>submit a row with headers cells based on data provided to TableSetupColumn() + submit context menu</p>
+  <p>submit a row with headers cells based on data provided to <code>table_setup_column()</code> + submit context menu</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_angled_headers_row</span>() -> <span class='keyword'>None</span></code>
@@ -1336,7 +1336,7 @@ div.api {
 <h4 id="functions-36">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_get_column_count</span>() -> <span class='symbol'>int</span></code>
-  <p>return number of columns (value passed to BeginTable)</p>
+  <p>return number of columns (value passed to <code>begin_table</code>)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_get_column_index</span>() -> <span class='symbol'>int</span></code>
@@ -1348,7 +1348,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_get_column_name</span>(<span class='arg_name'>column_n</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='symbol'>str</span></code>
-  <p>return "" if column didn't have a name declared by TableSetupColumn(). Pass -1 to use current column.</p>
+  <p>return "" if column didn't have a name declared by <code>table_setup_column()</code>. Pass -1 to use current column.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_get_column_flags</span>(<span class='arg_name'>column_n</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='symbol'>TableColumnFlags</span></code>
@@ -1389,7 +1389,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_column_offset</span>(<span class='arg_name'>column_index</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='symbol'>float</span></code>
-  <p>get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..GetColumnsCount() inclusive. column 0 is typically 0.0f</p>
+  <p>get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..<code>get_columns_count()</code> inclusive. column 0 is typically 0.0f</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_column_offset</span>(<span class='arg_name'>column_index</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>offset_x</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
@@ -1410,7 +1410,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_tab_bar</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndTabBar() if BeginTabBar() returns true!</p>
+  <p>only call <code>end_tab_bar()</code> if <code>begin_tab_bar()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_tab_item</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>closable</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TabItemFlags</span> = <span class='symbol'>TabItemFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span><span class='special'>]</span></code>
@@ -1418,7 +1418,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_tab_item</span>() -> <span class='keyword'>None</span></code>
-  <p>only call EndTabItem() if BeginTabItem() returns true!</p>
+  <p>only call <code>end_tab_item()</code> if <code>begin_tab_item()</code> returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>tab_item_button</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TabItemFlags</span> = <span class='symbol'>TabItemFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
@@ -1426,7 +1426,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_tab_item_closed</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
-  <p>notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after BeginTabBar() and before Tab submissions. Otherwise call with a window name.</p>
+  <p>notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after <code>begin_tab_bar()</code> and before Tab submissions. Otherwise call with a window name.</p>
 </div>
 
 <h3 id="disabling-beta-api">Disabling [BETA API]</h3>
@@ -1486,7 +1486,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_item_clicked</span>(<span class='arg_name'>mouse_button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span> = <span class='symbol'>MouseButton</span>.<span class='symbol'>LEFT</span>) -> <span class='symbol'>bool</span></code>
-  <p>is the last item hovered and mouse clicked on? (**)  == IsMouseClicked(mouse_button) && IsItemHovered()Important. (**) this is NOT equivalent to the behavior of e.g. Button(). Read comments in function definition.</p>
+  <p>is the last item hovered and mouse clicked on? (**)  == <code>is_mouse_clicked</code>(mouse_button) && <code>is_item_hovered()</code>Important. (**) this is NOT equivalent to the behavior of e.g. <code>button()</code>. Read comments in function definition.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_item_visible</span>() -> <span class='symbol'>bool</span></code>
@@ -1506,11 +1506,11 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_item_deactivated_after_edit</span>() -> <span class='symbol'>bool</span></code>
-  <p>was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). Useful for Undo/Redo patterns with widgets that require continuous editing. Note that you may get false positives (some widgets such as Combo()/ListBox()/Selectable() will return true even when clicking an already selected item).</p>
+  <p>was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). Useful for Undo/Redo patterns with widgets that require continuous editing. Note that you may get false positives (some widgets such as <code>combo()</code>/<code>list_box()</code>/<code>selectable()</code> will return true even when clicking an already selected item).</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_item_toggled_open</span>() -> <span class='symbol'>bool</span></code>
-  <p>was the last item open state toggled? set by TreeNode().</p>
+  <p>was the last item open state toggled? set by <code>tree_node()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_any_item_hovered</span>() -> <span class='symbol'>bool</span></code>
@@ -1601,7 +1601,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_key_chord_pressed</span>(<span class='arg_name'>key_chord</span><span class='special'>:</span> <span class='symbol'>Key</span>) -> <span class='symbol'>bool</span></code>
-  <p>was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using Shortcut() function instead.</p>
+  <p>was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using <code>shortcut()</code> function instead.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_key_pressed_amount</span>(<span class='arg_name'>key</span><span class='special'>:</span> <span class='symbol'>Key</span><span class='special'>,</span> <span class='arg_name'>repeat_delay</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>rate</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='symbol'>int</span></code>
@@ -1625,7 +1625,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_mouse_clicked</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span><span class='special'>,</span> <span class='arg_name'>repeat</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span>) -> <span class='symbol'>bool</span></code>
-  <p>did mouse button clicked? (went from !Down to Down). Same as GetMouseClickedCount() == 1.</p>
+  <p>did mouse button clicked? (went from !Down to Down). Same as <code>get_mouse_clicked_count()</code> == 1.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_mouse_released</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span>) -> <span class='symbol'>bool</span></code>
@@ -1633,7 +1633,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_mouse_double_clicked</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span>) -> <span class='symbol'>bool</span></code>
-  <p>did mouse button double-clicked? Same as GetMouseClickedCount() == 2. (note that a double-click will also report IsMouseClicked() == true)</p>
+  <p>did mouse button double-clicked? Same as <code>get_mouse_clicked_count()</code> == 2. (note that a double-click will also report <code>is_mouse_clicked()</code> == true)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_mouse_clicked_count</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span>) -> <span class='symbol'>int</span></code>
@@ -1649,11 +1649,11 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_mouse_pos</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
-  <p>shortcut to ImGui::GetIO().MousePos provided by user, to be consistent with other calls</p>
+  <p>shortcut to ImGui::<code>get_io()</code>.MousePos provided by user, to be consistent with other calls</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_mouse_pos_on_opening_current_popup</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
-  <p>retrieve mouse position at the time of opening popup we have BeginPopup() into (helper to avoid user backing that value themselves)</p>
+  <p>retrieve mouse position at the time of opening popup we have <code>begin_popup()</code> into (helper to avoid user backing that value themselves)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_mouse_dragging</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span><span class='special'>,</span> <span class='arg_name'>lock_threshold</span><span class='special'>:</span> <span class='symbol'>float</span> = -<span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='symbol'>bool</span></code>
@@ -1668,7 +1668,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_mouse_cursor</span>() -> <span class='symbol'>MouseCursor</span></code>
-  <p>get desired mouse cursor shape. Important: reset in ImGui::NewFrame(), this is updated during the frame. valid before Render(). If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you</p>
+  <p>get desired mouse cursor shape. Important: reset in ImGui::<code>new_frame()</code>, this is updated during the frame. valid before <code>render()</code>. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_mouse_cursor</span>(<span class='arg_name'>cursor_type</span><span class='special'>:</span> <span class='symbol'>MouseCursor</span>) -> <span class='keyword'>None</span></code>

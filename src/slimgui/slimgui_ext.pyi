@@ -2698,12 +2698,12 @@ def begin_disabled(disabled: bool = True) -> None:
 
 
 def begin_drag_drop_source(flags: DragDropFlags = DragDropFlags.NONE) -> bool:
-    """call after submitting an item which may be dragged. when this return true, you can call SetDragDropPayload() + EndDragDropSource()"""
+    """call after submitting an item which may be dragged. when this return true, you can call `set_drag_drop_payload()` + `end_drag_drop_source()`"""
     ...
 
 
 def begin_drag_drop_target() -> bool:
-    """call after submitting an item that may receive a payload. If this returns true, you can call AcceptDragDropPayload() + EndDragDropTarget()"""
+    """call after submitting an item that may receive a payload. If this returns true, you can call `accept_drag_drop_payload()` + `end_drag_drop_target()`"""
     ...
 
 
@@ -2728,7 +2728,7 @@ def begin_main_menu_bar() -> bool:
 
 
 def begin_menu(label: str, enabled: bool = True) -> bool:
-    """create a sub-menu entry. only call EndMenu() if this returns true!"""
+    """create a sub-menu entry. only call `end_menu()` if this returns true!"""
     ...
 
 
@@ -2767,12 +2767,12 @@ def begin_tooltip() -> bool:
 
 
 def bullet() -> None:
-    """draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses"""
+    """draw a small circle + keep the cursor on the same line. advance cursor x position by `get_tree_node_to_label_spacing()`, same distance that `tree_node()` uses"""
     ...
 
 
 def bullet_text(text: str) -> None:
-    """shortcut for Bullet()+Text()"""
+    """shortcut for `bullet()`+`text()`"""
     ...
 
 
@@ -2889,7 +2889,7 @@ def drag_int4(label: str, v: tuple[int, int, int, int], v_speed: float = 1.0, v_
 
 
 def dummy(size: tuple[float, float]) -> None:
-    """add a dummy item of given size. unlike InvisibleButton(), Dummy() won't take the mouse click or be navigable into."""
+    """add a dummy item of given size. unlike `invisible_button()`, `dummy()` won't take the mouse click or be navigable into."""
     ...
 
 
@@ -2903,7 +2903,7 @@ def end_child() -> None:
 
 
 def end_combo() -> None:
-    """only call EndCombo() if BeginCombo() returns true!"""
+    """only call `end_combo()` if `begin_combo()` returns true!"""
     ...
 
 
@@ -2912,62 +2912,62 @@ def end_disabled() -> None:
 
 
 def end_drag_drop_source() -> None:
-    """only call EndDragDropSource() if BeginDragDropSource() returns true!"""
+    """only call `end_drag_drop_source()` if `begin_drag_drop_source()` returns true!"""
     ...
 
 
 def end_drag_drop_target() -> None:
-    """only call EndDragDropTarget() if BeginDragDropTarget() returns true!"""
+    """only call `end_drag_drop_target()` if `begin_drag_drop_target()` returns true!"""
     ...
 
 
 def end_group() -> None:
-    """unlock horizontal starting position + capture the whole group bounding box into one \"item\" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)"""
+    """unlock horizontal starting position + capture the whole group bounding box into one \"item\" (so you can use `is_item_hovered()` or layout primitives such as `same_line()` on whole group, etc.)"""
     ...
 
 
 def end_list_box() -> None:
-    """only call EndListBox() if BeginListBox() returned true!"""
+    """only call `end_list_box()` if `begin_list_box()` returned true!"""
     ...
 
 
 def end_main_menu_bar() -> None:
-    """only call EndMainMenuBar() if BeginMainMenuBar() returns true!"""
+    """only call `end_main_menu_bar()` if `begin_main_menu_bar()` returns true!"""
     ...
 
 
 def end_menu() -> None:
-    """only call EndMenu() if BeginMenu() returns true!"""
+    """only call `end_menu()` if `begin_menu()` returns true!"""
     ...
 
 
 def end_menu_bar() -> None:
-    """only call EndMenuBar() if BeginMenuBar() returns true!"""
+    """only call `end_menu_bar()` if `begin_menu_bar()` returns true!"""
     ...
 
 
 def end_popup() -> None:
-    """only call EndPopup() if BeginPopupXXX() returns true!"""
+    """only call `end_popup()` if BeginPopupXXX() returns true!"""
     ...
 
 
 def end_tab_bar() -> None:
-    """only call EndTabBar() if BeginTabBar() returns true!"""
+    """only call `end_tab_bar()` if `begin_tab_bar()` returns true!"""
     ...
 
 
 def end_tab_item() -> None:
-    """only call EndTabItem() if BeginTabItem() returns true!"""
+    """only call `end_tab_item()` if `begin_tab_item()` returns true!"""
     ...
 
 
 def end_table() -> None:
-    """only call EndTable() if BeginTable() returns true!"""
+    """only call `end_table()` if `begin_table()` returns true!"""
     ...
 
 
 def end_tooltip() -> None:
-    """only call EndTooltip() if BeginTooltip()/BeginItemTooltip() returns true!"""
+    """only call `end_tooltip()` if `begin_tooltip()`/`begin_item_tooltip()` returns true!"""
     ...
 
 
@@ -2977,7 +2977,7 @@ def get_column_index() -> int:
 
 
 def get_column_offset(column_index: int = -1) -> float:
-    """get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..GetColumnsCount() inclusive. column 0 is typically 0.0f"""
+    """get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0f"""
     ...
 
 
@@ -2996,7 +2996,7 @@ def get_content_region_avail() -> tuple[float, float]:
 
 
 def get_content_region_max() -> tuple[float, float]:
-    """Content boundaries max (e.g. window boundaries including scrolling, or current column boundaries). You should never need this. Always use GetCursorScreenPos() and GetContentRegionAvail()!"""
+    """Content boundaries max (e.g. window boundaries including scrolling, or current column boundaries). You should never need this. Always use `get_cursor_screen_pos()` and `get_content_region_avail()`!"""
     ...
 
 
@@ -3020,17 +3020,17 @@ def get_cursor_pos_y() -> float:
 
 
 def get_cursor_screen_pos() -> tuple[float, float]:
-    """cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND (prefer using this rather than GetCursorPos(), also more useful to work with ImDrawList API)."""
+    """cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND (prefer using this rather than `get_cursor_pos()`, also more useful to work with ImDrawList API)."""
     ...
 
 
 def get_cursor_start_pos() -> tuple[float, float]:
-    """[window-local] initial cursor position, in window-local coordinates. Call GetCursorScreenPos() after Begin() to get the absolute coordinates version."""
+    """[window-local] initial cursor position, in window-local coordinates. Call `get_cursor_screen_pos()` after `begin()` to get the absolute coordinates version."""
     ...
 
 
 def get_draw_data() -> DrawData:
-    """valid after Render() and until the next call to NewFrame(). this is what you have to render."""
+    """valid after `render()` and until the next call to `new_frame()`. this is what you have to render."""
     ...
 
 
@@ -3095,7 +3095,7 @@ def get_mouse_clicked_count(button: MouseButton) -> int:
 
 
 def get_mouse_cursor() -> MouseCursor:
-    """get desired mouse cursor shape. Important: reset in ImGui::NewFrame(), this is updated during the frame. valid before Render(). If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you"""
+    """get desired mouse cursor shape. Important: reset in ImGui::`new_frame()`, this is updated during the frame. valid before `render()`. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you"""
     ...
 
 
@@ -3105,12 +3105,12 @@ def get_mouse_drag_delta(button: MouseButton = MouseButton.LEFT, lock_threshold:
 
 
 def get_mouse_pos() -> tuple[float, float]:
-    """shortcut to ImGui::GetIO().MousePos provided by user, to be consistent with other calls"""
+    """shortcut to ImGui::`get_io()`.MousePos provided by user, to be consistent with other calls"""
     ...
 
 
 def get_mouse_pos_on_opening_current_popup() -> tuple[float, float]:
-    """retrieve mouse position at the time of opening popup we have BeginPopup() into (helper to avoid user backing that value themselves)"""
+    """retrieve mouse position at the time of opening popup we have `begin_popup()` into (helper to avoid user backing that value themselves)"""
     ...
 
 
@@ -3125,22 +3125,22 @@ def get_scroll_max_y() -> float:
 
 
 def get_scroll_x() -> float:
-    """get scrolling amount [0 .. GetScrollMaxX()]"""
+    """get scrolling amount [0 .. `get_scroll_max_x()`]"""
     ...
 
 
 def get_scroll_y() -> float:
-    """get scrolling amount [0 .. GetScrollMaxY()]"""
+    """get scrolling amount [0 .. `get_scroll_max_y()`]"""
     ...
 
 
 def get_style() -> Style:
-    """access the Style structure (colors, sizes). Always use PushStyleColor(), PushStyleVar() to modify style mid-frame!"""
+    """access the Style structure (colors, sizes). Always use `push_style_color()`, `push_style_var()` to modify style mid-frame!"""
     ...
 
 
 def get_style_color_vec4(col: Col) -> tuple[float, float, float, float]:
-    """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in."""
+    """retrieve style color as stored in ImGuiStyle structure. use to feed back into `push_style_color()`, otherwise use `get_color_u32()` to get style color with style alpha baked in."""
     ...
 
 
@@ -3160,7 +3160,7 @@ def get_time() -> float:
 
 
 def get_tree_node_to_label_spacing() -> float:
-    """horizontal distance preceding label when using TreeNode*() or Bullet() == (g.FontSize + style.FramePadding.x*2) for a regular unframed TreeNode"""
+    """horizontal distance preceding label when using `tree_node`*() or `bullet()` == (g.FontSize + style.FramePadding.x*2) for a regular unframed `tree_node`"""
     ...
 
 
@@ -3170,32 +3170,32 @@ def get_version() -> str:
 
 
 def get_window_content_region_max() -> tuple[float, float]:
-    """Content boundaries max for the window (roughly (0,0)+Size-Scroll), in window-local coordinates. You should never need this. Always use GetCursorScreenPos() and GetContentRegionAvail()!"""
+    """Content boundaries max for the window (roughly (0,0)+Size-Scroll), in window-local coordinates. You should never need this. Always use `get_cursor_screen_pos()` and `get_content_region_avail()`!"""
     ...
 
 
 def get_window_content_region_min() -> tuple[float, float]:
-    """Content boundaries min for the window (roughly (0,0)-Scroll), in window-local coordinates. You should never need this. Always use GetCursorScreenPos() and GetContentRegionAvail()!"""
+    """Content boundaries min for the window (roughly (0,0)-Scroll), in window-local coordinates. You should never need this. Always use `get_cursor_screen_pos()` and `get_content_region_avail()`!"""
     ...
 
 
 def get_window_height() -> float:
-    """get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for GetWindowSize().y."""
+    """get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). `shortcut` for `get_window_size()`.y."""
     ...
 
 
 def get_window_pos() -> tuple[float, float]:
-    """get current window position in screen space (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using GetCursorScreenPos() and GetContentRegionAvail() instead)"""
+    """get current window position in screen space (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using `get_cursor_screen_pos()` and `get_content_region_avail()` instead)"""
     ...
 
 
 def get_window_size() -> tuple[float, float]:
-    """get current window size (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using GetCursorScreenPos() and GetContentRegionAvail() instead)"""
+    """get current window size (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using `get_cursor_screen_pos()` and `get_content_region_avail()` instead)"""
     ...
 
 
 def get_window_width() -> float:
-    """get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for GetWindowSize().x."""
+    """get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). `shortcut` for `get_window_size()`.x."""
     ...
 
 
@@ -3258,7 +3258,7 @@ def input_text_with_hint(label: str, hint: str, text: str, flags: InputTextFlags
 
 
 def invisible_button(str_id: str, size: tuple[float, float], flags: ButtonFlags = ButtonFlags.NONE) -> bool:
-    """flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)"""
+    """flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with `is_item_active`, `is_item_hovered`, etc.)"""
     ...
 
 
@@ -3288,7 +3288,7 @@ def is_item_active() -> bool:
 
 
 def is_item_clicked(mouse_button: MouseButton = MouseButton.LEFT) -> bool:
-    """is the last item hovered and mouse clicked on? (**)  == IsMouseClicked(mouse_button) && IsItemHovered()Important. (**) this is NOT equivalent to the behavior of e.g. Button(). Read comments in function definition."""
+    """is the last item hovered and mouse clicked on? (**)  == `is_mouse_clicked`(mouse_button) && `is_item_hovered()`Important. (**) this is NOT equivalent to the behavior of e.g. `button()`. Read comments in function definition."""
     ...
 
 
@@ -3298,7 +3298,7 @@ def is_item_deactivated() -> bool:
 
 
 def is_item_deactivated_after_edit() -> bool:
-    """was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). Useful for Undo/Redo patterns with widgets that require continuous editing. Note that you may get false positives (some widgets such as Combo()/ListBox()/Selectable() will return true even when clicking an already selected item)."""
+    """was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). Useful for Undo/Redo patterns with widgets that require continuous editing. Note that you may get false positives (some widgets such as `combo()`/`list_box()`/`selectable()` will return true even when clicking an already selected item)."""
     ...
 
 
@@ -3318,7 +3318,7 @@ def is_item_hovered(flags: HoveredFlags = HoveredFlags.NONE) -> bool:
 
 
 def is_item_toggled_open() -> bool:
-    """was the last item open state toggled? set by TreeNode()."""
+    """was the last item open state toggled? set by `tree_node()`."""
     ...
 
 
@@ -3328,7 +3328,7 @@ def is_item_visible() -> bool:
 
 
 def is_key_chord_pressed(key_chord: Key) -> bool:
-    """was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using Shortcut() function instead."""
+    """was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using `shortcut()` function instead."""
     ...
 
 
@@ -3348,12 +3348,12 @@ def is_key_released(key: Key) -> bool:
 
 
 def is_mouse_clicked(button: MouseButton, repeat: bool = False) -> bool:
-    """did mouse button clicked? (went from !Down to Down). Same as GetMouseClickedCount() == 1."""
+    """did mouse button clicked? (went from !Down to Down). Same as `get_mouse_clicked_count()` == 1."""
     ...
 
 
 def is_mouse_double_clicked(button: MouseButton) -> bool:
-    """did mouse button double-clicked? Same as GetMouseClickedCount() == 2. (note that a double-click will also report IsMouseClicked() == true)"""
+    """did mouse button double-clicked? Same as `get_mouse_clicked_count()` == 2. (note that a double-click will also report `is_mouse_clicked()` == true)"""
     ...
 
 
@@ -3462,12 +3462,12 @@ def menu_item(label: str, shortcut: str | None = None, selected: bool = False, e
 
 
 def new_frame() -> None:
-    """start a new Dear ImGui frame, you can submit any command from this point until Render()/EndFrame()."""
+    """start a new Dear ImGui frame, you can submit any command from this point until `render()`/`end_frame()`."""
     ...
 
 
 def new_line() -> None:
-    """undo a SameLine() or force a new line when in a horizontal-layout context."""
+    """undo a `same_line()` or force a new line when in a horizontal-layout context."""
     ...
 
 
@@ -3605,7 +3605,7 @@ def radio_button(label: str, v: int, v_button: int) -> tuple[bool, int]:
 
 
 def render() -> None:
-    """ends the Dear ImGui frame, finalize the draw data. You can then get call GetDrawData()."""
+    """ends the Dear ImGui frame, finalize the draw data. You can then get call `get_draw_data()`."""
     ...
 
 
@@ -3674,7 +3674,7 @@ def set_item_default_focus() -> None:
 
 
 def set_item_tooltip(text: str) -> None:
-    """set a text-only tooltip if preceding item was hovered. override any previous call to SetTooltip()."""
+    """set a text-only tooltip if preceding item was hovered. override any previous call to `set_tooltip()`."""
     ...
 
 
@@ -3697,7 +3697,7 @@ def set_next_frame_want_capture_mouse(capture: bool) -> None:
 
 
 def set_next_item_open(is_open: bool, cond: Cond = Cond.NONE) -> None:
-    """set next TreeNode/CollapsingHeader open state."""
+    """set next `tree_node`/`collapsing_header` open state."""
     ...
 
 
@@ -3712,22 +3712,22 @@ def set_next_window_bg_alpha(alpha: float) -> None:
 
 
 def set_next_window_collapsed(collapsed: bool, cond: Cond = Cond.NONE) -> None:
-    """set next window collapsed state. call before Begin()"""
+    """set next window collapsed state. call before `begin()`"""
     ...
 
 
 def set_next_window_content_size(size: tuple[float, float]) -> None:
-    """set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before Begin()"""
+    """set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before `begin()`"""
     ...
 
 
 def set_next_window_focus() -> None:
-    """set next window to be focused / top-most. call before Begin()"""
+    """set next window to be focused / top-most. call before `begin()`"""
     ...
 
 
 def set_next_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE, pivot: tuple[float, float] = (0.0, 0.0)) -> None:
-    """set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc."""
+    """set next window position. call before `begin()`. use pivot=(0.5f,0.5f) to center on given point, etc."""
     ...
 
 
@@ -3737,47 +3737,47 @@ def set_next_window_scroll(scroll: tuple[float, float]) -> None:
 
 
 def set_next_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
-    """set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()"""
+    """set next window size. set axis to 0.0f to force an auto-fit on this axis. call before `begin()`"""
     ...
 
 
 def set_scroll_from_pos_x(local_x: float, center_x_ratio: float = 0.5) -> None:
-    """adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position."""
+    """adjust scrolling amount to make given position visible. Generally `get_cursor_start_pos()` + offset to compute a valid position."""
     ...
 
 
 def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None:
-    """adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position."""
+    """adjust scrolling amount to make given position visible. Generally `get_cursor_start_pos()` + offset to compute a valid position."""
     ...
 
 
 def set_scroll_here_x(center_x_ratio: float = 0.5) -> None:
-    """adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a \"default/current item\" visible, consider using SetItemDefaultFocus() instead."""
+    """adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a \"default/current item\" visible, consider using `set_item_default_focus()` instead."""
     ...
 
 
 def set_scroll_here_y(center_y_ratio: float = 0.5) -> None:
-    """adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a \"default/current item\" visible, consider using SetItemDefaultFocus() instead."""
+    """adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a \"default/current item\" visible, consider using `set_item_default_focus()` instead."""
     ...
 
 
 def set_scroll_x(scroll_x: float) -> None:
-    """set scrolling amount [0 .. GetScrollMaxX()]"""
+    """set scrolling amount [0 .. `get_scroll_max_x()`]"""
     ...
 
 
 def set_scroll_y(scroll_y: float) -> None:
-    """set scrolling amount [0 .. GetScrollMaxY()]"""
+    """set scrolling amount [0 .. `get_scroll_max_y()`]"""
     ...
 
 
 def set_tab_item_closed(label: str) -> None:
-    """notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after BeginTabBar() and before Tab submissions. Otherwise call with a window name."""
+    """notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after `begin_tab_bar()` and before Tab submissions. Otherwise call with a window name."""
     ...
 
 
 def set_tooltip(text: str) -> None:
-    """set a text-only tooltip. Often used after a ImGui::IsItemHovered() check. Override any previous call to SetTooltip()."""
+    """set a text-only tooltip. Often used after a ImGui::`is_item_hovered()` check. Override any previous call to `set_tooltip()`."""
     ...
 
 
@@ -3937,7 +3937,7 @@ def table_angled_headers_row() -> None:
 
 
 def table_get_column_count() -> int:
-    """return number of columns (value passed to BeginTable)"""
+    """return number of columns (value passed to `begin_table`)"""
     ...
 
 
@@ -3952,7 +3952,7 @@ def table_get_column_index() -> int:
 
 
 def table_get_column_name(column_n: int = -1) -> str:
-    """return \"\" if column didn't have a name declared by TableSetupColumn(). Pass -1 to use current column."""
+    """return \"\" if column didn't have a name declared by `table_setup_column()`. Pass -1 to use current column."""
     ...
 
 
@@ -3967,7 +3967,7 @@ def table_header(label: str) -> None:
 
 
 def table_headers_row() -> None:
-    """submit a row with headers cells based on data provided to TableSetupColumn() + submit context menu"""
+    """submit a row with headers cells based on data provided to `table_setup_column()` + submit context menu"""
     ...
 
 
@@ -4043,7 +4043,7 @@ def tree_node(str_id: str, text: str, flags: TreeNodeFlags = TreeNodeFlags.NONE)
 
 
 def tree_pop() -> None:
-    """~ Unindent()+PopID()"""
+    """~ `unindent()`+`pop_id()`"""
     ...
 
 
