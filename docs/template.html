@@ -179,21 +179,21 @@ div.api {
     margin-bottom: 0.3em;
 }
 
-.api code {
+.api > code {
     font-size: 11pt;
     color: #555;
 }
 
-.api code span.keyword {
+.api > code span.keyword {
     color: #444;
 }
 
-.api code span.func_name {
+.api > code span.func_name {
     color: #000;
     font-weight: bold;
 }
 
-.api code span.arg_name {
+.api > code span.arg_name {
     color: #000;
 }
 
@@ -214,6 +214,15 @@ div.api {
 .api table tr {
     border: none;
     margin-top: 2em;
+}
+
+.api table code {
+    font-size: 9pt;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: transparent;
 }
 
 .api table tr td:first-child,

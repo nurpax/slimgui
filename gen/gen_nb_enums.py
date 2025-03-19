@@ -6,7 +6,7 @@ import re
 import subprocess
 import click
 
-from gen_utils import camel_to_snake
+import gen_utils
 
 @dataclass
 class ImguiSymbols:
@@ -89,10 +89,11 @@ class GenContext:
             enum_docs = dict(syms.enums.get(im_name, []) if syms else {})
             # Enum values
             for ev in e + enum_compat.get(im_name, []):
-                enum_field_py_name = camel_to_snake(ev["name"].replace(im_name, "")).upper()
+                enum_field_py_name = gen_utils.camel_to_snake(ev["name"].replace(im_name, "")).upper()
                 enum_field_py_name = enum_field_py_name.lstrip("_")
                 enum_field_cimgui_name = ev["name"]
                 doc_string = enum_docs.get(enum_field_cimgui_name, "")
+                doc_string = gen_utils.docstring_fixer(doc_string)
                 doc_part = f', "{doc_string}"' if doc_string else ""
                 self.write(f'.value("{enum_field_py_name}", {enum_field_cimgui_name}{doc_part})\n')
             self.write(";")
@@ -102,7 +103,7 @@ class GenContext:
         # Enum values
         for e in doc["enums"]["ImGuiKey"]:
             ename = e["name"].replace("ImGuiKey_", "key").replace("ImGuiMod_", "mod")
-            enum_field_py_name = camel_to_snake(ename).upper()
+            enum_field_py_name = gen_utils.camel_to_snake(ename).upper()
             # Kludge to fix snake case problem for KEY_0-KEY_9
             if (m := re.match(r"^KEY(\d+)$", enum_field_py_name)) is not None:
                 enum_field_py_name = f"KEY_{m.group(1)}"

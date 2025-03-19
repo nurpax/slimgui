@@ -18,7 +18,7 @@ class BackendFlags(enum.IntFlag):
 
     HAS_MOUSE_CURSORS = 2
     """
-    Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.
+    Backend Platform supports honoring `get_mouse_cursor()` value to change the OS cursor shape.
     """
 
     HAS_SET_MOUSE_POS = 4
@@ -50,7 +50,7 @@ class ButtonFlags(enum.IntFlag):
 
     ENABLE_NAV = 8
     """
-    InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.
+    `invisible_button()`: do not disable navigation/tabbing. Otherwise disabled by default.
     """
 
 class ChildFlags(enum.IntFlag):
@@ -152,7 +152,7 @@ class Col(enum.IntEnum):
     SCROLLBAR_GRAB_ACTIVE = 17
 
     CHECK_MARK = 18
-    """Checkbox tick and RadioButton circle"""
+    """`checkbox` tick and `radio_button` circle"""
 
     SLIDER_GRAB = 19
 
@@ -166,7 +166,7 @@ class Col(enum.IntEnum):
 
     HEADER = 24
     """
-    Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem
+    Header* colors are used for `collapsing_header`, `tree_node`, `selectable`, `menu_item`
     """
 
     HEADER_HOVERED = 25
@@ -265,7 +265,7 @@ class ColorEditFlags(enum.IntFlag):
 
     NO_ALPHA = 2
     """
-    ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
+    ColorEdit, ColorPicker, `color_button`: ignore Alpha component (will only read 3 components from the input pointer).
     """
 
     NO_PICKER = 4
@@ -288,7 +288,7 @@ class ColorEditFlags(enum.IntFlag):
 
     NO_TOOLTIP = 64
     """
-    ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.
+    ColorEdit, ColorPicker, `color_button`: disable tooltip when hovering the preview.
     """
 
     NO_LABEL = 128
@@ -303,25 +303,25 @@ class ColorEditFlags(enum.IntFlag):
 
     NO_DRAG_DROP = 512
     """
-    ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.
+    ColorEdit: disable drag and drop target. `color_button`: disable drag and drop source.
     """
 
     NO_BORDER = 1024
-    """ColorButton: disable border (which is enforced by default)"""
+    """`color_button`: disable border (which is enforced by default)"""
 
     ALPHA_OPAQUE = 2048
     """
-    ColorEdit, ColorPicker, ColorButton: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling ColorEdit4()/ColorPicker4(). For ColorButton() this does the same as _NoAlpha.
+    ColorEdit, ColorPicker, `color_button`: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling `color_edit4()`/`color_picker4()`. For `color_button()` this does the same as _NoAlpha.
     """
 
     ALPHA_NO_BG = 4096
     """
-    ColorEdit, ColorPicker, ColorButton: disable rendering a checkerboard background behind transparent color.
+    ColorEdit, ColorPicker, `color_button`: disable rendering a checkerboard background behind transparent color.
     """
 
     ALPHA_PREVIEW_HALF = 8192
     """
-    ColorEdit, ColorPicker, ColorButton: display half opaque / half transparent preview.
+    ColorEdit, ColorPicker, `color_button`: display half opaque / half transparent preview.
     """
 
     ALPHA_BAR = 65536
@@ -343,12 +343,12 @@ class ColorEditFlags(enum.IntFlag):
 
     UINT8 = 8388608
     """
-    ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0..255.
+    ColorEdit, ColorPicker, `color_button`: _display_ values formatted as 0..255.
     """
 
     FLOAT = 16777216
     """
-    ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.
+    ColorEdit, ColorPicker, `color_button`: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.
     """
 
     PICKER_HUE_BAR = 33554432
@@ -385,7 +385,7 @@ class ComboFlags(enum.IntFlag):
 
     HEIGHT_SMALL = 2
     """
-    Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use SetNextWindowSizeConstraints() prior to calling BeginCombo()
+    Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use `set_next_window_size_constraints()` prior to calling `begin_combo()`
     """
 
     HEIGHT_REGULAR = 4
@@ -451,7 +451,7 @@ class ConfigFlags(enum.IntFlag):
 
     NO_MOUSE_CURSOR_CHANGE = 32
     """
-    Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
+    Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use `set_mouse_cursor()` to change mouse cursor. You may want to honor requests from imgui by reading `get_mouse_cursor()` yourself instead.
     """
 
     NO_KEYBOARD = 64
@@ -493,12 +493,12 @@ class DragDropFlags(enum.IntFlag):
 
     SOURCE_NO_PREVIEW_TOOLTIP = 1
     """
-    Disable preview tooltip. By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.
+    Disable preview tooltip. By default, a successful call to `begin_drag_drop_source` opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.
     """
 
     SOURCE_NO_DISABLE_HOVER = 2
     """
-    By default, when dragging we clear data so that IsItemHovered() will return false, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call IsItemHovered() on the source item.
+    By default, when dragging we clear data so that `is_item_hovered()` will return false, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call `is_item_hovered()` on the source item.
     """
 
     SOURCE_NO_HOLD_TO_OPEN_OTHERS = 4
@@ -508,7 +508,7 @@ class DragDropFlags(enum.IntFlag):
 
     SOURCE_ALLOW_NULL_ID = 8
     """
-    Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.
+    Allow items such as `text()`, `image()` that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.
     """
 
     SOURCE_EXTERN = 16
@@ -533,7 +533,7 @@ class DragDropFlags(enum.IntFlag):
 
     ACCEPT_BEFORE_DELIVERY = 1024
     """
-    AcceptDragDropPayload() will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.
+    `accept_drag_drop_payload()` will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.
     """
 
     ACCEPT_NO_DRAW_DEFAULT_RECT = 2048
@@ -541,7 +541,7 @@ class DragDropFlags(enum.IntFlag):
 
     ACCEPT_NO_PREVIEW_TOOLTIP = 4096
     """
-    Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.
+    Request hiding the `begin_drag_drop_source` tooltip from the `begin_drag_drop_target` site.
     """
 
     ACCEPT_PEEK_ONLY = 3072
@@ -775,20 +775,20 @@ class HoveredFlags(enum.IntFlag):
 
     CHILD_WINDOWS = 1
     """
-    IsWindowHovered() only: Return true if any children of the window is hovered
+    `is_window_hovered()` only: Return true if any children of the window is hovered
     """
 
     ROOT_WINDOW = 2
     """
-    IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)
+    `is_window_hovered()` only: Test from root window (top most parent of the current hierarchy)
     """
 
     ANY_WINDOW = 4
-    """IsWindowHovered() only: Return true if any window is hovered"""
+    """`is_window_hovered()` only: Return true if any window is hovered"""
 
     NO_POPUP_HIERARCHY = 8
     """
-    IsWindowHovered() only: Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)
+    `is_window_hovered()` only: Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)
     """
 
     ALLOW_WHEN_BLOCKED_BY_POPUP = 32
@@ -803,20 +803,20 @@ class HoveredFlags(enum.IntFlag):
 
     ALLOW_WHEN_OVERLAPPED_BY_ITEM = 256
     """
-    IsItemHovered() only: Return true even if the item uses AllowOverlap mode and is overlapped by another hoverable item.
+    `is_item_hovered()` only: Return true even if the item uses AllowOverlap mode and is overlapped by another hoverable item.
     """
 
     ALLOW_WHEN_OVERLAPPED_BY_WINDOW = 512
     """
-    IsItemHovered() only: Return true even if the position is obstructed or overlapped by another window.
+    `is_item_hovered()` only: Return true even if the position is obstructed or overlapped by another window.
     """
 
     ALLOW_WHEN_DISABLED = 1024
-    """IsItemHovered() only: Return true even if the item is disabled"""
+    """`is_item_hovered()` only: Return true even if the item is disabled"""
 
     NO_NAV_OVERRIDE = 2048
     """
-    IsItemHovered() only: Disable using keyboard/gamepad navigation state when active, always query mouse
+    `is_item_hovered()` only: Disable using keyboard/gamepad navigation state when active, always query mouse
     """
 
     ALLOW_WHEN_OVERLAPPED = 768
@@ -827,7 +827,7 @@ class HoveredFlags(enum.IntFlag):
 
     FOR_TOOLTIP = 4096
     """
-    Shortcut for standard flags when using IsItemHovered() + SetTooltip() sequence.
+    `shortcut` for standard flags when using `is_item_hovered()` + `set_tooltip()` sequence.
     """
 
     STATIONARY = 8192
@@ -837,22 +837,22 @@ class HoveredFlags(enum.IntFlag):
 
     DELAY_NONE = 16384
     """
-    IsItemHovered() only: Return true immediately (default). As this is the default you generally ignore this.
+    `is_item_hovered()` only: Return true immediately (default). As this is the default you generally ignore this.
     """
 
     DELAY_SHORT = 32768
     """
-    IsItemHovered() only: Return true after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).
+    `is_item_hovered()` only: Return true after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).
     """
 
     DELAY_NORMAL = 65536
     """
-    IsItemHovered() only: Return true after style.HoverDelayNormal elapsed (~0.40 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).
+    `is_item_hovered()` only: Return true after style.HoverDelayNormal elapsed (~0.40 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).
     """
 
     NO_SHARED_DELAY = 131072
     """
-    IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
+    `is_item_hovered()` only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
     """
 
 IMGUI_VERSION: str = '1.91.9'
@@ -1077,7 +1077,7 @@ class InputTextFlags(enum.IntFlag):
 
     ENTER_RETURNS_TRUE = 64
     """
-    Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using IsItemDeactivatedAfterEdit() instead!
+    Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using `is_item_deactivated_after_edit()` instead!
     """
 
     ESCAPE_CLEARS_ALL = 128
@@ -1104,12 +1104,12 @@ class InputTextFlags(enum.IntFlag):
 
     PARSE_EMPTY_REF_VAL = 8192
     """
-    InputFloat(), InputInt(), InputScalar() etc. only: parse empty string as zero value.
+    `input_float()`, `input_int()`, `input_scalar()` etc. only: parse empty string as zero value.
     """
 
     DISPLAY_EMPTY_REF_VAL = 16384
     """
-    InputFloat(), InputInt(), InputScalar() etc. only: when value is zero, do not display it. Generally used with ImGuiInputTextFlags_ParseEmptyRefVal.
+    `input_float()`, `input_int()`, `input_scalar()` etc. only: when value is zero, do not display it. Generally used with ImGuiInputTextFlags_ParseEmptyRefVal.
     """
 
     NO_HORIZONTAL_SCROLL = 32768
@@ -1117,7 +1117,7 @@ class InputTextFlags(enum.IntFlag):
 
     NO_UNDO_REDO = 65536
     """
-    Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().
+    Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call `clear_active_id()`.
     """
 
     ELIDE_LEFT = 131072
@@ -1148,7 +1148,7 @@ class InputTextFlags(enum.IntFlag):
 
     CALLBACK_EDIT = 8388608
     """
-    Callback on any edit. Note that InputText() already returns true on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.
+    Callback on any edit. Note that `input_text()` already returns true on edit + you can always use `is_item_edited()`. The callback is useful to manipulate the underlying buffer while focus is active.
     """
 
 class Key(enum.IntEnum):
@@ -1495,7 +1495,7 @@ class MouseCursor(enum.IntEnum):
     ARROW = 0
 
     TEXT_INPUT = 1
-    """When hovering over InputText, etc."""
+    """When hovering over `input_text`, etc."""
 
     RESIZE_ALL = 2
     """(Unused by Dear ImGui functions)"""
@@ -1555,27 +1555,27 @@ class PopupFlags(enum.IntFlag):
 
     NO_REOPEN = 32
     """
-    For OpenPopup*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation)
+    For `open_popup`*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation)
     """
 
     NO_OPEN_OVER_EXISTING_POPUP = 128
     """
-    For OpenPopup*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack
+    For `open_popup`*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack
     """
 
     NO_OPEN_OVER_ITEMS = 256
     """
-    For BeginPopupContextWindow(): don't return true when hovering items, only when hovering empty space
+    For `begin_popup_context_window()`: don't return true when hovering items, only when hovering empty space
     """
 
     ANY_POPUP_ID = 1024
     """
-    For IsPopupOpen(): ignore the ImGuiID parameter and test for any popup.
+    For `is_popup_open()`: ignore the ImGuiID parameter and test for any popup.
     """
 
     ANY_POPUP_LEVEL = 2048
     """
-    For IsPopupOpen(): search/test at any level of the popup stack (default test in the current level)
+    For `is_popup_open()`: search/test at any level of the popup stack (default test in the current level)
     """
 
     ANY_POPUP = 3072
@@ -2093,7 +2093,7 @@ class TabBarFlags(enum.IntFlag):
 
     NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 8
     """
-    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked`(2)) *p_open = false.
     """
 
     NO_TAB_LIST_SCROLLING_BUTTONS = 16
@@ -2128,16 +2128,18 @@ class TabItemFlags(enum.IntFlag):
 
     SET_SELECTED = 2
     """
-    Trigger flag to programmatically make the tab selected when calling BeginTabItem()
+    Trigger flag to programmatically make the tab selected when calling `begin_tab_item()`
     """
 
     NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 4
     """
-    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked`(2)) *p_open = false.
     """
 
     NO_PUSH_ID = 8
-    """Don't call PushID()/PopID() on BeginTabItem()/EndTabItem()"""
+    """
+    Don't call `push_id()`/`pop_id()` on `begin_tab_item()`/`end_tab_item()`
+    """
 
     NO_TOOLTIP = 16
     """Disable tooltip for the given tab"""
@@ -2184,7 +2186,7 @@ class TableColumnFlags(enum.IntFlag):
 
     DISABLED = 1
     """
-    Overriding/master disable flag: hide column, won't show in context menu (unlike calling TableSetColumnEnabled() which manipulates the user accessible state)
+    Overriding/master disable flag: hide column, won't show in context menu (unlike calling `table_set_column_enabled()` which manipulates the user accessible state)
     """
 
     DEFAULT_HIDE = 2
@@ -2232,7 +2234,7 @@ class TableColumnFlags(enum.IntFlag):
 
     NO_HEADER_LABEL = 4096
     """
-    TableHeadersRow() will submit an empty label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers. You may append into this cell by calling TableSetColumnIndex() right after the TableHeadersRow() call.
+    `table_headers_row()` will submit an empty label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers. You may append into this cell by calling `table_set_column_index()` right after the `table_headers_row()` call.
     """
 
     NO_HEADER_WIDTH = 8192
@@ -2249,16 +2251,16 @@ class TableColumnFlags(enum.IntFlag):
     """
 
     INDENT_ENABLE = 65536
-    """Use current Indent value when entering cell (default for column 0)."""
+    """Use current `indent` value when entering cell (default for column 0)."""
 
     INDENT_DISABLE = 131072
     """
-    Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
+    Ignore current `indent` value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.
     """
 
     ANGLED_HEADER = 262144
     """
-    TableHeadersRow() will submit an angled header row for this column. Note this will add an extra row.
+    `table_headers_row()` will submit an angled header row for this column. Note this will add an extra row.
     """
 
     IS_ENABLED = 16777216
@@ -2288,7 +2290,7 @@ class TableFlags(enum.IntFlag):
 
     REORDERABLE = 2
     """
-    Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
+    Enable reordering columns in header row (need calling `table_setup_column()` + `table_headers_row()` to display headers)
     """
 
     HIDEABLE = 4
@@ -2296,7 +2298,7 @@ class TableFlags(enum.IntFlag):
 
     SORTABLE = 8
     """
-    Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
+    Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
     """
 
     NO_SAVED_SETTINGS = 16
@@ -2306,12 +2308,12 @@ class TableFlags(enum.IntFlag):
 
     CONTEXT_MENU_IN_BODY = 32
     """
-    Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
+    Right-click on columns body/contents will display table context menu. By default it is available in `table_headers_row()`.
     """
 
     ROW_BG = 64
     """
-    Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)
+    Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling `table_set_bg_color` with ImGuiTableBgFlags_RowBg0 on each row manually)
     """
 
     BORDERS_INNER_H = 128
@@ -2353,22 +2355,22 @@ class TableFlags(enum.IntFlag):
 
     SIZING_FIXED_FIT = 8192
     """
-    Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.
+    `columns` default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.
     """
 
     SIZING_FIXED_SAME = 16384
     """
-    Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.
+    `columns` default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.
     """
 
     SIZING_STRETCH_PROP = 24576
     """
-    Columns default to _WidthStretch with default weights proportional to each columns contents widths.
+    `columns` default to _WidthStretch with default weights proportional to each columns contents widths.
     """
 
     SIZING_STRETCH_SAME = 32768
     """
-    Columns default to _WidthStretch with default weights all equal, unless overridden by TableSetupColumn().
+    `columns` default to _WidthStretch with default weights all equal, unless overridden by `table_setup_column()`.
     """
 
     NO_HOST_EXTEND_X = 65536
@@ -2393,7 +2395,7 @@ class TableFlags(enum.IntFlag):
 
     NO_CLIP = 1048576
     """
-    Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with TableSetupScrollFreeze().
+    Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with `table_setup_scroll_freeze()`.
     """
 
     PAD_OUTER_X = 2097152
@@ -2411,22 +2413,22 @@ class TableFlags(enum.IntFlag):
 
     SCROLL_X = 16777216
     """
-    Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this creates a child window, ScrollY is currently generally recommended when using ScrollX.
+    Enable horizontal scrolling. Require 'outer_size' parameter of `begin_table()` to specify the container size. Changes default sizing policy. Because this creates a child window, ScrollY is currently generally recommended when using ScrollX.
     """
 
     SCROLL_Y = 33554432
     """
-    Enable vertical scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size.
+    Enable vertical scrolling. Require 'outer_size' parameter of `begin_table()` to specify the container size.
     """
 
     SORT_MULTI = 67108864
     """
-    Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).
+    Hold shift when clicking headers to sort on multiple column. `table_get_sort_specs()` may return specs where (SpecsCount > 1).
     """
 
     SORT_TRISTATE = 134217728
     """
-    Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).
+    Allow no sorting, disable default sorting. `table_get_sort_specs()` may return specs where (SpecsCount == 0).
     """
 
     HIGHLIGHT_HOVERED_COLUMN = 268435456
@@ -2459,14 +2461,14 @@ class TreeNodeFlags(enum.IntFlag):
     """Draw as selected"""
 
     FRAMED = 2
-    """Draw frame with background (e.g. for CollapsingHeader)"""
+    """Draw frame with background (e.g. for `collapsing_header`)"""
 
     ALLOW_OVERLAP = 4
     """Hit testing to allow subsequent widgets to overlap this one"""
 
     NO_TREE_PUSH_ON_OPEN = 8
     """
-    Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack
+    Don't do a `tree_push()` when open (e.g. for `collapsing_header`) = no extra indent nor pushing on ID stack
     """
 
     NO_AUTO_OPEN_ON_LOG = 16
@@ -2497,7 +2499,7 @@ class TreeNodeFlags(enum.IntFlag):
 
     FRAME_PADDING = 1024
     """
-    Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding() before the node.
+    Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling `align_text_to_frame_padding()` before the node.
     """
 
     SPAN_AVAIL_WIDTH = 2048
@@ -2525,7 +2527,7 @@ class TreeNodeFlags(enum.IntFlag):
 
     NAV_LEFT_JUMPS_BACK_HERE = 131072
     """
-    (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
+    (WIP) Nav: left direction may move to this `tree_node()` from any of its child (items submitted between `tree_node` and `tree_pop`)
     """
 
     COLLAPSING_HEADER = 26
@@ -2604,7 +2606,7 @@ class WindowFlags(enum.IntFlag):
 
     NO_BACKGROUND = 128
     """
-    Disable drawing background color (WindowBg, etc.) and outside border. Similar as using SetNextWindowBgAlpha(0.0f).
+    Disable drawing background color (WindowBg, etc.) and outside border. Similar as using `set_next_window_bg_alpha`(0.0f).
     """
 
     NO_SAVED_SETTINGS = 256
@@ -2618,7 +2620,7 @@ class WindowFlags(enum.IntFlag):
 
     HORIZONTAL_SCROLLBAR = 2048
     """
-    Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
+    Allow horizontal scrollbar to appear (off by default). You may use `set_next_window_content_size`(ImVec2(width,0.0f)); prior to calling `begin()` to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
     """
 
     NO_FOCUS_ON_APPEARING = 4096
@@ -2655,19 +2657,19 @@ class WindowFlags(enum.IntFlag):
     NO_INPUTS = 197120
 
     CHILD_WINDOW = 16777216
-    """Don't use! For internal use by BeginChild()"""
+    """Don't use! For internal use by `begin_child()`"""
 
     TOOLTIP = 33554432
-    """Don't use! For internal use by BeginTooltip()"""
+    """Don't use! For internal use by `begin_tooltip()`"""
 
     POPUP = 67108864
-    """Don't use! For internal use by BeginPopup()"""
+    """Don't use! For internal use by `begin_popup()`"""
 
     MODAL = 134217728
-    """Don't use! For internal use by BeginPopupModal()"""
+    """Don't use! For internal use by `begin_popup_modal()`"""
 
     CHILD_MENU = 268435456
-    """Don't use! For internal use by BeginMenu()"""
+    """Don't use! For internal use by `begin_menu()`"""
 
 def align_text_to_frame_padding() -> None:
     """vertically align upcoming text baseline to FramePadding.y so that it will align properly to regularly framed items (call if you have text on a line before a framed item)"""

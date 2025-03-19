@@ -64,6 +64,12 @@ def _highlight_def_line(line: str) -> str:
         last_index = end_index
     return ''.join(output)
 
+def _expand_code_blocks_to_html(s: str) -> str:
+    '''In an arbitrary string, replace occurrences of "foo bar `baz`" with "foo bar <code>baz</code>".'''
+    def repl(match):
+        return f'<code>{match.group(1)}</code>'
+    return re.sub(r'`([^`]+)`', repl, s)
+
 # Parse a .pyi file to extract top-level symbols, their args and return
 # values.  Documentation renderer will use this information to generate
 # API ref information.
@@ -85,7 +91,7 @@ def pyi_to_html_lookup(file_path, outf):
             outf.write('<div class="api">\n')
             outf.write(f'  <code>{_highlight_def_line(source_line)}</code>\n')
             if docstring:
-                outf.write(f'  <p>{docstring}</p>\n')
+                outf.write(f'  <p>{_expand_code_blocks_to_html(docstring)}</p>\n')
             outf.write('</div>\n')
 
             outf.write('$$end\n')
@@ -118,7 +124,7 @@ def pyi_to_html_lookup(file_path, outf):
                             doc_string = expr.value.value
                             if doc_string is None:
                                 doc_string = ''
-                            doc_string = doc_string.strip()
+                            doc_string = _expand_code_blocks_to_html(doc_string.strip())
 
                         if isinstance(target, ast.Name):
                             outf.write(f'  <tr><td class="field">{target.id}</td><td class="fielddoc">{doc_string}</td></tr>\n')

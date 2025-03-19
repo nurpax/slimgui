@@ -49,8 +49,8 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
            "Pressing TAB input a '\t' character into the text field")
     .value("ENTER_RETURNS_TRUE", ImGuiInputTextFlags_EnterReturnsTrue,
            "Return 'true' when Enter is pressed (as opposed to every time the "
-           "value was modified). Consider using IsItemDeactivatedAfterEdit() "
-           "instead!")
+           "value was modified). Consider using "
+           "`is_item_deactivated_after_edit()` instead!")
     .value("ESCAPE_CLEARS_ALL", ImGuiInputTextFlags_EscapeClearsAll,
            "Escape key clears content if not empty, and deactivate otherwise "
            "(contrast to default behavior of Escape to revert)")
@@ -66,18 +66,18 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
     .value("AUTO_SELECT_ALL", ImGuiInputTextFlags_AutoSelectAll,
            "Select entire text when first taking mouse focus")
     .value("PARSE_EMPTY_REF_VAL", ImGuiInputTextFlags_ParseEmptyRefVal,
-           "InputFloat(), InputInt(), InputScalar() etc. only: parse empty "
-           "string as zero value.")
+           "`input_float()`, `input_int()`, `input_scalar()` etc. only: parse "
+           "empty string as zero value.")
     .value("DISPLAY_EMPTY_REF_VAL", ImGuiInputTextFlags_DisplayEmptyRefVal,
-           "InputFloat(), InputInt(), InputScalar() etc. only: when value is "
-           "zero, do not display it. Generally used with "
+           "`input_float()`, `input_int()`, `input_scalar()` etc. only: when "
+           "value is zero, do not display it. Generally used with "
            "ImGuiInputTextFlags_ParseEmptyRefVal.")
     .value("NO_HORIZONTAL_SCROLL", ImGuiInputTextFlags_NoHorizontalScroll,
            "Disable following the cursor horizontally")
     .value("NO_UNDO_REDO", ImGuiInputTextFlags_NoUndoRedo,
            "Disable undo/redo. Note that input text owns the text data while "
            "active, if you want to provide your own undo/redo stack you need "
-           "e.g. to call ClearActiveID().")
+           "e.g. to call `clear_active_id()`.")
     .value("ELIDE_LEFT", ImGuiInputTextFlags_ElideLeft,
            "When text doesn't fit, elide left side to ensure right side stays "
            "visible. Useful for path/filenames. Single-line only!")
@@ -99,10 +99,11 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
         "wants to be resized (for string types which hold a cache of their "
         "Size). You will be provided a new BufSize in the callback and NEED to "
         "honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)")
-    .value("CALLBACK_EDIT", ImGuiInputTextFlags_CallbackEdit,
-           "Callback on any edit. Note that InputText() already returns true "
-           "on edit + you can always use IsItemEdited(). The callback is "
-           "useful to manipulate the underlying buffer while focus is active.");
+    .value(
+        "CALLBACK_EDIT", ImGuiInputTextFlags_CallbackEdit,
+        "Callback on any edit. Note that `input_text()` already returns true "
+        "on edit + you can always use `is_item_edited()`. The callback is "
+        "useful to manipulate the underlying buffer while focus is active.");
 nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiButtonFlags_None)
@@ -115,7 +116,7 @@ nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
     .value("MOUSE_BUTTON_MASK_", ImGuiButtonFlags_MouseButtonMask_,
            "[Internal]")
     .value("ENABLE_NAV", ImGuiButtonFlags_EnableNav,
-           "InvisibleButton(): do not disable navigation/tabbing. Otherwise "
+           "`invisible_button()`: do not disable navigation/tabbing. Otherwise "
            "disabled by default.");
 nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiChildFlags_None)
@@ -155,25 +156,27 @@ nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
 nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
                                nb::is_arithmetic())
     .value("NONE", ImGuiDragDropFlags_None)
-    .value(
-        "SOURCE_NO_PREVIEW_TOOLTIP", ImGuiDragDropFlags_SourceNoPreviewTooltip,
-        "Disable preview tooltip. By default, a successful call to "
-        "BeginDragDropSource opens a tooltip so you can display a preview or "
-        "description of the source contents. This flag disables this behavior.")
+    .value("SOURCE_NO_PREVIEW_TOOLTIP",
+           ImGuiDragDropFlags_SourceNoPreviewTooltip,
+           "Disable preview tooltip. By default, a successful call to "
+           "`begin_drag_drop_source` opens a tooltip so you can display a "
+           "preview or description of the source contents. This flag disables "
+           "this behavior.")
     .value("SOURCE_NO_DISABLE_HOVER", ImGuiDragDropFlags_SourceNoDisableHover,
-           "By default, when dragging we clear data so that IsItemHovered() "
-           "will return false, to avoid subsequent user code submitting "
-           "tooltips. This flag disables this behavior so you can still call "
-           "IsItemHovered() on the source item.")
+           "By default, when dragging we clear data so that "
+           "`is_item_hovered()` will return false, to avoid subsequent user "
+           "code submitting tooltips. This flag disables this behavior so you "
+           "can still call `is_item_hovered()` on the source item.")
     .value("SOURCE_NO_HOLD_TO_OPEN_OTHERS",
            ImGuiDragDropFlags_SourceNoHoldToOpenOthers,
            "Disable the behavior that allows to open tree nodes and collapsing "
            "header by holding over them while dragging a source item.")
-    .value("SOURCE_ALLOW_NULL_ID", ImGuiDragDropFlags_SourceAllowNullID,
-           "Allow items such as Text(), Image() that have no unique identifier "
-           "to be used as drag source, by manufacturing a temporary identifier "
-           "based on their window-relative position. This is extremely unusual "
-           "within the dear imgui ecosystem and so we made it explicit.")
+    .value(
+        "SOURCE_ALLOW_NULL_ID", ImGuiDragDropFlags_SourceAllowNullID,
+        "Allow items such as `text()`, `image()` that have no unique "
+        "identifier to be used as drag source, by manufacturing a temporary "
+        "identifier based on their window-relative position. This is extremely "
+        "unusual within the dear imgui ecosystem and so we made it explicit.")
     .value("SOURCE_EXTERN", ImGuiDragDropFlags_SourceExtern,
            "External source (from outside of dear imgui), won't attempt to "
            "read current item/window info. Will always return true. Only one "
@@ -188,17 +191,17 @@ nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
            "Hint to specify that the payload may not be copied outside current "
            "process.")
     .value("ACCEPT_BEFORE_DELIVERY", ImGuiDragDropFlags_AcceptBeforeDelivery,
-           "AcceptDragDropPayload() will returns true even before the mouse "
-           "button is released. You can then call IsDelivery() to test if the "
-           "payload needs to be delivered.")
+           "`accept_drag_drop_payload()` will returns true even before the "
+           "mouse button is released. You can then call IsDelivery() to test "
+           "if the payload needs to be delivered.")
     .value("ACCEPT_NO_DRAW_DEFAULT_RECT",
            ImGuiDragDropFlags_AcceptNoDrawDefaultRect,
            "Do not draw the default highlight rectangle when hovering over "
            "target.")
     .value("ACCEPT_NO_PREVIEW_TOOLTIP",
            ImGuiDragDropFlags_AcceptNoPreviewTooltip,
-           "Request hiding the BeginDragDropSource tooltip from the "
-           "BeginDragDropTarget site.")
+           "Request hiding the `begin_drag_drop_source` tooltip from the "
+           "`begin_drag_drop_target` site.")
     .value("ACCEPT_PEEK_ONLY", ImGuiDragDropFlags_AcceptPeekOnly,
            "For peeking ahead and inspecting the payload before delivery.");
 nb::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags", nb::is_flag(),
@@ -237,7 +240,7 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
            "Resize every window to its content every frame")
     .value("NO_BACKGROUND", ImGuiWindowFlags_NoBackground,
            "Disable drawing background color (WindowBg, etc.) and outside "
-           "border. Similar as using SetNextWindowBgAlpha(0.0f).")
+           "border. Similar as using `set_next_window_bg_alpha`(0.0f).")
     .value("NO_SAVED_SETTINGS", ImGuiWindowFlags_NoSavedSettings,
            "Never load/save settings in .ini file")
     .value("NO_MOUSE_INPUTS", ImGuiWindowFlags_NoMouseInputs,
@@ -245,8 +248,8 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
     .value("MENU_BAR", ImGuiWindowFlags_MenuBar, "Has a menu-bar")
     .value("HORIZONTAL_SCROLLBAR", ImGuiWindowFlags_HorizontalScrollbar,
            "Allow horizontal scrollbar to appear (off by default). You may use "
-           "SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling "
-           "Begin() to specify width. Read code in imgui_demo in the "
+           "`set_next_window_content_size`(ImVec2(width,0.0f)); prior to "
+           "calling `begin()` to specify width. Read code in imgui_demo in the "
            "\"Horizontal Scrolling\" section.")
     .value(
         "NO_FOCUS_ON_APPEARING", ImGuiWindowFlags_NoFocusOnAppearing,
@@ -275,26 +278,26 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
     .value("NO_DECORATION", ImGuiWindowFlags_NoDecoration)
     .value("NO_INPUTS", ImGuiWindowFlags_NoInputs)
     .value("CHILD_WINDOW", ImGuiWindowFlags_ChildWindow,
-           "Don't use! For internal use by BeginChild()")
+           "Don't use! For internal use by `begin_child()`")
     .value("TOOLTIP", ImGuiWindowFlags_Tooltip,
-           "Don't use! For internal use by BeginTooltip()")
+           "Don't use! For internal use by `begin_tooltip()`")
     .value("POPUP", ImGuiWindowFlags_Popup,
-           "Don't use! For internal use by BeginPopup()")
+           "Don't use! For internal use by `begin_popup()`")
     .value("MODAL", ImGuiWindowFlags_Modal,
-           "Don't use! For internal use by BeginPopupModal()")
+           "Don't use! For internal use by `begin_popup_modal()`")
     .value("CHILD_MENU", ImGuiWindowFlags_ChildMenu,
-           "Don't use! For internal use by BeginMenu()");
+           "Don't use! For internal use by `begin_menu()`");
 nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
                                nb::is_arithmetic())
     .value("NONE", ImGuiTreeNodeFlags_None)
     .value("SELECTED", ImGuiTreeNodeFlags_Selected, "Draw as selected")
     .value("FRAMED", ImGuiTreeNodeFlags_Framed,
-           "Draw frame with background (e.g. for CollapsingHeader)")
+           "Draw frame with background (e.g. for `collapsing_header`)")
     .value("ALLOW_OVERLAP", ImGuiTreeNodeFlags_AllowOverlap,
            "Hit testing to allow subsequent widgets to overlap this one")
     .value("NO_TREE_PUSH_ON_OPEN", ImGuiTreeNodeFlags_NoTreePushOnOpen,
-           "Don't do a TreePush() when open (e.g. for CollapsingHeader) = no "
-           "extra indent nor pushing on ID stack")
+           "Don't do a `tree_push()` when open (e.g. for `collapsing_header`) "
+           "= no extra indent nor pushing on ID stack")
     .value("NO_AUTO_OPEN_ON_LOG", ImGuiTreeNodeFlags_NoAutoOpenOnLog,
            "Don't automatically and temporarily open node when Logging is "
            "active (by default logging will automatically open tree nodes)")
@@ -316,7 +319,7 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value("FRAME_PADDING", ImGuiTreeNodeFlags_FramePadding,
            "Use FramePadding (even for an unframed text node) to vertically "
            "align text baseline to regular widget height. Equivalent to "
-           "calling AlignTextToFramePadding() before the node.")
+           "calling `align_text_to_frame_padding()` before the node.")
     .value("SPAN_AVAIL_WIDTH", ImGuiTreeNodeFlags_SpanAvailWidth,
            "Extend hit box to the right-most edge, even if not framed. This is "
            "not the default in order to allow adding other items on the same "
@@ -333,8 +336,8 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value("LABEL_SPAN_ALL_COLUMNS", ImGuiTreeNodeFlags_LabelSpanAllColumns,
            "Label will span all columns of its container table")
     .value("NAV_LEFT_JUMPS_BACK_HERE", ImGuiTreeNodeFlags_NavLeftJumpsBackHere,
-           "(WIP) Nav: left direction may move to this TreeNode() from any of "
-           "its child (items submitted between TreeNode and TreePop)")
+           "(WIP) Nav: left direction may move to this `tree_node()` from any "
+           "of its child (items submitted between `tree_node` and `tree_pop`)")
     .value("COLLAPSING_HEADER", ImGuiTreeNodeFlags_CollapsingHeader);
 nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
                              nb::is_arithmetic())
@@ -350,8 +353,8 @@ nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
            ImGuiTabBarFlags_NoCloseWithMiddleMouseButton,
            "Disable behavior of closing tabs (that are submitted with p_open "
            "!= NULL) with middle mouse button. You may handle this behavior "
-           "manually on user's side with if (IsItemHovered() && "
-           "IsMouseClicked(2)) *p_open = false.")
+           "manually on user's side with if (`is_item_hovered()` && "
+           "`is_mouse_clicked`(2)) *p_open = false.")
     .value("NO_TAB_LIST_SCROLLING_BUTTONS",
            ImGuiTabBarFlags_NoTabListScrollingButtons,
            "Disable scrolling buttons (apply when fitting policy is "
@@ -375,15 +378,16 @@ nb::enum_<ImGuiTabItemFlags_>(m, "TabItemFlags", nb::is_flag(),
            "ImGuiTabItemFlags_NoAssumedClosure.")
     .value("SET_SELECTED", ImGuiTabItemFlags_SetSelected,
            "Trigger flag to programmatically make the tab selected when "
-           "calling BeginTabItem()")
+           "calling `begin_tab_item()`")
     .value("NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON",
            ImGuiTabItemFlags_NoCloseWithMiddleMouseButton,
            "Disable behavior of closing tabs (that are submitted with p_open "
            "!= NULL) with middle mouse button. You may handle this behavior "
-           "manually on user's side with if (IsItemHovered() && "
-           "IsMouseClicked(2)) *p_open = false.")
+           "manually on user's side with if (`is_item_hovered()` && "
+           "`is_mouse_clicked`(2)) *p_open = false.")
     .value("NO_PUSH_ID", ImGuiTabItemFlags_NoPushId,
-           "Don't call PushID()/PopID() on BeginTabItem()/EndTabItem()")
+           "Don't call `push_id()`/`pop_id()` on "
+           "`begin_tab_item()`/`end_tab_item()`")
     .value("NO_TOOLTIP", ImGuiTabItemFlags_NoTooltip,
            "Disable tooltip for the given tab")
     .value(
@@ -405,23 +409,23 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
     .value("RESIZABLE", ImGuiTableFlags_Resizable, "Enable resizing columns.")
     .value("REORDERABLE", ImGuiTableFlags_Reorderable,
            "Enable reordering columns in header row (need calling "
-           "TableSetupColumn() + TableHeadersRow() to display headers)")
+           "`table_setup_column()` + `table_headers_row()` to display headers)")
     .value("HIDEABLE", ImGuiTableFlags_Hideable,
            "Enable hiding/disabling columns in context menu.")
     .value(
         "SORTABLE", ImGuiTableFlags_Sortable,
-        "Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also "
-        "see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.")
+        "Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. "
+        "Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.")
     .value("NO_SAVED_SETTINGS", ImGuiTableFlags_NoSavedSettings,
            "Disable persisting columns order, width and sort settings in the "
            ".ini file.")
     .value("CONTEXT_MENU_IN_BODY", ImGuiTableFlags_ContextMenuInBody,
            "Right-click on columns body/contents will display table context "
-           "menu. By default it is available in TableHeadersRow().")
+           "menu. By default it is available in `table_headers_row()`.")
     .value("ROW_BG", ImGuiTableFlags_RowBg,
            "Set each RowBg color with ImGuiCol_TableRowBg or "
-           "ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with "
-           "ImGuiTableBgFlags_RowBg0 on each row manually)")
+           "ImGuiCol_TableRowBgAlt (equivalent of calling `table_set_bg_color` "
+           "with ImGuiTableBgFlags_RowBg0 on each row manually)")
     .value("BORDERS_INNER_H", ImGuiTableFlags_BordersInnerH,
            "Draw horizontal borders between rows.")
     .value("BORDERS_OUTER_H", ImGuiTableFlags_BordersOuterH,
@@ -444,18 +448,18 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
         "[ALPHA] Disable vertical borders in columns Body until hovered for "
         "resize (borders will always appear in Headers). -> May move to style")
     .value("SIZING_FIXED_FIT", ImGuiTableFlags_SizingFixedFit,
-           "Columns default to _WidthFixed or _WidthAuto (if resizable or not "
-           "resizable), matching contents width.")
+           "`columns` default to _WidthFixed or _WidthAuto (if resizable or "
+           "not resizable), matching contents width.")
     .value("SIZING_FIXED_SAME", ImGuiTableFlags_SizingFixedSame,
-           "Columns default to _WidthFixed or _WidthAuto (if resizable or not "
-           "resizable), matching the maximum contents width of all columns. "
-           "Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.")
+           "`columns` default to _WidthFixed or _WidthAuto (if resizable or "
+           "not resizable), matching the maximum contents width of all "
+           "columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.")
     .value("SIZING_STRETCH_PROP", ImGuiTableFlags_SizingStretchProp,
-           "Columns default to _WidthStretch with default weights proportional "
-           "to each columns contents widths.")
+           "`columns` default to _WidthStretch with default weights "
+           "proportional to each columns contents widths.")
     .value("SIZING_STRETCH_SAME", ImGuiTableFlags_SizingStretchSame,
-           "Columns default to _WidthStretch with default weights all equal, "
-           "unless overridden by TableSetupColumn().")
+           "`columns` default to _WidthStretch with default weights all equal, "
+           "unless overridden by `table_setup_column()`.")
     .value("NO_HOST_EXTEND_X", ImGuiTableFlags_NoHostExtendX,
            "Make outer width auto-fit to columns, overriding outer_size.x "
            "value. Only available when ScrollX/ScrollY are disabled and "
@@ -474,10 +478,11 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
            "allocation on a 100-wide table with 3 columns: Without this flag: "
            "33,33,34. With this flag: 33,33,33). With larger number of "
            "columns, resizing will appear to be less smooth.")
-    .value("NO_CLIP", ImGuiTableFlags_NoClip,
-           "Disable clipping rectangle for every individual columns (reduce "
-           "draw command count, items will be able to overflow into other "
-           "columns). Generally incompatible with TableSetupScrollFreeze().")
+    .value(
+        "NO_CLIP", ImGuiTableFlags_NoClip,
+        "Disable clipping rectangle for every individual columns (reduce draw "
+        "command count, items will be able to overflow into other columns). "
+        "Generally incompatible with `table_setup_scroll_freeze()`.")
     .value("PAD_OUTER_X", ImGuiTableFlags_PadOuterX,
            "Default if BordersOuterV is on. Enable outermost padding. "
            "Generally desirable if you have headers.")
@@ -489,18 +494,18 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
         "BordersOuterV is on, single inner padding if BordersOuterV is off).")
     .value("SCROLL_X", ImGuiTableFlags_ScrollX,
            "Enable horizontal scrolling. Require 'outer_size' parameter of "
-           "BeginTable() to specify the container size. Changes default sizing "
-           "policy. Because this creates a child window, ScrollY is currently "
-           "generally recommended when using ScrollX.")
+           "`begin_table()` to specify the container size. Changes default "
+           "sizing policy. Because this creates a child window, ScrollY is "
+           "currently generally recommended when using ScrollX.")
     .value("SCROLL_Y", ImGuiTableFlags_ScrollY,
            "Enable vertical scrolling. Require 'outer_size' parameter of "
-           "BeginTable() to specify the container size.")
+           "`begin_table()` to specify the container size.")
     .value("SORT_MULTI", ImGuiTableFlags_SortMulti,
            "Hold shift when clicking headers to sort on multiple column. "
-           "TableGetSortSpecs() may return specs where (SpecsCount > 1).")
+           "`table_get_sort_specs()` may return specs where (SpecsCount > 1).")
     .value("SORT_TRISTATE", ImGuiTableFlags_SortTristate,
-           "Allow no sorting, disable default sorting. TableGetSortSpecs() may "
-           "return specs where (SpecsCount == 0).")
+           "Allow no sorting, disable default sorting. "
+           "`table_get_sort_specs()` may return specs where (SpecsCount == 0).")
     .value("HIGHLIGHT_HOVERED_COLUMN", ImGuiTableFlags_HighlightHoveredColumn,
            "Highlight column headers when hovered (may evolve into a fuller "
            "highlight)")
@@ -516,8 +521,8 @@ nb::enum_<ImGuiTableColumnFlags_>(m, "TableColumnFlags", nb::is_flag(),
     .value("NONE", ImGuiTableColumnFlags_None)
     .value("DISABLED", ImGuiTableColumnFlags_Disabled,
            "Overriding/master disable flag: hide column, won't show in context "
-           "menu (unlike calling TableSetColumnEnabled() which manipulates the "
-           "user accessible state)")
+           "menu (unlike calling `table_set_column_enabled()` which "
+           "manipulates the user accessible state)")
     .value("DEFAULT_HIDE", ImGuiTableColumnFlags_DefaultHide,
            "Default as a hidden/disabled column.")
     .value("DEFAULT_SORT", ImGuiTableColumnFlags_DefaultSort,
@@ -547,12 +552,12 @@ nb::enum_<ImGuiTableColumnFlags_>(m, "TableColumnFlags", nb::is_flag(),
            "Disable ability to sort in the ascending direction.")
     .value("NO_SORT_DESCENDING", ImGuiTableColumnFlags_NoSortDescending,
            "Disable ability to sort in the descending direction.")
-    .value(
-        "NO_HEADER_LABEL", ImGuiTableColumnFlags_NoHeaderLabel,
-        "TableHeadersRow() will submit an empty label for this column. "
-        "Convenient for some small columns. Name will still appear in context "
-        "menu or in angled headers. You may append into this cell by calling "
-        "TableSetColumnIndex() right after the TableHeadersRow() call.")
+    .value("NO_HEADER_LABEL", ImGuiTableColumnFlags_NoHeaderLabel,
+           "`table_headers_row()` will submit an empty label for this column. "
+           "Convenient for some small columns. Name will still appear in "
+           "context menu or in angled headers. You may append into this cell "
+           "by calling `table_set_column_index()` right after the "
+           "`table_headers_row()` call.")
     .value("NO_HEADER_WIDTH", ImGuiTableColumnFlags_NoHeaderWidth,
            "Disable header text width contribution to automatic column width.")
     .value("PREFER_SORT_ASCENDING", ImGuiTableColumnFlags_PreferSortAscending,
@@ -563,13 +568,13 @@ nb::enum_<ImGuiTableColumnFlags_>(m, "TableColumnFlags", nb::is_flag(),
            "this column.")
     .value(
         "INDENT_ENABLE", ImGuiTableColumnFlags_IndentEnable,
-        "Use current Indent value when entering cell (default for column 0).")
+        "Use current `indent` value when entering cell (default for column 0).")
     .value(
         "INDENT_DISABLE", ImGuiTableColumnFlags_IndentDisable,
-        "Ignore current Indent value when entering cell (default for columns > "
-        "0). Indentation changes _within_ the cell will still be honored.")
+        "Ignore current `indent` value when entering cell (default for columns "
+        "> 0). Indentation changes _within_ the cell will still be honored.")
     .value("ANGLED_HEADER", ImGuiTableColumnFlags_AngledHeader,
-           "TableHeadersRow() will submit an angled header row for this "
+           "`table_headers_row()` will submit an angled header row for this "
            "column. Note this will add an extra row.")
     .value("IS_ENABLED", ImGuiTableColumnFlags_IsEnabled,
            "Status: is enabled == not hidden by user/api (referred to as "
@@ -590,8 +595,8 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
                                 nb::is_arithmetic())
     .value("NONE", ImGuiColorEditFlags_None)
     .value("NO_ALPHA", ImGuiColorEditFlags_NoAlpha,
-           "ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will "
-           "only read 3 components from the input pointer).")
+           "ColorEdit, ColorPicker, `color_button`: ignore Alpha component "
+           "(will only read 3 components from the input pointer).")
     .value("NO_PICKER", ImGuiColorEditFlags_NoPicker,
            "ColorEdit: disable picker when clicking on color square.")
     .value("NO_OPTIONS", ImGuiColorEditFlags_NoOptions,
@@ -604,8 +609,8 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
            "ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. "
            "to show only the small preview color square).")
     .value("NO_TOOLTIP", ImGuiColorEditFlags_NoTooltip,
-           "ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering "
-           "the preview.")
+           "ColorEdit, ColorPicker, `color_button`: disable tooltip when "
+           "hovering the preview.")
     .value("NO_LABEL", ImGuiColorEditFlags_NoLabel,
            "ColorEdit, ColorPicker: disable display of inline text label (the "
            "label is still forwarded to the tooltip and picker).")
@@ -613,20 +618,20 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
            "ColorPicker: disable bigger color preview on right side of the "
            "picker, use small color square preview instead.")
     .value("NO_DRAG_DROP", ImGuiColorEditFlags_NoDragDrop,
-           "ColorEdit: disable drag and drop target. ColorButton: disable drag "
-           "and drop source.")
+           "ColorEdit: disable drag and drop target. `color_button`: disable "
+           "drag and drop source.")
     .value("NO_BORDER", ImGuiColorEditFlags_NoBorder,
-           "ColorButton: disable border (which is enforced by default)")
+           "`color_button`: disable border (which is enforced by default)")
     .value("ALPHA_OPAQUE", ImGuiColorEditFlags_AlphaOpaque,
-           "ColorEdit, ColorPicker, ColorButton: disable alpha in the "
+           "ColorEdit, ColorPicker, `color_button`: disable alpha in the "
            "preview,. Contrary to _NoAlpha it may still be edited when calling "
-           "ColorEdit4()/ColorPicker4(). For ColorButton() this does the same "
-           "as _NoAlpha.")
+           "`color_edit4()`/`color_picker4()`. For `color_button()` this does "
+           "the same as _NoAlpha.")
     .value("ALPHA_NO_BG", ImGuiColorEditFlags_AlphaNoBg,
-           "ColorEdit, ColorPicker, ColorButton: disable rendering a "
+           "ColorEdit, ColorPicker, `color_button`: disable rendering a "
            "checkerboard background behind transparent color.")
     .value("ALPHA_PREVIEW_HALF", ImGuiColorEditFlags_AlphaPreviewHalf,
-           "ColorEdit, ColorPicker, ColorButton: display half opaque / half "
+           "ColorEdit, ColorPicker, `color_button`: display half opaque / half "
            "transparent preview.")
     .value(
         "ALPHA_BAR", ImGuiColorEditFlags_AlphaBar,
@@ -641,11 +646,11 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
     .value("DISPLAY_HSV", ImGuiColorEditFlags_DisplayHSV)
     .value("DISPLAY_HEX", ImGuiColorEditFlags_DisplayHex)
     .value("UINT8", ImGuiColorEditFlags_Uint8,
-           "ColorEdit, ColorPicker, ColorButton: _display_ values formatted as "
-           "0..255.")
+           "ColorEdit, ColorPicker, `color_button`: _display_ values formatted "
+           "as 0..255.")
     .value("FLOAT", ImGuiColorEditFlags_Float,
-           "ColorEdit, ColorPicker, ColorButton: _display_ values formatted as "
-           "0.0f..1.0f floats instead of 0..255 integers. No round-trip of "
+           "ColorEdit, ColorPicker, `color_button`: _display_ values formatted "
+           "as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of "
            "value via integers.")
     .value("PICKER_HUE_BAR", ImGuiColorEditFlags_PickerHueBar,
            "ColorPicker: bar for Hue, rectangle for Sat/Value.")
@@ -667,8 +672,8 @@ nb::enum_<ImGuiComboFlags_>(m, "ComboFlags", nb::is_flag(), nb::is_arithmetic())
            "Align the popup toward the left by default")
     .value("HEIGHT_SMALL", ImGuiComboFlags_HeightSmall,
            "Max ~4 items visible. Tip: If you want your combo popup to be a "
-           "specific size you can use SetNextWindowSizeConstraints() prior to "
-           "calling BeginCombo()")
+           "specific size you can use `set_next_window_size_constraints()` "
+           "prior to calling `begin_combo()`")
     .value("HEIGHT_REGULAR", ImGuiComboFlags_HeightRegular,
            "Max ~8 items visible (default)")
     .value("HEIGHT_LARGE", ImGuiComboFlags_HeightLarge, "Max ~20 items visible")
@@ -712,9 +717,9 @@ nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags", nb::is_flag(),
     .value("NO_MOUSE_CURSOR_CHANGE", ImGuiConfigFlags_NoMouseCursorChange,
            "Instruct backend to not alter mouse cursor shape and visibility. "
            "Use if the backend cursor changes are interfering with yours and "
-           "you don't want to use SetMouseCursor() to change mouse cursor. You "
-           "may want to honor requests from imgui by reading GetMouseCursor() "
-           "yourself instead.")
+           "you don't want to use `set_mouse_cursor()` to change mouse cursor. "
+           "You may want to honor requests from imgui by reading "
+           "`get_mouse_cursor()` yourself instead.")
     .value(
         "NO_KEYBOARD", ImGuiConfigFlags_NoKeyboard,
         "Instruct dear imgui to disable keyboard inputs and interactions. This "
@@ -728,7 +733,7 @@ nb::enum_<ImGuiBackendFlags_>(m, "BackendFlags", nb::is_flag(),
     .value("HAS_GAMEPAD", ImGuiBackendFlags_HasGamepad,
            "Backend Platform supports gamepad and currently has one connected.")
     .value("HAS_MOUSE_CURSORS", ImGuiBackendFlags_HasMouseCursors,
-           "Backend Platform supports honoring GetMouseCursor() value to "
+           "Backend Platform supports honoring `get_mouse_cursor()` value to "
            "change the OS cursor shape.")
     .value("HAS_SET_MOUSE_POS", ImGuiBackendFlags_HasSetMousePos,
            "Backend Platform supports io.WantSetMousePos requests to "
@@ -759,16 +764,16 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
            "another window, not obstructed by an active popup or modal "
            "blocking inputs under them.")
     .value("CHILD_WINDOWS", ImGuiHoveredFlags_ChildWindows,
-           "IsWindowHovered() only: Return true if any children of the window "
-           "is hovered")
+           "`is_window_hovered()` only: Return true if any children of the "
+           "window is hovered")
     .value("ROOT_WINDOW", ImGuiHoveredFlags_RootWindow,
-           "IsWindowHovered() only: Test from root window (top most parent of "
-           "the current hierarchy)")
+           "`is_window_hovered()` only: Test from root window (top most parent "
+           "of the current hierarchy)")
     .value("ANY_WINDOW", ImGuiHoveredFlags_AnyWindow,
-           "IsWindowHovered() only: Return true if any window is hovered")
+           "`is_window_hovered()` only: Return true if any window is hovered")
     .value("NO_POPUP_HIERARCHY", ImGuiHoveredFlags_NoPopupHierarchy,
-           "IsWindowHovered() only: Do not consider popup hierarchy (do not "
-           "treat popup emitter as parent of popup) (when used with "
+           "`is_window_hovered()` only: Do not consider popup hierarchy (do "
+           "not treat popup emitter as parent of popup) (when used with "
            "_ChildWindows or _RootWindow)")
     .value("ALLOW_WHEN_BLOCKED_BY_POPUP",
            ImGuiHoveredFlags_AllowWhenBlockedByPopup,
@@ -780,41 +785,41 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
            "item/window. Useful for Drag and Drop patterns.")
     .value("ALLOW_WHEN_OVERLAPPED_BY_ITEM",
            ImGuiHoveredFlags_AllowWhenOverlappedByItem,
-           "IsItemHovered() only: Return true even if the item uses "
+           "`is_item_hovered()` only: Return true even if the item uses "
            "AllowOverlap mode and is overlapped by another hoverable item.")
     .value("ALLOW_WHEN_OVERLAPPED_BY_WINDOW",
            ImGuiHoveredFlags_AllowWhenOverlappedByWindow,
-           "IsItemHovered() only: Return true even if the position is "
+           "`is_item_hovered()` only: Return true even if the position is "
            "obstructed or overlapped by another window.")
     .value("ALLOW_WHEN_DISABLED", ImGuiHoveredFlags_AllowWhenDisabled,
-           "IsItemHovered() only: Return true even if the item is disabled")
+           "`is_item_hovered()` only: Return true even if the item is disabled")
     .value("NO_NAV_OVERRIDE", ImGuiHoveredFlags_NoNavOverride,
-           "IsItemHovered() only: Disable using keyboard/gamepad navigation "
-           "state when active, always query mouse")
+           "`is_item_hovered()` only: Disable using keyboard/gamepad "
+           "navigation state when active, always query mouse")
     .value("ALLOW_WHEN_OVERLAPPED", ImGuiHoveredFlags_AllowWhenOverlapped)
     .value("RECT_ONLY", ImGuiHoveredFlags_RectOnly)
     .value("ROOT_AND_CHILD_WINDOWS", ImGuiHoveredFlags_RootAndChildWindows)
     .value("FOR_TOOLTIP", ImGuiHoveredFlags_ForTooltip,
-           "Shortcut for standard flags when using IsItemHovered() + "
-           "SetTooltip() sequence.")
+           "`shortcut` for standard flags when using `is_item_hovered()` + "
+           "`set_tooltip()` sequence.")
     .value(
         "STATIONARY", ImGuiHoveredFlags_Stationary,
         "Require mouse to be stationary for style.HoverStationaryDelay (~0.15 "
         "sec) _at least one time_. After this, can move on same item/window. "
         "Using the stationary test tends to reduces the need for a long delay.")
     .value("DELAY_NONE", ImGuiHoveredFlags_DelayNone,
-           "IsItemHovered() only: Return true immediately (default). As this "
-           "is the default you generally ignore this.")
+           "`is_item_hovered()` only: Return true immediately (default). As "
+           "this is the default you generally ignore this.")
     .value("DELAY_SHORT", ImGuiHoveredFlags_DelayShort,
-           "IsItemHovered() only: Return true after style.HoverDelayShort "
+           "`is_item_hovered()` only: Return true after style.HoverDelayShort "
            "elapsed (~0.15 sec) (shared between items) + requires mouse to be "
            "stationary for style.HoverStationaryDelay (once per item).")
     .value("DELAY_NORMAL", ImGuiHoveredFlags_DelayNormal,
-           "IsItemHovered() only: Return true after style.HoverDelayNormal "
+           "`is_item_hovered()` only: Return true after style.HoverDelayNormal "
            "elapsed (~0.40 sec) (shared between items) + requires mouse to be "
            "stationary for style.HoverStationaryDelay (once per item).")
     .value("NO_SHARED_DELAY", ImGuiHoveredFlags_NoSharedDelay,
-           "IsItemHovered() only: Disable shared delay system where moving "
+           "`is_item_hovered()` only: Disable shared delay system where moving "
            "from one item to the next keeps the previous timer for a short "
            "time (standard for tooltips with long delays)");
 nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
@@ -863,20 +868,20 @@ nb::enum_<ImGuiPopupFlags_>(m, "PopupFlags", nb::is_flag(), nb::is_arithmetic())
     .value("MOUSE_BUTTON_MASK_", ImGuiPopupFlags_MouseButtonMask_)
     .value("MOUSE_BUTTON_DEFAULT_", ImGuiPopupFlags_MouseButtonDefault_)
     .value("NO_REOPEN", ImGuiPopupFlags_NoReopen,
-           "For OpenPopup*(), BeginPopupContext*(): don't reopen same popup if "
-           "already open (won't reposition, won't reinitialize navigation)")
+           "For `open_popup`*(), BeginPopupContext*(): don't reopen same popup "
+           "if already open (won't reposition, won't reinitialize navigation)")
     .value("NO_OPEN_OVER_EXISTING_POPUP",
            ImGuiPopupFlags_NoOpenOverExistingPopup,
-           "For OpenPopup*(), BeginPopupContext*(): don't open if there's "
+           "For `open_popup`*(), BeginPopupContext*(): don't open if there's "
            "already a popup at the same level of the popup stack")
     .value("NO_OPEN_OVER_ITEMS", ImGuiPopupFlags_NoOpenOverItems,
-           "For BeginPopupContextWindow(): don't return true when hovering "
-           "items, only when hovering empty space")
+           "For `begin_popup_context_window()`: don't return true when "
+           "hovering items, only when hovering empty space")
     .value("ANY_POPUP_ID", ImGuiPopupFlags_AnyPopupId,
-           "For IsPopupOpen(): ignore the ImGuiID parameter and test for any "
-           "popup.")
+           "For `is_popup_open()`: ignore the ImGuiID parameter and test for "
+           "any popup.")
     .value("ANY_POPUP_LEVEL", ImGuiPopupFlags_AnyPopupLevel,
-           "For IsPopupOpen(): search/test at any level of the popup stack "
+           "For `is_popup_open()`: search/test at any level of the popup stack "
            "(default test in the current level)")
     .value("ANY_POPUP", ImGuiPopupFlags_AnyPopup);
 nb::enum_<ImGuiMouseButton_>(m, "MouseButton", nb::is_arithmetic())
@@ -888,7 +893,7 @@ nb::enum_<ImGuiMouseCursor_>(m, "MouseCursor", nb::is_arithmetic())
     .value("NONE", ImGuiMouseCursor_None)
     .value("ARROW", ImGuiMouseCursor_Arrow)
     .value("TEXT_INPUT", ImGuiMouseCursor_TextInput,
-           "When hovering over InputText, etc.")
+           "When hovering over `input_text`, etc.")
     .value("RESIZE_ALL", ImGuiMouseCursor_ResizeAll,
            "(Unused by Dear ImGui functions)")
     .value("RESIZE_NS", ImGuiMouseCursor_ResizeNS,
@@ -933,15 +938,15 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
     .value("SCROLLBAR_GRAB_HOVERED", ImGuiCol_ScrollbarGrabHovered)
     .value("SCROLLBAR_GRAB_ACTIVE", ImGuiCol_ScrollbarGrabActive)
     .value("CHECK_MARK", ImGuiCol_CheckMark,
-           "Checkbox tick and RadioButton circle")
+           "`checkbox` tick and `radio_button` circle")
     .value("SLIDER_GRAB", ImGuiCol_SliderGrab)
     .value("SLIDER_GRAB_ACTIVE", ImGuiCol_SliderGrabActive)
     .value("BUTTON", ImGuiCol_Button)
     .value("BUTTON_HOVERED", ImGuiCol_ButtonHovered)
     .value("BUTTON_ACTIVE", ImGuiCol_ButtonActive)
     .value("HEADER", ImGuiCol_Header,
-           "Header* colors are used for CollapsingHeader, TreeNode, "
-           "Selectable, MenuItem")
+           "Header* colors are used for `collapsing_header`, `tree_node`, "
+           "`selectable`, `menu_item`")
     .value("HEADER_HOVERED", ImGuiCol_HeaderHovered)
     .value("HEADER_ACTIVE", ImGuiCol_HeaderActive)
     .value("SEPARATOR", ImGuiCol_Separator)

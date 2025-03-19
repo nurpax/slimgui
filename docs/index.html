@@ -179,21 +179,21 @@ div.api {
     margin-bottom: 0.3em;
 }
 
-.api code {
+.api > code {
     font-size: 11pt;
     color: #555;
 }
 
-.api code span.keyword {
+.api > code span.keyword {
     color: #444;
 }
 
-.api code span.func_name {
+.api > code span.func_name {
     color: #000;
     font-weight: bold;
 }
 
-.api code span.arg_name {
+.api > code span.arg_name {
     color: #000;
 }
 
@@ -214,6 +214,15 @@ div.api {
 .api table tr {
     border: none;
     margin-top: 2em;
+}
+
+.api table code {
+    font-size: 9pt;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: transparent;
 }
 
 .api table tr td:first-child,
@@ -1675,7 +1684,7 @@ div.api {
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">HAS_GAMEPAD</td><td class="fielddoc">Backend Platform supports gamepad and currently has one connected.</td></tr>
-  <tr><td class="field">HAS_MOUSE_CURSORS</td><td class="fielddoc">Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.</td></tr>
+  <tr><td class="field">HAS_MOUSE_CURSORS</td><td class="fielddoc">Backend Platform supports honoring <code>get_mouse_cursor()</code> value to change the OS cursor shape.</td></tr>
   <tr><td class="field">HAS_SET_MOUSE_POS</td><td class="fielddoc">Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if io.ConfigNavMoveSetMousePos is set).</td></tr>
   <tr><td class="field">RENDERER_HAS_VTX_OFFSET</td><td class="fielddoc">Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.</td></tr>
   </table>
@@ -1687,7 +1696,7 @@ div.api {
   <tr><td class="field">MOUSE_BUTTON_LEFT</td><td class="fielddoc">React on left mouse button (default)</td></tr>
   <tr><td class="field">MOUSE_BUTTON_RIGHT</td><td class="fielddoc">React on right mouse button</td></tr>
   <tr><td class="field">MOUSE_BUTTON_MIDDLE</td><td class="fielddoc">React on center mouse button</td></tr>
-  <tr><td class="field">ENABLE_NAV</td><td class="fielddoc">InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.</td></tr>
+  <tr><td class="field">ENABLE_NAV</td><td class="fielddoc"><code>invisible_button()</code>: do not disable navigation/tabbing. Otherwise disabled by default.</td></tr>
   </table>
 </div>
 <div class="api">
@@ -1727,13 +1736,13 @@ div.api {
   <tr><td class="field">SCROLLBAR_GRAB</td><td class="fielddoc"></td></tr>
   <tr><td class="field">SCROLLBAR_GRAB_HOVERED</td><td class="fielddoc"></td></tr>
   <tr><td class="field">SCROLLBAR_GRAB_ACTIVE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">CHECK_MARK</td><td class="fielddoc">Checkbox tick and RadioButton circle</td></tr>
+  <tr><td class="field">CHECK_MARK</td><td class="fielddoc"><code>checkbox</code> tick and <code>radio_button</code> circle</td></tr>
   <tr><td class="field">SLIDER_GRAB</td><td class="fielddoc"></td></tr>
   <tr><td class="field">SLIDER_GRAB_ACTIVE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">BUTTON</td><td class="fielddoc"></td></tr>
   <tr><td class="field">BUTTON_HOVERED</td><td class="fielddoc"></td></tr>
   <tr><td class="field">BUTTON_ACTIVE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HEADER</td><td class="fielddoc">Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem</td></tr>
+  <tr><td class="field">HEADER</td><td class="fielddoc">Header* colors are used for <code>collapsing_header</code>, <code>tree_node</code>, <code>selectable</code>, <code>menu_item</code></td></tr>
   <tr><td class="field">HEADER_HOVERED</td><td class="fielddoc"></td></tr>
   <tr><td class="field">HEADER_ACTIVE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">SEPARATOR</td><td class="fielddoc"></td></tr>
@@ -1772,26 +1781,26 @@ div.api {
   <div><span class="class_name">ColorEditFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_ALPHA</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).</td></tr>
+  <tr><td class="field">NO_ALPHA</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: ignore Alpha component (will only read 3 components from the input pointer).</td></tr>
   <tr><td class="field">NO_PICKER</td><td class="fielddoc">ColorEdit: disable picker when clicking on color square.</td></tr>
   <tr><td class="field">NO_OPTIONS</td><td class="fielddoc">ColorEdit: disable toggling options menu when right-clicking on inputs/small preview.</td></tr>
   <tr><td class="field">NO_SMALL_PREVIEW</td><td class="fielddoc">ColorEdit, ColorPicker: disable color square preview next to the inputs. (e.g. to show only the inputs)</td></tr>
   <tr><td class="field">NO_INPUTS</td><td class="fielddoc">ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview color square).</td></tr>
-  <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.</td></tr>
+  <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: disable tooltip when hovering the preview.</td></tr>
   <tr><td class="field">NO_LABEL</td><td class="fielddoc">ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).</td></tr>
   <tr><td class="field">NO_SIDE_PREVIEW</td><td class="fielddoc">ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead.</td></tr>
-  <tr><td class="field">NO_DRAG_DROP</td><td class="fielddoc">ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.</td></tr>
-  <tr><td class="field">NO_BORDER</td><td class="fielddoc">ColorButton: disable border (which is enforced by default)</td></tr>
-  <tr><td class="field">ALPHA_OPAQUE</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling ColorEdit4()/ColorPicker4(). For ColorButton() this does the same as _NoAlpha.</td></tr>
-  <tr><td class="field">ALPHA_NO_BG</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: disable rendering a checkerboard background behind transparent color.</td></tr>
-  <tr><td class="field">ALPHA_PREVIEW_HALF</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: display half opaque / half transparent preview.</td></tr>
+  <tr><td class="field">NO_DRAG_DROP</td><td class="fielddoc">ColorEdit: disable drag and drop target. <code>color_button</code>: disable drag and drop source.</td></tr>
+  <tr><td class="field">NO_BORDER</td><td class="fielddoc"><code>color_button</code>: disable border (which is enforced by default)</td></tr>
+  <tr><td class="field">ALPHA_OPAQUE</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling <code>color_edit4()</code>/<code>color_picker4()</code>. For <code>color_button()</code> this does the same as _NoAlpha.</td></tr>
+  <tr><td class="field">ALPHA_NO_BG</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: disable rendering a checkerboard background behind transparent color.</td></tr>
+  <tr><td class="field">ALPHA_PREVIEW_HALF</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: display half opaque / half transparent preview.</td></tr>
   <tr><td class="field">ALPHA_BAR</td><td class="fielddoc">ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.</td></tr>
   <tr><td class="field">HDR</td><td class="fielddoc">(WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).</td></tr>
   <tr><td class="field">DISPLAY_RGB</td><td class="fielddoc">ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex.</td></tr>
   <tr><td class="field">DISPLAY_HSV</td><td class="fielddoc"></td></tr>
   <tr><td class="field">DISPLAY_HEX</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">UINT8</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0..255.</td></tr>
-  <tr><td class="field">FLOAT</td><td class="fielddoc">ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.</td></tr>
+  <tr><td class="field">UINT8</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: _display_ values formatted as 0..255.</td></tr>
+  <tr><td class="field">FLOAT</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.</td></tr>
   <tr><td class="field">PICKER_HUE_BAR</td><td class="fielddoc">ColorPicker: bar for Hue, rectangle for Sat/Value.</td></tr>
   <tr><td class="field">PICKER_HUE_WHEEL</td><td class="fielddoc">ColorPicker: wheel for Hue, triangle for Sat/Value.</td></tr>
   <tr><td class="field">INPUT_RGB</td><td class="fielddoc">ColorEdit, ColorPicker: input and output data in RGB format.</td></tr>
@@ -1803,7 +1812,7 @@ div.api {
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">POPUP_ALIGN_LEFT</td><td class="fielddoc">Align the popup toward the left by default</td></tr>
-  <tr><td class="field">HEIGHT_SMALL</td><td class="fielddoc">Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use SetNextWindowSizeConstraints() prior to calling BeginCombo()</td></tr>
+  <tr><td class="field">HEIGHT_SMALL</td><td class="fielddoc">Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use <code>set_next_window_size_constraints()</code> prior to calling <code>begin_combo()</code></td></tr>
   <tr><td class="field">HEIGHT_REGULAR</td><td class="fielddoc">Max ~8 items visible (default)</td></tr>
   <tr><td class="field">HEIGHT_LARGE</td><td class="fielddoc">Max ~20 items visible</td></tr>
   <tr><td class="field">HEIGHT_LARGEST</td><td class="fielddoc">As many fitting items as possible</td></tr>
@@ -1829,7 +1838,7 @@ div.api {
   <tr><td class="field">NAV_ENABLE_KEYBOARD</td><td class="fielddoc">Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.</td></tr>
   <tr><td class="field">NAV_ENABLE_GAMEPAD</td><td class="fielddoc">Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.</td></tr>
   <tr><td class="field">NO_MOUSE</td><td class="fielddoc">Instruct dear imgui to disable mouse inputs and interactions.</td></tr>
-  <tr><td class="field">NO_MOUSE_CURSOR_CHANGE</td><td class="fielddoc">Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.</td></tr>
+  <tr><td class="field">NO_MOUSE_CURSOR_CHANGE</td><td class="fielddoc">Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use <code>set_mouse_cursor()</code> to change mouse cursor. You may want to honor requests from imgui by reading <code>get_mouse_cursor()</code> yourself instead.</td></tr>
   <tr><td class="field">NO_KEYBOARD</td><td class="fielddoc">Instruct dear imgui to disable keyboard inputs and interactions. This is done by ignoring keyboard events and clearing existing states.</td></tr>
   <tr><td class="field">IS_SRGB</td><td class="fielddoc">Application is SRGB-aware.</td></tr>
   <tr><td class="field">IS_TOUCH_SCREEN</td><td class="fielddoc">Application is using a touch screen instead of a mouse.</td></tr>
@@ -1850,17 +1859,17 @@ div.api {
   <div><span class="class_name">DragDropFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SOURCE_NO_PREVIEW_TOOLTIP</td><td class="fielddoc">Disable preview tooltip. By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.</td></tr>
-  <tr><td class="field">SOURCE_NO_DISABLE_HOVER</td><td class="fielddoc">By default, when dragging we clear data so that IsItemHovered() will return false, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call IsItemHovered() on the source item.</td></tr>
+  <tr><td class="field">SOURCE_NO_PREVIEW_TOOLTIP</td><td class="fielddoc">Disable preview tooltip. By default, a successful call to <code>begin_drag_drop_source</code> opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.</td></tr>
+  <tr><td class="field">SOURCE_NO_DISABLE_HOVER</td><td class="fielddoc">By default, when dragging we clear data so that <code>is_item_hovered()</code> will return false, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call <code>is_item_hovered()</code> on the source item.</td></tr>
   <tr><td class="field">SOURCE_NO_HOLD_TO_OPEN_OTHERS</td><td class="fielddoc">Disable the behavior that allows to open tree nodes and collapsing header by holding over them while dragging a source item.</td></tr>
-  <tr><td class="field">SOURCE_ALLOW_NULL_ID</td><td class="fielddoc">Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.</td></tr>
+  <tr><td class="field">SOURCE_ALLOW_NULL_ID</td><td class="fielddoc">Allow items such as <code>text()</code>, <code>image()</code> that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.</td></tr>
   <tr><td class="field">SOURCE_EXTERN</td><td class="fielddoc">External source (from outside of dear imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously.</td></tr>
   <tr><td class="field">PAYLOAD_AUTO_EXPIRE</td><td class="fielddoc">Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged)</td></tr>
   <tr><td class="field">PAYLOAD_NO_CROSS_CONTEXT</td><td class="fielddoc">Hint to specify that the payload may not be copied outside current dear imgui context.</td></tr>
   <tr><td class="field">PAYLOAD_NO_CROSS_PROCESS</td><td class="fielddoc">Hint to specify that the payload may not be copied outside current process.</td></tr>
-  <tr><td class="field">ACCEPT_BEFORE_DELIVERY</td><td class="fielddoc">AcceptDragDropPayload() will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.</td></tr>
+  <tr><td class="field">ACCEPT_BEFORE_DELIVERY</td><td class="fielddoc"><code>accept_drag_drop_payload()</code> will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.</td></tr>
   <tr><td class="field">ACCEPT_NO_DRAW_DEFAULT_RECT</td><td class="fielddoc">Do not draw the default highlight rectangle when hovering over target.</td></tr>
-  <tr><td class="field">ACCEPT_NO_PREVIEW_TOOLTIP</td><td class="fielddoc">Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.</td></tr>
+  <tr><td class="field">ACCEPT_NO_PREVIEW_TOOLTIP</td><td class="fielddoc">Request hiding the <code>begin_drag_drop_source</code> tooltip from the <code>begin_drag_drop_target</code> site.</td></tr>
   <tr><td class="field">ACCEPT_PEEK_ONLY</td><td class="fielddoc">For peeking ahead and inspecting the payload before delivery.</td></tr>
   </table>
 </div>
@@ -1896,25 +1905,25 @@ div.api {
   <div><span class="class_name">HoveredFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc">Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.</td></tr>
-  <tr><td class="field">CHILD_WINDOWS</td><td class="fielddoc">IsWindowHovered() only: Return true if any children of the window is hovered</td></tr>
-  <tr><td class="field">ROOT_WINDOW</td><td class="fielddoc">IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)</td></tr>
-  <tr><td class="field">ANY_WINDOW</td><td class="fielddoc">IsWindowHovered() only: Return true if any window is hovered</td></tr>
-  <tr><td class="field">NO_POPUP_HIERARCHY</td><td class="fielddoc">IsWindowHovered() only: Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)</td></tr>
+  <tr><td class="field">CHILD_WINDOWS</td><td class="fielddoc"><code>is_window_hovered()</code> only: Return true if any children of the window is hovered</td></tr>
+  <tr><td class="field">ROOT_WINDOW</td><td class="fielddoc"><code>is_window_hovered()</code> only: Test from root window (top most parent of the current hierarchy)</td></tr>
+  <tr><td class="field">ANY_WINDOW</td><td class="fielddoc"><code>is_window_hovered()</code> only: Return true if any window is hovered</td></tr>
+  <tr><td class="field">NO_POPUP_HIERARCHY</td><td class="fielddoc"><code>is_window_hovered()</code> only: Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)</td></tr>
   <tr><td class="field">ALLOW_WHEN_BLOCKED_BY_POPUP</td><td class="fielddoc">Return true even if a popup window is normally blocking access to this item/window</td></tr>
   <tr><td class="field">ALLOW_WHEN_BLOCKED_BY_ACTIVE_ITEM</td><td class="fielddoc">Return true even if an active item is blocking access to this item/window. Useful for Drag and Drop patterns.</td></tr>
-  <tr><td class="field">ALLOW_WHEN_OVERLAPPED_BY_ITEM</td><td class="fielddoc">IsItemHovered() only: Return true even if the item uses AllowOverlap mode and is overlapped by another hoverable item.</td></tr>
-  <tr><td class="field">ALLOW_WHEN_OVERLAPPED_BY_WINDOW</td><td class="fielddoc">IsItemHovered() only: Return true even if the position is obstructed or overlapped by another window.</td></tr>
-  <tr><td class="field">ALLOW_WHEN_DISABLED</td><td class="fielddoc">IsItemHovered() only: Return true even if the item is disabled</td></tr>
-  <tr><td class="field">NO_NAV_OVERRIDE</td><td class="fielddoc">IsItemHovered() only: Disable using keyboard/gamepad navigation state when active, always query mouse</td></tr>
+  <tr><td class="field">ALLOW_WHEN_OVERLAPPED_BY_ITEM</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true even if the item uses AllowOverlap mode and is overlapped by another hoverable item.</td></tr>
+  <tr><td class="field">ALLOW_WHEN_OVERLAPPED_BY_WINDOW</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true even if the position is obstructed or overlapped by another window.</td></tr>
+  <tr><td class="field">ALLOW_WHEN_DISABLED</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true even if the item is disabled</td></tr>
+  <tr><td class="field">NO_NAV_OVERRIDE</td><td class="fielddoc"><code>is_item_hovered()</code> only: Disable using keyboard/gamepad navigation state when active, always query mouse</td></tr>
   <tr><td class="field">ALLOW_WHEN_OVERLAPPED</td><td class="fielddoc"></td></tr>
   <tr><td class="field">RECT_ONLY</td><td class="fielddoc"></td></tr>
   <tr><td class="field">ROOT_AND_CHILD_WINDOWS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">FOR_TOOLTIP</td><td class="fielddoc">Shortcut for standard flags when using IsItemHovered() + SetTooltip() sequence.</td></tr>
+  <tr><td class="field">FOR_TOOLTIP</td><td class="fielddoc"><code>shortcut</code> for standard flags when using <code>is_item_hovered()</code> + <code>set_tooltip()</code> sequence.</td></tr>
   <tr><td class="field">STATIONARY</td><td class="fielddoc">Require mouse to be stationary for style.HoverStationaryDelay (~0.15 sec) _at least one time_. After this, can move on same item/window. Using the stationary test tends to reduces the need for a long delay.</td></tr>
-  <tr><td class="field">DELAY_NONE</td><td class="fielddoc">IsItemHovered() only: Return true immediately (default). As this is the default you generally ignore this.</td></tr>
-  <tr><td class="field">DELAY_SHORT</td><td class="fielddoc">IsItemHovered() only: Return true after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).</td></tr>
-  <tr><td class="field">DELAY_NORMAL</td><td class="fielddoc">IsItemHovered() only: Return true after style.HoverDelayNormal elapsed (~0.40 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).</td></tr>
-  <tr><td class="field">NO_SHARED_DELAY</td><td class="fielddoc">IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)</td></tr>
+  <tr><td class="field">DELAY_NONE</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true immediately (default). As this is the default you generally ignore this.</td></tr>
+  <tr><td class="field">DELAY_SHORT</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).</td></tr>
+  <tr><td class="field">DELAY_NORMAL</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true after style.HoverDelayNormal elapsed (~0.40 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).</td></tr>
+  <tr><td class="field">NO_SHARED_DELAY</td><td class="fielddoc"><code>is_item_hovered()</code> only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)</td></tr>
   </table>
 </div>
 <div class="api">
@@ -1927,24 +1936,24 @@ div.api {
   <tr><td class="field">CHARS_UPPERCASE</td><td class="fielddoc">Turn a..z into A..Z</td></tr>
   <tr><td class="field">CHARS_NO_BLANK</td><td class="fielddoc">Filter out spaces, tabs</td></tr>
   <tr><td class="field">ALLOW_TAB_INPUT</td><td class="fielddoc">Pressing TAB input a '	' character into the text field</td></tr>
-  <tr><td class="field">ENTER_RETURNS_TRUE</td><td class="fielddoc">Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using IsItemDeactivatedAfterEdit() instead!</td></tr>
+  <tr><td class="field">ENTER_RETURNS_TRUE</td><td class="fielddoc">Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using <code>is_item_deactivated_after_edit()</code> instead!</td></tr>
   <tr><td class="field">ESCAPE_CLEARS_ALL</td><td class="fielddoc">Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)</td></tr>
   <tr><td class="field">CTRL_ENTER_FOR_NEW_LINE</td><td class="fielddoc">In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter).</td></tr>
   <tr><td class="field">READ_ONLY</td><td class="fielddoc">Read-only mode</td></tr>
   <tr><td class="field">PASSWORD</td><td class="fielddoc">Password mode, display all characters as '*', disable copy</td></tr>
   <tr><td class="field">ALWAYS_OVERWRITE</td><td class="fielddoc">Overwrite mode</td></tr>
   <tr><td class="field">AUTO_SELECT_ALL</td><td class="fielddoc">Select entire text when first taking mouse focus</td></tr>
-  <tr><td class="field">PARSE_EMPTY_REF_VAL</td><td class="fielddoc">InputFloat(), InputInt(), InputScalar() etc. only: parse empty string as zero value.</td></tr>
-  <tr><td class="field">DISPLAY_EMPTY_REF_VAL</td><td class="fielddoc">InputFloat(), InputInt(), InputScalar() etc. only: when value is zero, do not display it. Generally used with ImGuiInputTextFlags_ParseEmptyRefVal.</td></tr>
+  <tr><td class="field">PARSE_EMPTY_REF_VAL</td><td class="fielddoc"><code>input_float()</code>, <code>input_int()</code>, <code>input_scalar()</code> etc. only: parse empty string as zero value.</td></tr>
+  <tr><td class="field">DISPLAY_EMPTY_REF_VAL</td><td class="fielddoc"><code>input_float()</code>, <code>input_int()</code>, <code>input_scalar()</code> etc. only: when value is zero, do not display it. Generally used with ImGuiInputTextFlags_ParseEmptyRefVal.</td></tr>
   <tr><td class="field">NO_HORIZONTAL_SCROLL</td><td class="fielddoc">Disable following the cursor horizontally</td></tr>
-  <tr><td class="field">NO_UNDO_REDO</td><td class="fielddoc">Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().</td></tr>
+  <tr><td class="field">NO_UNDO_REDO</td><td class="fielddoc">Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call <code>clear_active_id()</code>.</td></tr>
   <tr><td class="field">ELIDE_LEFT</td><td class="fielddoc">When text doesn't fit, elide left side to ensure right side stays visible. Useful for path/filenames. Single-line only!</td></tr>
   <tr><td class="field">CALLBACK_COMPLETION</td><td class="fielddoc">Callback on pressing TAB (for completion handling)</td></tr>
   <tr><td class="field">CALLBACK_HISTORY</td><td class="fielddoc">Callback on pressing Up/Down arrows (for history handling)</td></tr>
   <tr><td class="field">CALLBACK_ALWAYS</td><td class="fielddoc">Callback on each iteration. User code may query cursor position, modify text buffer.</td></tr>
   <tr><td class="field">CALLBACK_CHAR_FILTER</td><td class="fielddoc">Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.</td></tr>
   <tr><td class="field">CALLBACK_RESIZE</td><td class="fielddoc">Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)</td></tr>
-  <tr><td class="field">CALLBACK_EDIT</td><td class="fielddoc">Callback on any edit. Note that InputText() already returns true on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.</td></tr>
+  <tr><td class="field">CALLBACK_EDIT</td><td class="fielddoc">Callback on any edit. Note that <code>input_text()</code> already returns true on edit + you can always use <code>is_item_edited()</code>. The callback is useful to manipulate the underlying buffer while focus is active.</td></tr>
   </table>
 </div>
 <div class="api">
@@ -2130,7 +2139,7 @@ div.api {
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">ARROW</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">TEXT_INPUT</td><td class="fielddoc">When hovering over InputText, etc.</td></tr>
+  <tr><td class="field">TEXT_INPUT</td><td class="fielddoc">When hovering over <code>input_text</code>, etc.</td></tr>
   <tr><td class="field">RESIZE_ALL</td><td class="fielddoc">(Unused by Dear ImGui functions)</td></tr>
   <tr><td class="field">RESIZE_NS</td><td class="fielddoc">When hovering over a horizontal border</td></tr>
   <tr><td class="field">RESIZE_EW</td><td class="fielddoc">When hovering over a vertical border or a column</td></tr>
@@ -2150,11 +2159,11 @@ div.api {
   <tr><td class="field">MOUSE_BUTTON_LEFT</td><td class="fielddoc">For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)</td></tr>
   <tr><td class="field">MOUSE_BUTTON_RIGHT</td><td class="fielddoc">For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)</td></tr>
   <tr><td class="field">MOUSE_BUTTON_MIDDLE</td><td class="fielddoc">For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as ImGuiMouseButton_Middle)</td></tr>
-  <tr><td class="field">NO_REOPEN</td><td class="fielddoc">For OpenPopup*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation)</td></tr>
-  <tr><td class="field">NO_OPEN_OVER_EXISTING_POPUP</td><td class="fielddoc">For OpenPopup*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack</td></tr>
-  <tr><td class="field">NO_OPEN_OVER_ITEMS</td><td class="fielddoc">For BeginPopupContextWindow(): don't return true when hovering items, only when hovering empty space</td></tr>
-  <tr><td class="field">ANY_POPUP_ID</td><td class="fielddoc">For IsPopupOpen(): ignore the ImGuiID parameter and test for any popup.</td></tr>
-  <tr><td class="field">ANY_POPUP_LEVEL</td><td class="fielddoc">For IsPopupOpen(): search/test at any level of the popup stack (default test in the current level)</td></tr>
+  <tr><td class="field">NO_REOPEN</td><td class="fielddoc">For <code>open_popup</code>*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation)</td></tr>
+  <tr><td class="field">NO_OPEN_OVER_EXISTING_POPUP</td><td class="fielddoc">For <code>open_popup</code>*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack</td></tr>
+  <tr><td class="field">NO_OPEN_OVER_ITEMS</td><td class="fielddoc">For <code>begin_popup_context_window()</code>: don't return true when hovering items, only when hovering empty space</td></tr>
+  <tr><td class="field">ANY_POPUP_ID</td><td class="fielddoc">For <code>is_popup_open()</code>: ignore the ImGuiID parameter and test for any popup.</td></tr>
+  <tr><td class="field">ANY_POPUP_LEVEL</td><td class="fielddoc">For <code>is_popup_open()</code>: search/test at any level of the popup stack (default test in the current level)</td></tr>
   <tr><td class="field">ANY_POPUP</td><td class="fielddoc"></td></tr>
   </table>
 </div>
@@ -2231,7 +2240,7 @@ div.api {
   <tr><td class="field">REORDERABLE</td><td class="fielddoc">Allow manually dragging tabs to re-order them + New tabs are appended at the end of list</td></tr>
   <tr><td class="field">AUTO_SELECT_NEW_TABS</td><td class="fielddoc">Automatically select new tabs when they appear</td></tr>
   <tr><td class="field">TAB_LIST_POPUP_BUTTON</td><td class="fielddoc">Disable buttons to open the tab list popup</td></tr>
-  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.</td></tr>
+  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked</code>(2)) *p_open = false.</td></tr>
   <tr><td class="field">NO_TAB_LIST_SCROLLING_BUTTONS</td><td class="fielddoc">Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)</td></tr>
   <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">Disable tooltips when hovering a tab</td></tr>
   <tr><td class="field">DRAW_SELECTED_OVERLINE</td><td class="fielddoc">Draw selected overline markers over selected tab</td></tr>
@@ -2244,9 +2253,9 @@ div.api {
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">UNSAVED_DOCUMENT</td><td class="fielddoc">Display a dot next to the title + set ImGuiTabItemFlags_NoAssumedClosure.</td></tr>
-  <tr><td class="field">SET_SELECTED</td><td class="fielddoc">Trigger flag to programmatically make the tab selected when calling BeginTabItem()</td></tr>
-  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.</td></tr>
-  <tr><td class="field">NO_PUSH_ID</td><td class="fielddoc">Don't call PushID()/PopID() on BeginTabItem()/EndTabItem()</td></tr>
+  <tr><td class="field">SET_SELECTED</td><td class="fielddoc">Trigger flag to programmatically make the tab selected when calling <code>begin_tab_item()</code></td></tr>
+  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked</code>(2)) *p_open = false.</td></tr>
+  <tr><td class="field">NO_PUSH_ID</td><td class="fielddoc">Don't call <code>push_id()</code>/<code>pop_id()</code> on <code>begin_tab_item()</code>/<code>end_tab_item()</code></td></tr>
   <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">Disable tooltip for the given tab</td></tr>
   <tr><td class="field">NO_REORDER</td><td class="fielddoc">Disable reordering this tab or having another tab cross over this tab</td></tr>
   <tr><td class="field">LEADING</td><td class="fielddoc">Enforce the tab position to the left of the tab bar (after the tab list popup button)</td></tr>
@@ -2267,7 +2276,7 @@ div.api {
   <div><span class="class_name">TableColumnFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DISABLED</td><td class="fielddoc">Overriding/master disable flag: hide column, won't show in context menu (unlike calling TableSetColumnEnabled() which manipulates the user accessible state)</td></tr>
+  <tr><td class="field">DISABLED</td><td class="fielddoc">Overriding/master disable flag: hide column, won't show in context menu (unlike calling <code>table_set_column_enabled()</code> which manipulates the user accessible state)</td></tr>
   <tr><td class="field">DEFAULT_HIDE</td><td class="fielddoc">Default as a hidden/disabled column.</td></tr>
   <tr><td class="field">DEFAULT_SORT</td><td class="fielddoc">Default as a sorting column.</td></tr>
   <tr><td class="field">WIDTH_STRETCH</td><td class="fielddoc">Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is _SizingStretchSame or _SizingStretchProp).</td></tr>
@@ -2279,13 +2288,13 @@ div.api {
   <tr><td class="field">NO_SORT</td><td class="fielddoc">Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).</td></tr>
   <tr><td class="field">NO_SORT_ASCENDING</td><td class="fielddoc">Disable ability to sort in the ascending direction.</td></tr>
   <tr><td class="field">NO_SORT_DESCENDING</td><td class="fielddoc">Disable ability to sort in the descending direction.</td></tr>
-  <tr><td class="field">NO_HEADER_LABEL</td><td class="fielddoc">TableHeadersRow() will submit an empty label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers. You may append into this cell by calling TableSetColumnIndex() right after the TableHeadersRow() call.</td></tr>
+  <tr><td class="field">NO_HEADER_LABEL</td><td class="fielddoc"><code>table_headers_row()</code> will submit an empty label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers. You may append into this cell by calling <code>table_set_column_index()</code> right after the <code>table_headers_row()</code> call.</td></tr>
   <tr><td class="field">NO_HEADER_WIDTH</td><td class="fielddoc">Disable header text width contribution to automatic column width.</td></tr>
   <tr><td class="field">PREFER_SORT_ASCENDING</td><td class="fielddoc">Make the initial sort direction Ascending when first sorting on this column (default).</td></tr>
   <tr><td class="field">PREFER_SORT_DESCENDING</td><td class="fielddoc">Make the initial sort direction Descending when first sorting on this column.</td></tr>
-  <tr><td class="field">INDENT_ENABLE</td><td class="fielddoc">Use current Indent value when entering cell (default for column 0).</td></tr>
-  <tr><td class="field">INDENT_DISABLE</td><td class="fielddoc">Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.</td></tr>
-  <tr><td class="field">ANGLED_HEADER</td><td class="fielddoc">TableHeadersRow() will submit an angled header row for this column. Note this will add an extra row.</td></tr>
+  <tr><td class="field">INDENT_ENABLE</td><td class="fielddoc">Use current <code>indent</code> value when entering cell (default for column 0).</td></tr>
+  <tr><td class="field">INDENT_DISABLE</td><td class="fielddoc">Ignore current <code>indent</code> value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.</td></tr>
+  <tr><td class="field">ANGLED_HEADER</td><td class="fielddoc"><code>table_headers_row()</code> will submit an angled header row for this column. Note this will add an extra row.</td></tr>
   <tr><td class="field">IS_ENABLED</td><td class="fielddoc">Status: is enabled == not hidden by user/api (referred to as "Hide" in _DefaultHide and _NoHide) flags.</td></tr>
   <tr><td class="field">IS_VISIBLE</td><td class="fielddoc">Status: is visible == is enabled AND not clipped by scrolling.</td></tr>
   <tr><td class="field">IS_SORTED</td><td class="fielddoc">Status: is currently part of the sort specs</td></tr>
@@ -2297,12 +2306,12 @@ div.api {
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">RESIZABLE</td><td class="fielddoc">Enable resizing columns.</td></tr>
-  <tr><td class="field">REORDERABLE</td><td class="fielddoc">Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)</td></tr>
+  <tr><td class="field">REORDERABLE</td><td class="fielddoc">Enable reordering columns in header row (need calling <code>table_setup_column()</code> + <code>table_headers_row()</code> to display headers)</td></tr>
   <tr><td class="field">HIDEABLE</td><td class="fielddoc">Enable hiding/disabling columns in context menu.</td></tr>
-  <tr><td class="field">SORTABLE</td><td class="fielddoc">Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.</td></tr>
+  <tr><td class="field">SORTABLE</td><td class="fielddoc">Enable sorting. Call <code>table_get_sort_specs()</code> to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.</td></tr>
   <tr><td class="field">NO_SAVED_SETTINGS</td><td class="fielddoc">Disable persisting columns order, width and sort settings in the .ini file.</td></tr>
-  <tr><td class="field">CONTEXT_MENU_IN_BODY</td><td class="fielddoc">Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().</td></tr>
-  <tr><td class="field">ROW_BG</td><td class="fielddoc">Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)</td></tr>
+  <tr><td class="field">CONTEXT_MENU_IN_BODY</td><td class="fielddoc">Right-click on columns body/contents will display table context menu. By default it is available in <code>table_headers_row()</code>.</td></tr>
+  <tr><td class="field">ROW_BG</td><td class="fielddoc">Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling <code>table_set_bg_color</code> with ImGuiTableBgFlags_RowBg0 on each row manually)</td></tr>
   <tr><td class="field">BORDERS_INNER_H</td><td class="fielddoc">Draw horizontal borders between rows.</td></tr>
   <tr><td class="field">BORDERS_OUTER_H</td><td class="fielddoc">Draw horizontal borders at the top and bottom.</td></tr>
   <tr><td class="field">BORDERS_INNER_V</td><td class="fielddoc">Draw vertical borders between columns.</td></tr>
@@ -2314,22 +2323,22 @@ div.api {
   <tr><td class="field">BORDERS</td><td class="fielddoc">Draw all borders.</td></tr>
   <tr><td class="field">NO_BORDERS_IN_BODY</td><td class="fielddoc">[ALPHA] Disable vertical borders in columns Body (borders will always appear in Headers). -> May move to style</td></tr>
   <tr><td class="field">NO_BORDERS_IN_BODY_UNTIL_RESIZE</td><td class="fielddoc">[ALPHA] Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers). -> May move to style</td></tr>
-  <tr><td class="field">SIZING_FIXED_FIT</td><td class="fielddoc">Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.</td></tr>
-  <tr><td class="field">SIZING_FIXED_SAME</td><td class="fielddoc">Columns default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.</td></tr>
-  <tr><td class="field">SIZING_STRETCH_PROP</td><td class="fielddoc">Columns default to _WidthStretch with default weights proportional to each columns contents widths.</td></tr>
-  <tr><td class="field">SIZING_STRETCH_SAME</td><td class="fielddoc">Columns default to _WidthStretch with default weights all equal, unless overridden by TableSetupColumn().</td></tr>
+  <tr><td class="field">SIZING_FIXED_FIT</td><td class="fielddoc"><code>columns</code> default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.</td></tr>
+  <tr><td class="field">SIZING_FIXED_SAME</td><td class="fielddoc"><code>columns</code> default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.</td></tr>
+  <tr><td class="field">SIZING_STRETCH_PROP</td><td class="fielddoc"><code>columns</code> default to _WidthStretch with default weights proportional to each columns contents widths.</td></tr>
+  <tr><td class="field">SIZING_STRETCH_SAME</td><td class="fielddoc"><code>columns</code> default to _WidthStretch with default weights all equal, unless overridden by <code>table_setup_column()</code>.</td></tr>
   <tr><td class="field">NO_HOST_EXTEND_X</td><td class="fielddoc">Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.</td></tr>
   <tr><td class="field">NO_HOST_EXTEND_Y</td><td class="fielddoc">Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.</td></tr>
   <tr><td class="field">NO_KEEP_COLUMNS_VISIBLE</td><td class="fielddoc">Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable.</td></tr>
   <tr><td class="field">PRECISE_WIDTHS</td><td class="fielddoc">Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.</td></tr>
-  <tr><td class="field">NO_CLIP</td><td class="fielddoc">Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with TableSetupScrollFreeze().</td></tr>
+  <tr><td class="field">NO_CLIP</td><td class="fielddoc">Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with <code>table_setup_scroll_freeze()</code>.</td></tr>
   <tr><td class="field">PAD_OUTER_X</td><td class="fielddoc">Default if BordersOuterV is on. Enable outermost padding. Generally desirable if you have headers.</td></tr>
   <tr><td class="field">NO_PAD_OUTER_X</td><td class="fielddoc">Default if BordersOuterV is off. Disable outermost padding.</td></tr>
   <tr><td class="field">NO_PAD_INNER_X</td><td class="fielddoc">Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off).</td></tr>
-  <tr><td class="field">SCROLL_X</td><td class="fielddoc">Enable horizontal scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size. Changes default sizing policy. Because this creates a child window, ScrollY is currently generally recommended when using ScrollX.</td></tr>
-  <tr><td class="field">SCROLL_Y</td><td class="fielddoc">Enable vertical scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size.</td></tr>
-  <tr><td class="field">SORT_MULTI</td><td class="fielddoc">Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).</td></tr>
-  <tr><td class="field">SORT_TRISTATE</td><td class="fielddoc">Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).</td></tr>
+  <tr><td class="field">SCROLL_X</td><td class="fielddoc">Enable horizontal scrolling. Require 'outer_size' parameter of <code>begin_table()</code> to specify the container size. Changes default sizing policy. Because this creates a child window, ScrollY is currently generally recommended when using ScrollX.</td></tr>
+  <tr><td class="field">SCROLL_Y</td><td class="fielddoc">Enable vertical scrolling. Require 'outer_size' parameter of <code>begin_table()</code> to specify the container size.</td></tr>
+  <tr><td class="field">SORT_MULTI</td><td class="fielddoc">Hold shift when clicking headers to sort on multiple column. <code>table_get_sort_specs()</code> may return specs where (SpecsCount > 1).</td></tr>
+  <tr><td class="field">SORT_TRISTATE</td><td class="fielddoc">Allow no sorting, disable default sorting. <code>table_get_sort_specs()</code> may return specs where (SpecsCount == 0).</td></tr>
   <tr><td class="field">HIGHLIGHT_HOVERED_COLUMN</td><td class="fielddoc">Highlight column headers when hovered (may evolve into a fuller highlight)</td></tr>
   </table>
 </div>
@@ -2345,22 +2354,22 @@ div.api {
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">SELECTED</td><td class="fielddoc">Draw as selected</td></tr>
-  <tr><td class="field">FRAMED</td><td class="fielddoc">Draw frame with background (e.g. for CollapsingHeader)</td></tr>
+  <tr><td class="field">FRAMED</td><td class="fielddoc">Draw frame with background (e.g. for <code>collapsing_header</code>)</td></tr>
   <tr><td class="field">ALLOW_OVERLAP</td><td class="fielddoc">Hit testing to allow subsequent widgets to overlap this one</td></tr>
-  <tr><td class="field">NO_TREE_PUSH_ON_OPEN</td><td class="fielddoc">Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack</td></tr>
+  <tr><td class="field">NO_TREE_PUSH_ON_OPEN</td><td class="fielddoc">Don't do a <code>tree_push()</code> when open (e.g. for <code>collapsing_header</code>) = no extra indent nor pushing on ID stack</td></tr>
   <tr><td class="field">NO_AUTO_OPEN_ON_LOG</td><td class="fielddoc">Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)</td></tr>
   <tr><td class="field">DEFAULT_OPEN</td><td class="fielddoc">Default node to be open</td></tr>
   <tr><td class="field">OPEN_ON_DOUBLE_CLICK</td><td class="fielddoc">Open on double-click instead of simple click (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined.</td></tr>
   <tr><td class="field">OPEN_ON_ARROW</td><td class="fielddoc">Open when clicking on the arrow part (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined.</td></tr>
   <tr><td class="field">LEAF</td><td class="fielddoc">No collapsing, no arrow (use as a convenience for leaf nodes).</td></tr>
   <tr><td class="field">BULLET</td><td class="fielddoc">Display a bullet instead of arrow. IMPORTANT: node can still be marked open/close if you don't set the _Leaf flag!</td></tr>
-  <tr><td class="field">FRAME_PADDING</td><td class="fielddoc">Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding() before the node.</td></tr>
+  <tr><td class="field">FRAME_PADDING</td><td class="fielddoc">Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling <code>align_text_to_frame_padding()</code> before the node.</td></tr>
   <tr><td class="field">SPAN_AVAIL_WIDTH</td><td class="fielddoc">Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line without using AllowOverlap mode.</td></tr>
   <tr><td class="field">SPAN_FULL_WIDTH</td><td class="fielddoc">Extend hit box to the left-most and right-most edges (cover the indent area).</td></tr>
   <tr><td class="field">SPAN_LABEL_WIDTH</td><td class="fielddoc">Narrow hit box + narrow hovering highlight, will only cover the label text.</td></tr>
   <tr><td class="field">SPAN_ALL_COLUMNS</td><td class="fielddoc">Frame will span all columns of its container table (label will still fit in current column)</td></tr>
   <tr><td class="field">LABEL_SPAN_ALL_COLUMNS</td><td class="fielddoc">Label will span all columns of its container table</td></tr>
-  <tr><td class="field">NAV_LEFT_JUMPS_BACK_HERE</td><td class="fielddoc">(WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)</td></tr>
+  <tr><td class="field">NAV_LEFT_JUMPS_BACK_HERE</td><td class="fielddoc">(WIP) Nav: left direction may move to this <code>tree_node()</code> from any of its child (items submitted between <code>tree_node</code> and <code>tree_pop</code>)</td></tr>
   <tr><td class="field">COLLAPSING_HEADER</td><td class="fielddoc"></td></tr>
   </table>
 </div>
@@ -2375,11 +2384,11 @@ div.api {
   <tr><td class="field">NO_SCROLL_WITH_MOUSE</td><td class="fielddoc">Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set.</td></tr>
   <tr><td class="field">NO_COLLAPSE</td><td class="fielddoc">Disable user collapsing window by double-clicking on it. Also referred to as Window Menu Button (e.g. within a docking node).</td></tr>
   <tr><td class="field">ALWAYS_AUTO_RESIZE</td><td class="fielddoc">Resize every window to its content every frame</td></tr>
-  <tr><td class="field">NO_BACKGROUND</td><td class="fielddoc">Disable drawing background color (WindowBg, etc.) and outside border. Similar as using SetNextWindowBgAlpha(0.0f).</td></tr>
+  <tr><td class="field">NO_BACKGROUND</td><td class="fielddoc">Disable drawing background color (WindowBg, etc.) and outside border. Similar as using <code>set_next_window_bg_alpha</code>(0.0f).</td></tr>
   <tr><td class="field">NO_SAVED_SETTINGS</td><td class="fielddoc">Never load/save settings in .ini file</td></tr>
   <tr><td class="field">NO_MOUSE_INPUTS</td><td class="fielddoc">Disable catching mouse, hovering test with pass through.</td></tr>
   <tr><td class="field">MENU_BAR</td><td class="fielddoc">Has a menu-bar</td></tr>
-  <tr><td class="field">HORIZONTAL_SCROLLBAR</td><td class="fielddoc">Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.</td></tr>
+  <tr><td class="field">HORIZONTAL_SCROLLBAR</td><td class="fielddoc">Allow horizontal scrollbar to appear (off by default). You may use <code>set_next_window_content_size</code>(ImVec2(width,0.0f)); prior to calling <code>begin()</code> to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.</td></tr>
   <tr><td class="field">NO_FOCUS_ON_APPEARING</td><td class="fielddoc">Disable taking focus when transitioning from hidden to visible state</td></tr>
   <tr><td class="field">NO_BRING_TO_FRONT_ON_FOCUS</td><td class="fielddoc">Disable bringing window to front when taking focus (e.g. clicking on it or programmatically giving it focus)</td></tr>
   <tr><td class="field">ALWAYS_VERTICAL_SCROLLBAR</td><td class="fielddoc">Always show vertical scrollbar (even if ContentSize.y < Size.y)</td></tr>
@@ -2390,11 +2399,11 @@ div.api {
   <tr><td class="field">NO_NAV</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NO_DECORATION</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NO_INPUTS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">CHILD_WINDOW</td><td class="fielddoc">Don't use! For internal use by BeginChild()</td></tr>
-  <tr><td class="field">TOOLTIP</td><td class="fielddoc">Don't use! For internal use by BeginTooltip()</td></tr>
-  <tr><td class="field">POPUP</td><td class="fielddoc">Don't use! For internal use by BeginPopup()</td></tr>
-  <tr><td class="field">MODAL</td><td class="fielddoc">Don't use! For internal use by BeginPopupModal()</td></tr>
-  <tr><td class="field">CHILD_MENU</td><td class="fielddoc">Don't use! For internal use by BeginMenu()</td></tr>
+  <tr><td class="field">CHILD_WINDOW</td><td class="fielddoc">Don't use! For internal use by <code>begin_child()</code></td></tr>
+  <tr><td class="field">TOOLTIP</td><td class="fielddoc">Don't use! For internal use by <code>begin_tooltip()</code></td></tr>
+  <tr><td class="field">POPUP</td><td class="fielddoc">Don't use! For internal use by <code>begin_popup()</code></td></tr>
+  <tr><td class="field">MODAL</td><td class="fielddoc">Don't use! For internal use by <code>begin_popup_modal()</code></td></tr>
+  <tr><td class="field">CHILD_MENU</td><td class="fielddoc">Don't use! For internal use by <code>begin_menu()</code></td></tr>
   </table>
 </div>
 </body>
