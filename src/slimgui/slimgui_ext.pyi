@@ -3180,7 +3180,7 @@ def get_window_content_region_min() -> tuple[float, float]:
 
 
 def get_window_height() -> float:
-    """get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). `shortcut` for `get_window_size()`.y."""
+    """get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for `get_window_size()`.y."""
     ...
 
 
@@ -3195,7 +3195,7 @@ def get_window_size() -> tuple[float, float]:
 
 
 def get_window_width() -> float:
-    """get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). `shortcut` for `get_window_size()`.x."""
+    """get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for `get_window_size()`.x."""
     ...
 
 

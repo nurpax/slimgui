@@ -29,6 +29,7 @@ def get_imgui_funcnames() -> Set[str]:
 def _is_special_case_string(tokens: list[str]) -> Optional[list[str]]:
     exceptions = [
         ['Window', ' ', 'Menu', ' ', 'Button'],
+        ['Shortcut', ' ', 'for'],
     ]
     for e in exceptions:
         if ''.join(tokens[:len(e)]) == ''.join(e):
