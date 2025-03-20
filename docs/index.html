@@ -751,8 +751,8 @@ div.api {
 <li>“Q: How can I have multiple widgets with the same label?”</li>
 </ul>
 <p>Short version: ID are hashes of the entire ID stack. If you are creating widgets in a loop you most likely want to push a unique identifier (e.g. object pointer, loop index) to uniquely differentiate them.</p>
-<p>You can also use the “Label##foobar” syntax within widget label to distinguish them from each others.</p>
-<p>In this header file we use the “label”/“name” terminology to denote a string that will be displayed + used as an ID, whereas “str_id” denote a string that is only used as an ID and not normally displayed.</p>
+<p>You can also use the <code>"Label##foobar"</code> syntax within widget label to distinguish them from each others.</p>
+<p>In this header file we use the <code>label</code>/<code>name</code> terminology to denote a string that will be displayed + used as an ID, whereas <code>str_id</code> denote a string that is only used as an ID and not normally displayed.</p>
 <h4 id="functions-14">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_id</span>(<span class='arg_name'>int_id</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>

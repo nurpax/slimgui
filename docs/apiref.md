@@ -167,9 +167,9 @@ Those questions are answered and impacted by understanding of the ID stack syste
 
 Short version: ID are hashes of the entire ID stack. If you are creating widgets in a loop you most likely want to push a unique identifier (e.g. object pointer, loop index) to uniquely differentiate them.
 
-You can also use the "Label##foobar" syntax within widget label to distinguish them from each others.
+You can also use the `"Label##foobar"` syntax within widget label to distinguish them from each others.
 
-In this header file we use the "label"/"name" terminology to denote a string that will be displayed + used as an ID, whereas "str_id" denote a string that is only used as an ID and not normally displayed.
+In this header file we use the `label`/`name` terminology to denote a string that will be displayed + used as an ID, whereas `str_id` denote a string that is only used as an ID and not normally displayed.
 
 #### Functions
 <div class="raw-html-insert" data-apirefs="push_id, pop_id, get_id"></div>
