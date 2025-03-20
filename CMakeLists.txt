@@ -2,9 +2,6 @@ set(Python_EXECUTABLE ".venv/Scripts/python.exe")
 cmake_minimum_required(VERSION 3.15...3.27)
 project(slimgui LANGUAGES CXX)
 
-# Extended stubgen for slimgui
-include(slimgui_stubgen.cmake)
-
 # Try to import all Python components potentially needed by nanobind
 find_package(Python 3.8
   REQUIRED COMPONENTS Interpreter Development.Module
@@ -34,14 +31,6 @@ nanobind_add_module(slimgui_ext
   src/c/imgui/imgui_draw.cpp
   src/c/imgui/imgui_tables.cpp
   src/c/imgui/imgui_widgets.cpp
-)
-
-slimgui_add_stub(
-  slimgui_ext_stub
-  MODULE slimgui_ext
-  OUTPUT "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext.pyi"
-  PYTHON_PATH $<TARGET_FILE_DIR:slimgui_ext>
-  DEPENDS slimgui_ext
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
