@@ -7,41 +7,11 @@ import subprocess
 import click
 
 import gen_utils
+from gen_utils import enum_list
 
 @dataclass
 class ImguiSymbols:
     enums: dict[str, list[tuple[str, str]]]
-
-enum_list = [
-    ("ImDrawFlags_", "DrawFlags"),
-    ("ImGuiInputTextFlags_", "InputTextFlags"),
-    ("ImGuiButtonFlags_", "ButtonFlags"),
-    ("ImGuiChildFlags_", "ChildFlags"),
-    ("ImGuiDragDropFlags_", "DragDropFlags"),
-    ("ImGuiFocusedFlags_", "FocusedFlags"),
-    ("ImGuiWindowFlags_", "WindowFlags"),
-    ("ImGuiTreeNodeFlags_", "TreeNodeFlags"),
-    ("ImGuiTabBarFlags_", "TabBarFlags"),
-    ("ImGuiTabItemFlags_", "TabItemFlags"),
-    ("ImGuiTableFlags_", "TableFlags"),
-    ("ImGuiTableRowFlags_", "TableRowFlags"),
-    ("ImGuiTableColumnFlags_", "TableColumnFlags"),
-    ("ImGuiColorEditFlags_", "ColorEditFlags"),
-    ("ImGuiComboFlags_", "ComboFlags"),
-    ("ImGuiSelectableFlags_", "SelectableFlags"),
-    ("ImGuiConfigFlags_", "ConfigFlags"),
-    ("ImGuiBackendFlags_", "BackendFlags"),
-    ("ImGuiCond_", "Cond"),
-    ("ImGuiHoveredFlags_", "HoveredFlags"),
-    ("ImGuiSliderFlags_", "SliderFlags"),
-    ("ImGuiPopupFlags_", "PopupFlags"),
-    ("ImGuiMouseButton_", "MouseButton"),
-    ("ImGuiMouseCursor_", "MouseCursor"),
-    ("ImGuiCol_", "Col"),
-    ("ImGuiDir", "Dir"),
-    ("ImGuiStyleVar_", "StyleVar"),
-    ("ImGuiTableBgTarget_", "TableBgTarget"),
-]
 
 # Extra enum values for backwards compatibility.  These get dropped in cimgui generated
 # structs_and_enums.json.

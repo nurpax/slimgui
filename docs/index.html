@@ -410,7 +410,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_window_hovered</span>(<span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>HoveredFlags</span> = <span class='symbol'>HoveredFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
-  <p>is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See ImGuiHoveredFlags_ for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry "How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?" for details.</p>
+  <p>is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See <code>HoveredFlags</code> for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry "How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?" for details.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_window_pos</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
@@ -460,7 +460,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_bg_alpha</span>(<span class='arg_name'>alpha</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
-  <p>set next window background color alpha. helper to easily override the Alpha component of ImGuiCol_WindowBg/ChildBg/PopupBg. you may also use ImGuiWindowFlags_NoBackground.</p>
+  <p>set next window background color alpha. helper to easily override the Alpha component of <code>Col.WINDOW_BG</code>/ChildBg/PopupBg. you may also use <code>WindowFlags.NO_BACKGROUND</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_pos</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
@@ -851,7 +851,7 @@ div.api {
 <h4 id="functions-17">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>image</span>(<span class='arg_name'>user_texture_id</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>tint_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>border_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
-  <p><-- border_col was removed in favor of ImGuiCol_ImageBorder.</p>
+  <p><-- border_col was removed in favor of <code>Col.IMAGE_BORDER</code>.</p>
 </div>
 
 <h3 id="widgets-combo-box-dropdown">Widgets: Combo Box (Dropdown)</h3>
@@ -1115,7 +1115,7 @@ div.api {
 <h4 id="functions-28">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_menu_bar</span>() -> <span class='symbol'>bool</span></code>
-  <p>append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window).</p>
+  <p>append to menu-bar of current window (requires <code>WindowFlags.MENU_BAR</code> flag set on parent window).</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_menu_bar</span>() -> <span class='keyword'>None</span></code>
@@ -1218,7 +1218,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>open_popup_on_item_click</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>PopupFlags</span> = <span class='symbol'>PopupFlags</span>.<span class='symbol'>MOUSE_BUTTON_RIGHT</span>) -> <span class='keyword'>None</span></code>
-  <p>helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)</p>
+  <p>helper to open popup when clicked on last item. Default to <code>PopupFlags.MOUSE_BUTTON_RIGHT</code> == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>close_current_popup</span>() -> <span class='keyword'>None</span></code>
@@ -1324,7 +1324,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_angled_headers_row</span>() -> <span class='keyword'>None</span></code>
-  <p>submit a row with angled headers for every column with the ImGuiTableColumnFlags_AngledHeader flag. MUST BE FIRST ROW.</p>
+  <p>submit a row with angled headers for every column with the <code>TableColumnFlags.ANGLED_HEADER</code> flag. MUST BE FIRST ROW.</p>
 </div>
 
 <h3 id="tables-sorting-miscellaneous-functions">Tables: Sorting &amp; Miscellaneous functions</h3>
@@ -1355,11 +1355,11 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_set_column_enabled</span>(<span class='arg_name'>column_n</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>v</span><span class='special'>:</span> <span class='symbol'>bool</span>) -> <span class='keyword'>None</span></code>
-  <p>change user accessible enabled/disabled state of a column. Set to false to hide the column. User can use the context menu to change this themselves (right-click in headers, or right-click in columns body with ImGuiTableFlags_ContextMenuInBody)</p>
+  <p>change user accessible enabled/disabled state of a column. Set to false to hide the column. User can use the context menu to change this themselves (right-click in headers, or right-click in columns body with <code>TableFlags.CONTEXT_MENU_IN_BODY</code>)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_set_bg_color</span>(<span class='arg_name'>target</span><span class='special'>:</span> <span class='symbol'>TableBgTarget</span><span class='special'>,</span> <span class='arg_name'>color</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>column_n</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
-  <p>change the color of a cell, row, or column. See ImGuiTableBgTarget_ flags for details.</p>
+  <p>change the color of a cell, row, or column. See <code>TableBgTarget</code> flags for details.</p>
 </div>
 
 <h3 id="legacy-columns-api-prefer-using-tables">Legacy Columns API (prefer using Tables!)</h3>
@@ -1704,7 +1704,7 @@ div.api {
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">BORDERS</td><td class="fielddoc">Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == true for legacy reason)</td></tr>
   <tr><td class="field">ALWAYS_USE_WINDOW_PADDING</td><td class="fielddoc">Pad with style.WindowPadding even if no border are drawn (no padding by default for non-bordered child windows because it makes more sense)</td></tr>
-  <tr><td class="field">RESIZE_X</td><td class="fielddoc">Allow resize from right border (layout direction). Enable .ini saving (unless ImGuiWindowFlags_NoSavedSettings passed to window flags)</td></tr>
+  <tr><td class="field">RESIZE_X</td><td class="fielddoc">Allow resize from right border (layout direction). Enable .ini saving (unless <code>WindowFlags.NO_SAVED_SETTINGS</code> passed to window flags)</td></tr>
   <tr><td class="field">RESIZE_Y</td><td class="fielddoc">Allow resize from bottom border (layout direction).</td></tr>
   <tr><td class="field">AUTO_RESIZE_X</td><td class="fielddoc">Enable auto-resizing width. Read IMPORTANT: Size measurement" details above.</td></tr>
   <tr><td class="field">AUTO_RESIZE_Y</td><td class="fielddoc">Enable auto-resizing height. Read IMPORTANT: Size measurement" details above.</td></tr>
@@ -1794,7 +1794,7 @@ div.api {
   <tr><td class="field">ALPHA_NO_BG</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: disable rendering a checkerboard background behind transparent color.</td></tr>
   <tr><td class="field">ALPHA_PREVIEW_HALF</td><td class="fielddoc">ColorEdit, ColorPicker, <code>color_button</code>: display half opaque / half transparent preview.</td></tr>
   <tr><td class="field">ALPHA_BAR</td><td class="fielddoc">ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.</td></tr>
-  <tr><td class="field">HDR</td><td class="fielddoc">(WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).</td></tr>
+  <tr><td class="field">HDR</td><td class="fielddoc">(WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use <code>ColorEditFlags.FLOAT</code> flag as well).</td></tr>
   <tr><td class="field">DISPLAY_RGB</td><td class="fielddoc">ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex.</td></tr>
   <tr><td class="field">DISPLAY_HSV</td><td class="fielddoc"></td></tr>
   <tr><td class="field">DISPLAY_HEX</td><td class="fielddoc"></td></tr>
@@ -1835,7 +1835,7 @@ div.api {
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NAV_ENABLE_KEYBOARD</td><td class="fielddoc">Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.</td></tr>
-  <tr><td class="field">NAV_ENABLE_GAMEPAD</td><td class="fielddoc">Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.</td></tr>
+  <tr><td class="field">NAV_ENABLE_GAMEPAD</td><td class="fielddoc">Master gamepad navigation enable flag. Backend also needs to set <code>BackendFlags.HAS_GAMEPAD</code>.</td></tr>
   <tr><td class="field">NO_MOUSE</td><td class="fielddoc">Instruct dear imgui to disable mouse inputs and interactions.</td></tr>
   <tr><td class="field">NO_MOUSE_CURSOR_CHANGE</td><td class="fielddoc">Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use <code>set_mouse_cursor()</code> to change mouse cursor. You may want to honor requests from imgui by reading <code>get_mouse_cursor()</code> yourself instead.</td></tr>
   <tr><td class="field">NO_KEYBOARD</td><td class="fielddoc">Instruct dear imgui to disable keyboard inputs and interactions. This is done by ignoring keyboard events and clearing existing states.</td></tr>
@@ -1943,7 +1943,7 @@ div.api {
   <tr><td class="field">ALWAYS_OVERWRITE</td><td class="fielddoc">Overwrite mode</td></tr>
   <tr><td class="field">AUTO_SELECT_ALL</td><td class="fielddoc">Select entire text when first taking mouse focus</td></tr>
   <tr><td class="field">PARSE_EMPTY_REF_VAL</td><td class="fielddoc"><code>input_float()</code>, <code>input_int()</code>, <code>input_scalar()</code> etc. only: parse empty string as zero value.</td></tr>
-  <tr><td class="field">DISPLAY_EMPTY_REF_VAL</td><td class="fielddoc"><code>input_float()</code>, <code>input_int()</code>, <code>input_scalar()</code> etc. only: when value is zero, do not display it. Generally used with ImGuiInputTextFlags_ParseEmptyRefVal.</td></tr>
+  <tr><td class="field">DISPLAY_EMPTY_REF_VAL</td><td class="fielddoc"><code>input_float()</code>, <code>input_int()</code>, <code>input_scalar()</code> etc. only: when value is zero, do not display it. Generally used with <code>InputTextFlags.PARSE_EMPTY_REF_VAL</code>.</td></tr>
   <tr><td class="field">NO_HORIZONTAL_SCROLL</td><td class="fielddoc">Disable following the cursor horizontally</td></tr>
   <tr><td class="field">NO_UNDO_REDO</td><td class="fielddoc">Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call <code>clear_active_id()</code>.</td></tr>
   <tr><td class="field">ELIDE_LEFT</td><td class="fielddoc">When text doesn't fit, elide left side to ensure right side stays visible. Useful for path/filenames. Single-line only!</td></tr>
@@ -2155,9 +2155,9 @@ div.api {
   <div><span class="class_name">PopupFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MOUSE_BUTTON_LEFT</td><td class="fielddoc">For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)</td></tr>
-  <tr><td class="field">MOUSE_BUTTON_RIGHT</td><td class="fielddoc">For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)</td></tr>
-  <tr><td class="field">MOUSE_BUTTON_MIDDLE</td><td class="fielddoc">For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as ImGuiMouseButton_Middle)</td></tr>
+  <tr><td class="field">MOUSE_BUTTON_LEFT</td><td class="fielddoc">For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as <code>MouseButton.LEFT</code>)</td></tr>
+  <tr><td class="field">MOUSE_BUTTON_RIGHT</td><td class="fielddoc">For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as <code>MouseButton.RIGHT</code>)</td></tr>
+  <tr><td class="field">MOUSE_BUTTON_MIDDLE</td><td class="fielddoc">For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as <code>MouseButton.MIDDLE</code>)</td></tr>
   <tr><td class="field">NO_REOPEN</td><td class="fielddoc">For <code>open_popup</code>*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation)</td></tr>
   <tr><td class="field">NO_OPEN_OVER_EXISTING_POPUP</td><td class="fielddoc">For <code>open_popup</code>*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack</td></tr>
   <tr><td class="field">NO_OPEN_OVER_ITEMS</td><td class="fielddoc">For <code>begin_popup_context_window()</code>: don't return true when hovering items, only when hovering empty space</td></tr>
@@ -2182,7 +2182,7 @@ div.api {
   <div><span class="class_name">SliderFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LOGARITHMIC</td><td class="fielddoc">Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.</td></tr>
+  <tr><td class="field">LOGARITHMIC</td><td class="fielddoc">Make the widget logarithmic (linear otherwise). Consider using <code>SliderFlags.NO_ROUND_TO_FORMAT</code> with this if using a format-string with small amount of digits.</td></tr>
   <tr><td class="field">NO_ROUND_TO_FORMAT</td><td class="fielddoc">Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits).</td></tr>
   <tr><td class="field">NO_INPUT</td><td class="fielddoc">Disable CTRL+Click or Enter key allowing to input text directly into the widget.</td></tr>
   <tr><td class="field">WRAP_AROUND</td><td class="fielddoc">Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now.</td></tr>
@@ -2240,7 +2240,7 @@ div.api {
   <tr><td class="field">AUTO_SELECT_NEW_TABS</td><td class="fielddoc">Automatically select new tabs when they appear</td></tr>
   <tr><td class="field">TAB_LIST_POPUP_BUTTON</td><td class="fielddoc">Disable buttons to open the tab list popup</td></tr>
   <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked(2)</code>) *p_open = false.</td></tr>
-  <tr><td class="field">NO_TAB_LIST_SCROLLING_BUTTONS</td><td class="fielddoc">Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)</td></tr>
+  <tr><td class="field">NO_TAB_LIST_SCROLLING_BUTTONS</td><td class="fielddoc">Disable scrolling buttons (apply when fitting policy is <code>TabBarFlags.FITTING_POLICY_SCROLL</code>)</td></tr>
   <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">Disable tooltips when hovering a tab</td></tr>
   <tr><td class="field">DRAW_SELECTED_OVERLINE</td><td class="fielddoc">Draw selected overline markers over selected tab</td></tr>
   <tr><td class="field">FITTING_POLICY_RESIZE_DOWN</td><td class="fielddoc">Resize tabs when they don't fit</td></tr>
@@ -2251,7 +2251,7 @@ div.api {
   <div><span class="class_name">TabItemFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">UNSAVED_DOCUMENT</td><td class="fielddoc">Display a dot next to the title + set ImGuiTabItemFlags_NoAssumedClosure.</td></tr>
+  <tr><td class="field">UNSAVED_DOCUMENT</td><td class="fielddoc">Display a dot next to the title + set <code>TabItemFlags.NO_ASSUMED_CLOSURE</code>.</td></tr>
   <tr><td class="field">SET_SELECTED</td><td class="fielddoc">Trigger flag to programmatically make the tab selected when calling <code>begin_tab_item()</code></td></tr>
   <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked(2)</code>) *p_open = false.</td></tr>
   <tr><td class="field">NO_PUSH_ID</td><td class="fielddoc">Don't call <code>push_id()</code>/<code>pop_id()</code> on <code>begin_tab_item()</code>/<code>end_tab_item()</code></td></tr>
@@ -2266,7 +2266,7 @@ div.api {
   <div><span class="class_name">TableBgTarget</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ROW_BG0</td><td class="fielddoc">Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)</td></tr>
+  <tr><td class="field">ROW_BG0</td><td class="fielddoc">Set row background color 0 (generally used for background, automatically set when <code>TableFlags.ROW_BG</code> is used)</td></tr>
   <tr><td class="field">ROW_BG1</td><td class="fielddoc">Set row background color 1 (generally used for selection marking)</td></tr>
   <tr><td class="field">CELL_BG</td><td class="fielddoc">Set cell background color (top-most color)</td></tr>
   </table>
@@ -2284,7 +2284,7 @@ div.api {
   <tr><td class="field">NO_REORDER</td><td class="fielddoc">Disable manual reordering this column, this will also prevent other columns from crossing over this column.</td></tr>
   <tr><td class="field">NO_HIDE</td><td class="fielddoc">Disable ability to hide/disable this column.</td></tr>
   <tr><td class="field">NO_CLIP</td><td class="fielddoc">Disable clipping for this column (all NoClip columns will render in a same draw command).</td></tr>
-  <tr><td class="field">NO_SORT</td><td class="fielddoc">Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).</td></tr>
+  <tr><td class="field">NO_SORT</td><td class="fielddoc">Disable ability to sort on this field (even if <code>TableFlags.SORTABLE</code> is set on the table).</td></tr>
   <tr><td class="field">NO_SORT_ASCENDING</td><td class="fielddoc">Disable ability to sort in the ascending direction.</td></tr>
   <tr><td class="field">NO_SORT_DESCENDING</td><td class="fielddoc">Disable ability to sort in the descending direction.</td></tr>
   <tr><td class="field">NO_HEADER_LABEL</td><td class="fielddoc"><code>table_headers_row()</code> will submit an empty label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers. You may append into this cell by calling <code>table_set_column_index()</code> right after the <code>table_headers_row()</code> call.</td></tr>
@@ -2307,10 +2307,10 @@ div.api {
   <tr><td class="field">RESIZABLE</td><td class="fielddoc">Enable resizing columns.</td></tr>
   <tr><td class="field">REORDERABLE</td><td class="fielddoc">Enable reordering columns in header row (need calling <code>table_setup_column()</code> + <code>table_headers_row()</code> to display headers)</td></tr>
   <tr><td class="field">HIDEABLE</td><td class="fielddoc">Enable hiding/disabling columns in context menu.</td></tr>
-  <tr><td class="field">SORTABLE</td><td class="fielddoc">Enable sorting. Call <code>table_get_sort_specs()</code> to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.</td></tr>
+  <tr><td class="field">SORTABLE</td><td class="fielddoc">Enable sorting. Call <code>table_get_sort_specs()</code> to obtain sort specs. Also see <code>TableFlags.SORT_MULTI</code> and <code>TableFlags.SORT_TRISTATE</code>.</td></tr>
   <tr><td class="field">NO_SAVED_SETTINGS</td><td class="fielddoc">Disable persisting columns order, width and sort settings in the .ini file.</td></tr>
   <tr><td class="field">CONTEXT_MENU_IN_BODY</td><td class="fielddoc">Right-click on columns body/contents will display table context menu. By default it is available in <code>table_headers_row()</code>.</td></tr>
-  <tr><td class="field">ROW_BG</td><td class="fielddoc">Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling <code>table_set_bg_color</code> with ImGuiTableBgFlags_RowBg0 on each row manually)</td></tr>
+  <tr><td class="field">ROW_BG</td><td class="fielddoc">Set each RowBg color with <code>Col.TABLE_ROW_BG</code> or <code>Col.TABLE_ROW_BG_ALT</code> (equivalent of calling <code>table_set_bg_color</code> with ImGuiTableBgFlags_RowBg0 on each row manually)</td></tr>
   <tr><td class="field">BORDERS_INNER_H</td><td class="fielddoc">Draw horizontal borders between rows.</td></tr>
   <tr><td class="field">BORDERS_OUTER_H</td><td class="fielddoc">Draw horizontal borders at the top and bottom.</td></tr>
   <tr><td class="field">BORDERS_INNER_V</td><td class="fielddoc">Draw vertical borders between columns.</td></tr>
@@ -2323,7 +2323,7 @@ div.api {
   <tr><td class="field">NO_BORDERS_IN_BODY</td><td class="fielddoc">[ALPHA] Disable vertical borders in columns Body (borders will always appear in Headers). -> May move to style</td></tr>
   <tr><td class="field">NO_BORDERS_IN_BODY_UNTIL_RESIZE</td><td class="fielddoc">[ALPHA] Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers). -> May move to style</td></tr>
   <tr><td class="field">SIZING_FIXED_FIT</td><td class="fielddoc"><code>columns</code> default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching contents width.</td></tr>
-  <tr><td class="field">SIZING_FIXED_SAME</td><td class="fielddoc"><code>columns</code> default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.</td></tr>
+  <tr><td class="field">SIZING_FIXED_SAME</td><td class="fielddoc"><code>columns</code> default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable <code>TableFlags.NO_KEEP_COLUMNS_VISIBLE</code>.</td></tr>
   <tr><td class="field">SIZING_STRETCH_PROP</td><td class="fielddoc"><code>columns</code> default to _WidthStretch with default weights proportional to each columns contents widths.</td></tr>
   <tr><td class="field">SIZING_STRETCH_SAME</td><td class="fielddoc"><code>columns</code> default to _WidthStretch with default weights all equal, unless overridden by <code>table_setup_column()</code>.</td></tr>
   <tr><td class="field">NO_HOST_EXTEND_X</td><td class="fielddoc">Make outer width auto-fit to columns, overriding outer_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used.</td></tr>

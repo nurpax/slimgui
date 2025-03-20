@@ -73,7 +73,7 @@ class ChildFlags(enum.IntFlag):
 
     RESIZE_X = 4
     """
-    Allow resize from right border (layout direction). Enable .ini saving (unless ImGuiWindowFlags_NoSavedSettings passed to window flags)
+    Allow resize from right border (layout direction). Enable .ini saving (unless `WindowFlags.NO_SAVED_SETTINGS` passed to window flags)
     """
 
     RESIZE_Y = 8
@@ -329,7 +329,7 @@ class ColorEditFlags(enum.IntFlag):
 
     HDR = 524288
     """
-    (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).
+    (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well).
     """
 
     DISPLAY_RGB = 1048576
@@ -443,7 +443,7 @@ class ConfigFlags(enum.IntFlag):
 
     NAV_ENABLE_GAMEPAD = 2
     """
-    Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.
+    Master gamepad navigation enable flag. Backend also needs to set `BackendFlags.HAS_GAMEPAD`.
     """
 
     NO_MOUSE = 16
@@ -1109,7 +1109,7 @@ class InputTextFlags(enum.IntFlag):
 
     DISPLAY_EMPTY_REF_VAL = 16384
     """
-    `input_float()`, `input_int()`, `input_scalar()` etc. only: when value is zero, do not display it. Generally used with ImGuiInputTextFlags_ParseEmptyRefVal.
+    `input_float()`, `input_int()`, `input_scalar()` etc. only: when value is zero, do not display it. Generally used with `InputTextFlags.PARSE_EMPTY_REF_VAL`.
     """
 
     NO_HORIZONTAL_SCROLL = 32768
@@ -1540,17 +1540,17 @@ class PopupFlags(enum.IntFlag):
 
     MOUSE_BUTTON_LEFT = 0
     """
-    For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)
+    For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as `MouseButton.LEFT`)
     """
 
     MOUSE_BUTTON_RIGHT = 1
     """
-    For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)
+    For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as `MouseButton.RIGHT`)
     """
 
     MOUSE_BUTTON_MIDDLE = 2
     """
-    For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as ImGuiMouseButton_Middle)
+    For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as `MouseButton.MIDDLE`)
     """
 
     NO_REOPEN = 32
@@ -1620,7 +1620,7 @@ class SliderFlags(enum.IntFlag):
 
     LOGARITHMIC = 32
     """
-    Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.
+    Make the widget logarithmic (linear otherwise). Consider using `SliderFlags.NO_ROUND_TO_FORMAT` with this if using a format-string with small amount of digits.
     """
 
     NO_ROUND_TO_FORMAT = 64
@@ -2098,7 +2098,7 @@ class TabBarFlags(enum.IntFlag):
 
     NO_TAB_LIST_SCROLLING_BUTTONS = 16
     """
-    Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)
+    Disable scrolling buttons (apply when fitting policy is `TabBarFlags.FITTING_POLICY_SCROLL`)
     """
 
     NO_TOOLTIP = 32
@@ -2123,7 +2123,7 @@ class TabItemFlags(enum.IntFlag):
 
     UNSAVED_DOCUMENT = 1
     """
-    Display a dot next to the title + set ImGuiTabItemFlags_NoAssumedClosure.
+    Display a dot next to the title + set `TabItemFlags.NO_ASSUMED_CLOSURE`.
     """
 
     SET_SELECTED = 2
@@ -2167,7 +2167,7 @@ class TableBgTarget(enum.IntEnum):
 
     ROW_BG0 = 1
     """
-    Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
+    Set row background color 0 (generally used for background, automatically set when `TableFlags.ROW_BG` is used)
     """
 
     ROW_BG1 = 2
@@ -2223,7 +2223,7 @@ class TableColumnFlags(enum.IntFlag):
 
     NO_SORT = 512
     """
-    Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).
+    Disable ability to sort on this field (even if `TableFlags.SORTABLE` is set on the table).
     """
 
     NO_SORT_ASCENDING = 1024
@@ -2298,7 +2298,7 @@ class TableFlags(enum.IntFlag):
 
     SORTABLE = 8
     """
-    Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.
+    Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. Also see `TableFlags.SORT_MULTI` and `TableFlags.SORT_TRISTATE`.
     """
 
     NO_SAVED_SETTINGS = 16
@@ -2313,7 +2313,7 @@ class TableFlags(enum.IntFlag):
 
     ROW_BG = 64
     """
-    Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling `table_set_bg_color` with ImGuiTableBgFlags_RowBg0 on each row manually)
+    Set each RowBg color with `Col.TABLE_ROW_BG` or `Col.TABLE_ROW_BG_ALT` (equivalent of calling `table_set_bg_color` with ImGuiTableBgFlags_RowBg0 on each row manually)
     """
 
     BORDERS_INNER_H = 128
@@ -2360,7 +2360,7 @@ class TableFlags(enum.IntFlag):
 
     SIZING_FIXED_SAME = 16384
     """
-    `columns` default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.
+    `columns` default to _WidthFixed or _WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable `TableFlags.NO_KEEP_COLUMNS_VISIBLE`.
     """
 
     SIZING_STRETCH_PROP = 24576
@@ -2733,7 +2733,7 @@ def begin_menu(label: str, enabled: bool = True) -> bool:
 
 
 def begin_menu_bar() -> bool:
-    """append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window)."""
+    """append to menu-bar of current window (requires `WindowFlags.MENU_BAR` flag set on parent window)."""
     ...
 
 
@@ -3200,7 +3200,7 @@ def get_window_width() -> float:
 
 
 def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0), border_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)) -> None:
-    """<-- border_col was removed in favor of ImGuiCol_ImageBorder."""
+    """<-- border_col was removed in favor of `Col.IMAGE_BORDER`."""
     ...
 
 
@@ -3413,7 +3413,7 @@ def is_window_focused(flags: FocusedFlags = FocusedFlags.NONE) -> bool:
 
 
 def is_window_hovered(flags: HoveredFlags = HoveredFlags.NONE) -> bool:
-    """is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See ImGuiHoveredFlags_ for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry \"How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?\" for details."""
+    """is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See `HoveredFlags` for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry \"How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?\" for details."""
     ...
 
 
@@ -3482,7 +3482,7 @@ def open_popup(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> None:
 
 
 def open_popup_on_item_click(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> None:
-    """helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)"""
+    """helper to open popup when clicked on last item. Default to `PopupFlags.MOUSE_BUTTON_RIGHT` == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)"""
     ...
 
 
@@ -3707,7 +3707,7 @@ def set_next_item_width(item_width: float) -> None:
 
 
 def set_next_window_bg_alpha(alpha: float) -> None:
-    """set next window background color alpha. helper to easily override the Alpha component of ImGuiCol_WindowBg/ChildBg/PopupBg. you may also use ImGuiWindowFlags_NoBackground."""
+    """set next window background color alpha. helper to easily override the Alpha component of `Col.WINDOW_BG`/ChildBg/PopupBg. you may also use `WindowFlags.NO_BACKGROUND`."""
     ...
 
 
@@ -3932,7 +3932,7 @@ def tab_item_button(label: str, flags: TabItemFlags = TabItemFlags.NONE) -> bool
 
 
 def table_angled_headers_row() -> None:
-    """submit a row with angled headers for every column with the ImGuiTableColumnFlags_AngledHeader flag. MUST BE FIRST ROW."""
+    """submit a row with angled headers for every column with the `TableColumnFlags.ANGLED_HEADER` flag. MUST BE FIRST ROW."""
     ...
 
 
@@ -3982,12 +3982,12 @@ def table_next_row(flags: TableRowFlags = TableRowFlags.NONE, min_row_height: fl
 
 
 def table_set_bg_color(target: TableBgTarget, color: tuple[float, float, float, float], column_n: int = -1) -> None:
-    """change the color of a cell, row, or column. See ImGuiTableBgTarget_ flags for details."""
+    """change the color of a cell, row, or column. See `TableBgTarget` flags for details."""
     ...
 
 
 def table_set_column_enabled(column_n: int, v: bool) -> None:
-    """change user accessible enabled/disabled state of a column. Set to false to hide the column. User can use the context menu to change this themselves (right-click in headers, or right-click in columns body with ImGuiTableFlags_ContextMenuInBody)"""
+    """change user accessible enabled/disabled state of a column. Set to false to hide the column. User can use the context menu to change this themselves (right-click in headers, or right-click in columns body with `TableFlags.CONTEXT_MENU_IN_BODY`)"""
     ...
 
 

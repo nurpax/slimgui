@@ -71,7 +71,7 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
     .value("DISPLAY_EMPTY_REF_VAL", ImGuiInputTextFlags_DisplayEmptyRefVal,
            "`input_float()`, `input_int()`, `input_scalar()` etc. only: when "
            "value is zero, do not display it. Generally used with "
-           "ImGuiInputTextFlags_ParseEmptyRefVal.")
+           "`InputTextFlags.PARSE_EMPTY_REF_VAL`.")
     .value("NO_HORIZONTAL_SCROLL", ImGuiInputTextFlags_NoHorizontalScroll,
            "Disable following the cursor horizontally")
     .value("NO_UNDO_REDO", ImGuiInputTextFlags_NoUndoRedo,
@@ -130,7 +130,7 @@ nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value(
         "RESIZE_X", ImGuiChildFlags_ResizeX,
         "Allow resize from right border (layout direction). Enable .ini saving "
-        "(unless ImGuiWindowFlags_NoSavedSettings passed to window flags)")
+        "(unless `WindowFlags.NO_SAVED_SETTINGS` passed to window flags)")
     .value("RESIZE_Y", ImGuiChildFlags_ResizeY,
            "Allow resize from bottom border (layout direction). ")
     .value("AUTO_RESIZE_X", ImGuiChildFlags_AutoResizeX,
@@ -358,7 +358,7 @@ nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
     .value("NO_TAB_LIST_SCROLLING_BUTTONS",
            ImGuiTabBarFlags_NoTabListScrollingButtons,
            "Disable scrolling buttons (apply when fitting policy is "
-           "ImGuiTabBarFlags_FittingPolicyScroll)")
+           "`TabBarFlags.FITTING_POLICY_SCROLL`)")
     .value("NO_TOOLTIP", ImGuiTabBarFlags_NoTooltip,
            "Disable tooltips when hovering a tab")
     .value("DRAW_SELECTED_OVERLINE", ImGuiTabBarFlags_DrawSelectedOverline,
@@ -375,7 +375,7 @@ nb::enum_<ImGuiTabItemFlags_>(m, "TabItemFlags", nb::is_flag(),
     .value("NONE", ImGuiTabItemFlags_None)
     .value("UNSAVED_DOCUMENT", ImGuiTabItemFlags_UnsavedDocument,
            "Display a dot next to the title + set "
-           "ImGuiTabItemFlags_NoAssumedClosure.")
+           "`TabItemFlags.NO_ASSUMED_CLOSURE`.")
     .value("SET_SELECTED", ImGuiTabItemFlags_SetSelected,
            "Trigger flag to programmatically make the tab selected when "
            "calling `begin_tab_item()`")
@@ -415,7 +415,7 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
     .value(
         "SORTABLE", ImGuiTableFlags_Sortable,
         "Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. "
-        "Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.")
+        "Also see `TableFlags.SORT_MULTI` and `TableFlags.SORT_TRISTATE`.")
     .value("NO_SAVED_SETTINGS", ImGuiTableFlags_NoSavedSettings,
            "Disable persisting columns order, width and sort settings in the "
            ".ini file.")
@@ -423,8 +423,8 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
            "Right-click on columns body/contents will display table context "
            "menu. By default it is available in `table_headers_row()`.")
     .value("ROW_BG", ImGuiTableFlags_RowBg,
-           "Set each RowBg color with ImGuiCol_TableRowBg or "
-           "ImGuiCol_TableRowBgAlt (equivalent of calling `table_set_bg_color` "
+           "Set each RowBg color with `Col.TABLE_ROW_BG` or "
+           "`Col.TABLE_ROW_BG_ALT` (equivalent of calling `table_set_bg_color` "
            "with ImGuiTableBgFlags_RowBg0 on each row manually)")
     .value("BORDERS_INNER_H", ImGuiTableFlags_BordersInnerH,
            "Draw horizontal borders between rows.")
@@ -453,7 +453,7 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
     .value("SIZING_FIXED_SAME", ImGuiTableFlags_SizingFixedSame,
            "`columns` default to _WidthFixed or _WidthAuto (if resizable or "
            "not resizable), matching the maximum contents width of all "
-           "columns. Implicitly enable ImGuiTableFlags_NoKeepColumnsVisible.")
+           "columns. Implicitly enable `TableFlags.NO_KEEP_COLUMNS_VISIBLE`.")
     .value("SIZING_STRETCH_PROP", ImGuiTableFlags_SizingStretchProp,
            "`columns` default to _WidthStretch with default weights "
            "proportional to each columns contents widths.")
@@ -547,7 +547,7 @@ nb::enum_<ImGuiTableColumnFlags_>(m, "TableColumnFlags", nb::is_flag(),
            "in a same draw command).")
     .value("NO_SORT", ImGuiTableColumnFlags_NoSort,
            "Disable ability to sort on this field (even if "
-           "ImGuiTableFlags_Sortable is set on the table).")
+           "`TableFlags.SORTABLE` is set on the table).")
     .value("NO_SORT_ASCENDING", ImGuiTableColumnFlags_NoSortAscending,
            "Disable ability to sort in the ascending direction.")
     .value("NO_SORT_DESCENDING", ImGuiTableColumnFlags_NoSortDescending,
@@ -638,7 +638,7 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
         "ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.")
     .value("HDR", ImGuiColorEditFlags_HDR,
            "(WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA "
-           "edition (note: you probably want to use ImGuiColorEditFlags_Float "
+           "edition (note: you probably want to use `ColorEditFlags.FLOAT` "
            "flag as well).")
     .value("DISPLAY_RGB", ImGuiColorEditFlags_DisplayRGB,
            "ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: "
@@ -711,7 +711,7 @@ nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags", nb::is_flag(),
            "directional arrows + space/enter to activate.")
     .value("NAV_ENABLE_GAMEPAD", ImGuiConfigFlags_NavEnableGamepad,
            "Master gamepad navigation enable flag. Backend also needs to set "
-           "ImGuiBackendFlags_HasGamepad.")
+           "`BackendFlags.HAS_GAMEPAD`.")
     .value("NO_MOUSE", ImGuiConfigFlags_NoMouse,
            "Instruct dear imgui to disable mouse inputs and interactions.")
     .value("NO_MOUSE_CURSOR_CHANGE", ImGuiConfigFlags_NoMouseCursorChange,
@@ -827,7 +827,7 @@ nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
     .value("NONE", ImGuiSliderFlags_None)
     .value("LOGARITHMIC", ImGuiSliderFlags_Logarithmic,
            "Make the widget logarithmic (linear otherwise). Consider using "
-           "ImGuiSliderFlags_NoRoundToFormat with this if using a "
+           "`SliderFlags.NO_ROUND_TO_FORMAT` with this if using a "
            "format-string with small amount of digits.")
     .value(
         "NO_ROUND_TO_FORMAT", ImGuiSliderFlags_NoRoundToFormat,
@@ -858,13 +858,13 @@ nb::enum_<ImGuiPopupFlags_>(m, "PopupFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiPopupFlags_None)
     .value("MOUSE_BUTTON_LEFT", ImGuiPopupFlags_MouseButtonLeft,
            "For BeginPopupContext*(): open on Left Mouse release. Guaranteed "
-           "to always be == 0 (same as ImGuiMouseButton_Left)")
+           "to always be == 0 (same as `MouseButton.LEFT`)")
     .value("MOUSE_BUTTON_RIGHT", ImGuiPopupFlags_MouseButtonRight,
            "For BeginPopupContext*(): open on Right Mouse release. Guaranteed "
-           "to always be == 1 (same as ImGuiMouseButton_Right)")
+           "to always be == 1 (same as `MouseButton.RIGHT`)")
     .value("MOUSE_BUTTON_MIDDLE", ImGuiPopupFlags_MouseButtonMiddle,
            "For BeginPopupContext*(): open on Middle Mouse release. Guaranteed "
-           "to always be == 2 (same as ImGuiMouseButton_Middle)")
+           "to always be == 2 (same as `MouseButton.MIDDLE`)")
     .value("MOUSE_BUTTON_MASK_", ImGuiPopupFlags_MouseButtonMask_)
     .value("MOUSE_BUTTON_DEFAULT_", ImGuiPopupFlags_MouseButtonDefault_)
     .value("NO_REOPEN", ImGuiPopupFlags_NoReopen,
@@ -1074,7 +1074,7 @@ nb::enum_<ImGuiTableBgTarget_>(m, "TableBgTarget", nb::is_arithmetic())
     .value("NONE", ImGuiTableBgTarget_None)
     .value("ROW_BG0", ImGuiTableBgTarget_RowBg0,
            "Set row background color 0 (generally used for background, "
-           "automatically set when ImGuiTableFlags_RowBg is used)")
+           "automatically set when `TableFlags.ROW_BG` is used)")
     .value("ROW_BG1", ImGuiTableBgTarget_RowBg1,
            "Set row background color 1 (generally used for selection marking)")
     .value("CELL_BG", ImGuiTableBgTarget_CellBg,

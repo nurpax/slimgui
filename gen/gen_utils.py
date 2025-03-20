@@ -6,6 +6,40 @@ from typing import Any, Dict, Optional, Set
 
 cimgui_definitions_path = 'gen/cimgui/definitions.json'
 
+# Used by gen_nb_enums also
+enum_list = [
+    ("ImDrawFlags_", "DrawFlags"),
+    ("ImGuiInputTextFlags_", "InputTextFlags"),
+    ("ImGuiButtonFlags_", "ButtonFlags"),
+    ("ImGuiChildFlags_", "ChildFlags"),
+    ("ImGuiDragDropFlags_", "DragDropFlags"),
+    ("ImGuiFocusedFlags_", "FocusedFlags"),
+    ("ImGuiWindowFlags_", "WindowFlags"),
+    ("ImGuiTreeNodeFlags_", "TreeNodeFlags"),
+    ("ImGuiTabBarFlags_", "TabBarFlags"),
+    ("ImGuiTabItemFlags_", "TabItemFlags"),
+    ("ImGuiTableFlags_", "TableFlags"),
+    ("ImGuiTableRowFlags_", "TableRowFlags"),
+    ("ImGuiTableColumnFlags_", "TableColumnFlags"),
+    ("ImGuiColorEditFlags_", "ColorEditFlags"),
+    ("ImGuiComboFlags_", "ComboFlags"),
+    ("ImGuiSelectableFlags_", "SelectableFlags"),
+    ("ImGuiConfigFlags_", "ConfigFlags"),
+    ("ImGuiBackendFlags_", "BackendFlags"),
+    ("ImGuiCond_", "Cond"),
+    ("ImGuiHoveredFlags_", "HoveredFlags"),
+    ("ImGuiSliderFlags_", "SliderFlags"),
+    ("ImGuiPopupFlags_", "PopupFlags"),
+    ("ImGuiMouseButton_", "MouseButton"),
+    ("ImGuiMouseCursor_", "MouseCursor"),
+    ("ImGuiCol_", "Col"),
+    ("ImGuiDir", "Dir"),
+    ("ImGuiStyleVar_", "StyleVar"),
+    ("ImGuiTableBgTarget_", "TableBgTarget"),
+]
+
+_known_enums = dict(enum_list)
+
 def camel_to_snake(name):
     s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
     return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
@@ -98,10 +132,20 @@ def docstring_fixer(docstring):
                 out.append(f'`{camel_to_snake(sym)}`')
                 tok_idx += 1
         else:
-            out.append(sym)
-            tok_idx += 1
+            if any(sym.startswith(enum_name) for enum_name in _known_enums.keys()):
+                enum_name, enum_field = sym.removeprefix('ImGui').split('_')
+                if enum_field == '':
+                    out.append(f'`{enum_name}`')
+                else:
+                    out.append(f'`{enum_name}.{camel_to_snake(enum_field).upper()}`')
+                tok_idx += 1
+            else:
+                out.append(sym)
+                tok_idx += 1
 
     return ''.join(out)
 
 if __name__ == '__main__':
-    print(docstring_fixer("Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the \"Horizontal Scrolling\" section."))
+    #print(docstring_fixer("Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the \"Horizontal Scrolling\" section."))
+    print(docstring_fixer("set next window background color alpha. helper to easily override the Alpha component of ImGuiCol_WindowBg/ChildBg/PopupBg. you may also use ImGuiWindowFlags_NoBackground."))
+    print(docstring_fixer("ImGuiInputTextFlags_ParseEmptyRefVal background color alpha. helper to easily override the Alpha component of ImGuiCol_WindowBg/ChildBg/PopupBg. you may also use ImGuiWindowFlags_NoBackground."))
