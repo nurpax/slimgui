@@ -36,9 +36,44 @@ def _is_special_case_string(tokens: list[str]) -> Optional[list[str]]:
             return e
     return None
 
+def _tokenize(s: str) -> list[str]:
+    return re.findall(r'\w+|[^\w\s]|\s+', s)
+
+def _match_funcname_parens(tokens: list[str]) -> tuple[int, str, str] | None:
+    '''Parse an input string that that is expected to start with a function name word, followed by
+      open paren, an arbitrary number of tokens (including opening and closing parens), and a final closing
+      paren.  Return the # of tokens consumed, function name and the contents of what was inside
+      parenthesis.'''
+    tok_idx = 0
+    funcname = tokens[0]
+    if len(tokens) < 3:
+        return None
+    if tokens[1] != '(':
+        return None
+    tok_idx += 1
+    parens = 0
+    while True:
+        if tokens[tok_idx] == '(':
+            parens += 1
+        elif tokens[tok_idx] == ')':
+            parens -= 1
+        tok_idx += 1
+        if parens == 0:
+            break
+        if tok_idx >= len(tokens):
+            return None
+    return tok_idx, funcname, ''.join(tokens[2:tok_idx-1])
+
+def _best_effort_fix_funcall_args(contents: str) -> str:
+    contents = contents.replace('ImVec2', '')
+    contents = contents.replace('0.0f', '0.0')
+    contents = contents.replace('1.0f', '1.0')
+    contents = contents.replace('0.5f', '0.5')
+    return contents
+
 def docstring_fixer(docstring):
     '''Replace imgui function names in a docstring with markdown code blocks in Python naming convention that should match slimgui.'''
-    tokens = re.findall(r'\w+|[^\w\s]|\s+', docstring)
+    tokens = _tokenize(docstring)
     imgui_funcnames = get_imgui_funcnames()
     out = []
     tok_idx = 0
@@ -50,23 +85,23 @@ def docstring_fixer(docstring):
             tok_idx += len(s)
             continue
 
-        toks = tokens[tok_idx:tok_idx+3]
-        ignore_rename = ['Value']
-        match toks:
-            case [sym, '(', ')']:
-                if (sym not in ignore_rename) and (sym in imgui_funcnames):
-                    out.append(f'`{camel_to_snake(sym)}()`')
-                else:
-                    out += toks
-                tok_idx += len(toks)
-            case rest:
-                sym = rest[0]
-                if (sym not in ignore_rename) and (sym in imgui_funcnames):
-                    out.append(f'`{camel_to_snake(sym)}`')
-                else:
-                    out.append(sym)
+        ignore_rename = { 'Value' }
+        rest = tokens[tok_idx:]
+        sym = rest[0]
+        if (sym not in ignore_rename) and (sym in imgui_funcnames):
+            if (m := _match_funcname_parens(rest)) is not None:
+                shift, name, contents = m
+                contents = _best_effort_fix_funcall_args(contents)
+                out.append(f'`{camel_to_snake(name)}({contents})`')
+                tok_idx += shift
+            else:
+                out.append(f'`{camel_to_snake(sym)}`')
                 tok_idx += 1
+        else:
+            out.append(sym)
+            tok_idx += 1
+
     return ''.join(out)
 
-#if __name__ == '__main__':
-#    print(docstring_fixer('Set the color of the IsItemHovered() and SetTooltip'))
+if __name__ == '__main__':
+    print(docstring_fixer("Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the \"Horizontal Scrolling\" section."))

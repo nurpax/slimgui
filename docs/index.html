@@ -874,7 +874,6 @@ div.api {
 <h3 id="widgets-drag-sliders">Widgets: Drag Sliders</h3>
 <ul>
 <li>CTRL+Click on any drag box to turn them into an input box. Manually input values aren’t clamped by default and can go off-bounds. Use <code>SliderFlags.ALWAYS_CLAMP</code> to always clamp.</li>
-<li>For all the <code>float2</code>/<code>float3</code>/<code>float4</code>/<code>int2</code>/<code>int3</code>/<code>int4</code> versions of every function, note that a <code>float v[X]</code> function argument is the same as <code>float* v</code>, the array syntax is just a way to document the number of elements that are expected to be accessible. You can pass the address of your first element out of a contiguous set, e.g. <code>&amp;myvector.x</code>.</li>
 <li>Adjust format string to decorate the value with a prefix, a suffix, or adapt the editing and display precision e.g. <code>"%.3f"</code> -&gt; <code>1.234</code>; <code>"%5.2f secs"</code> -&gt; <code>01.23 secs</code>; <code>"Biscuit: %.0f"</code> -&gt; <code>Biscuit: 1</code>; etc.</li>
 <li>Format string may also be set to <code>None</code> or use the default format (<code>"%f"</code> or <code>"%d"</code>).</li>
 <li>Speed is per-pixel of mouse movement (<code>v_speed=0.2</code>: mouse needs to move by 5 pixels to increase value by 1). For keyboard/gamepad navigation, minimum speed is <code>max(v_speed, minimum_step_at_given_precision)</code>.</li>
@@ -1486,7 +1485,7 @@ div.api {
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_item_clicked</span>(<span class='arg_name'>mouse_button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span> = <span class='symbol'>MouseButton</span>.<span class='symbol'>LEFT</span>) -> <span class='symbol'>bool</span></code>
-  <p>is the last item hovered and mouse clicked on? (**)  == <code>is_mouse_clicked</code>(mouse_button) && <code>is_item_hovered()</code>Important. (**) this is NOT equivalent to the behavior of e.g. <code>button()</code>. Read comments in function definition.</p>
+  <p>is the last item hovered and mouse clicked on? (**)  == <code>is_mouse_clicked(mouse_button)</code> && <code>is_item_hovered()</code>Important. (**) this is NOT equivalent to the behavior of e.g. <code>button()</code>. Read comments in function definition.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_item_visible</span>() -> <span class='symbol'>bool</span></code>
@@ -1918,7 +1917,7 @@ div.api {
   <tr><td class="field">ALLOW_WHEN_OVERLAPPED</td><td class="fielddoc"></td></tr>
   <tr><td class="field">RECT_ONLY</td><td class="fielddoc"></td></tr>
   <tr><td class="field">ROOT_AND_CHILD_WINDOWS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">FOR_TOOLTIP</td><td class="fielddoc"><code>shortcut</code> for standard flags when using <code>is_item_hovered()</code> + <code>set_tooltip()</code> sequence.</td></tr>
+  <tr><td class="field">FOR_TOOLTIP</td><td class="fielddoc">Shortcut for standard flags when using <code>is_item_hovered()</code> + <code>set_tooltip()</code> sequence.</td></tr>
   <tr><td class="field">STATIONARY</td><td class="fielddoc">Require mouse to be stationary for style.HoverStationaryDelay (~0.15 sec) _at least one time_. After this, can move on same item/window. Using the stationary test tends to reduces the need for a long delay.</td></tr>
   <tr><td class="field">DELAY_NONE</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true immediately (default). As this is the default you generally ignore this.</td></tr>
   <tr><td class="field">DELAY_SHORT</td><td class="fielddoc"><code>is_item_hovered()</code> only: Return true after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).</td></tr>
@@ -2240,7 +2239,7 @@ div.api {
   <tr><td class="field">REORDERABLE</td><td class="fielddoc">Allow manually dragging tabs to re-order them + New tabs are appended at the end of list</td></tr>
   <tr><td class="field">AUTO_SELECT_NEW_TABS</td><td class="fielddoc">Automatically select new tabs when they appear</td></tr>
   <tr><td class="field">TAB_LIST_POPUP_BUTTON</td><td class="fielddoc">Disable buttons to open the tab list popup</td></tr>
-  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked</code>(2)) *p_open = false.</td></tr>
+  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked(2)</code>) *p_open = false.</td></tr>
   <tr><td class="field">NO_TAB_LIST_SCROLLING_BUTTONS</td><td class="fielddoc">Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)</td></tr>
   <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">Disable tooltips when hovering a tab</td></tr>
   <tr><td class="field">DRAW_SELECTED_OVERLINE</td><td class="fielddoc">Draw selected overline markers over selected tab</td></tr>
@@ -2254,7 +2253,7 @@ div.api {
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">UNSAVED_DOCUMENT</td><td class="fielddoc">Display a dot next to the title + set ImGuiTabItemFlags_NoAssumedClosure.</td></tr>
   <tr><td class="field">SET_SELECTED</td><td class="fielddoc">Trigger flag to programmatically make the tab selected when calling <code>begin_tab_item()</code></td></tr>
-  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked</code>(2)) *p_open = false.</td></tr>
+  <tr><td class="field">NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON</td><td class="fielddoc">Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (<code>is_item_hovered()</code> && <code>is_mouse_clicked(2)</code>) *p_open = false.</td></tr>
   <tr><td class="field">NO_PUSH_ID</td><td class="fielddoc">Don't call <code>push_id()</code>/<code>pop_id()</code> on <code>begin_tab_item()</code>/<code>end_tab_item()</code></td></tr>
   <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">Disable tooltip for the given tab</td></tr>
   <tr><td class="field">NO_REORDER</td><td class="fielddoc">Disable reordering this tab or having another tab cross over this tab</td></tr>
@@ -2384,11 +2383,11 @@ div.api {
   <tr><td class="field">NO_SCROLL_WITH_MOUSE</td><td class="fielddoc">Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set.</td></tr>
   <tr><td class="field">NO_COLLAPSE</td><td class="fielddoc">Disable user collapsing window by double-clicking on it. Also referred to as Window Menu Button (e.g. within a docking node).</td></tr>
   <tr><td class="field">ALWAYS_AUTO_RESIZE</td><td class="fielddoc">Resize every window to its content every frame</td></tr>
-  <tr><td class="field">NO_BACKGROUND</td><td class="fielddoc">Disable drawing background color (WindowBg, etc.) and outside border. Similar as using <code>set_next_window_bg_alpha</code>(0.0f).</td></tr>
+  <tr><td class="field">NO_BACKGROUND</td><td class="fielddoc">Disable drawing background color (WindowBg, etc.) and outside border. Similar as using <code>set_next_window_bg_alpha(0.0)</code>.</td></tr>
   <tr><td class="field">NO_SAVED_SETTINGS</td><td class="fielddoc">Never load/save settings in .ini file</td></tr>
   <tr><td class="field">NO_MOUSE_INPUTS</td><td class="fielddoc">Disable catching mouse, hovering test with pass through.</td></tr>
   <tr><td class="field">MENU_BAR</td><td class="fielddoc">Has a menu-bar</td></tr>
-  <tr><td class="field">HORIZONTAL_SCROLLBAR</td><td class="fielddoc">Allow horizontal scrollbar to appear (off by default). You may use <code>set_next_window_content_size</code>(ImVec2(width,0.0f)); prior to calling <code>begin()</code> to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.</td></tr>
+  <tr><td class="field">HORIZONTAL_SCROLLBAR</td><td class="fielddoc">Allow horizontal scrollbar to appear (off by default). You may use <code>set_next_window_content_size((width,0.0))</code>; prior to calling <code>begin()</code> to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.</td></tr>
   <tr><td class="field">NO_FOCUS_ON_APPEARING</td><td class="fielddoc">Disable taking focus when transitioning from hidden to visible state</td></tr>
   <tr><td class="field">NO_BRING_TO_FRONT_ON_FOCUS</td><td class="fielddoc">Disable bringing window to front when taking focus (e.g. clicking on it or programmatically giving it focus)</td></tr>
   <tr><td class="field">ALWAYS_VERTICAL_SCROLLBAR</td><td class="fielddoc">Always show vertical scrollbar (even if ContentSize.y < Size.y)</td></tr>

@@ -207,7 +207,6 @@ In this header file we use the "label"/"name" terminology to denote a string tha
 ### Widgets: Drag Sliders
 
 - CTRL+Click on any drag box to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use `SliderFlags.ALWAYS_CLAMP` to always clamp.
-- For all the `float2`/`float3`/`float4`/`int2`/`int3`/`int4` versions of every function, note that a `float v[X]` function argument is the same as `float* v`, the array syntax is just a way to document the number of elements that are expected to be accessible. You can pass the address of your first element out of a contiguous set, e.g. `&myvector.x`.
 - Adjust format string to decorate the value with a prefix, a suffix, or adapt the editing and display precision e.g. `"%.3f"` -> `1.234`; `"%5.2f secs"` -> `01.23 secs`; `"Biscuit: %.0f"` -> `Biscuit: 1`; etc.
 - Format string may also be set to `None` or use the default format (`"%f"` or `"%d"`).
 - Speed is per-pixel of mouse movement (`v_speed=0.2`: mouse needs to move by 5 pixels to increase value by 1). For keyboard/gamepad navigation, minimum speed is `max(v_speed, minimum_step_at_given_precision)`.

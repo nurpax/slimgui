@@ -827,7 +827,7 @@ class HoveredFlags(enum.IntFlag):
 
     FOR_TOOLTIP = 4096
     """
-    `shortcut` for standard flags when using `is_item_hovered()` + `set_tooltip()` sequence.
+    Shortcut for standard flags when using `is_item_hovered()` + `set_tooltip()` sequence.
     """
 
     STATIONARY = 8192
@@ -2093,7 +2093,7 @@ class TabBarFlags(enum.IntFlag):
 
     NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 8
     """
-    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked`(2)) *p_open = false.
+    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked(2)`) *p_open = false.
     """
 
     NO_TAB_LIST_SCROLLING_BUTTONS = 16
@@ -2133,7 +2133,7 @@ class TabItemFlags(enum.IntFlag):
 
     NO_CLOSE_WITH_MIDDLE_MOUSE_BUTTON = 4
     """
-    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked`(2)) *p_open = false.
+    Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked(2)`) *p_open = false.
     """
 
     NO_PUSH_ID = 8
@@ -2606,7 +2606,7 @@ class WindowFlags(enum.IntFlag):
 
     NO_BACKGROUND = 128
     """
-    Disable drawing background color (WindowBg, etc.) and outside border. Similar as using `set_next_window_bg_alpha`(0.0f).
+    Disable drawing background color (WindowBg, etc.) and outside border. Similar as using `set_next_window_bg_alpha(0.0)`.
     """
 
     NO_SAVED_SETTINGS = 256
@@ -2620,7 +2620,7 @@ class WindowFlags(enum.IntFlag):
 
     HORIZONTAL_SCROLLBAR = 2048
     """
-    Allow horizontal scrollbar to appear (off by default). You may use `set_next_window_content_size`(ImVec2(width,0.0f)); prior to calling `begin()` to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
+    Allow horizontal scrollbar to appear (off by default). You may use `set_next_window_content_size((width,0.0))`; prior to calling `begin()` to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.
     """
 
     NO_FOCUS_ON_APPEARING = 4096
@@ -3288,7 +3288,7 @@ def is_item_active() -> bool:
 
 
 def is_item_clicked(mouse_button: MouseButton = MouseButton.LEFT) -> bool:
-    """is the last item hovered and mouse clicked on? (**)  == `is_mouse_clicked`(mouse_button) && `is_item_hovered()`Important. (**) this is NOT equivalent to the behavior of e.g. `button()`. Read comments in function definition."""
+    """is the last item hovered and mouse clicked on? (**)  == `is_mouse_clicked(mouse_button)` && `is_item_hovered()`Important. (**) this is NOT equivalent to the behavior of e.g. `button()`. Read comments in function definition."""
     ...
 
 

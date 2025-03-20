@@ -240,7 +240,7 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
            "Resize every window to its content every frame")
     .value("NO_BACKGROUND", ImGuiWindowFlags_NoBackground,
            "Disable drawing background color (WindowBg, etc.) and outside "
-           "border. Similar as using `set_next_window_bg_alpha`(0.0f).")
+           "border. Similar as using `set_next_window_bg_alpha(0.0)`.")
     .value("NO_SAVED_SETTINGS", ImGuiWindowFlags_NoSavedSettings,
            "Never load/save settings in .ini file")
     .value("NO_MOUSE_INPUTS", ImGuiWindowFlags_NoMouseInputs,
@@ -248,8 +248,8 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
     .value("MENU_BAR", ImGuiWindowFlags_MenuBar, "Has a menu-bar")
     .value("HORIZONTAL_SCROLLBAR", ImGuiWindowFlags_HorizontalScrollbar,
            "Allow horizontal scrollbar to appear (off by default). You may use "
-           "`set_next_window_content_size`(ImVec2(width,0.0f)); prior to "
-           "calling `begin()` to specify width. Read code in imgui_demo in the "
+           "`set_next_window_content_size((width,0.0))`; prior to calling "
+           "`begin()` to specify width. Read code in imgui_demo in the "
            "\"Horizontal Scrolling\" section.")
     .value(
         "NO_FOCUS_ON_APPEARING", ImGuiWindowFlags_NoFocusOnAppearing,
@@ -354,7 +354,7 @@ nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
            "Disable behavior of closing tabs (that are submitted with p_open "
            "!= NULL) with middle mouse button. You may handle this behavior "
            "manually on user's side with if (`is_item_hovered()` && "
-           "`is_mouse_clicked`(2)) *p_open = false.")
+           "`is_mouse_clicked(2)`) *p_open = false.")
     .value("NO_TAB_LIST_SCROLLING_BUTTONS",
            ImGuiTabBarFlags_NoTabListScrollingButtons,
            "Disable scrolling buttons (apply when fitting policy is "
@@ -384,7 +384,7 @@ nb::enum_<ImGuiTabItemFlags_>(m, "TabItemFlags", nb::is_flag(),
            "Disable behavior of closing tabs (that are submitted with p_open "
            "!= NULL) with middle mouse button. You may handle this behavior "
            "manually on user's side with if (`is_item_hovered()` && "
-           "`is_mouse_clicked`(2)) *p_open = false.")
+           "`is_mouse_clicked(2)`) *p_open = false.")
     .value("NO_PUSH_ID", ImGuiTabItemFlags_NoPushId,
            "Don't call `push_id()`/`pop_id()` on "
            "`begin_tab_item()`/`end_tab_item()`")
@@ -800,7 +800,7 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
     .value("RECT_ONLY", ImGuiHoveredFlags_RectOnly)
     .value("ROOT_AND_CHILD_WINDOWS", ImGuiHoveredFlags_RootAndChildWindows)
     .value("FOR_TOOLTIP", ImGuiHoveredFlags_ForTooltip,
-           "`shortcut` for standard flags when using `is_item_hovered()` + "
+           "Shortcut for standard flags when using `is_item_hovered()` + "
            "`set_tooltip()` sequence.")
     .value(
         "STATIONARY", ImGuiHoveredFlags_Stationary,
