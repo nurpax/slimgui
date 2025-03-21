@@ -9,7 +9,7 @@ MacOS:
 ```
 python3 -m venv .venv
 . .venv/bin/activate
-pip install git+https://github.com/wjakob/nanobind 'scikit-build-core[pyproject]' click glfw pyopengl numpy requests
+pip install git+https://github.com/wjakob/nanobind 'scikit-build-core[pyproject]' click glfw pyopengl numpy requests toml
 pip install --no-build-isolation -ve .
 python gen/gen_nb_enums.py > src/im_enums.inl
 ```
@@ -19,7 +19,7 @@ Windows:
 ```
 python3 -m venv .venv
 .venv\Scripts\activate.bat
-pip install git+https://github.com/wjakob/nanobind scikit-build-core[pyproject] click glfw pyopengl numpy
+pip install git+https://github.com/wjakob/nanobind scikit-build-core[pyproject] click glfw pyopengl numpy requests toml
 pip install --no-build-isolation -ve .
 python gen\gen_nb_enums.py > src\im_enums.inl
 ```
@@ -39,4 +39,5 @@ NOTE NOTE! imconfig.h contains slimgui changes!  Review after updating imgui.
 - update the imgui folder in the cimgui checkout with an imgui source release
 - cd generator && ./generator
 - dump the generator/output contents into gen/cimgui
+- update imgui version in pyproject.toml
 ```
