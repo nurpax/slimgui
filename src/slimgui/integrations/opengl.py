@@ -56,7 +56,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         self._vbo_handle = None
         self._elements_handle = None
         self._vao_handle = None
-
+        self._create_device_objects()
         super(ProgrammablePipelineRenderer, self).__init__()
 
     def refresh_font_texture(self):
