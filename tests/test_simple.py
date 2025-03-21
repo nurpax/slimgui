@@ -24,7 +24,7 @@ def frame_scope(imgui_context, null_renderer):
 def test_current_context(imgui_context):
     assert imgui_context is not None
     assert imgui.get_current_context() is not None
-    assert imgui_context == imgui.get_current_context()
+    assert imgui_context is imgui.get_current_context()
 
 def test_style_access(imgui_context):
     styles = imgui.get_style()
@@ -36,6 +36,29 @@ def test_style_access(imgui_context):
     assert styles.window_padding == (8, 8)
     styles.window_padding = (2, 4)
     assert styles.window_padding == (2, 4)
+
+def test_set_current_context(imgui_context):
+    assert imgui_context is not None
+    assert imgui.get_current_context() is not None
+    assert imgui_context is imgui.get_current_context()
+
+    ctx2 = imgui.create_context()
+    assert ctx2 is imgui.get_current_context()
+    assert imgui_context is not imgui.get_current_context()
+    c = imgui.get_current_context()
+    assert c is not None
+    assert imgui_context.context is not c.context
+    imgui.set_current_context(imgui_context)
+    assert imgui_context is imgui.get_current_context()
+    c = imgui.get_current_context()
+    assert c is not None
+    assert imgui_context.context is c.context
+    imgui.set_current_context(ctx2)
+    imgui.destroy_context(None)
+    assert imgui.get_current_context() is None
+    imgui.set_current_context(imgui_context)
+    assert imgui_context is imgui.get_current_context()
+
 
 def test_begin_base_window(frame_scope):
     visible, _ = imgui.begin("Window")

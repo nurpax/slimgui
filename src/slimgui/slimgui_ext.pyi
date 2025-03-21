@@ -3652,6 +3652,10 @@ def set_column_width(column_index: int, width: float) -> None:
     ...
 
 
+def set_current_context(arg: Context, /) -> None:
+    ...
+
+
 def set_cursor_pos(local_pos: tuple[float, float]) -> None:
     """[window-local] \""""
     ...

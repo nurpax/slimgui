@@ -46,6 +46,11 @@ def create_context(shared_font_atlas: slimgui_ext.FontAtlas | None = None) -> Wr
 def get_current_context() -> WrappedContext | None:
     return _current_context
 
+def set_current_context(ctx: WrappedContext) -> None:
+    global _current_context
+    _current_context = ctx
+    slimgui_ext.set_current_context(ctx.context)
+
 def destroy_context(ctx: WrappedContext | None):
     global _current_context
     prev_ctx = get_current_context()

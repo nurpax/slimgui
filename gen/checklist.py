@@ -24,6 +24,8 @@ _ignored_toplevel_funcs = {
     "label_text_v",             # varargs not relevant in Python
     "bullet_text_v",            # varargs not relevant in Python
     "is_any_mouse_down",        # will obsolete
+    "get_style",    # wrapped in python, using internal funcs
+    "get_io",       # wrapped in python, using internal funcs
 }
 
 
