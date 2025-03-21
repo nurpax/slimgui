@@ -15,13 +15,25 @@ developed with the following goals in mind:
 
 The project source code is hosted on [github.com/nurpax/slimgui](https://github.com/nurpax/slimgui).
 
+The project has been developed using the Python `glfw` and `pyOpenGL` packages and includes integration backend for these APIs.  It should
+be possible to develop integrations for other backends, such as SDL or Pygame.
+
 ### Getting started
+
+Slimgui requires Python 3.10 or newer.
 
 Installation: `pip install slimgui`
 
-<!-- Try it out: `python -m slimgui.demo` --> <!-- todo actually implement this -->
+To run the example, clone the repo, install dependencies and run:
 
-Read the example code: [example/](https://github.com/nurpax/slimgui/blob/main/example/)
+```
+git clone https://github.com/nurpax/slimgui
+cd slimgui
+pip install glfw pyopengl numpy requests
+python example/app.py
+```
+
+Browse the example code: [example/](https://github.com/nurpax/slimgui/blob/main/example/)
 
 ### Binding considerations
 

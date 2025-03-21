@@ -71,7 +71,7 @@ def show_demo_window(show_window: bool):
         closable = False
 
     main_viewport = imgui.get_main_viewport()
-    imgui.set_next_window_pos((main_viewport.work_pos[0] + 650, main_viewport.work_pos[1] + 20), imgui.Cond.FIRST_USE_EVER)
+    imgui.set_next_window_pos((main_viewport.work_pos[0] + 250, main_viewport.work_pos[1] + 20), imgui.Cond.FIRST_USE_EVER)
     imgui.set_next_window_size((550, 680), imgui.Cond.FIRST_USE_EVER)
 
     visible, show_window = imgui.begin("Python mini-port of Dear ImGui Demo", closable=closable, flags=window_flags)

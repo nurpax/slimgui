@@ -135,7 +135,7 @@ pre {
   font-family: 'Consolas', monospace, sans-serif;
   font-size: 10pt;
   font-weight: normal;
-  background-color: #f6f8fa;
+  background-color: #f0f2f5;
   border-radius: 3px;
   padding: 6px;
   line-height: 1.2;
@@ -263,11 +263,16 @@ div.api {
 <li>Closely match the Dear ImGui API but adapt for Python as necessary. Don’t invent new API concepts.</li>
 </ul>
 <p>The project source code is hosted on <a href="https://github.com/nurpax/slimgui">github.com/nurpax/slimgui</a>.</p>
+<p>The project has been developed using the Python <code>glfw</code> and <code>pyOpenGL</code> packages and includes integration backend for these APIs. It should be possible to develop integrations for other backends, such as SDL or Pygame.</p>
 <h3 id="getting-started">Getting started</h3>
+<p>Slimgui requires Python 3.10 or newer.</p>
 <p>Installation: <code>pip install slimgui</code></p>
-<!-- Try it out: `python -m slimgui.demo` -->
-<!-- todo actually implement this -->
-<p>Read the example code: <a href="https://github.com/nurpax/slimgui/blob/main/example/">example/</a></p>
+<p>To run the example, clone the repo, install dependencies and run:</p>
+<pre><code>git clone https://github.com/nurpax/slimgui
+cd slimgui
+pip install glfw pyopengl numpy requests
+python example/app.py</code></pre>
+<p>Browse the example code: <a href="https://github.com/nurpax/slimgui/blob/main/example/">example/</a></p>
 <h3 id="binding-considerations">Binding considerations</h3>
 <p>The Slimgui API is similar to <a href="https://github.com/pyimgui/pyimgui">pyimgui</a> except somewhat modernized:</p>
 <ul>
