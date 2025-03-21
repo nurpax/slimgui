@@ -5,6 +5,7 @@ import slimgui as imgui
 @pytest.fixture
 def imgui_context():
     ctx = imgui.create_context()
+    imgui.get_io().ini_filename = None
     yield ctx
     imgui.destroy_context(ctx)
 
