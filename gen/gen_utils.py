@@ -98,12 +98,43 @@ def _match_funcname_parens(tokens: list[str]) -> tuple[int, str, str] | None:
             return None
     return tok_idx, funcname, ''.join(tokens[2:tok_idx-1])
 
-def _best_effort_fix_funcall_args(contents: str) -> str:
-    contents = contents.replace('ImVec2', '')
-    contents = contents.replace('0.0f', '0.0')
-    contents = contents.replace('1.0f', '1.0')
-    contents = contents.replace('0.5f', '0.5')
-    return contents
+def _translate_enum_name(sym: str) -> str | None:
+    '''Translate an enum name to a Python enum name.  Return a tuple of whether the name was
+    translated and the translated name.'''
+
+    if any(sym.startswith(enum_name) for enum_name in _known_enums.keys()):
+        enum_name, enum_field = sym.removeprefix('ImGui').split('_')
+        if enum_field == '':
+            return f'{enum_name}'
+        else:
+            return f'{enum_name}.{camel_to_snake(enum_field).upper()}'
+    return None
+
+def _best_effort_fix_funcall_args(t: str) -> str:
+    tokens = _tokenize(t)
+    tok_idx = 0
+    out = []
+    while tok_idx < len(tokens):
+        match tokens[tok_idx:]:
+            case ['0', '.', '0f', *_]:
+                out += ['0.0']
+                tok_idx += 3
+            case ['1', '.', '0f', *_]:
+                out += ['1.0']
+                tok_idx += 3
+            case ['0', '.', '5f', *_]:
+                out += ['0.5']
+                tok_idx += 3
+            case ['ImVec2', *_]: # skip ImVec2(...) -> (...)
+                tok_idx += 1
+            case _:
+                sym = tokens[tok_idx]
+                if (m := _translate_enum_name(sym)) is not None:
+                    out += [m]
+                else:
+                    out += [sym]
+                tok_idx += 1
+    return ''.join(out)
 
 def docstring_fixer(docstring):
     '''Replace imgui function names in a docstring with markdown code blocks in Python naming convention that should match slimgui.'''
@@ -132,12 +163,8 @@ def docstring_fixer(docstring):
                 out.append(f'`{camel_to_snake(sym)}`')
                 tok_idx += 1
         else:
-            if any(sym.startswith(enum_name) for enum_name in _known_enums.keys()):
-                enum_name, enum_field = sym.removeprefix('ImGui').split('_')
-                if enum_field == '':
-                    out.append(f'`{enum_name}`')
-                else:
-                    out.append(f'`{enum_name}.{camel_to_snake(enum_field).upper()}`')
+            if (translated := _translate_enum_name(sym)) is not None:
+                out.append(f'`{translated}`')
                 tok_idx += 1
             else:
                 out.append(sym)

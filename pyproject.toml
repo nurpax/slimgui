@@ -20,7 +20,7 @@ Documentation = "https://nurpax.github.io/slimgui/"
 Repository = "https://github.com/nurpax/slimgui"
 
 [tool.pytest.ini_options]
-testpaths = [ "tests" ]
+testpaths = [ "tests", "gen" ]
 
 [dependency-groups]
 dev = [
