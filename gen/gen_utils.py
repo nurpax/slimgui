@@ -170,7 +170,10 @@ def docstring_fixer(docstring):
                 out.append(sym)
                 tok_idx += 1
 
-    return ''.join(out)
+    ret = ''.join(out)
+    if ret == '':
+        return ret
+    return ret[0].upper() + ret[1:]
 
 if __name__ == '__main__':
     #print(docstring_fixer("Allow horizontal scrollbar to appear (off by default). You may use SetNextWindowContentSize(ImVec2(width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the \"Horizontal Scrolling\" section."))

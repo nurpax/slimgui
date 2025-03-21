@@ -2,16 +2,16 @@ import gen_utils
 
 def test_docstring_fixer():
     txt = gen_utils.docstring_fixer("set next window background color alpha.")
-    assert txt == "set next window background color alpha."
+    assert txt == "Set next window background color alpha."
 
     txt = gen_utils.docstring_fixer("you may also use ImGuiWindowFlags_NoBackground.")
-    assert txt == "you may also use `WindowFlags.NO_BACKGROUND`."
+    assert txt == "You may also use `WindowFlags.NO_BACKGROUND`."
 
     txt = gen_utils.docstring_fixer("so IsItemActivated() should be a function")
-    assert txt == "so `is_item_activated()` should be a function"
+    assert txt == "So `is_item_activated()` should be a function"
 
     txt = gen_utils.docstring_fixer("so IsItemOomphed() is not known") # not an imgui function, tho looks like one
-    assert txt == "so IsItemOomphed() is not known"
+    assert txt == "So IsItemOomphed() is not known"
 
     txt = gen_utils.docstring_fixer("InvisibleButton(ImVec2(0.0f, 1.0f))")
     assert txt == "`invisible_button((0.0, 1.0))`"

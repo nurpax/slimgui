@@ -1005,57 +1005,57 @@ nb::enum_<ImGuiDir>(m, "Dir", nb::is_arithmetic())
     .value("DOWN", ImGuiDir_Down)
     .value("COUNT", ImGuiDir_COUNT);
 nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
-    .value("ALPHA", ImGuiStyleVar_Alpha, "float     Alpha")
+    .value("ALPHA", ImGuiStyleVar_Alpha, "Float     Alpha")
     .value("DISABLED_ALPHA", ImGuiStyleVar_DisabledAlpha,
-           "float     DisabledAlpha")
+           "Float     DisabledAlpha")
     .value("WINDOW_PADDING", ImGuiStyleVar_WindowPadding,
            "ImVec2    WindowPadding")
     .value("WINDOW_ROUNDING", ImGuiStyleVar_WindowRounding,
-           "float     WindowRounding")
+           "Float     WindowRounding")
     .value("WINDOW_BORDER_SIZE", ImGuiStyleVar_WindowBorderSize,
-           "float     WindowBorderSize")
+           "Float     WindowBorderSize")
     .value("WINDOW_MIN_SIZE", ImGuiStyleVar_WindowMinSize,
            "ImVec2    WindowMinSize")
     .value("WINDOW_TITLE_ALIGN", ImGuiStyleVar_WindowTitleAlign,
            "ImVec2    WindowTitleAlign")
     .value("CHILD_ROUNDING", ImGuiStyleVar_ChildRounding,
-           "float     ChildRounding")
+           "Float     ChildRounding")
     .value("CHILD_BORDER_SIZE", ImGuiStyleVar_ChildBorderSize,
-           "float     ChildBorderSize")
+           "Float     ChildBorderSize")
     .value("POPUP_ROUNDING", ImGuiStyleVar_PopupRounding,
-           "float     PopupRounding")
+           "Float     PopupRounding")
     .value("POPUP_BORDER_SIZE", ImGuiStyleVar_PopupBorderSize,
-           "float     PopupBorderSize")
+           "Float     PopupBorderSize")
     .value("FRAME_PADDING", ImGuiStyleVar_FramePadding,
            "ImVec2    FramePadding")
     .value("FRAME_ROUNDING", ImGuiStyleVar_FrameRounding,
-           "float     FrameRounding")
+           "Float     FrameRounding")
     .value("FRAME_BORDER_SIZE", ImGuiStyleVar_FrameBorderSize,
-           "float     FrameBorderSize")
+           "Float     FrameBorderSize")
     .value("ITEM_SPACING", ImGuiStyleVar_ItemSpacing, "ImVec2    ItemSpacing")
     .value("ITEM_INNER_SPACING", ImGuiStyleVar_ItemInnerSpacing,
            "ImVec2    ItemInnerSpacing")
     .value("INDENT_SPACING", ImGuiStyleVar_IndentSpacing,
-           "float     IndentSpacing")
+           "Float     IndentSpacing")
     .value("CELL_PADDING", ImGuiStyleVar_CellPadding, "ImVec2    CellPadding")
     .value("SCROLLBAR_SIZE", ImGuiStyleVar_ScrollbarSize,
-           "float     ScrollbarSize")
+           "Float     ScrollbarSize")
     .value("SCROLLBAR_ROUNDING", ImGuiStyleVar_ScrollbarRounding,
-           "float     ScrollbarRounding")
-    .value("GRAB_MIN_SIZE", ImGuiStyleVar_GrabMinSize, "float     GrabMinSize")
+           "Float     ScrollbarRounding")
+    .value("GRAB_MIN_SIZE", ImGuiStyleVar_GrabMinSize, "Float     GrabMinSize")
     .value("GRAB_ROUNDING", ImGuiStyleVar_GrabRounding,
-           "float     GrabRounding")
+           "Float     GrabRounding")
     .value("IMAGE_BORDER_SIZE", ImGuiStyleVar_ImageBorderSize,
-           "float     ImageBorderSize")
-    .value("TAB_ROUNDING", ImGuiStyleVar_TabRounding, "float     TabRounding")
+           "Float     ImageBorderSize")
+    .value("TAB_ROUNDING", ImGuiStyleVar_TabRounding, "Float     TabRounding")
     .value("TAB_BORDER_SIZE", ImGuiStyleVar_TabBorderSize,
-           "float     TabBorderSize")
+           "Float     TabBorderSize")
     .value("TAB_BAR_BORDER_SIZE", ImGuiStyleVar_TabBarBorderSize,
-           "float     TabBarBorderSize")
+           "Float     TabBarBorderSize")
     .value("TAB_BAR_OVERLINE_SIZE", ImGuiStyleVar_TabBarOverlineSize,
-           "float     TabBarOverlineSize")
+           "Float     TabBarOverlineSize")
     .value("TABLE_ANGLED_HEADERS_ANGLE", ImGuiStyleVar_TableAngledHeadersAngle,
-           "float     TableAngledHeadersAngle")
+           "Float     TableAngledHeadersAngle")
     .value("TABLE_ANGLED_HEADERS_TEXT_ALIGN",
            ImGuiStyleVar_TableAngledHeadersTextAlign,
            "ImVec2  TableAngledHeadersTextAlign")
@@ -1064,7 +1064,7 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
     .value("SELECTABLE_TEXT_ALIGN", ImGuiStyleVar_SelectableTextAlign,
            "ImVec2    SelectableTextAlign")
     .value("SEPARATOR_TEXT_BORDER_SIZE", ImGuiStyleVar_SeparatorTextBorderSize,
-           "float     SeparatorTextBorderSize")
+           "Float     SeparatorTextBorderSize")
     .value("SEPARATOR_TEXT_ALIGN", ImGuiStyleVar_SeparatorTextAlign,
            "ImVec2    SeparatorTextAlign")
     .value("SEPARATOR_TEXT_PADDING", ImGuiStyleVar_SeparatorTextPadding,
