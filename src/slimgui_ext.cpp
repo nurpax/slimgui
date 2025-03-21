@@ -110,8 +110,10 @@ NB_MODULE(slimgui_ext, m) {
     m.attr("VERTEX_BUFFER_UV_OFFSET") = offsetof(ImDrawVert, uv);
     m.attr("VERTEX_BUFFER_COL_OFFSET") = offsetof(ImDrawVert, col);
 
-    m.attr("FLOAT_MIN") = FLT_MIN;
-    m.attr("FLOAT_MAX") = FLT_MAX;
+    m.attr("FLT_MIN") = FLT_MIN;
+    m.attr("FLT_MAX") = FLT_MAX;
+    m.attr("FLOAT_MIN") = FLT_MIN;  // for compatibility with older versions
+    m.attr("FLOAT_MAX") = FLT_MAX;  // for compatibility with older versions
 
     nb::class_<ImFont>(m, "Font");
     nb::class_<ImFontConfig>(m, "FontConfig") // exposes only safe fields, e.g., no FontData, FontDataOwnedByAtlas, etc.
@@ -553,7 +555,7 @@ NB_MODULE(slimgui_ext, m) {
     }, "label"_a, "v"_a, "v_button"_a);
     m.def("progress_bar", [](float fraction, ImVec2 size_arg, std::optional<std::string> overlay) {
         ImGui::ProgressBar(fraction, size_arg, overlay ? overlay.value().c_str() : nullptr);
-    }, "fraction"_a, "size_arg"_a = ImVec2(-FLT_MIN, 0), "overlay"_a = nb::none());
+    }, "fraction"_a, "size_arg"_a.sig("(-FLT_MIN, 0)") = ImVec2(-FLT_MIN, 0), "overlay"_a = nb::none());
     m.def("bullet", &ImGui::Bullet);
     m.def("text_link", [](const char* label) { ImGui::TextLink(label); }, "label"_a);
     m.def("text_link_open_url", [](const char* label, std::optional<const char*> url) { ImGui::TextLinkOpenURL(label, url ? url.value() : nullptr); }, "label"_a, "url"_a = nb::none());
@@ -704,10 +706,10 @@ NB_MODULE(slimgui_ext, m) {
     // - Consider using ImPlot (https://github.com/epezent/implot) which is much better!
     m.def("plot_lines", [](const char* label, const nb::ndarray<const float, nb::ndim<1>, nb::device::cpu>& arr, std::optional<std::string> overlay_text, float scale_min, float scale_max, ImVec2 graph_size) {
         ImGui::PlotLines(label, arr.data(), arr.shape(0), 0, overlay_text ? overlay_text.value().c_str() : nullptr, scale_min, scale_max, graph_size);
-    }, "label"_a, "values"_a, "overlay_text"_a = nb::none(), "scale_min"_a = FLT_MAX, "scale_max"_a = FLT_MAX, "graph_size"_a = ImVec2(0,0));
+    }, "label"_a, "values"_a, "overlay_text"_a = nb::none(), "scale_min"_a.sig("FLT_MAX") = FLT_MAX, "scale_max"_a.sig("FLT_MAX") = FLT_MAX, "graph_size"_a = ImVec2(0,0));
     m.def("plot_histogram", [](const char* label, const nb::ndarray<const float, nb::ndim<1>, nb::device::cpu>& arr, std::optional<std::string> overlay_text, float scale_min, float scale_max, ImVec2 graph_size) {
         ImGui::PlotHistogram(label, arr.data(), arr.shape(0), 0, overlay_text ? overlay_text.value().c_str() : nullptr, scale_min, scale_max, graph_size);
-    }, "label"_a, "values"_a, "overlay_text"_a = nb::none(), "scale_min"_a = FLT_MAX, "scale_max"_a = FLT_MAX, "graph_size"_a = ImVec2(0,0));
+    }, "label"_a, "values"_a, "overlay_text"_a = nb::none(), "scale_min"_a.sig("FLT_MAX") = FLT_MAX, "scale_max"_a.sig("FLT_MAX") = FLT_MAX, "graph_size"_a = ImVec2(0,0));
 
 
     // // Widgets: Regular Sliders

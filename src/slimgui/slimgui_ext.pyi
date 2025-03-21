@@ -637,6 +637,10 @@ FLOAT_MAX: float = 3.4028234663852886e+38
 
 FLOAT_MIN: float = 1.1754943508222875e-38
 
+FLT_MAX: float = 3.4028234663852886e+38
+
+FLT_MIN: float = 1.1754943508222875e-38
+
 class FocusedFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -3486,11 +3490,11 @@ def open_popup_on_item_click(str_id: str | None = None, flags: PopupFlags = Popu
     ...
 
 
-def plot_histogram(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
+def plot_histogram(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = FLT_MAX, scale_max: float = FLT_MAX, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
     ...
 
 
-def plot_lines(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = 3.4028234663852886e+38, scale_max: float = 3.4028234663852886e+38, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
+def plot_lines(label: str, values: Annotated[ArrayLike, dict(dtype='float32', shape=(None), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = FLT_MAX, scale_max: float = FLT_MAX, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
     ...
 
 
@@ -3527,7 +3531,7 @@ def pop_text_wrap_pos() -> None:
     ...
 
 
-def progress_bar(fraction: float, size_arg: tuple[float, float] = (-1.1754943508222875e-38, 0.0), overlay: str | None = None) -> None:
+def progress_bar(fraction: float, size_arg: tuple[float, float] = (-FLT_MIN, 0), overlay: str | None = None) -> None:
     ...
 
 
