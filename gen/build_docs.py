@@ -140,6 +140,7 @@ def main():
     parser.add_argument("input_file", type=str, help="The input markdown file.")
     parser.add_argument("--pyi-file", type=str, help=".pyi file to extract type information from.")
     parser.add_argument("--output", type=str, help="The output HTML file.")
+    parser.add_argument("--imgui-version", type=str, help="The version of imgui")
     parser.add_argument("--print-pyi-html", action="store_true", help="Enable HTML for .pyi generated HTML API ref content.")
     args = parser.parse_args()
 
@@ -170,6 +171,7 @@ def main():
             '--standalone', '--wrap=none',
             '--lua-filter', lua_filter,
             '--metadata', f'api_html={api_html}',
+            '--metadata', f'imgui_version={args.imgui_version}',
         ], check=True)
 
 if __name__ == "__main__":

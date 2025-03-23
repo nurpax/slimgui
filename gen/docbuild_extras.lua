@@ -1,5 +1,7 @@
 
 local api_html = nil
+local imgui_version = nil
+
 local func_dict = {}
 local class_dict = {}
 
@@ -45,6 +47,8 @@ function get_vars (meta)
     for k, v in pairs(meta) do
         if k == 'api_html' then
             api_html = v
+        elseif k == 'imgui_version' then
+            imgui_version = v
         end
     end
     load_api_html()
@@ -69,4 +73,14 @@ function div (el)
     }
 end
 
-return {{Meta = get_vars}, {Div = div}}
+-- a pandoc filter that replace $imgui_version$ with the actual metadata value
+function replace_metadata(elem)
+    if elem.text and elem.text == "%imguiversion%." then
+        return pandoc.Str(imgui_version .. ".")
+    elseif elem.text and elem.text == "%imguiversion%" then
+        return pandoc.Str(imgui_version)
+    end
+    return elem
+end
+
+return {{Meta = get_vars}, {Div = div}, {Str = replace_metadata}}

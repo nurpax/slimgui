@@ -18,6 +18,8 @@ The project source code is hosted on [github.com/nurpax/slimgui](https://github.
 The project has been developed using the Python `glfw` and `pyOpenGL` packages and includes integration backend for these APIs.  It should
 be possible to develop integrations for other backends, such as SDL or Pygame.
 
+Slimgui is built against Dear ImGui version %imguiversion%.
+
 ### Getting started
 
 Slimgui requires Python 3.10 or newer.

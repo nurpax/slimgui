@@ -19,4 +19,4 @@ python -c "import slimgui; assert slimgui.get_version() == '$IMGUI_VERSION'"
 
 python -m nanobind.stubgen -i build/cp312-abi3-macosx_15_0_arm64 -q -m slimgui_ext -o src/slimgui/slimgui_ext.pyi 
 python gen/amend_func_docs.py --cimgui-definitions-file gen/cimgui/definitions.json --imgui-h src/c/imgui/imgui.h --pyi-file src/slimgui/slimgui_ext.pyi -o src/slimgui/slimgui_ext.pyi
-python gen/build_docs.py --pyi-file src/slimgui/slimgui_ext.pyi --output docs/index.html docs/apiref.md
+python gen/build_docs.py --imgui-version=${IMGUI_VERSION} --pyi-file src/slimgui/slimgui_ext.pyi --output docs/index.html docs/apiref.md
