@@ -42,6 +42,12 @@ enum_list = [
 _known_enums = dict(enum_list)
 
 def camel_to_snake(name):
+    if 'HSVtoRGB' in name:
+        name = name.replace('HSVtoRGB', 'HsvToRgb')
+    elif 'RGBtoHSV' in name:
+        name = name.replace('RGBtoHSV', 'RgbToHsv')
+    elif 'VSlider' in name:
+        name = name.replace('VSlider', 'Vslider')
     s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
     return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 

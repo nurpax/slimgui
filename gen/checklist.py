@@ -15,6 +15,8 @@ _ignored_toplevel_funcs = {
     "set_allocator_functions",  # not relevant for Python
     "mem_alloc",                # not relevant for Python
     "mem_free",                 # not relevant for Python
+    "debug_log_v",              # varargs not relevant in Python
+    "log_text_v",               # varargs not relevant in Python
     "set_item_tooltip_v",       # varargs not relevant in Python
     "set_tooltip_v",            # varargs not relevant in Python
     "text_v",                   # varargs not relevant in Python
