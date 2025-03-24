@@ -318,6 +318,10 @@ python example/app.py</code></pre>
   <p>Start a new Dear ImGui frame, you can submit any command from this point until <code>render()</code>/<code>end_frame()</code>.</p>
 </div>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>end_frame</span>() -> <span class='keyword'>None</span></code>
+  <p>Ends the Dear ImGui frame. automatically called by <code>render()</code>. If you don't need to render data (skipping rendering) you may call <code>end_frame()</code> without <code>render()</code>... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call <code>new_frame()</code> at all!</p>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>render</span>() -> <span class='keyword'>None</span></code>
   <p>Ends the Dear ImGui frame, finalize the draw data. You can then get call <code>get_draw_data()</code>.</p>
 </div>
@@ -579,7 +583,7 @@ python example/app.py</code></pre>
   <code><span class='keyword'>def</span> <span class='func_name'>pop_style_color</span>(<span class='arg_name'>count</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>push_style_var</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>val</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>push_style_var</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
   <p>Modify a style ImVec2 variable. "</p>
 </div>
 <div class="api">
@@ -1461,6 +1465,13 @@ python example/app.py</code></pre>
 <li>Mouse hovering is affected by <code>push_clip_rect()</code> calls, unlike direct calls to <code>DrawList.push_clip_rect()</code> which are render only.</li>
 </ul>
 <h4 id="functions-40">Functions</h4>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_clip_rect</span>(<span class='arg_name'>clip_rect_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>clip_rect_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>intersect_with_current_clip_rect</span><span class='special'>:</span> <span class='symbol'>bool</span>) -> <span class='keyword'>None</span></code>
+  <p><code>render</code>-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level ImGui::<code>push_clip_rect()</code> to affect logic (hit-testing and widget culling)</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>pop_clip_rect</span>() -> <span class='keyword'>None</span></code>
+</div>
 
 <h3 id="focus-activation">Focus, Activation</h3>
 <h4 id="functions-41">Functions</h4>
@@ -1474,9 +1485,17 @@ python example/app.py</code></pre>
 </div>
 
 <h3 id="keyboardgamepad-navigation">Keyboard/Gamepad Navigation</h3>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_nav_cursor_visible</span>(<span class='arg_name'>visible</span><span class='special'>:</span> <span class='symbol'>bool</span>) -> <span class='keyword'>None</span></code>
+  <p>Alter visibility of keyboard/gamepad cursor. by default: show when using an arrow key, hide when clicking with mouse.</p>
+</div>
 
 <h3 id="overlapping-mode">Overlapping mode</h3>
 <h4 id="functions-42">Functions</h4>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_next_item_allow_overlap</span>() -> <span class='keyword'>None</span></code>
+  <p>Allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both <code>selectable()</code> and <code>tree_node()</code> have dedicated flags doing this.</p>
+</div>
 
 <h3 id="itemwidgets-utilities-and-query-functions">Item/Widgets Utilities and Query Functions</h3>
 <ul>
@@ -1646,6 +1665,10 @@ python example/app.py</code></pre>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_mouse_double_clicked</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span>) -> <span class='symbol'>bool</span></code>
   <p>Did mouse button double-clicked? Same as <code>get_mouse_clicked_count()</code> == 2. (note that a double-click will also report <code>is_mouse_clicked()</code> == true)</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>is_mouse_released_with_delay</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span><span class='special'>,</span> <span class='arg_name'>delay</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='symbol'>bool</span></code>
+  <p>Delayed mouse release (use very sparingly!). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test. This is a very rarely used UI idiom, but some apps use this: e.g. MS Explorer single click on an icon to rename.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_mouse_clicked_count</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span>) -> <span class='symbol'>int</span></code>
@@ -2183,7 +2206,7 @@ python example/app.py</code></pre>
   <div><span class="class_name">SelectableFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_AUTO_CLOSE_POPUPS</td><td class="fielddoc">Clicking this doesn't close parent popup window (overrides ImGuiItemFlags_AutoClosePopups)</td></tr>
+  <tr><td class="field">NO_AUTO_CLOSE_POPUPS</td><td class="fielddoc">Clicking this doesn't close parent popup window (overrides <code>ItemFlags.AUTO_CLOSE_POPUPS</code>)</td></tr>
   <tr><td class="field">SPAN_ALL_COLUMNS</td><td class="fielddoc">Frame will span all columns of its container table (text will still fit in current column)</td></tr>
   <tr><td class="field">ALLOW_DOUBLE_CLICK</td><td class="fielddoc">Generate press events on double clicks too</td></tr>
   <tr><td class="field">DISABLED</td><td class="fielddoc">Cannot be selected, display grayed out text</td></tr>

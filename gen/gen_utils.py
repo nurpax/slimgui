@@ -28,6 +28,7 @@ enum_list = [
     ("ImGuiBackendFlags_", "BackendFlags"),
     ("ImGuiCond_", "Cond"),
     ("ImGuiHoveredFlags_", "HoveredFlags"),
+    ("ImGuiItemFlags_", "ItemFlags"),
     ("ImGuiSliderFlags_", "SliderFlags"),
     ("ImGuiPopupFlags_", "PopupFlags"),
     ("ImGuiMouseButton_", "MouseButton"),

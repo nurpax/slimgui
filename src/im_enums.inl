@@ -691,7 +691,7 @@ nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags", nb::is_flag(),
     .value("NONE", ImGuiSelectableFlags_None)
     .value("NO_AUTO_CLOSE_POPUPS", ImGuiSelectableFlags_NoAutoClosePopups,
            "Clicking this doesn't close parent popup window (overrides "
-           "ImGuiItemFlags_AutoClosePopups)")
+           "`ItemFlags.AUTO_CLOSE_POPUPS`)")
     .value("SPAN_ALL_COLUMNS", ImGuiSelectableFlags_SpanAllColumns,
            "Frame will span all columns of its container table (text will "
            "still fit in current column)")
@@ -822,6 +822,29 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
            "`is_item_hovered()` only: Disable shared delay system where moving "
            "from one item to the next keeps the previous timer for a short "
            "time (standard for tooltips with long delays)");
+nb::enum_<ImGuiItemFlags_>(m, "ItemFlags", nb::is_flag(), nb::is_arithmetic())
+    .value("NONE", ImGuiItemFlags_None, "(Default)")
+    .value("NO_TAB_STOP", ImGuiItemFlags_NoTabStop,
+           "Disable keyboard tabbing. This is a \"lighter\" version of "
+           "`ItemFlags.NO_NAV`.")
+    .value("NO_NAV", ImGuiItemFlags_NoNav,
+           "Disable any form of focusing (keyboard/gamepad directional "
+           "navigation and `set_keyboard_focus_here()` calls).")
+    .value("NO_NAV_DEFAULT_FOCUS", ImGuiItemFlags_NoNavDefaultFocus,
+           "Disable item being a candidate for default focus (e.g. used by "
+           "title bar items).")
+    .value("BUTTON_REPEAT", ImGuiItemFlags_ButtonRepeat,
+           "Any button-like behavior will have repeat mode enabled (based on "
+           "io.KeyRepeatDelay and io.KeyRepeatRate values). Note that you can "
+           "also call `is_item_active()` after any button to tell if it is "
+           "being held.")
+    .value("AUTO_CLOSE_POPUPS", ImGuiItemFlags_AutoClosePopups,
+           "`menu_item()`/`selectable()` automatically close their parent "
+           "popup window.")
+    .value("ALLOW_DUPLICATE_ID", ImGuiItemFlags_AllowDuplicateId,
+           "Allow submitting an item with the same identifier as an item "
+           "already submitted this frame without triggering a warning tooltip "
+           "if io.ConfigDebugHighlightIdConflicts is set.");
 nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiSliderFlags_None)

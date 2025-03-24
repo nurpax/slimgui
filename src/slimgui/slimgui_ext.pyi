@@ -1155,6 +1155,45 @@ class InputTextFlags(enum.IntFlag):
     Callback on any edit. Note that `input_text()` already returns true on edit + you can always use `is_item_edited()`. The callback is useful to manipulate the underlying buffer while focus is active.
     """
 
+class ItemFlags(enum.IntFlag):
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
+
+    NONE = 0
+    """(Default)"""
+
+    NO_TAB_STOP = 1
+    """
+    Disable keyboard tabbing. This is a "lighter" version of `ItemFlags.NO_NAV`.
+    """
+
+    NO_NAV = 2
+    """
+    Disable any form of focusing (keyboard/gamepad directional navigation and `set_keyboard_focus_here()` calls).
+    """
+
+    NO_NAV_DEFAULT_FOCUS = 4
+    """
+    Disable item being a candidate for default focus (e.g. used by title bar items).
+    """
+
+    BUTTON_REPEAT = 8
+    """
+    Any button-like behavior will have repeat mode enabled (based on io.KeyRepeatDelay and io.KeyRepeatRate values). Note that you can also call `is_item_active()` after any button to tell if it is being held.
+    """
+
+    AUTO_CLOSE_POPUPS = 16
+    """
+    `menu_item()`/`selectable()` automatically close their parent popup window.
+    """
+
+    ALLOW_DUPLICATE_ID = 32
+    """
+    Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set.
+    """
+
 class Key(enum.IntEnum):
     KEY_NONE = 0
 
@@ -1594,7 +1633,7 @@ class SelectableFlags(enum.IntFlag):
 
     NO_AUTO_CLOSE_POPUPS = 1
     """
-    Clicking this doesn't close parent popup window (overrides ImGuiItemFlags_AutoClosePopups)
+    Clicking this doesn't close parent popup window (overrides `ItemFlags.AUTO_CLOSE_POPUPS`)
     """
 
     SPAN_ALL_COLUMNS = 2
@@ -2925,6 +2964,11 @@ def end_drag_drop_target() -> None:
     ...
 
 
+def end_frame() -> None:
+    """Ends the Dear ImGui frame. automatically called by `render()`. If you don't need to render data (skipping rendering) you may call `end_frame()` without `render()`... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call `new_frame()` at all!"""
+    ...
+
+
 def end_group() -> None:
     """Unlock horizontal starting position + capture the whole group bounding box into one \"item\" (so you can use `is_item_hovered()` or layout primitives such as `same_line()` on whole group, etc.)"""
     ...
@@ -3386,6 +3430,11 @@ def is_mouse_released(button: MouseButton) -> bool:
     ...
 
 
+def is_mouse_released_with_delay(button: MouseButton, delay: float) -> bool:
+    """Delayed mouse release (use very sparingly!). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test. This is a very rarely used UI idiom, but some apps use this: e.g. MS Explorer single click on an icon to rename."""
+    ...
+
+
 def is_popup_open(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> bool:
     """Return true if the popup is open."""
     ...
@@ -3502,12 +3551,20 @@ def pop_button_repeat() -> None:
     ...
 
 
+def pop_clip_rect() -> None:
+    ...
+
+
 def pop_font() -> None:
     ...
 
 
 def pop_id() -> None:
     """Pop from the ID stack."""
+    ...
+
+
+def pop_item_flag() -> None:
     ...
 
 
@@ -3539,6 +3596,11 @@ def push_button_repeat(repeat: bool) -> None:
     ...
 
 
+def push_clip_rect(clip_rect_min: tuple[float, float], clip_rect_max: tuple[float, float], intersect_with_current_clip_rect: bool) -> None:
+    """`render`-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level ImGui::`push_clip_rect()` to affect logic (hit-testing and widget culling)"""
+    ...
+
+
 def push_font(font: Font | None) -> None:
     """Use NULL as a shortcut to push default font"""
     ...
@@ -3553,6 +3615,11 @@ def push_id(str_id: str) -> None:
 @overload
 def push_id(int_id: int) -> None:
     """Push integer into the ID stack (will hash integer)."""
+    ...
+
+
+def push_item_flag(option: ItemFlags, enabled: bool) -> None:
+    """Modify specified shared item flag, e.g. `push_item_flag(ItemFlags.NO_TAB_STOP, true)`"""
     ...
 
 
@@ -3577,14 +3644,24 @@ def push_style_color(idx: Col, col: tuple[float, float, float]) -> None:
 
 
 @overload
-def push_style_var(idx: int, val: float) -> None:
+def push_style_var(idx: StyleVar, val: float) -> None:
     """Modify a style ImVec2 variable. \""""
     ...
 
 
 @overload
-def push_style_var(idx: int, val: tuple[float, float]) -> None:
+def push_style_var(idx: StyleVar, val: tuple[float, float]) -> None:
     """Modify a style ImVec2 variable. \""""
+    ...
+
+
+def push_style_var_x(idx: StyleVar, val_x: float) -> None:
+    """Modify X component of a style ImVec2 variable. \""""
+    ...
+
+
+def push_style_var_y(idx: StyleVar, val_y: float) -> None:
+    """Modify Y component of a style ImVec2 variable. \""""
     ...
 
 
@@ -3700,11 +3777,21 @@ def set_nanobind_leak_warnings(enable: bool) -> None:
     ...
 
 
+def set_nav_cursor_visible(visible: bool) -> None:
+    """Alter visibility of keyboard/gamepad cursor. by default: show when using an arrow key, hide when clicking with mouse."""
+    ...
+
+
 def set_next_frame_want_capture_keyboard(want_capture_keyboard: bool) -> None:
     ...
 
 
 def set_next_frame_want_capture_mouse(capture: bool) -> None:
+    ...
+
+
+def set_next_item_allow_overlap() -> None:
+    """Allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both `selectable()` and `tree_node()` have dedicated flags doing this."""
     ...
 
 

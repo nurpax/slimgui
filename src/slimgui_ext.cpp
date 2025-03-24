@@ -359,6 +359,7 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_style", &ImGui::GetStyle, nb::rv_policy::reference); // TODO docs should refer to slimgui/__init__.py declarations
     m.def("render", &ImGui::Render);
     m.def("new_frame", &ImGui::NewFrame);
+    m.def("end_frame", &ImGui::EndFrame);
     m.def("get_draw_data", &ImGui::GetDrawData, nb::rv_policy::reference);
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);
 
@@ -485,9 +486,15 @@ NB_MODULE(slimgui_ext, m) {
         ImGui::PushStyleColor(idx, c);
     }, "idx"_a, "col"_a);
     m.def("pop_style_color", &ImGui::PopStyleColor, "count"_a = 1);
-    m.def("push_style_var", [](ImGuiStyleVar idx, float val) { ImGui::PushStyleVar(idx, val); }, "idx"_a, "val"_a);
-    m.def("push_style_var", [](ImGuiStyleVar idx, const ImVec2& val) { ImGui::PushStyleVar(idx, val); }, "idx"_a, "val"_a);
+    m.def("push_style_var", [](ImGuiStyleVar_ idx, float val) { ImGui::PushStyleVar(idx, val); }, "idx"_a, "val"_a);
+    m.def("push_style_var", [](ImGuiStyleVar_ idx, const ImVec2& val) { ImGui::PushStyleVar(idx, val); }, "idx"_a, "val"_a);
+    m.def("push_style_var_x", [](ImGuiStyleVar_ idx, float val_x) { ImGui::PushStyleVarX(idx, val_x); }, "idx"_a, "val_x"_a);
+    m.def("push_style_var_y", [](ImGuiStyleVar_ idx, float val_y) { ImGui::PushStyleVarY(idx, val_y); }, "idx"_a, "val_y"_a);
     m.def("pop_style_var", &ImGui::PopStyleVar, "count"_a = 1);
+    m.def("push_item_flag", [](ImGuiItemFlags_ option, bool enabled) { ImGui::PushItemFlag(option, enabled); }, "option"_a, "enabled"_a);
+    m.def("pop_item_flag", &ImGui::PopItemFlag);
+
+    // These 4 here are deprecated
     m.def("push_tab_stop", &ImGui::PushTabStop, "tab_stop"_a);
     m.def("pop_tab_stop", &ImGui::PopTabStop);
     m.def("push_button_repeat", &ImGui::PushButtonRepeat, "repeat"_a);
@@ -1002,9 +1009,20 @@ NB_MODULE(slimgui_ext, m) {
     m.def("begin_disabled", &ImGui::BeginDisabled, "disabled"_a = true);
     m.def("end_disabled", &ImGui::EndDisabled);
 
+    // Clipping
+    // - Mouse hovering is affected by ImGui::PushClipRect() calls, unlike direct calls to ImDrawList::PushClipRect() which are render only.
+    m.def("push_clip_rect", &ImGui::PushClipRect, "clip_rect_min"_a, "clip_rect_max"_a, "intersect_with_current_clip_rect"_a);
+    m.def("pop_clip_rect", &ImGui::PopClipRect);
+
     // // Focus, Activation
     m.def("set_item_default_focus", &ImGui::SetItemDefaultFocus);
     m.def("set_keyboard_focus_here", &ImGui::SetKeyboardFocusHere, "offset"_a = 0);
+
+    // Keyboard/Gamepad Navigation
+    m.def("set_nav_cursor_visible", &ImGui::SetNavCursorVisible, "visible"_a);
+
+    // Overlapping mode
+    m.def("set_next_item_allow_overlap", &ImGui::SetNextItemAllowOverlap);
 
     // Item/Widgets Utilities and Query Functions
     m.def("is_item_hovered", [](ImGuiHoveredFlags_ flags) {
@@ -1074,6 +1092,7 @@ NB_MODULE(slimgui_ext, m) {
     m.def("is_mouse_clicked", [](ImGuiMouseButton_ button, bool repeat) { return ImGui::IsMouseClicked(button, repeat); }, "button"_a, "repeat"_a = false);
     m.def("is_mouse_released", [](ImGuiMouseButton_ button) { return ImGui::IsMouseReleased(button); }, "button"_a);
     m.def("is_mouse_double_clicked", [](ImGuiMouseButton_ button) { return ImGui::IsMouseDoubleClicked(button); }, "button"_a);
+    m.def("is_mouse_released_with_delay", [](ImGuiMouseButton_ button, float delay) { return ImGui::IsMouseReleasedWithDelay(button, delay); }, "button"_a, "delay"_a);
     m.def("get_mouse_clicked_count", [](ImGuiMouseButton_ button) { return ImGui::GetMouseClickedCount(button); }, "button"_a);
     m.def("is_mouse_hovering_rect", [](const ImVec2& r_min, const ImVec2& r_max, bool clip) { return ImGui::IsMouseHoveringRect(r_min, r_max, clip); }, "r_min"_a, "r_max"_a, "clip"_a = true);
     m.def("is_mouse_pos_valid", [](std::optional<ImVec2> mouse_pos) {
