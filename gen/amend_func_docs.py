@@ -4,6 +4,7 @@
 # This script reads the comments from the ImGui header file and adds them to the
 # corresponding functions in the pyi file.
 import argparse
+from collections import defaultdict
 import re
 from typing import Dict, Union
 
@@ -14,16 +15,22 @@ def parse_func_line_comments(header_path: str) -> Dict[str, Union[str, None]]:
         lines = f.readlines()
 
     func_line_comments: Dict[str, Union[str, None]] = {}
+    func_overload_count = defaultdict[str, int](int)
     for line in lines:
         line = line.rstrip()
         # IMGUI_API void          SetItemDefaultFocus();      // make last item the default focused item of a window.
         if (m := re.match(r"^\s*IMGUI_API .*? (\w+)\(.*;(.*)", line)) is not None:
             comment = None
             func_name = gen_utils.camel_to_snake(m.group(1))
-            trail = m.group(2)
-            if (pos := trail.find('//')) != -1:
-                comment = trail[pos+2:].lstrip(' \t')
-            func_line_comments[func_name] = comment
+            func_overload_count[func_name] += 1
+            # Grab the line comment only for the first overload.  That contains
+            # some useful info but I'm finding it hard to match all the overloads
+            # with corresponding Python functions so ignore the other overloads.
+            if func_overload_count[func_name] <= 1:
+                trail = m.group(2)
+                if (pos := trail.find('//')) != -1:
+                    comment = trail[pos+2:].lstrip(' \t')
+                func_line_comments[func_name] = comment
     return func_line_comments
 
 
@@ -40,6 +47,8 @@ def main():
     syms = parse_func_line_comments(args.imgui_h)
 
     out_lines = []
+    func_overload_count = defaultdict[str, int](int)
+
     with open(args.pyi_file, "rt", encoding="utf-8") as f:
         for line in f.readlines():
             line = line.rstrip()
@@ -49,7 +58,8 @@ def main():
 
                 out_lines.append(line)
                 func_name = m.group(1)
-                if (comment := syms.get(func_name)) is not None:
+                func_overload_count[func_name] += 1
+                if func_overload_count[func_name] <= 1 and (comment := syms.get(func_name)) is not None:
                     comment = comment.strip()
                     if comment == '"':
                         comment = '' # remove spurious double quotes

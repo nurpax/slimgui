@@ -5,6 +5,15 @@ local imgui_version = nil
 local func_dict = {}
 local class_dict = {}
 
+function add_func(name, code)
+    local prev = func_dict[name]
+    if prev then
+        table.insert(prev, code)
+    else
+        func_dict[name] = { code }
+    end
+end
+
 function load_api_html()
     local fh = io.open(api_html)
     local str = fh:read('*all')
@@ -17,7 +26,7 @@ function load_api_html()
             local tmp_func = line:match("%$%$func=([%w_]+)")
             local tmp_class = line:match("%$%$class=([%w_]+)")
             if tmp_func then
-                in_state = "class"
+                in_state = "func"
                 sym_name = tmp_func
             elseif tmp_class then
                 in_state = "class"
@@ -34,7 +43,7 @@ function load_api_html()
         elseif in_state == "func" then
             if line:match("%$%$end") then
                 in_state = nil
-                func_dict[sym_name] = code
+                add_func(sym_name, code)
                 code = ""
             else
                 code = code .. line .. "\n"
@@ -61,7 +70,9 @@ function div (el)
     for func in string.gmatch(funcrefs, '([^,]+)') do
         name = func:match("^%s*(.-)%s*$") -- strip ws
         if func_dict[name] then
-            out_html = out_html .. func_dict[name]
+            for _, code in ipairs(func_dict[name]) do
+                out_html = out_html .. code
+            end
         elseif class_dict[name] then
             out_html = out_html .. class_dict[name]
         else

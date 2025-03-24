@@ -135,7 +135,7 @@ Important: due to legacy reason, `begin()`/`end()` and `begin_child()`/`end_chil
 ### Parameter stacks (shared)
 
 #### Functions
-<div class="raw-html-insert" data-apirefs="push_font, pop_font, push_style_color, pop_style_color, push_style_var, pop_style_var, push_tab_stop, pop_tab_stop, push_button_repeat, pop_button_repeat"></div>
+<div class="raw-html-insert" data-apirefs="push_font, pop_font, push_style_color, pop_style_color, push_style_var, push_style_var_x, push_style_var_y, pop_style_var, push_tab_stop, pop_tab_stop, push_button_repeat, pop_button_repeat"></div>
 
 ### Parameter stacks (current window)
 

@@ -2847,7 +2847,7 @@ def close_current_popup() -> None:
 
 
 def collapsing_header(label: str, visible: object | None = None, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> tuple[bool, bool | None]:
-    """When 'p_visible != NULL': if '*p_visible==true' display an additional small close button on upper right of the header which will set the bool to false when clicked, if '*p_visible==false' don't display the header."""
+    """If returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call `tree_pop()`."""
     ...
 
 
@@ -2937,7 +2937,6 @@ def dummy(size: tuple[float, float]) -> None:
 
 
 def end() -> None:
-    """Automatically called on the last call of Step() that returns false."""
     ...
 
 
@@ -3248,7 +3247,6 @@ def get_window_width() -> float:
 
 
 def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0), border_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)) -> None:
-    """<-- border_col was removed in favor of `Col.IMAGE_BORDER`."""
     ...
 
 
@@ -3442,13 +3440,12 @@ def is_popup_open(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> bool:
 
 @overload
 def is_rect_visible(size: tuple[float, float]) -> bool:
-    """Test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."""
+    """Test if rectangle (of given size, starting from cursor position) is visible / not clipped."""
     ...
 
 
 @overload
 def is_rect_visible(rect_min: tuple[float, float], rect_max: tuple[float, float]) -> bool:
-    """Test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."""
     ...
 
 
@@ -3510,7 +3507,7 @@ def log_to_tty(auto_open_depth: int = -1) -> None:
 
 
 def menu_item(label: str, shortcut: str | None = None, selected: bool = False, enabled: bool = True) -> tuple[bool, bool]:
-    """Return true when activated + toggle (*p_selected) if p_selected != NULL"""
+    """Return true when activated."""
     ...
 
 
@@ -3530,7 +3527,7 @@ def next_column() -> None:
 
 
 def open_popup(str_id: str, flags: PopupFlags = PopupFlags.NONE) -> None:
-    """Id overload to facilitate calling from nested stacks"""
+    """Call to mark popup as open (don't call every frame!)."""
     ...
 
 
@@ -3597,7 +3594,6 @@ def push_button_repeat(repeat: bool) -> None:
 
 
 def push_clip_rect(clip_rect_min: tuple[float, float], clip_rect_max: tuple[float, float], intersect_with_current_clip_rect: bool) -> None:
-    """`render`-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level ImGui::`push_clip_rect()` to affect logic (hit-testing and widget culling)"""
     ...
 
 
@@ -3608,13 +3604,12 @@ def push_font(font: Font | None) -> None:
 
 @overload
 def push_id(str_id: str) -> None:
-    """Push integer into the ID stack (will hash integer)."""
+    """Push string into the ID stack (will hash string)."""
     ...
 
 
 @overload
 def push_id(int_id: int) -> None:
-    """Push integer into the ID stack (will hash integer)."""
     ...
 
 
@@ -3630,6 +3625,7 @@ def push_item_width(item_width: float) -> None:
 
 @overload
 def push_style_color(idx: Col, col: int) -> None:
+    """Modify a style color. always use this if you modify the style after `new_frame()`."""
     ...
 
 
@@ -3645,13 +3641,12 @@ def push_style_color(idx: Col, col: tuple[float, float, float]) -> None:
 
 @overload
 def push_style_var(idx: StyleVar, val: float) -> None:
-    """Modify a style ImVec2 variable. \""""
+    """Modify a style float variable. always use this if you modify the style after `new_frame()`!"""
     ...
 
 
 @overload
 def push_style_var(idx: StyleVar, val: tuple[float, float]) -> None:
-    """Modify a style ImVec2 variable. \""""
     ...
 
 
@@ -3675,13 +3670,11 @@ def push_text_wrap_pos(wrap_local_pos_x: float = 0.0) -> None:
 
 @overload
 def radio_button(label: str, active: bool) -> bool:
-    """Shortcut to handle the above pattern when value is an integer"""
     ...
 
 
 @overload
 def radio_button(label: str, v: int, v_button: int) -> tuple[bool, int]:
-    """Shortcut to handle the above pattern when value is an integer"""
     ...
 
 
@@ -3700,7 +3693,7 @@ def same_line(offset_from_start_x: float = 0.0, spacing: float = -1.0) -> None:
 
 
 def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]:
-    """\"bool* p_selected\" point to the selection state (read-write), as a convenient helper."""
+    """\"bool selected\" carry the selection state (read-only). `selectable()` is clicked is returns true so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height"""
     ...
 
 
@@ -3882,25 +3875,23 @@ def set_tooltip(text: str) -> None:
 
 @overload
 def set_window_collapsed(collapsed: bool, cond: Cond = Cond.NONE) -> None:
-    """Set named window collapsed state"""
+    """(not recommended) set current window collapsed state. prefer using `set_next_window_collapsed()`."""
     ...
 
 
 @overload
 def set_window_collapsed(name: str, collapsed: bool, cond: Cond = Cond.NONE) -> None:
-    """Set named window collapsed state"""
     ...
 
 
 @overload
 def set_window_focus() -> None:
-    """Set named window to be focused / top-most. use NULL to remove focus."""
+    """(not recommended) set current window to be focused / top-most. prefer using `set_next_window_focus()`."""
     ...
 
 
 @overload
 def set_window_focus(name: str) -> None:
-    """Set named window to be focused / top-most. use NULL to remove focus."""
     ...
 
 
@@ -3911,25 +3902,23 @@ def set_window_font_scale(scale: float) -> None:
 
 @overload
 def set_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE) -> None:
-    """Set named window position."""
+    """(not recommended) set current window position - call within `begin()`/`end()`. prefer using `set_next_window_pos()`, as this may incur tearing and side-effects."""
     ...
 
 
 @overload
 def set_window_pos(name: str, pos: tuple[float, float], cond: Cond = Cond.NONE) -> None:
-    """Set named window position."""
     ...
 
 
 @overload
 def set_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
-    """Set named window size. set axis to 0.0f to force an auto-fit on this axis."""
+    """(not recommended) set current window size - call within `begin()`/`end()`. set to ImVec2(0, 0) to force an auto-fit. prefer using `set_next_window_size()`, as this may incur tearing and minor side-effects."""
     ...
 
 
 @overload
 def set_window_size(name: str, size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
-    """Set named window size. set axis to 0.0f to force an auto-fit on this axis."""
     ...
 
 
@@ -4147,6 +4136,7 @@ def tree_pop() -> None:
 
 
 def tree_push(str_id: str) -> None:
+    """~ `indent()`+`push_id()`. Already called by `tree_node()` when returning true, but you can call `tree_push`/`tree_pop` yourself if desired."""
     ...
 
 

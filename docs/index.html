@@ -391,7 +391,6 @@ python example/app.py</code></pre>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end</span>() -> <span class='keyword'>None</span></code>
-  <p>Automatically called on the last call of Step() that returns false.</p>
 </div>
 
 <h3 id="child-windows">Child Windows</h3>
@@ -480,40 +479,64 @@ python example/app.py</code></pre>
   <p>Set next window background color alpha. helper to easily override the Alpha component of <code>Col.WINDOW_BG</code>/ChildBg/PopupBg. you may also use <code>WindowFlags.NO_BACKGROUND</code>.</p>
 </div>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_pos</span>(<span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window position - call within <code>begin()</code>/<code>end()</code>. prefer using <code>set_next_window_pos()</code>, as this may incur tearing and side-effects.</p>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_pos</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window position.</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_size</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window size - call within <code>begin()</code>/<code>end()</code>. set to ImVec2(0, 0) to force an auto-fit. prefer using <code>set_next_window_size()</code>, as this may incur tearing and minor side-effects.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_size</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window size. set axis to 0.0f to force an auto-fit on this axis.</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_collapsed</span>(<span class='arg_name'>collapsed</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window collapsed state. prefer using <code>set_next_window_collapsed()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_collapsed</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>collapsed</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window collapsed state</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_focus</span>() -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window to be focused / top-most. prefer using <code>set_next_window_focus()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_focus</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window to be focused / top-most. use NULL to remove focus.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_font_scale</span>(<span class='arg_name'>scale</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
   <p>[OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild ImFontAtlas + call style.ScaleAllSizes().</p>
 </div>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_pos</span>(<span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window position - call within <code>begin()</code>/<code>end()</code>. prefer using <code>set_next_window_pos()</code>, as this may incur tearing and side-effects.</p>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_pos</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window position.</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_size</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window size - call within <code>begin()</code>/<code>end()</code>. set to ImVec2(0, 0) to force an auto-fit. prefer using <code>set_next_window_size()</code>, as this may incur tearing and minor side-effects.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_size</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window size. set axis to 0.0f to force an auto-fit on this axis.</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_collapsed</span>(<span class='arg_name'>collapsed</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window collapsed state. prefer using <code>set_next_window_collapsed()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_collapsed</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>collapsed</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window collapsed state</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_window_focus</span>() -> <span class='keyword'>None</span></code>
+  <p>(not recommended) set current window to be focused / top-most. prefer using <code>set_next_window_focus()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_focus</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
-  <p>Set named window to be focused / top-most. use NULL to remove focus.</p>
 </div>
 
 <h3 id="windows-scrolling">Windows Scrolling</h3>
@@ -577,14 +600,32 @@ python example/app.py</code></pre>
   <code><span class='keyword'>def</span> <span class='func_name'>pop_font</span>() -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_style_color</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>Col</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+  <p>Modify a style color. always use this if you modify the style after <code>new_frame()</code>.</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_style_color</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>Col</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_style_color</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>Col</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_style_color</span>(<span class='arg_name'>count</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_style_var</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
+  <p>Modify a style float variable. always use this if you modify the style after <code>new_frame()</code>!</p>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_style_var</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
-  <p>Modify a style ImVec2 variable. "</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_style_var_x</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val_x</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
+  <p>Modify X component of a style ImVec2 variable. "</p>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_style_var_y</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val_y</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
+  <p>Modify Y component of a style ImVec2 variable. "</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_style_var</span>(<span class='arg_name'>count</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
@@ -772,8 +813,11 @@ python example/app.py</code></pre>
 <p>In this header file we use the <code>label</code>/<code>name</code> terminology to denote a string that will be displayed + used as an ID, whereas <code>str_id</code> denote a string that is only used as an ID and not normally displayed.</p>
 <h4 id="functions-14">Functions</h4>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_id</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
+  <p>Push string into the ID stack (will hash string).</p>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_id</span>(<span class='arg_name'>int_id</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
-  <p>Push integer into the ID stack (will hash integer).</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_id</span>() -> <span class='keyword'>None</span></code>
@@ -837,8 +881,10 @@ python example/app.py</code></pre>
   <code><span class='keyword'>def</span> <span class='func_name'>checkbox_flags</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>flags_value</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span></code>
 </div>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>radio_button</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>active</span><span class='special'>:</span> <span class='symbol'>bool</span>) -> <span class='symbol'>bool</span></code>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>radio_button</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>v</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>v_button</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span></code>
-  <p>Shortcut to handle the above pattern when value is an integer</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>progress_bar</span>(<span class='arg_name'>fraction</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>size_arg</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (-<span class='symbol'>FLT_MIN</span><span class='special'>,</span> <span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>overlay</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
@@ -868,7 +914,6 @@ python example/app.py</code></pre>
 <h4 id="functions-17">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>image</span>(<span class='arg_name'>user_texture_id</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>tint_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>border_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
-  <p><-- border_col was removed in favor of <code>Col.IMAGE_BORDER</code>.</p>
 </div>
 
 <h3 id="widgets-combo-box-dropdown">Widgets: Combo Box (Dropdown)</h3>
@@ -1034,10 +1079,14 @@ python example/app.py</code></pre>
 </ul>
 <h4 id="functions-23">Functions</h4>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>tree_node</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TreeNodeFlags</span> = <span class='symbol'>TreeNodeFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>tree_node</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TreeNodeFlags</span> = <span class='symbol'>TreeNodeFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>tree_push</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
+  <p>~ <code>indent()</code>+<code>push_id()</code>. Already called by <code>tree_node()</code> when returning true, but you can call <code>tree_push</code>/<code>tree_pop</code> yourself if desired.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>tree_pop</span>() -> <span class='keyword'>None</span></code>
@@ -1049,7 +1098,7 @@ python example/app.py</code></pre>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>collapsing_header</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>visible</span><span class='special'>:</span> <span class='symbol'>object</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TreeNodeFlags</span> = <span class='symbol'>TreeNodeFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span> | <span class='keyword'>None</span><span class='special'>]</span></code>
-  <p>When 'p_visible != NULL': if '*p_visible==true' display an additional small close button on upper right of the header which will set the bool to false when clicked, if '*p_visible==false' don't display the header.</p>
+  <p>If returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call <code>tree_pop()</code>.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_item_open</span>(<span class='arg_name'>is_open</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
@@ -1064,7 +1113,7 @@ python example/app.py</code></pre>
 <h4 id="functions-24">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>selectable</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>selected</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SelectableFlags</span> = <span class='symbol'>SelectableFlags</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span><span class='special'>]</span></code>
-  <p>"bool* p_selected" point to the selection state (read-write), as a convenient helper.</p>
+  <p>"bool selected" carry the selection state (read-only). <code>selectable()</code> is clicked is returns true so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height</p>
 </div>
 
 <h3 id="multi-selection-system-for-selectable-checkbox-tree_node-functions-beta">Multi-selection system for <code>selectable()</code>, <code>checkbox()</code>, <code>tree_node()</code> functions [BETA]</h3>
@@ -1156,7 +1205,7 @@ python example/app.py</code></pre>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>menu_item</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>shortcut</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>selected</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span><span class='special'>,</span> <span class='arg_name'>enabled</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>True</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span><span class='special'>]</span></code>
-  <p>Return true when activated + toggle (*p_selected) if p_selected != NULL</p>
+  <p>Return true when activated.</p>
 </div>
 
 <h3 id="tooltips">Tooltips</h3>
@@ -1231,7 +1280,7 @@ python example/app.py</code></pre>
 <h4 id="functions-31">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>open_popup</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>PopupFlags</span> = <span class='symbol'>PopupFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
-  <p>Id overload to facilitate calling from nested stacks</p>
+  <p>Call to mark popup as open (don't call every frame!).</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>open_popup_on_item_click</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>PopupFlags</span> = <span class='symbol'>PopupFlags</span>.<span class='symbol'>MOUSE_BUTTON_RIGHT</span>) -> <span class='keyword'>None</span></code>
@@ -1467,7 +1516,6 @@ python example/app.py</code></pre>
 <h4 id="functions-40">Functions</h4>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_clip_rect</span>(<span class='arg_name'>clip_rect_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>clip_rect_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>intersect_with_current_clip_rect</span><span class='special'>:</span> <span class='symbol'>bool</span>) -> <span class='keyword'>None</span></code>
-  <p><code>render</code>-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level ImGui::<code>push_clip_rect()</code> to affect logic (hit-testing and widget culling)</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_clip_rect</span>() -> <span class='keyword'>None</span></code>
@@ -1586,8 +1634,11 @@ python example/app.py</code></pre>
 <h3 id="miscellaneous-utilities">Miscellaneous Utilities</h3>
 <h4 id="functions-46">Functions</h4>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>is_rect_visible</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='symbol'>bool</span></code>
+  <p>Test if rectangle (of given size, starting from cursor position) is visible / not clipped.</p>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_rect_visible</span>(<span class='arg_name'>rect_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>rect_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='symbol'>bool</span></code>
-  <p>Test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side.</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_time</span>() -> <span class='symbol'>float</span></code>
