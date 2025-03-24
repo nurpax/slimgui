@@ -39,10 +39,43 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
         self.io.backend_flags |= imgui.BackendFlags.RENDERER_HAS_VTX_OFFSET
+        self.io.backend_flags |= imgui.BackendFlags.HAS_MOUSE_CURSORS
+
+        self._cursors: dict[imgui.MouseCursor, glfw._GLFWcursor] = {}
+        self._alloc_cursors()
         self._gui_time = None
         # FIXME nurpax
         # self.io.get_clipboard_text_fn = self._get_clipboard_text
         # self.io.set_clipboard_text_fn = self._set_clipboard_text
+
+    def shutdown(self):
+        self._dealloc_cursors()
+        super().shutdown()
+
+
+    def _alloc_cursors(self):
+        self._cursors[imgui.MouseCursor.ARROW] = glfw.create_standard_cursor(glfw.ARROW_CURSOR)
+        self._cursors[imgui.MouseCursor.TEXT_INPUT] = glfw.create_standard_cursor(glfw.IBEAM_CURSOR)
+        self._cursors[imgui.MouseCursor.RESIZE_NS] = glfw.create_standard_cursor(glfw.VRESIZE_CURSOR)
+        self._cursors[imgui.MouseCursor.RESIZE_EW] = glfw.create_standard_cursor(glfw.HRESIZE_CURSOR)
+        self._cursors[imgui.MouseCursor.HAND] = glfw.create_standard_cursor(glfw.HAND_CURSOR)
+        self._cursors[imgui.MouseCursor.RESIZE_ALL] = glfw.create_standard_cursor(glfw.ARROW_CURSOR)
+        self._cursors[imgui.MouseCursor.RESIZE_NESW] = glfw.create_standard_cursor(glfw.ARROW_CURSOR)
+        self._cursors[imgui.MouseCursor.RESIZE_NWSE] = glfw.create_standard_cursor(glfw.ARROW_CURSOR)
+        self._cursors[imgui.MouseCursor.NOT_ALLOWED] = glfw.create_standard_cursor(glfw.ARROW_CURSOR)
+
+    def _dealloc_cursors(self):
+        for cursor in self._cursors.values():
+            glfw.destroy_cursor(cursor)
+        self._cursors.clear()
+
+    def _update_mouse_cursor(self):
+        imgui_cursor = imgui.get_mouse_cursor()
+        if imgui_cursor == imgui.MouseCursor.NONE or self.io.mouse_draw_cursor:
+            glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
+        else:
+            glfw.set_cursor(self.window, self._cursors.get(imgui_cursor, self._cursors[imgui.MouseCursor.ARROW]))
+            glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 
     def _get_clipboard_text(self):
         return glfw.get_clipboard_string(self.window)
@@ -147,3 +180,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         if io.delta_time <= 0.0:
             io.delta_time = 1.0 / 1000.0
         self._gui_time = current_time
+
+        # Mouse cursor style changes
+        self._update_mouse_cursor()
