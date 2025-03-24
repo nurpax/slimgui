@@ -45,12 +45,6 @@ jobs:
         submodules: true
 
     - uses: pypa/cibuildwheel@v2.17
-      env:
-        CIBW_ENVIRONMENT: SLIMGUI_DISABLE_LEAK_CHECKS=1
-
-    # - name: Verify clean directory
-    #   run: git diff --exit-code
-    #   shell: bash
 
     - name: Upload wheels
       uses: actions/upload-artifact@v4

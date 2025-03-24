@@ -98,10 +98,6 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
 }
 
 NB_MODULE(slimgui_ext, m) {
-#if SLIMGUI_DISABLE_LEAK_CHECKS == 1
-    nb::set_leak_warnings(false);
-#endif
-
     m.attr("IMGUI_VERSION") = IMGUI_VERSION;
     m.attr("IMGUI_VERSION_NUM") = IMGUI_VERSION_NUM;
     m.attr("VERTEX_SIZE") = sizeof(ImDrawVert);
@@ -1101,4 +1097,8 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_mouse_cursor", []() { return (ImGuiMouseCursor_)ImGui::GetMouseCursor(); });
     m.def("set_mouse_cursor", [](ImGuiMouseCursor_ cursor_type) { ImGui::SetMouseCursor(cursor_type); }, "cursor_type"_a);
     m.def("set_next_frame_want_capture_mouse", &ImGui::SetNextFrameWantCaptureMouse, "capture"_a);
+
+    // Disable Nanobind leak warnings by default.
+    nb::set_leak_warnings(false);
+    m.def("set_nanobind_leak_warnings", &nb::set_leak_warnings, "enable"_a);
 }

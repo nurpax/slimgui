@@ -3696,6 +3696,10 @@ def set_mouse_cursor(cursor_type: MouseCursor) -> None:
     ...
 
 
+def set_nanobind_leak_warnings(enable: bool) -> None:
+    ...
+
+
 def set_next_frame_want_capture_keyboard(want_capture_keyboard: bool) -> None:
     ...
 

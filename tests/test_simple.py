@@ -4,6 +4,7 @@ import slimgui as imgui
 # Define a fixture
 @pytest.fixture
 def imgui_context():
+    imgui.set_nanobind_leak_warnings(True)
     ctx = imgui.create_context()
     imgui.get_io().ini_filename = None
     yield ctx
