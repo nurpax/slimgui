@@ -2846,7 +2846,7 @@ def close_current_popup() -> None:
     ...
 
 
-def collapsing_header(label: str, visible: object | None = None, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> tuple[bool, bool | None]:
+def collapsing_header(label: str, visible: bool | None = None, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> tuple[bool, bool | None]:
     """If returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call `tree_pop()`."""
     ...
 

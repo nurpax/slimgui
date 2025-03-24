@@ -679,14 +679,12 @@ NB_MODULE(slimgui_ext, m) {
     m.def("set_next_item_open", [](bool is_open, ImGuiCond_ cond) {
         ImGui::SetNextItemOpen(is_open, cond);
     }, "is_open"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
-    // IMGUI_API bool          CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags = 0);  // if returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call TreePop().
-    // IMGUI_API bool          CollapsingHeader(const char* label, bool* p_visible, ImGuiTreeNodeFlags flags = 0); // when 'p_visible != NULL': if '*p_visible==true' display an additional small close button on upper right of the header which will set the bool to false when clicked, if '*p_visible==false' don't display the header.
-    m.def("collapsing_header", [](const char* label, nb::handle visible_h, ImGuiTreeNodeFlags_ flags) {
-        if (visible_h.is_none()) {
+    m.def("collapsing_header", [](const char* label, std::optional<bool> visible, ImGuiTreeNodeFlags_ flags) {
+        if (!visible) {
             bool clicked = ImGui::CollapsingHeader(label, nullptr, flags);
             return std::pair(clicked, std::optional<bool>{});
         }
-        bool inout_visible = nb::cast<bool>(visible_h);
+        bool inout_visible = visible.value();
         bool open = ImGui::CollapsingHeader(label, &inout_visible, flags);
         return std::pair(open, std::optional<bool>{inout_visible});
     }, "label"_a, "visible"_a = nb::none(), "flags"_a.sig("TreeNodeFlags.NONE") = ImGuiTreeNodeFlags_None);
