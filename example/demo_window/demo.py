@@ -189,10 +189,12 @@ def show_demo_window(show_window: bool):
 
             imgui.begin_disabled()
 
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HAS_GAMEPAD", io.backend_flags, imgui.BackendFlags.HAS_GAMEPAD)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HAS_MOUSE_CURSORS", io.backend_flags, imgui.BackendFlags.HAS_MOUSE_CURSORS)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HAS_SET_MOUSE_POS", io.backend_flags, imgui.BackendFlags.HAS_SET_MOUSE_POS)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: RENDERER_HAS_VTX_OFFSET", io.backend_flags, imgui.BackendFlags.RENDERER_HAS_VTX_OFFSET)
+            backend_flags_int = int(io.config_flags)
+            _, backend_flags_int = imgui.checkbox_flags("io.BackendFlags: HAS_GAMEPAD", backend_flags_int, imgui.BackendFlags.HAS_GAMEPAD)
+            _, backend_flags_int = imgui.checkbox_flags("io.BackendFlags: HAS_MOUSE_CURSORS", backend_flags_int, imgui.BackendFlags.HAS_MOUSE_CURSORS)
+            _, backend_flags_int = imgui.checkbox_flags("io.BackendFlags: HAS_SET_MOUSE_POS", backend_flags_int, imgui.BackendFlags.HAS_SET_MOUSE_POS)
+            _, backend_flags_int = imgui.checkbox_flags("io.BackendFlags: RENDERER_HAS_VTX_OFFSET", backend_flags_int, imgui.BackendFlags.RENDERER_HAS_VTX_OFFSET)
+            io.backend_flags = imgui.BackendFlags(backend_flags_int)
 
             imgui.end_disabled()
 
