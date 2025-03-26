@@ -4014,6 +4014,21 @@ def spacing() -> None:
     ...
 
 
+def style_colors_classic(dst: Style) -> None:
+    """Classic imgui style"""
+    ...
+
+
+def style_colors_dark(dst: Style) -> None:
+    """New, recommended style (default)"""
+    ...
+
+
+def style_colors_light(dst: Style) -> None:
+    """Best used with borders and a custom, thicker font"""
+    ...
+
+
 def tab_item_button(label: str, flags: TabItemFlags = TabItemFlags.NONE) -> bool:
     """Create a Tab behaving like a button. return true when clicked. cannot be selected in the tab bar."""
     ...

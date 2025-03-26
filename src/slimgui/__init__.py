@@ -69,3 +69,21 @@ def get_style() -> slimgui_ext.Style:
     ctx = get_current_context()
     assert ctx is not None
     return ctx.style
+
+def style_colors_dark(dst: slimgui_ext.Style | None = None) -> None:
+    '''Write dark mode styles into the destination style.  Set directly to context's style if dst is None.'''
+    if dst is None:
+        dst = get_style()
+    slimgui_ext.style_colors_dark(dst)
+
+def style_colors_light(dst: slimgui_ext.Style | None = None) -> None:
+    '''Write light mode styles into the destination style.  Set directly to context's style if dst is None.'''
+    if dst is None:
+        dst = get_style()
+    slimgui_ext.style_colors_light(dst)
+
+def style_colors_classic(dst: slimgui_ext.Style | None = None) -> None:
+    '''Write classic mode styles into the destination style.  Set directly to context's style if dst is None.'''
+    if dst is None:
+        dst = get_style()
+    slimgui_ext.style_colors_classic(dst)

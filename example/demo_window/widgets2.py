@@ -6,6 +6,9 @@ editing_col = (0.5, 0.5, 0.5, 1)
 col3 = (0.1, 0.5, 0.5)
 
 enable_clip_rect = False
+
+style_mode = 0
+
 def show():
     global editing_col, col3, enable_clip_rect
 
@@ -29,3 +32,28 @@ def show():
 
     if enable_clip_rect:
         imgui.pop_clip_rect()
+
+    _show_dark_light_select()
+
+
+def _show_dark_light_select():
+    global style_mode
+    imgui.text("Dark/Light/Classic selection")
+    changed, style_mode = imgui.radio_button("Dark", style_mode, 0)
+    imgui.same_line()
+    c, style_mode = imgui.radio_button("Light", style_mode, 1)
+    changed |= c
+    imgui.same_line()
+    c, style_mode = imgui.radio_button("Classic", style_mode, 2)
+    changed |= c
+    imgui.same_line()
+
+    if changed:
+        if style_mode == 0:
+            imgui.style_colors_dark()
+        elif style_mode == 1:
+            imgui.style_colors_light()
+        elif style_mode == 2:
+            imgui.style_colors_classic()
+        else:
+            assert False, "style_mode out of range"

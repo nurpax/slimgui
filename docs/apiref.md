@@ -74,6 +74,8 @@ Each context creates its own `FontAtlas` by default. You may instance one yourse
 
 ### Styles
 
+Note: functions shown below intentionally do not accept `None` as the destination style.  Python wrappers with same name exist in the `slimgui` module that can be called with `None` that then modifies the current context's style.
+
 #### Functions
 <div class="raw-html-insert" data-apirefs="style_colors_dark, style_colors_light, style_colors_classic"></div>
 
