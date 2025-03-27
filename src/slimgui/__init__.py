@@ -70,6 +70,24 @@ def get_style() -> slimgui_ext.Style:
     assert ctx is not None
     return ctx.style
 
+def get_background_draw_list() -> slimgui_ext.DrawList:
+    '''This draw list will be the first rendered one. Useful to quickly draw shapes/text behind dear imgui contents.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_background_draw_list_internal()
+
+def get_foreground_draw_list() -> slimgui_ext.DrawList:
+    '''This draw list will be the last rendered one. Useful to quickly draw shapes/text over dear imgui contents.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_foreground_draw_list_internal()
+
+def get_window_draw_list() -> slimgui_ext.DrawList:
+    '''Get draw list associated to the current window, to append your own drawing primitives.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_window_draw_list_internal()
+
 def style_colors_dark(dst: slimgui_ext.Style | None = None) -> None:
     '''Write dark mode styles into the destination style.  Set directly to context's style if dst is None.'''
     if dst is None:

@@ -1,12 +1,13 @@
 import logging
 import os
 from dataclasses import dataclass
+import numpy as np
 
 import demo_window
 import requests
 import slimgui as imgui
 from slimgui import InputTextFlags
-from util import imgui_window
+from util import imgui_window, gl_utils
 
 
 def download_and_cache(url, cache_dir='cache', filename=None) -> str:
@@ -32,6 +33,37 @@ class State:
     foo_enabled: bool = False
     saved_text: str = ""
 
+def _make_texture():
+    import OpenGL.GL as gl
+
+    size = 128
+    x = np.linspace(-1, 1, size)
+    y = np.linspace(-1, 1, size)
+    x, y = np.meshgrid(x, y)
+
+    radius = np.sqrt(x**2 + y**2)
+    image = np.sin(radius * 5 * np.pi)
+    image = (image * 0.5 + 0.5) * 255
+    image = np.stack((image, image, image, image), axis=-1)
+    image[:, :, 3] = 255
+    image = image.astype(np.uint8)
+    image = np.clip(image, 0, 255)
+    image = np.array(image, dtype=np.uint8)
+
+    h, w, _c = image.shape
+    tex_id = gl.glGenTextures(1)
+
+    gl.glBindTexture(gl.GL_TEXTURE_2D, tex_id)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+    gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, w, h, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image)
+
+    assert gl.glGetError() == gl.GL_NO_ERROR, "Error creating texture"
+    return {
+        "id": tex_id,
+        "width": w,
+        "height": h,
+    }
 
 def run():
     # Initialize state.
@@ -52,15 +84,16 @@ def run():
         request_opengl_core_profile=True,
     )
 
+    texture = _make_texture()
+
     # Make title bar semi-transparent to test out the style colors array access.
     prev_col = imgui.get_style().colors[imgui.Col.TITLE_BG_ACTIVE]
     imgui.get_style().colors[imgui.Col.TITLE_BG_ACTIVE] = (*prev_col[:3], 0.75)
 
-
     while not window.should_close():
         window.begin_frame()
 
-        for i in range(10):
+        for i in range(3):
             imgui.text("hello world!")
 
         res = imgui.button("click me")
@@ -85,7 +118,7 @@ def run():
             state.foo_enabled = v
 
         if state.show_python_demo_window:
-            state.show_python_demo_window = demo_window.show_demo_window(state.show_python_demo_window)
+            state.show_python_demo_window = demo_window.show_demo_window(state.show_python_demo_window, texture)
 
         window.end_frame()
     window.close()

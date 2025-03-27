@@ -111,6 +111,10 @@ NB_MODULE(slimgui_ext, m) {
     m.attr("FLOAT_MIN") = FLT_MIN;  // for compatibility with older versions
     m.attr("FLOAT_MAX") = FLT_MAX;  // for compatibility with older versions
 
+    m.attr("COL32_WHITE") = IM_COL32_WHITE;
+    m.attr("COL32_BLACK") = IM_COL32_BLACK;
+    m.attr("COL32_BLACK_TRANS") = IM_COL32_BLACK_TRANS;
+
     nb::class_<ImFont>(m, "Font");
     nb::class_<ImFontConfig>(m, "FontConfig") // exposes only safe fields, e.g., no FontData, FontDataOwnedByAtlas, etc.
         .def(nb::init<>())
@@ -335,7 +339,68 @@ NB_MODULE(slimgui_ext, m) {
         })
         .def_prop_ro("commands", [](const ImDrawList* drawList) {
             return nb::make_iterator(nb::type<const ImDrawList*>(), "iterator", drawList->CmdBuffer.begin(), drawList->CmdBuffer.end());
-        }, nb::keep_alive<0, 1>());
+        }, nb::keep_alive<0, 1>())
+        .def("add_line", &ImDrawList::AddLine, "p1"_a, "p2"_a, "col"_a, "thickness"_a = 1.0f)
+        .def("add_rect", [](ImDrawList* drawList, ImVec2 p_min, ImVec2 p_max, ImU32 col, float rounding, ImDrawFlags_ flags, float thickness) {
+            drawList->AddRect(p_min, p_max, col, rounding, flags, thickness);
+        }, "p_min"_a, "p_max"_a, "col"_a, "rounding"_a = 0.0f, "flags"_a.sig("DrawFlags.NONE") = 0, "thickness"_a = 1.0f)
+        .def("add_rect_filled", [](ImDrawList* drawList, ImVec2 p_min, ImVec2 p_max, ImU32 col, float rounding, ImDrawFlags_ flags) {
+            drawList->AddRectFilled(p_min, p_max, col, rounding, flags);
+        }, "p_min"_a, "p_max"_a, "col"_a, "rounding"_a = 0.0f, "flags"_a.sig("DrawFlags.NONE") = 0)
+        .def("add_rect_filled_multi_color", [](ImDrawList* drawList, ImVec2 p_min, ImVec2 p_max, ImU32 col_upr_left, ImU32 col_upr_right, ImU32 col_bot_right, ImU32 col_bot_left) {
+            drawList->AddRectFilledMultiColor(p_min, p_max, col_upr_left, col_upr_right, col_bot_right, col_bot_left);
+        }, "p_min"_a, "p_max"_a, "col_upr_left"_a, "col_upr_right"_a, "col_bot_right"_a, "col_bot_left"_a)
+        .def("add_quad", [](ImDrawList* drawList, ImVec2 p1, ImVec2 p2, ImVec2 p3, ImVec2 p4, ImU32 col, float thickness) {
+            drawList->AddQuad(p1, p2, p3, p4, col, thickness);
+        }, "p1"_a, "p2"_a, "p3"_a, "p4"_a, "col"_a, "thickness"_a = 1.0f)
+        .def("add_quad_filled", &ImDrawList::AddQuadFilled, "p1"_a, "p2"_a, "p3"_a, "p4"_a, "col"_a)
+        .def("add_triangle", &ImDrawList::AddTriangle, "p1"_a, "p2"_a, "p3"_a, "col"_a, "thickness"_a = 1.0f)
+        .def("add_triangle_filled", &ImDrawList::AddTriangleFilled, "p1"_a, "p2"_a, "p3"_a, "col"_a)
+        .def("add_circle", &ImDrawList::AddCircle, "center"_a, "radius"_a, "col"_a, "num_segments"_a = 0, "thickness"_a = 1.0f)
+        .def("add_circle_filled", &ImDrawList::AddCircleFilled, "center"_a, "radius"_a, "col"_a, "num_segments"_a = 0)
+        .def("add_ngon", &ImDrawList::AddNgon, "center"_a, "radius"_a, "col"_a, "num_segments"_a, "thickness"_a = 1.0f)
+        .def("add_ngon_filled", &ImDrawList::AddNgonFilled, "center"_a, "radius"_a, "col"_a, "num_segments"_a)
+        .def("add_ellipse", &ImDrawList::AddEllipse, "center"_a, "radius"_a, "col"_a, "rot"_a = 0.0f, "num_segments"_a = 0, "thickness"_a = 1.0f)
+        .def("add_ellipse_filled", &ImDrawList::AddEllipseFilled, "center"_a, "radius"_a, "col"_a, "rot"_a = 0.0f, "num_segments"_a = 0)
+        .def("add_text", [](ImDrawList* drawList, ImVec2 pos, ImU32 col, const char* text) {
+            drawList->AddText(pos, col, text, nullptr);
+        }, "pos"_a, "col"_a, "text"_a)
+        .def("add_text", [](ImDrawList* drawList, ImFont* font, float font_size, ImVec2 pos, ImU32 col, const char* text, float wrap_width, std::optional<ImVec4> cpu_fine_clip_rect) {
+            ImVec4 clip_rect(0, 0, 0, 0);
+            if (cpu_fine_clip_rect) {
+                clip_rect = cpu_fine_clip_rect.value();
+            }
+            drawList->AddText(font, font_size, pos, col, text, nullptr, wrap_width, cpu_fine_clip_rect ? &clip_rect : nullptr);
+        }, "font"_a, "font_size"_a, "pos"_a, "col"_a, "text"_a, "wrap_width"_a = 0.0f, "cpu_fine_clip_rect"_a = nb::none())
+        .def("add_bezier_cubic", &ImDrawList::AddBezierCubic, "p1"_a, "p2"_a, "p3"_a, "p4"_a, "col"_a, "thickness"_a, "num_segments"_a = 0)
+        .def("add_bezier_quadratic", &ImDrawList::AddBezierQuadratic, "p1"_a, "p2"_a, "p3"_a, "col"_a, "thickness"_a, "num_segments"_a = 0)
+        .def("add_polyline", [](ImDrawList* drawList, const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags_ flags, float thickness) {
+            drawList->AddPolyline(points.data(), (int)points.size(), col, flags, thickness);
+        }, "points"_a, "col"_a, "flags"_a, "thickness"_a = 1.0f)
+        .def("add_polyline", [](ImDrawList* drawList, const nb::ndarray<const float, nb::shape<-1, 2>, nb::device::cpu>& points, ImU32 col, ImDrawFlags_ flags, float thickness) {
+            drawList->AddPolyline((const ImVec2*)points.data(), (int)points.shape(0), col, flags, thickness);
+        }, "points"_a, "col"_a, "flags"_a, "thickness"_a)
+        .def("add_convex_poly_filled", [](ImDrawList* drawList, const std::vector<ImVec2>& points, ImU32 col) {
+            drawList->AddConvexPolyFilled(points.data(), (int)points.size(), col);
+        }, "points"_a, "col"_a)
+        .def("add_convex_poly_filled", [](ImDrawList* drawList, const nb::ndarray<const float, nb::shape<-1, 2>, nb::device::cpu>& points, ImU32 col) {
+            drawList->AddConvexPolyFilled((const ImVec2*)points.data(), (int)points.shape(0), col);
+        }, "points"_a, "col"_a)
+        .def("add_concave_poly_filled", [](ImDrawList* drawList, const std::vector<ImVec2>& points, ImU32 col) {
+            drawList->AddConcavePolyFilled(points.data(), (int)points.size(), col);
+        }, "points"_a, "col"_a)
+        .def("add_concave_poly_filled", [](ImDrawList* drawList, const nb::ndarray<const float, nb::shape<-1, 2>, nb::device::cpu>& points, ImU32 col) {
+            drawList->AddConcavePolyFilled((const ImVec2*)points.data(), (int)points.shape(0), col);
+        }, "points"_a, "col"_a)
+        .def("add_image", [](ImDrawList* drawList, ImTextureID user_texture_id, ImVec2 p_min, ImVec2 p_max, ImVec2 uv_min, ImVec2 uv_max, ImU32 col) {
+            drawList->AddImage(user_texture_id, p_min, p_max, uv_min, uv_max, col);
+        }, "user_texture_id"_a, "p_min"_a, "p_max"_a, "uv_min"_a = ImVec2(0, 0), "uv_max"_a = ImVec2(1, 1), "col"_a.sig("COL32_WHITE") = IM_COL32_WHITE)
+        .def("add_image_quad", [](ImDrawList* drawList, ImTextureID user_texture_id, ImVec2 p1, ImVec2 p2, ImVec2 p3, ImVec2 p4, ImVec2 uv1, ImVec2 uv2, ImVec2 uv3, ImVec2 uv4, ImU32 col) {
+            drawList->AddImageQuad(user_texture_id, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col);
+        }, "user_texture_id"_a, "p1"_a, "p2"_a, "p3"_a, "p4"_a, "uv1"_a = ImVec2(0.0f, 0.0f), "uv2"_a = ImVec2(1.0f, 0.0f), "uv3"_a = ImVec2(1.0f, 1.0f), "uv4"_a = ImVec2(0.0f, 1.0f), "col"_a.sig("COL32_WHITE") = IM_COL32_WHITE)
+        .def("add_image_rounded", [](ImDrawList* drawList, ImTextureID user_texture_id, ImVec2 p_min, ImVec2 p_max, ImVec2 uv_min, ImVec2 uv_max, ImU32 col, float rounding, ImDrawFlags_ flags) {
+            drawList->AddImageRounded(user_texture_id, p_min, p_max, uv_min, uv_max, col, rounding, flags);
+        }, "user_texture_id"_a, "p_min"_a, "p_max"_a, "uv_min"_a, "uv_max"_a, "col"_a, "rounding"_a, "flags"_a.sig("DrawFlags.NONE") = 0);
 
     nb::class_<ImDrawData>(m, "DrawData")
         .def("scale_clip_rects", &ImDrawData::ScaleClipRects, "fb_scale"_a)
@@ -344,12 +409,36 @@ NB_MODULE(slimgui_ext, m) {
         }, nb::keep_alive<0, 1>());
 
 #include "im_enums.inl"
+    // "Internal" object getters that receive a context pointer.  Such functions
+    // don't exist in the public ImGui API, but we provide them so that we
+    // can correctly model object ownership in Python.
     nb::class_<ImGuiContext>(m, "Context")
         .def("get_io_internal", [](ImGuiContext* ctx) -> ImGuiIO* {
             return &ctx->IO;
         }, nb::rv_policy::reference_internal)
         .def("get_style_internal", [](ImGuiContext* ctx) -> ImGuiStyle* {
             return &ctx->Style;
+        }, nb::rv_policy::reference_internal)
+        .def("get_background_draw_list_internal", [](ImGuiContext* ctx) -> ImDrawList* {
+            ImGuiContext* prev = ImGui::GetCurrentContext();
+            ImGui::SetCurrentContext(ctx);
+            ImDrawList* drawList = ImGui::GetBackgroundDrawList();
+            ImGui::SetCurrentContext(prev);
+            return drawList;
+        }, nb::rv_policy::reference_internal)
+        .def("get_foreground_draw_list_internal", [](ImGuiContext* ctx) -> ImDrawList* {
+            ImGuiContext* prev = ImGui::GetCurrentContext();
+            ImGui::SetCurrentContext(ctx);
+            ImDrawList* drawList = ImGui::GetForegroundDrawList();
+            ImGui::SetCurrentContext(prev);
+            return drawList;
+        }, nb::rv_policy::reference_internal)
+        .def("get_window_draw_list_internal", [](ImGuiContext* ctx) -> ImDrawList* {
+            ImGuiContext* prev = ImGui::GetCurrentContext();
+            ImGui::SetCurrentContext(ctx);
+            ImDrawList* drawList = ImGui::GetWindowDrawList();
+            ImGui::SetCurrentContext(prev);
+            return drawList;
         }, nb::rv_policy::reference_internal);
 
     m.def("create_context", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
@@ -570,6 +659,10 @@ NB_MODULE(slimgui_ext, m) {
     m.def("text_link_open_url", [](const char* label, std::optional<const char*> url) { ImGui::TextLinkOpenURL(label, url ? url.value() : nullptr); }, "label"_a, "url"_a = nb::none());
 
     // Widgets: Images
+    m.def("image", [](ImTextureID user_texture_id, const ImVec2 image_size, const ImVec2 uv0, const ImVec2 uv1) {
+        ImGui::Image(user_texture_id, image_size, uv0, uv1);
+    }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1));
+    // TODO OBSOLETE version, should drop this
     m.def("image", [](ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) {
         ImGui::Image(user_texture_id, image_size, uv0, uv1, tint_col, border_col);
     }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "tint_col"_a = ImVec4(1, 1, 1, 1), "border_col"_a = ImVec4(0, 0, 0, 0));
@@ -1060,7 +1153,7 @@ NB_MODULE(slimgui_ext, m) {
     m.def("get_time", &ImGui::GetTime);
     m.def("get_frame_count", &ImGui::GetFrameCount);
     // IMGUI_API ImDrawListSharedData* GetDrawListSharedData();                                    // you may use this when creating your own ImDrawList instances.
-    // IMGUI_API const char*   GetStyleColorName(ImGuiCol idx);                                    // get a string corresponding to the enum value (for display, saving, etc.).
+    m.def("get_style_color_name", [](ImGuiCol_ idx) { return ImGui::GetStyleColorName(idx); }, "col"_a);
     // IMGUI_API void          SetStateStorage(ImGuiStorage* storage);                             // replace current window storage with our own (if you want to manipulate it yourself, typically clear subsection of it)
     // IMGUI_API ImGuiStorage* GetStateStorage();
 
@@ -1070,6 +1163,8 @@ NB_MODULE(slimgui_ext, m) {
     }, "text"_a, "hide_text_after_double_hash"_a = false, "wrap_width"_a = -1.0f);
 
     // Color utilities
+    m.def("color_convert_u32_to_float4", &ImGui::ColorConvertU32ToFloat4);
+    m.def("color_convert_float4_to_u32", &ImGui::ColorConvertFloat4ToU32);
     m.def("color_convert_hsv_to_rgb", [](const ImVec4& hsv) {
         ImVec4 rgb(hsv);
         ImGui::ColorConvertHSVtoRGB(hsv.x, hsv.y, hsv.z, rgb.x, rgb.y, rgb.z);

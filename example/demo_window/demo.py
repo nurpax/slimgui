@@ -1,16 +1,17 @@
 
 import math
+from typing import Any
 import warnings
 
 import slimgui as imgui
 from slimgui import WindowFlags
 from .types import State
 from .utils import help_marker
-from . import widgets, widgets2, layout, property_editor
+from . import widgets, widgets2, layout, property_editor, shapes
 
 st = State()
 
-def show_demo_window(show_window: bool):
+def show_demo_window(show_window: bool, texture: dict[str, Any]):
     if st.show_app_main_menu_bar:
         show_example_app_main_menu_bar()
 
@@ -251,6 +252,7 @@ def show_demo_window(show_window: bool):
 #     // All demo contents
     widgets.show_demo_window_widgets(st)
     widgets2.show()
+    shapes.show(texture['id'])
 
 #     ShowDemoWindowLayout();
 #     ShowDemoWindowPopups();

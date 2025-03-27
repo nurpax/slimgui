@@ -1,5 +1,6 @@
 import pytest
 import slimgui as imgui
+import numpy as np
 
 # Define a fixture
 @pytest.fixture
@@ -21,6 +22,16 @@ def frame_scope(imgui_context, null_renderer):
     io = imgui.get_io()
     io.display_size = 320, 200
     imgui.new_frame()
+
+def test_utility_funcs():
+    assert imgui.get_style_color_name(imgui.Col.TITLE_BG_ACTIVE) == "TitleBgActive"
+
+    assert imgui.color_convert_float4_to_u32((1, 1, 1, 1)) == 0xffffffff
+    assert imgui.color_convert_float4_to_u32((1, 1, 1, 0)) == 0x00ffffff
+    assert imgui.color_convert_float4_to_u32((0.5, 0.25, 0.125, 0)) == 0x00204080
+    assert imgui.color_convert_u32_to_float4(0xffffffff) == (1, 1, 1, 1)
+    assert imgui.color_convert_u32_to_float4(0xffff0000) == (0, 0, 1, 1)
+    assert imgui.color_convert_u32_to_float4(0xff0000ff) == (1, 0, 0, 1)
 
 def test_current_context(imgui_context):
     assert imgui_context is not None
@@ -93,3 +104,20 @@ def test_input_widgets(frame_scope):
     assert t == "this is text 🔥"
 
     imgui.end()
+
+def test_draw_list(frame_scope):
+    color = imgui.color_convert_float4_to_u32((0.5, 0.6, 0.1, 1.0))
+    dl = imgui.get_window_draw_list()
+    vertices = np.array([[3, 3], [4, 1], [5, 4], [2, 5], [1, 3]], dtype=np.float32)
+    dl.add_concave_poly_filled(vertices, color)
+    vertices[:, 0] += 50
+    dl.add_concave_poly_filled(list(vertices), color)
+
+    vert_wrong_shape = np.array([[3, 3, 0], [4, 1,0 ], [5, 4, 0], [2, 5, 0], [1, 3, 0]], dtype=np.float32)
+    assert vert_wrong_shape.shape[1] == 3
+    with pytest.raises(TypeError):
+        dl.add_concave_poly_filled(vert_wrong_shape, color)
+    vert = np.array([[3, 3], [4, 1], [5, 4], [2, 5], [1, 3]], dtype=np.float32)
+    assert vert.shape[1] == 2
+    dl.add_concave_poly_filled(vert, color) # should work
+    dl.add_concave_poly_filled(vert.astype(np.int32), color) # should work too, autocast to float
