@@ -15,13 +15,13 @@ class ImguiSymbols:
 
 # Extra enum values for backwards compatibility.  These get dropped in cimgui generated
 # structs_and_enums.json.
-enum_compat = {
-    'ImGuiChildFlags_': [
-      {
-        "name": "ImGuiChildFlags_Border",
-        "value": "ImGuiChildFlags_Borders"
-      },
-    ]
+enum_compat = { # empty, example in comments
+    # 'ImGuiChildFlags_': [
+    #   {
+    #     "name": "ImGuiChildFlags_Border",
+    #     "value": "ImGuiChildFlags_Borders"
+    #   },
+    # ]
 }
 
 class GenContext:

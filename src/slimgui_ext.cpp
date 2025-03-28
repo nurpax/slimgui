@@ -546,11 +546,7 @@ NB_MODULE(slimgui_ext, m) {
 
     // Content region
     // - Retrieve available space from a given point. GetContentRegionAvail() is frequently useful.
-    // - Those functions are bound to be redesigned (they are confusing, incomplete and the Min/Max return values are in local window coordinates which increases confusion)
     m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
-    m.def("get_content_region_max", &ImGui::GetContentRegionMax);
-    m.def("get_window_content_region_min", &ImGui::GetWindowContentRegionMin);
-    m.def("get_window_content_region_max", &ImGui::GetWindowContentRegionMax);
 
     // Windows Scrolling
     // - Any change of Scroll will be applied at the beginning of next frame in the first call to Begin().
@@ -587,12 +583,6 @@ NB_MODULE(slimgui_ext, m) {
     m.def("pop_style_var", &ImGui::PopStyleVar, "count"_a = 1);
     m.def("push_item_flag", [](ImGuiItemFlags_ option, bool enabled) { ImGui::PushItemFlag(option, enabled); }, "option"_a, "enabled"_a);
     m.def("pop_item_flag", &ImGui::PopItemFlag);
-
-    // These 4 here are deprecated
-    m.def("push_tab_stop", &ImGui::PushTabStop, "tab_stop"_a);
-    m.def("pop_tab_stop", &ImGui::PopTabStop);
-    m.def("push_button_repeat", &ImGui::PushButtonRepeat, "repeat"_a);
-    m.def("pop_button_repeat", &ImGui::PopButtonRepeat);
 
     // Parameters stacks (current window)
     m.def("push_item_width", &ImGui::PushItemWidth, "item_width"_a);
@@ -662,10 +652,6 @@ NB_MODULE(slimgui_ext, m) {
     m.def("image", [](ImTextureID user_texture_id, const ImVec2 image_size, const ImVec2 uv0, const ImVec2 uv1) {
         ImGui::Image(user_texture_id, image_size, uv0, uv1);
     }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1));
-    // TODO OBSOLETE version, should drop this
-    m.def("image", [](ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& tint_col, const ImVec4& border_col) {
-        ImGui::Image(user_texture_id, image_size, uv0, uv1, tint_col, border_col);
-    }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "tint_col"_a = ImVec4(1, 1, 1, 1), "border_col"_a = ImVec4(0, 0, 0, 0));
 
     // Widgets: Combo Box (Dropdown)
     m.def("begin_combo", [](const char *label, const char *preview_value, ImGuiComboFlags_ flags) {

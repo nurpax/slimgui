@@ -46,7 +46,6 @@ def _show_dark_light_select():
     imgui.same_line()
     c, style_mode = imgui.radio_button("Classic", style_mode, 2)
     changed |= c
-    imgui.same_line()
 
     if changed:
         if style_mode == 0:

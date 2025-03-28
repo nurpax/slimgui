@@ -22,7 +22,7 @@ def show_example_app_layout(st: State):
             imgui.end_menu_bar()
 
         # Left
-        imgui.begin_child("left pane", (150, 0), ChildFlags.BORDER | ChildFlags.RESIZE_X)
+        imgui.begin_child("left pane", (150, 0), ChildFlags.BORDERS | ChildFlags.RESIZE_X)
         for i in range(100):
             if imgui.selectable(f'MyObject{i}', _selected == i)[0]:
                 _selected = i

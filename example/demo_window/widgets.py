@@ -91,13 +91,13 @@ def show_demo_window_widgets(st: State):
         imgui.same_line()
 
         warnings.warn("TBD ImGui::GetStyle().ItemInnerSpacing.x;") # float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
-        imgui.push_button_repeat(True)
+        imgui.push_item_flag(imgui.ItemFlags.BUTTON_REPEAT, True)
         if imgui.arrow_button("##left", imgui.Dir.LEFT):
             statics["repcnt"] -= 1
         imgui.same_line(0, spacing=-1) # TODO spacing
         if imgui.arrow_button("##right", imgui.Dir.RIGHT):
             statics["repcnt"] += 1
-        imgui.pop_button_repeat()
+        imgui.pop_item_flag()
         imgui.same_line()
         imgui.text(f'{statics["repcnt"]}')
 

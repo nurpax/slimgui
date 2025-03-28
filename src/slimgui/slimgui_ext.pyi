@@ -110,9 +110,6 @@ class ChildFlags(enum.IntFlag):
     [BETA] Share focus scope, allow keyboard/gamepad navigation to cross over parent border to this child or between sibling child windows.
     """
 
-    BORDER = 1
-    """Renamed in 1.91.1 (August 2024) for consistency."""
-
 class Col(enum.IntEnum):
     TEXT = 0
 
@@ -3124,11 +3121,6 @@ def get_content_region_avail() -> tuple[float, float]:
     ...
 
 
-def get_content_region_max() -> tuple[float, float]:
-    """Content boundaries max (e.g. window boundaries including scrolling, or current column boundaries). You should never need this. Always use `get_cursor_screen_pos()` and `get_content_region_avail()`!"""
-    ...
-
-
 def get_current_context() -> Context:
     ...
 
@@ -3303,16 +3295,6 @@ def get_version() -> str:
     ...
 
 
-def get_window_content_region_max() -> tuple[float, float]:
-    """Content boundaries max for the window (roughly (0,0)+Size-Scroll), in window-local coordinates. You should never need this. Always use `get_cursor_screen_pos()` and `get_content_region_avail()`!"""
-    ...
-
-
-def get_window_content_region_min() -> tuple[float, float]:
-    """Content boundaries min for the window (roughly (0,0)-Scroll), in window-local coordinates. You should never need this. Always use `get_cursor_screen_pos()` and `get_content_region_avail()`!"""
-    ...
-
-
 def get_window_height() -> float:
     """Get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for `get_window_size()`.y."""
     ...
@@ -3333,13 +3315,7 @@ def get_window_width() -> float:
     ...
 
 
-@overload
 def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0)) -> None:
-    ...
-
-
-@overload
-def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0), border_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0)) -> None:
     ...
 
 
@@ -3637,10 +3613,6 @@ def plot_lines(label: str, values: Annotated[ArrayLike, dict(dtype='float32', sh
     ...
 
 
-def pop_button_repeat() -> None:
-    ...
-
-
 def pop_clip_rect() -> None:
     ...
 
@@ -3670,19 +3642,11 @@ def pop_style_var(count: int = 1) -> None:
     ...
 
 
-def pop_tab_stop() -> None:
-    ...
-
-
 def pop_text_wrap_pos() -> None:
     ...
 
 
 def progress_bar(fraction: float, size_arg: tuple[float, float] = (-FLT_MIN, 0), overlay: str | None = None) -> None:
-    ...
-
-
-def push_button_repeat(repeat: bool) -> None:
     ...
 
 
@@ -3750,10 +3714,6 @@ def push_style_var_x(idx: StyleVar, val_x: float) -> None:
 
 def push_style_var_y(idx: StyleVar, val_y: float) -> None:
     """Modify Y component of a style ImVec2 variable. \""""
-    ...
-
-
-def push_tab_stop(tab_stop: bool) -> None:
     ...
 
 

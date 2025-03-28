@@ -150,9 +150,7 @@ nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value(
         "NAV_FLATTENED", ImGuiChildFlags_NavFlattened,
         "[BETA] Share focus scope, allow keyboard/gamepad navigation to cross "
-        "over parent border to this child or between sibling child windows.")
-    .value("BORDER", ImGuiChildFlags_Border,
-           "Renamed in 1.91.1 (August 2024) for consistency.");
+        "over parent border to this child or between sibling child windows.");
 nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
                                nb::is_arithmetic())
     .value("NONE", ImGuiDragDropFlags_None)
