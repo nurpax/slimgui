@@ -652,6 +652,8 @@ NB_MODULE(slimgui_ext, m) {
     m.def("image", [](ImTextureID user_texture_id, const ImVec2 image_size, const ImVec2 uv0, const ImVec2 uv1) {
         ImGui::Image(user_texture_id, image_size, uv0, uv1);
     }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1));
+    m.def("image_with_bg", &ImGui::ImageWithBg, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "bg_col"_a = ImVec4(0, 0, 0, 0), "tint_col"_a = ImVec4(1, 1, 1, 1));
+    m.def("image_button", &ImGui::ImageButton, "str_id"_a, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "bg_col"_a = ImVec4(0, 0, 0, 0), "tint_col"_a = ImVec4(1, 1, 1, 1));
 
     // Widgets: Combo Box (Dropdown)
     m.def("begin_combo", [](const char *label, const char *preview_value, ImGuiComboFlags_ flags) {

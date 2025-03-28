@@ -3319,6 +3319,14 @@ def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[floa
     ...
 
 
+def image_button(str_id: str, user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)) -> bool:
+    ...
+
+
+def image_with_bg(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)) -> None:
+    ...
+
+
 def indent(indent_w: float = 0.0) -> None:
     """Move content position toward the right, by indent_w, or style.IndentSpacing if indent_w <= 0"""
     ...
