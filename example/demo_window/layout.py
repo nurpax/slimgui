@@ -1,5 +1,5 @@
-import slimgui as imgui
-from slimgui import ChildFlags, WindowFlags
+from slimgui import imgui
+from slimgui.imgui import WindowFlags, ChildFlags
 
 from .types import State
 

@@ -1,5 +1,5 @@
 
-import slimgui as imgui
+from slimgui import imgui
 import numpy as np
 
 edit_color: tuple = (0.5, 0.6, 0.1, 1.0)

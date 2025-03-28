@@ -1,5 +1,5 @@
 
-import slimgui as imgui
+from slimgui import imgui
 
 def help_marker(desc: str):
     imgui.text_disabled("(?)")

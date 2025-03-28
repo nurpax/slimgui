@@ -1,7 +1,7 @@
 from typing import Any, Callable
 
 import glfw
-import slimgui as imgui
+from slimgui import imgui
 
 from .opengl import ProgrammablePipelineRenderer
 
@@ -93,7 +93,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         # fmt: on
 
     def _map_key(self, glfw_key: int) -> imgui.Key | None:
-        from slimgui import Key
+        from slimgui.imgui import Key
 
         if glfw_key >= glfw.KEY_A and glfw_key <= glfw.KEY_Z:
             return Key(Key.KEY_A + (glfw_key - glfw.KEY_A))

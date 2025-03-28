@@ -1,4 +1,5 @@
-import slimgui as imgui
+
+from slimgui import imgui
 
 
 class BaseOpenGLRenderer(object):

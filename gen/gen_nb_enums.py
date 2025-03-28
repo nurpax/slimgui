@@ -7,7 +7,7 @@ import subprocess
 import click
 
 import gen_utils
-from gen_utils import enum_list
+from gen_utils import enum_list_imgui, enum_list_implot
 
 @dataclass
 class ImguiSymbols:
@@ -25,9 +25,10 @@ enum_compat = { # empty, example in comments
 }
 
 class GenContext:
-    def __init__(self, cimgui_defs_dir: str):
+    def __init__(self, cimgui_defs_dir: str, enum_list: list[tuple[str, str]]):
         self._out = io.StringIO()
         self._defs_dir = cimgui_defs_dir
+        self._enum_list = enum_list
 
     def write(self, text: str):
         self._out.write(text)
@@ -48,7 +49,7 @@ class GenContext:
         with open(os.path.join(self._defs_dir, "structs_and_enums.json"), "rt", encoding="utf-8") as f:
             doc = json.load(f)
 
-        for im_name, py_name, e in [(im_name, py_name, doc["enums"][im_name]) for im_name, py_name in enum_list]:
+        for im_name, py_name, e in [(im_name, py_name, doc["enums"][im_name]) for im_name, py_name in self._enum_list]:
             # Enum decl
             if im_name.endswith("Flags_"):
                 enum_attrs = ', nb::is_flag(), nb::is_arithmetic()'
@@ -68,21 +69,21 @@ class GenContext:
                 self.write(f'.value("{enum_field_py_name}", {enum_field_cimgui_name}{doc_part})\n')
             self.write(";")
 
-        # Enum decl
-        self.write('nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())\n')
-        # Enum values
-        for e in doc["enums"]["ImGuiKey"]:
-            ename = e["name"].replace("ImGuiKey_", "key").replace("ImGuiMod_", "mod")
-            enum_field_py_name = gen_utils.camel_to_snake(ename).upper()
-            # Kludge to fix snake case problem for KEY_0-KEY_9
-            if (m := re.match(r"^KEY(\d+)$", enum_field_py_name)) is not None:
-                enum_field_py_name = f"KEY_{m.group(1)}"
-            enum_field_cimgui_name = e["name"]
-            self.write(f'.value("{enum_field_py_name}", {enum_field_cimgui_name})\n')
-        self.write(";")
+        if 'ImGuiKey' in doc['enums']:
+            self.write('nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())\n')
+            # Enum values
+            for e in doc["enums"]["ImGuiKey"]:
+                ename = e["name"].replace("ImGuiKey_", "key").replace("ImGuiMod_", "mod")
+                enum_field_py_name = gen_utils.camel_to_snake(ename).upper()
+                # Kludge to fix snake case problem for KEY_0-KEY_9
+                if (m := re.match(r"^KEY(\d+)$", enum_field_py_name)) is not None:
+                    enum_field_py_name = f"KEY_{m.group(1)}"
+                enum_field_cimgui_name = e["name"]
+                self.write(f'.value("{enum_field_py_name}", {enum_field_cimgui_name})\n')
+            self.write(";")
 
 
-def best_effort_imgui_parse(header_path: str):
+def _best_effort_imgui_parse(header_path: str, enum_list: list[tuple[str, str]]) -> ImguiSymbols:
     with open(header_path, "rt", encoding="utf-8") as f:
         lines = f.readlines()
 
@@ -114,11 +115,14 @@ def best_effort_imgui_parse(header_path: str):
 @click.option("--cimgui-defs-dir", default=os.path.join(os.path.dirname(__file__), "cimgui"))
 @click.option("--imgui-h", default='src/c/imgui/imgui.h')
 def main(cimgui_defs_dir, imgui_h: str | None):
+    enum_list = enum_list_imgui
+    if 'implot' in cimgui_defs_dir:
+        enum_list = enum_list_implot
     if imgui_h is not None:
-        syms = best_effort_imgui_parse(imgui_h)
+        syms = _best_effort_imgui_parse(imgui_h, enum_list)
     else:
         syms = None
-    ctx = GenContext(cimgui_defs_dir)
+    ctx = GenContext(cimgui_defs_dir, enum_list)
     ctx.generate_enums(syms)
     print(ctx.source())
 

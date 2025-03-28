@@ -1,5 +1,5 @@
 import pytest
-import slimgui as imgui
+from slimgui import imgui
 import numpy as np
 
 # Define a fixture

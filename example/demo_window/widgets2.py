@@ -1,5 +1,5 @@
 
-import slimgui as imgui
+from slimgui import imgui
 
 refcol = (0.1, 0.2, 0.4, 1)
 editing_col = (0.5, 0.5, 0.5, 1)

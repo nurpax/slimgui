@@ -1,6 +1,6 @@
 
-import slimgui as imgui
-from slimgui import TreeNodeFlags
+from slimgui import imgui
+from slimgui.imgui import TreeNodeFlags
 
 from .types import State
 from .utils import help_marker
