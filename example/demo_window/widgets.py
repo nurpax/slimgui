@@ -3,7 +3,7 @@ import math
 import warnings
 
 import numpy as np
-import slimgui as imgui
+from slimgui import imgui
 
 from .types import State
 from .utils import help_marker

@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 import OpenGL.GL as gl
-import slimgui as imgui
+from slimgui import imgui
 import ctypes
 
 from .base import BaseOpenGLRenderer

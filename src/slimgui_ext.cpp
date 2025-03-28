@@ -13,16 +13,12 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-struct Vec3 {
-    float x, y, z;
-    constexpr Vec3() : x(0.0f), y(0.0f), z(0.0f) { }
-    constexpr Vec3(float _x, float _y, float _z)    : x(_x), y(_y), z(_z) { }
-};
-
-#include "type_casts.inl"
-
 namespace nb = nanobind;
 using namespace nb::literals;
+
+extern void implot_bindings(nb::module_& implot);  // implot_bindings.cpp
+
+#include "type_casts.h"
 
 template<typename T, typename... Args>
 auto tuple_to_array(const std::tuple<Args...>& tpl) {
@@ -97,7 +93,9 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
     return 0;
 }
 
-NB_MODULE(slimgui_ext, m) {
+NB_MODULE(slimgui_ext, top) {
+    nb::module_ m = top.def_submodule("imgui", "Dear ImGui bindings");
+
     m.attr("IMGUI_VERSION") = IMGUI_VERSION;
     m.attr("IMGUI_VERSION_NUM") = IMGUI_VERSION_NUM;
     m.attr("VERTEX_SIZE") = sizeof(ImDrawVert);
@@ -408,7 +406,7 @@ NB_MODULE(slimgui_ext, m) {
             return nb::make_iterator(nb::type<ImDrawData>(), "iterator", drawData.CmdLists.begin(), drawData.CmdLists.end());
         }, nb::keep_alive<0, 1>());
 
-#include "im_enums.inl"
+#include "imgui_enums.inl"
     // "Internal" object getters that receive a context pointer.  Such functions
     // don't exist in the public ImGui API, but we provide them so that we
     // can correctly model object ownership in Python.
@@ -1206,4 +1204,8 @@ NB_MODULE(slimgui_ext, m) {
     // Disable Nanobind leak warnings by default.
     nb::set_leak_warnings(false);
     m.def("set_nanobind_leak_warnings", &nb::set_leak_warnings, "enable"_a);
+
+    // Implot
+    nb::module_ implot = top.def_submodule("implot", "ImPlot bindings");
+    implot_bindings(implot);
 }

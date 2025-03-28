@@ -3,8 +3,9 @@ import math
 from typing import Any
 import warnings
 
-import slimgui as imgui
-from slimgui import WindowFlags
+from slimgui import imgui
+from slimgui.imgui import WindowFlags
+
 from .types import State
 from .utils import help_marker
 from . import widgets, widgets2, layout, property_editor, shapes

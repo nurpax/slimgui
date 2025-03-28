@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional, Set
 cimgui_definitions_path = 'gen/cimgui/definitions.json'
 
 # Used by gen_nb_enums also
-enum_list = [
+enum_list_imgui = [
     ("ImDrawFlags_", "DrawFlags"),
     ("ImGuiInputTextFlags_", "InputTextFlags"),
     ("ImGuiButtonFlags_", "ButtonFlags"),
@@ -39,7 +39,43 @@ enum_list = [
     ("ImGuiTableBgTarget_", "TableBgTarget"),
 ]
 
-_known_enums = dict(enum_list)
+enum_list_implot = [
+    ("ImAxis_", "Axis"),
+    ("ImPlotFlags_", "PlotFlags"),
+    ("ImPlotAxisFlags_", "AxisFlags"),
+    ("ImPlotSubplotFlags_", "SubplotFlags"),
+    ("ImPlotLegendFlags_", "LegendFlags"),
+    ("ImPlotMouseTextFlags_", "MouseTextFlags"),
+    ("ImPlotDragToolFlags_", "DragToolFlags"),
+    ("ImPlotColormapScaleFlags_", "ColormapScaleFlags"),
+    ("ImPlotItemFlags_", "ItemFlags"),
+    ("ImPlotLineFlags_", "LineFlags"),
+    ("ImPlotScatterFlags_", "ScatterFlags"),
+    ("ImPlotStairsFlags_", "StairsFlags"),
+    ("ImPlotShadedFlags_", "ShadedFlags"),
+    ("ImPlotBarsFlags_", "BarsFlags"),
+    ("ImPlotBarGroupsFlags_", "BarGroupsFlags"),
+    ("ImPlotErrorBarsFlags_", "ErrorBarsFlags"),
+    ("ImPlotStemsFlags_", "StemsFlags"),
+    ("ImPlotInfLinesFlags_", "InfLinesFlags"),
+    ("ImPlotPieChartFlags_", "PieChartFlags"),
+    ("ImPlotHeatmapFlags_", "HeatmapFlags"),
+    ("ImPlotHistogramFlags_", "HistogramFlags"),
+    ("ImPlotDigitalFlags_", "DigitalFlags"),
+    ("ImPlotImageFlags_", "ImageFlag"),
+    ("ImPlotTextFlags_", "TextFlag"),
+    ("ImPlotDummyFlags_", "DummyFlag"),
+    ("ImPlotCond_", "Cond"),
+    ("ImPlotCol_", "Col"),
+    ("ImPlotStyleVar_", "StyleVar"),
+    ("ImPlotScale_", "Scale"),
+    ("ImPlotMarker_", "Marker"),
+    ("ImPlotColormap_", "Colormap"),
+    ("ImPlotLocation_", "Location"),
+    ("ImPlotBin_", "Bin"),
+]
+
+_known_enums = dict(enum_list_imgui + enum_list_implot)
 
 def camel_to_snake(name):
     if 'HSVtoRGB' in name:
@@ -105,12 +141,17 @@ def _match_funcname_parens(tokens: list[str]) -> tuple[int, str, str] | None:
             return None
     return tok_idx, funcname, ''.join(tokens[2:tok_idx-1])
 
-def _translate_enum_name(sym: str) -> str | None:
+def translate_enum_name(sym: str) -> str | None:
     '''Translate an enum name to a Python enum name.  Return a tuple of whether the name was
     translated and the translated name.'''
 
     if any(sym.startswith(enum_name) for enum_name in _known_enums.keys()):
-        enum_name, enum_field = sym.removeprefix('ImGui').split('_')
+        if sym.startswith('ImGui'):
+            enum_name, enum_field = sym.removeprefix('ImGui').split('_')
+        else:
+            assert sym.startswith('ImPlot')
+            enum_name, enum_field = sym.removeprefix('ImPlot').split('_')
+
         if enum_field == '':
             return f'{enum_name}'
         else:
@@ -136,7 +177,7 @@ def _best_effort_fix_funcall_args(t: str) -> str:
                 tok_idx += 1
             case _:
                 sym = tokens[tok_idx]
-                if (m := _translate_enum_name(sym)) is not None:
+                if (m := translate_enum_name(sym)) is not None:
                     out += [m]
                 else:
                     out += [sym]
@@ -170,7 +211,7 @@ def docstring_fixer(docstring):
                 out.append(f'`{camel_to_snake(sym)}`')
                 tok_idx += 1
         else:
-            if (translated := _translate_enum_name(sym)) is not None:
+            if (translated := translate_enum_name(sym)) is not None:
                 out.append(f'`{translated}`')
                 tok_idx += 1
             else:

@@ -2,7 +2,7 @@
 import glfw
 import OpenGL.GL as gl
 
-import slimgui as imgui
+from slimgui import imgui
 from slimgui.integrations.glfw import GlfwRenderer
 
 # ----------------------------------------------------------------------------
