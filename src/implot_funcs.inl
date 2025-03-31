@@ -93,6 +93,20 @@ m.def(
     "cond"_a.sig("Cond.ONCE") = ImPlotCond_Once);
 m.def("set_next_axes_to_fit", []() { ImPlot::SetNextAxesToFit(); });
 m.def(
+    "plot_text",
+    [](const char *text, double x, double y, ImVec2 pix_offset,
+       ImPlotTextFlags_ flags) {
+      ImPlot::PlotText(text, x, y, pix_offset, flags);
+    },
+    "text"_a, "x"_a, "y"_a, "pix_offset"_a.sig("(0,0)") = ImVec2(0, 0),
+    "flags"_a.sig("TextFlag.NONE") = ImPlotTextFlags_None);
+m.def(
+    "plot_dummy",
+    [](const char *label_id, ImPlotDummyFlags_ flags) {
+      ImPlot::PlotDummy(label_id, flags);
+    },
+    "label_id"_a, "flags"_a.sig("DummyFlag.NONE") = ImPlotDummyFlags_None);
+m.def(
     "get_colormap_size",
     [](std::variant<ImPlotColormap_, int> cmap) {
       return ImPlot::GetColormapSize(std::get<int>(cmap));

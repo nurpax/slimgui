@@ -41,6 +41,9 @@ _implot_func_list = [
     ('ImPlot_SetNextAxesLimits', 'set_next_axes_limits'),
     ('ImPlot_SetNextAxesToFit', 'set_next_axes_to_fit'),
 
+    ('ImPlot_PlotText', 'plot_text'),
+    ('ImPlot_PlotDummy', 'plot_dummy'),
+
     # PROTO SECTION
     ('ImPlot_GetColormapSize', 'get_colormap_size'),
 ]

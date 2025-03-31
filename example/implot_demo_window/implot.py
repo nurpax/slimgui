@@ -1,13 +1,17 @@
+import time
 import numpy as np
 from slimgui import imgui
 from slimgui import implot
 
 from slimgui.implot import LineFlags, PlotFlags, ScatterFlags
 
+_surf_it = False
+
 def show_demo_window(show_window: bool):
+    global _surf_it
     main_viewport = imgui.get_main_viewport()
     imgui.set_next_window_pos((main_viewport.work_pos[0] + 800, main_viewport.work_pos[1] + 40), imgui.Cond.FIRST_USE_EVER)
-    imgui.set_next_window_size((640, 1000), imgui.Cond.FIRST_USE_EVER)
+    imgui.set_next_window_size((640, 900), imgui.Cond.FIRST_USE_EVER)
 
     visible, show_window = imgui.begin("Implot tests", closable=show_window)
     if not visible:
@@ -15,11 +19,23 @@ def show_demo_window(show_window: bool):
         return show_window
 
     if imgui.collapsing_header('Basic line plots')[0]:
+        _c, _surf_it = imgui.checkbox("Surf it!", _surf_it)
+
         if implot.begin_plot("Plot", flags=PlotFlags.NO_LEGEND):
             data_x = np.arange(0, 10, 0.25)
             data_y = np.sin(data_x)
             implot.plot_line("Sine Wave", data_y[::2]) # striding should work
-            implot.plot_line("Sine Wave 2", data_x, np.abs(data_y))
+
+            data_x = np.linspace(0, 3*np.pi, 200)
+            data_y = np.sin(data_x)
+            implot.plot_line("the wave", data_x, data_y) # striding should work
+
+            if _surf_it:
+                idx = int(time.time()*20)
+                idx %= len(data_x)
+                x, y = data_x[idx], data_y[idx]
+                implot.plot_text("sine waves", x.item(), y.item())
+
             implot.end_plot()
 
     if imgui.collapsing_header('Line and scatter')[0]:
