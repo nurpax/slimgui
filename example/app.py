@@ -4,12 +4,13 @@ from dataclasses import dataclass
 import numpy as np
 
 import demo_window
+import implot_demo_window
 import requests
 
 from slimgui import imgui
 from slimgui import implot
 
-from util import imgui_window, gl_utils
+from util import imgui_window
 
 
 def download_and_cache(url, cache_dir='cache', filename=None) -> str:
@@ -30,7 +31,8 @@ def download_and_cache(url, cache_dir='cache', filename=None) -> str:
 @dataclass
 class State:
     show_python_demo_window = True
-    show_implot_demo_window = True
+    show_implot_demo_window = False
+    show_python_implot_demo_window = True
     click_count: int = 0
     text: str = ""
     foo_enabled: bool = False
@@ -126,6 +128,9 @@ def run():
 
         if state.show_implot_demo_window:
             state.show_implot_demo_window = implot.show_demo_window(state.show_implot_demo_window)
+
+        if state.show_python_implot_demo_window:
+            state.show_python_implot_demo_window = implot_demo_window.show_demo_window(state.show_python_implot_demo_window)
 
         window.end_frame()
     window.close()
