@@ -6,8 +6,8 @@ from slimgui.implot import LineFlags, PlotFlags, ScatterFlags
 
 def show_demo_window(show_window: bool):
     main_viewport = imgui.get_main_viewport()
-    imgui.set_next_window_pos((main_viewport.work_pos[0] + 640, main_viewport.work_pos[1] + 120), imgui.Cond.FIRST_USE_EVER)
-    imgui.set_next_window_size((500, 680), imgui.Cond.FIRST_USE_EVER)
+    imgui.set_next_window_pos((main_viewport.work_pos[0] + 800, main_viewport.work_pos[1] + 40), imgui.Cond.FIRST_USE_EVER)
+    imgui.set_next_window_size((640, 1000), imgui.Cond.FIRST_USE_EVER)
 
     visible, show_window = imgui.begin("Implot tests", closable=show_window)
     if not visible:
@@ -49,6 +49,17 @@ def show_demo_window(show_window: bool):
             x_steps = np.arange(0, 10, 1)
             y_steps = np.repeat(np.arange(1, 11), 2)[1:-1]
             implot.plot_shaded("Shaded", x_steps, y_steps, yref=2.3)
+            implot.end_plot()
+
+    if imgui.collapsing_header('Bar charts##heading')[0]:
+        if implot.begin_plot("Bar"):
+            ys = np.random.RandomState(13).rand(10)
+            implot.plot_bars("rand", ys)
+            implot.end_plot()
+
+        if implot.begin_plot("Bar 2 horizontal"):
+            ys = np.random.RandomState(13).rand(10)
+            implot.plot_bars("rand", ys, flags=implot.BarsFlags.HORIZONTAL)
             implot.end_plot()
 
     imgui.end()
