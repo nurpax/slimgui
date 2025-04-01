@@ -87,5 +87,15 @@ def show_demo_window(show_window: bool):
             implot.plot_bars("rand", ys)
             implot.end_plot()
 
+    if imgui.collapsing_header('Bar Groups')[0]:
+        if implot.begin_plot("##groups"):
+            labels = ['A', 'B', 'C']
+            vals = np.random.RandomState(15).rand(3, 4)
+            implot.plot_bar_groups(labels, vals)
+            # xs = np.arange(4)
+            # ys = np.random.RandomState(16).rand(4)
+            # implot.plot_bars("rand", ys)
+            implot.end_plot()
+
     imgui.end()
     return show_window

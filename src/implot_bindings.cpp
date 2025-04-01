@@ -19,6 +19,7 @@ namespace nb = nanobind;
 using namespace nb::literals;
 
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
+typedef nb::ndarray<const double, nb::ndim<2>, nb::device::cpu, nb::c_contig> ndarray_2d;
 
 void implot_bindings(nb::module_& m) {
     #include "implot_enums.inl"
@@ -103,8 +104,16 @@ void implot_bindings(nb::module_& m) {
         ImPlot::PlotBars(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), bar_size, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "bar_size"_a, "flags"_a.sig("BarFlags.NONE") = ImPlotBarsFlags_None);
 
-    // TODO how to do label array?
-    // IMPLOT_TMP void PlotBarGroups(const char* const label_ids[], const T* values, int item_count, int group_count, double group_size=0.67, double shift=0, ImPlotBarGroupsFlags flags=0);
+    // Plots a group of bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements.
+    m.def("plot_bar_groups", [](std::vector<const char*> label_ids, ndarray_2d& values, double group_size, double shift, ImPlotBarGroupsFlags_ flags) {
+        int item_count = values.shape(0);
+        int group_count = values.shape(1);
+        if (label_ids.size() != item_count) {
+            throw std::length_error("`label_ids` must be same the length as `values.shape(0)`.");
+        }
+        ImPlot::PlotBarGroups(label_ids.data(), (const double*)values.data(), item_count, group_count, group_size, shift, flags);
+    }, "label_ids"_a, "values"_a, "group_size"_a = 0.67, "shift"_a = 0.0, "flags"_a.sig("BarGroupsFlags.NONE") = ImPlotBarGroupsFlags_None);
+
 
 #include "implot_funcs.inl"
 }
