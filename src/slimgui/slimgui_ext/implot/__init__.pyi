@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 import enum
 from typing import Annotated, overload
 
@@ -656,6 +657,12 @@ def setup_axis_limits(axis: Axis, v_min: float, v_max: float, cond: Cond = Cond.
 def setup_axis_limits_constraints(axis: Axis, v_min: float, v_max: float) -> None: ...
 
 def setup_axis_scale(axis: Axis, scale: Scale) -> None: ...
+
+@overload
+def setup_axis_ticks(axis: int, values: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], labels: Sequence[str] | None = None, keep_default: bool = False) -> None: ...
+
+@overload
+def setup_axis_ticks(axis: int, v_min: float, v_max: float, n_ticks: int, labels: Sequence[str] | None = None, keep_default: bool = False) -> None: ...
 
 def setup_axis_zoom_constraints(axis: Axis, z_min: float, z_max: float) -> None: ...
 

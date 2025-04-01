@@ -78,5 +78,14 @@ def show_demo_window(show_window: bool):
             implot.plot_bars("rand", ys, flags=implot.BarsFlags.HORIZONTAL)
             implot.end_plot()
 
+    if imgui.collapsing_header('Bar chart ticks')[0]:
+        if implot.begin_plot("##ticks"):
+            labels = ['S1', 'S2', 'S4', 'S4']
+            xs = np.arange(4)
+            implot.setup_axis_ticks(implot.Axis.X1, xs, labels)
+            ys = np.random.RandomState(16).rand(4)
+            implot.plot_bars("rand", ys)
+            implot.end_plot()
+
     imgui.end()
     return show_window

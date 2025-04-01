@@ -36,6 +36,30 @@ void implot_bindings(nb::module_& m) {
         return open;
     }, "closable"_a = false);
 
+    // SetupAxisTicks overloads
+    m.def("setup_axis_ticks", [](ImAxis axis, ndarray_1d& values, std::optional<std::vector<const char*>> labels, bool keep_default) {
+        const char** labels_ptr = nullptr;
+        size_t len = values.shape(0);
+        if (labels) {
+            if (labels->size() != len) {
+                throw std::length_error("`labels` must be same the length as `values`.");
+            }
+            labels_ptr = (const char**)labels->data();
+        }
+        ImPlot::SetupAxisTicks(axis, (const double*)values.data(), len, labels_ptr, keep_default);
+    }, "axis"_a, "values"_a, "labels"_a = nb::none(), "keep_default"_a = false);
+
+    m.def("setup_axis_ticks", [](ImAxis axis, double v_min, double v_max, int n_ticks, std::optional<std::vector<const char*>> labels, bool keep_default) {
+        const char** labels_ptr = nullptr;
+        if (labels) {
+            if (labels->size() != n_ticks) {
+                throw std::length_error("`labels` length must equal `n_ticks`.");
+            }
+            labels_ptr = (const char**)labels->data();
+        }
+        ImPlot::SetupAxisTicks(axis, v_min, v_max, n_ticks, labels_ptr, keep_default);
+    }, "axis"_a, "v_min"_a, "v_max"_a, "n_ticks"_a, "labels"_a = nb::none(), "keep_default"_a = false);
+
     // PlotLine functions
     m.def("plot_line", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotLineFlags_ flags) {
         ImPlot::PlotLine(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);

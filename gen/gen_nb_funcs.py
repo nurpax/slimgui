@@ -159,10 +159,6 @@ class GenContext:
                         print(a['type'])
                         assert False
 
-            # m.def("begin_child", [](const char* str_id, const ImVec2& size, ImGuiChildFlags_ child_flags, ImGuiWindowFlags_ window_flags) {
-            #     return ImGui::BeginChild(str_id, size, child_flags, window_flags);
-            # }, "str_id"_a, "size"_a =  ImVec2(0, 0), "child_flags"_a.sig("ChildFlags.NONE") = ImGuiChildFlags_None, "window_flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
-
             # Start a nanobind def
             self.write(f'm.def("{func_py_name}", [](')
             for i, arg in enumerate(out_args):
