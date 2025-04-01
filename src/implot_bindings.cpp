@@ -117,4 +117,3 @@ void implot_bindings(nb::module_& m) {
 
 #include "implot_funcs.inl"
 }
-

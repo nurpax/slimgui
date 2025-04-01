@@ -8,8 +8,9 @@ m.def(
 m.def("end_plot", []() { ImPlot::EndPlot(); });
 m.def(
     "setup_axis",
-    [](ImAxis_ axis, std::optional<std::string> label, ImPlotAxisFlags_ flags) {
-      ImPlot::SetupAxis(axis, label ? label.value().c_str() : nullptr, flags);
+    [](ImAxis_ axis, std::optional<const char *> label,
+       ImPlotAxisFlags_ flags) {
+      ImPlot::SetupAxis(axis, label ? label.value() : nullptr, flags);
     },
     "axis"_a, "label"_a.sig("None") = nb::none(),
     "flags"_a.sig("AxisFlags.NONE") = ImPlotAxisFlags_None);
@@ -44,11 +45,12 @@ m.def(
     "axis"_a, "z_min"_a, "z_max"_a);
 m.def(
     "setup_axes",
-    [](const char *x_label, const char *y_label, ImPlotAxisFlags_ x_flags,
-       ImPlotAxisFlags_ y_flags) {
-      ImPlot::SetupAxes(x_label, y_label, x_flags, y_flags);
+    [](std::optional<const char *> x_label, std::optional<const char *> y_label,
+       ImPlotAxisFlags_ x_flags, ImPlotAxisFlags_ y_flags) {
+      ImPlot::SetupAxes(x_label ? x_label.value() : nullptr,
+                        y_label ? y_label.value() : nullptr, x_flags, y_flags);
     },
-    "x_label"_a, "y_label"_a,
+    "x_label"_a.none(), "y_label"_a.none(),
     "x_flags"_a.sig("AxisFlags.NONE") = ImPlotAxisFlags_None,
     "y_flags"_a.sig("AxisFlags.NONE") = ImPlotAxisFlags_None);
 m.def(

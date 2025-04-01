@@ -91,6 +91,7 @@ def show_demo_window(show_window: bool):
         if implot.begin_plot("##groups"):
             labels = ['A', 'B', 'C']
             vals = np.random.RandomState(15).rand(3, 4)
+            implot.setup_axes(None, None, implot.AxisFlags.NO_DECORATIONS, implot.AxisFlags.NO_DECORATIONS)
             implot.plot_bar_groups(labels, vals)
             # xs = np.arange(4)
             # ys = np.random.RandomState(16).rand(4)
