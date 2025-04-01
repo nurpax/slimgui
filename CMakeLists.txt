@@ -36,5 +36,6 @@ include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/src/c/implot)
 
 install(TARGETS slimgui_ext LIBRARY DESTINATION slimgui)
-install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/imgui/__init__.pyi" DESTINATION slimgui/imgui)
-install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/implot/__init__.pyi" DESTINATION slimgui/implot)
+install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/__init__.pyi" DESTINATION slimgui/slimgui_ext)
+install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/imgui/__init__.pyi" DESTINATION slimgui/slimgui_ext/imgui)
+install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/implot/__init__.pyi" DESTINATION slimgui/slimgui_ext/implot)
