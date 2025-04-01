@@ -32,6 +32,8 @@ nanobind_add_module(slimgui_ext
   src/c/implot/implot_demo.cpp
 )
 
+# Disable leak checks if requested (usually by cibuildwheel in CI)
+if (NOT DEFINED ENV{SLIMGUI_CI_BUILD})
 nanobind_add_stub(
   slimgui_ext_stub_imgui
   MODULE slimgui_ext.imgui
@@ -47,6 +49,7 @@ nanobind_add_stub(
   PYTHON_PATH $<TARGET_FILE_DIR:slimgui_ext>
   DEPENDS slimgui_ext
 )
+endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/src/c/implot)
