@@ -11,7 +11,7 @@ set -e
 python gen/gen_nb_enums.py --cimgui-defs-dir gen/cimgui > src/imgui_enums.inl
 python gen/gen_nb_enums.py --cimgui-defs-dir gen/cimplot > src/implot_enums.inl
 python gen/gen_nb_funcs.py --cimgui-defs-dir gen/cimplot > src/implot_funcs.inl
-pip install --no-build-isolation -ve .
+pip install --no-build-isolation -v .
 
 # Get the value of tool.slimgui.imgui_version from pyproject.toml and
 # check that slimgui.imgui.get_version() returns the same value.  It's to ensure
