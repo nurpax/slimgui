@@ -98,5 +98,34 @@ def show_demo_window(show_window: bool):
             # implot.plot_bars("rand", ys)
             implot.end_plot()
 
+    if imgui.collapsing_header('Error Bars')[0]:
+        _error_bars()
+
     imgui.end()
     return show_window
+
+def _error_bars():
+    xs = np.array([1, 2, 3, 4, 5], dtype=np.float32)
+    bar = np.array([1, 2, 5, 3, 4], dtype=np.float32)
+    lin1 = np.array([8, 8, 9, 7, 8], dtype=np.float32)
+    lin2 = np.array([6, 7, 6, 9, 6], dtype=np.float32)
+    err1 = np.array([0.2, 0.4, 0.2, 0.6, 0.4], dtype=np.float32)
+    err2 = np.array([0.4, 0.2, 0.4, 0.8, 0.6], dtype=np.float32)
+    err3 = np.array([0.09, 0.14, 0.09, 0.12, 0.16], dtype=np.float32)
+    err4 = np.array([0.02, 0.08, 0.15, 0.05, 0.2], dtype=np.float32)
+
+    if implot.begin_plot('##ErrorBars'):
+        implot.setup_axes_limits(0, 6, 0, 10)
+        implot.plot_bars("Bar", xs, bar, 0.5)
+        implot.plot_error_bars("Bar", xs, bar, err1)
+        implot.set_next_error_bar_style(implot.get_colormap_color(1), 0)
+
+        implot.plot_error_bars("Line", xs, lin1, err1, err2)
+        implot.set_next_marker_style(implot.Marker.SQUARE)
+        implot.plot_line("Line", xs, lin1)
+        implot.push_style_color(implot.Col.ERROR_BAR, implot.get_colormap_color(2))
+        implot.plot_error_bars("Scatter", xs, lin2, err2)
+        implot.plot_error_bars("Scatter", xs, lin2, err3, err4, implot.ErrorBarsFlags.HORIZONTAL)
+        implot.pop_style_color()
+        implot.plot_scatter("Scatter", xs, lin2)
+        implot.end_plot()

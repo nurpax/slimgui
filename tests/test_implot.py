@@ -59,3 +59,7 @@ def test_setup_axis_ticks(frame_scope):
         implot.end_plot()
     else:
         assert False, "assert that begin_plot actually ran"
+
+def test_random_getter_setters(frame_scope):
+    implot.set_next_marker_style(-1) # both variants should work for this function
+    implot.set_next_marker_style(implot.Marker.CIRCLE)

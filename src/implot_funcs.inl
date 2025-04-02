@@ -109,10 +109,103 @@ m.def(
     },
     "label_id"_a, "flags"_a.sig("DummyFlag.NONE") = ImPlotDummyFlags_None);
 m.def(
+    "set_next_line_style",
+    [](ImVec4 col, float weight) { ImPlot::SetNextLineStyle(col, weight); },
+    "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1), "weight"_a.sig("AUTO") = -1);
+m.def(
+    "set_next_fill_style",
+    [](ImVec4 col, float alpha_mod) {
+      ImPlot::SetNextFillStyle(col, alpha_mod);
+    },
+    "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1),
+    "alpha_mod"_a.sig("AUTO") = -1);
+m.def(
+    "set_next_marker_style",
+    [](std::variant<ImPlotMarker_, int> marker, float size, ImVec4 fill,
+       float weight, ImVec4 outline) {
+      ImPlot::SetNextMarkerStyle(variant_to_int(marker), size, fill, weight,
+                                 outline);
+    },
+    "marker"_a.sig("IMPLOT_AUTO") =
+        std::variant<ImPlotMarker_, int>(IMPLOT_AUTO),
+    "size"_a.sig("AUTO") = -1, "fill"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1),
+    "weight"_a.sig("AUTO") = -1,
+    "outline"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1));
+m.def(
+    "set_next_error_bar_style",
+    [](ImVec4 col, float size, float weight) {
+      ImPlot::SetNextErrorBarStyle(col, size, weight);
+    },
+    "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1), "size"_a.sig("AUTO") = -1,
+    "weight"_a.sig("AUTO") = -1);
+m.def(
+    "push_style_color",
+    [](ImPlotCol_ idx, ImU32 col) { ImPlot::PushStyleColor(idx, col); },
+    "idx"_a, "col"_a);
+m.def(
+    "push_style_color",
+    [](ImPlotCol_ idx, ImVec4 col) { ImPlot::PushStyleColor(idx, col); },
+    "idx"_a, "col"_a);
+m.def(
+    "pop_style_color", [](int count) { ImPlot::PopStyleColor(count); },
+    "count"_a.sig("1") = 1);
+m.def(
+    "push_style_var",
+    [](ImPlotStyleVar_ idx, float val) { ImPlot::PushStyleVar(idx, val); },
+    "idx"_a, "val"_a);
+m.def(
+    "push_style_var",
+    [](ImPlotStyleVar_ idx, int val) { ImPlot::PushStyleVar(idx, val); },
+    "idx"_a, "val"_a);
+m.def(
+    "push_style_var",
+    [](ImPlotStyleVar_ idx, ImVec2 val) { ImPlot::PushStyleVar(idx, val); },
+    "idx"_a, "val"_a);
+m.def(
+    "pop_style_var", [](int count) { ImPlot::PopStyleVar(count); },
+    "count"_a.sig("1") = 1);
+m.def(
+    "push_colormap", [](ImPlotColormap_ cmap) { ImPlot::PushColormap(cmap); },
+    "cmap"_a);
+m.def(
+    "push_colormap", [](const char *name) { ImPlot::PushColormap(name); },
+    "name"_a);
+m.def(
+    "pop_colormap", [](int count) { ImPlot::PopColormap(count); },
+    "count"_a.sig("1") = 1);
+m.def(
     "get_colormap_size",
     [](std::variant<ImPlotColormap_, int> cmap) {
-      return ImPlot::GetColormapSize(std::get<int>(cmap));
+      return ImPlot::GetColormapSize(variant_to_int(cmap));
     },
     "cmap"_a.sig("IMPLOT_AUTO") =
         std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+m.def(
+    "colormap_scale",
+    [](const char *label, double scale_min, double scale_max, ImVec2 size,
+       const char *format, ImPlotColormapScaleFlags_ flags,
+       std::variant<ImPlotColormap_, int> cmap) {
+      ImPlot::ColormapScale(label, scale_min, scale_max, size, format, flags,
+                            variant_to_int(cmap));
+    },
+    "label"_a, "scale_min"_a, "scale_max"_a,
+    "size"_a.sig("(0,0)") = ImVec2(0, 0), "format"_a.sig("%g") = "%g",
+    "flags"_a.sig("ColormapScaleFlags.NONE") = ImPlotColormapScaleFlags_None,
+    "cmap"_a.sig("IMPLOT_AUTO") =
+        std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+m.def(
+    "colormap_button",
+    [](const char *label, ImVec2 size,
+       std::variant<ImPlotColormap_, int> cmap) {
+      return ImPlot::ColormapButton(label, size, variant_to_int(cmap));
+    },
+    "label"_a, "size"_a.sig("(0,0)") = ImVec2(0, 0),
+    "cmap"_a.sig("IMPLOT_AUTO") =
+        std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+m.def(
+    "bust_color_cache",
+    [](std::optional<const char *> plot_title_id) {
+      ImPlot::BustColorCache(plot_title_id ? plot_title_id.value() : nullptr);
+    },
+    "plot_title_id"_a.sig("None") = nb::none());
 

@@ -21,10 +21,19 @@ using namespace nb::literals;
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
 typedef nb::ndarray<const double, nb::ndim<2>, nb::device::cpu, nb::c_contig> ndarray_2d;
 
+template <typename Enum, typename Int = int>
+int variant_to_int(const std::variant<Enum, Int>& var) {
+    if (auto p = std::get_if<Enum>(&var)) {
+        return static_cast<int>(*p);
+    }
+    return std::get<Int>(var);
+}
+
 void implot_bindings(nb::module_& m) {
     #include "implot_enums.inl"
 
-    m.attr("IMPLOT_AUTO") = -1;
+    m.attr("AUTO") = -1;
+    m.attr("AUTO_COL") = ImVec4(0, 0, 0, -1);
 
     nb::class_<ImPlotContext>(m, "Context");
     m.def("create_context_internal", &ImPlot::CreateContext, nb::rv_policy::reference);
@@ -109,11 +118,34 @@ void implot_bindings(nb::module_& m) {
         int item_count = values.shape(0);
         int group_count = values.shape(1);
         if (label_ids.size() != item_count) {
-            throw std::length_error("`label_ids` must be same the length as `values.shape(0)`.");
+            throw std::length_error("`label_ids` must be same the length as `values.shape(0)`");
         }
         ImPlot::PlotBarGroups(label_ids.data(), (const double*)values.data(), item_count, group_count, group_size, shift, flags);
     }, "label_ids"_a, "values"_a, "group_size"_a = 0.67, "shift"_a = 0.0, "flags"_a.sig("BarGroupsFlags.NONE") = ImPlotBarGroupsFlags_None);
 
+    // Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
+    m.def("plot_error_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ndarray_1d& err, ImPlotErrorBarsFlags_ flags) {
+        int count = xs.shape(0);
+        if (count != ys.shape(0) || count != err.shape(0)) {
+            throw std::length_error("`xs`, `ys` and `err` must all be same length");
+        }
+        ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)err.data(), count, flags);
+    }, "label_id"_a, "xs"_a, "ys"_a, "err"_a, "flags"_a.sig("ErrorBarsFlags.NONE") = ImPlotErrorBarsFlags_None);
+    m.def("plot_error_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ndarray_1d& neg, ndarray_1d& pos, ImPlotErrorBarsFlags_ flags) {
+        int count = xs.shape(0);
+        if (count != ys.shape(0) || count != neg.shape(0) || count != pos.shape(0)) {
+            throw std::length_error("`xs`, `ys`, `neg`, and `pos` must all be same length");
+        }
+        ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)neg.data(), (const double*)pos.data(), count, flags);
+    }, "label_id"_a, "xs"_a, "ys"_a, "neg"_a, "pos"_a, "flags"_a.sig("ErrorBarsFlags.NONE") = ImPlotErrorBarsFlags_None);
+
+    m.def("next_colormap_color", &ImPlot::NextColormapColor);
+    m.def("get_colormap_color", [](int idx, std::variant<ImPlotColormap_, int> cmap) {
+        return ImPlot::GetColormapColor(idx, variant_to_int(cmap));
+    }, "idx"_a, "cmap"_a.sig("AUTO") = -1);
+    m.def("sample_colormap", [](float t, std::variant<ImPlotColormap_, int> cmap) {
+        return ImPlot::SampleColormap(t, variant_to_int(cmap));
+    }, "t"_a, "cmap"_a.sig("AUTO") = -1);
 
 #include "implot_funcs.inl"
 }

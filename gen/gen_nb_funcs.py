@@ -56,8 +56,35 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_PlotText', 'plot_text'),
     ImplotFunc('ImPlot_PlotDummy', 'plot_dummy'),
 
+    # Styles
+    ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style'),
+    ImplotFunc('ImPlot_SetNextFillStyle', 'set_next_fill_style'),
+    ImplotFunc('ImPlot_SetNextMarkerStyle', 'set_next_marker_style'),
+    ImplotFunc('ImPlot_SetNextErrorBarStyle', 'set_next_error_bar_style'),
+
+    ImplotFunc('ImPlot_PushStyleColor_U32', 'push_style_color'),
+    ImplotFunc('ImPlot_PushStyleColor_Vec4', 'push_style_color'),
+    ImplotFunc('ImPlot_PopStyleColor', 'pop_style_color'),
+
+    ImplotFunc('ImPlot_PushStyleVar_Float', 'push_style_var'),
+    ImplotFunc('ImPlot_PushStyleVar_Int', 'push_style_var'),
+    ImplotFunc('ImPlot_PushStyleVar_Vec2', 'push_style_var'),
+    ImplotFunc('ImPlot_PopStyleVar', 'pop_style_var'),
+
     # PROTO SECTION
+    ImplotFunc('ImPlot_PushColormap_PlotColormap', 'push_colormap'),
+    ImplotFunc('ImPlot_PushColormap_Str', 'push_colormap'),
+    ImplotFunc('ImPlot_PopColormap', 'pop_colormap'),
+
+    #ImplotFunc('ImPlot_NextColormapColor', 'next_colormap_color'), <-- done manually, TODO move here from manual side
     ImplotFunc('ImPlot_GetColormapSize', 'get_colormap_size'),
+    #ImplotFunc('ImPlot_GetColormapColor', 'get_colormap_color'),   <-- done manually, TODO move here from manual side
+    #ImplotFunc('ImPlot_SampleColormap', 'sample_colormap'),        <-- done manually, TODO move here from manual side
+    ImplotFunc('ImPlot_ColormapScale', 'colormap_scale'),
+
+    # ImplotFunc('ImPlot_ColormapSlider', 'colormap_slider'), <-- TODO do manually, needs to return tuple[bool, tuple[float, float..]
+    ImplotFunc('ImPlot_ColormapButton', 'colormap_button'),
+    ImplotFunc('ImPlot_BustColorCache', 'bust_color_cache'),
 ]
 
 @dataclass
@@ -73,7 +100,7 @@ class FuncArg:
         if self.cpp_type == 'std::optional<const char*>':
             return f'{self.name} ? {self.name}.value() : nullptr'
         if 'std::variant<' in self.cpp_type:
-            return f'std::get<int>({self.name})'
+            return f'variant_to_int({self.name})' # Note: variant_to_int defined in the file that includes the funcs inl file
         return self.name
 
 class GenContext:
@@ -122,14 +149,15 @@ class GenContext:
                     case 'const char*':
                         args = { 'name': arg_name, 'cpp_type': 'const char*', 'py_type': 'str', 'flags': arg_flags }
                         if default is not None:
-                            assert default == 'nullptr'
-                            args['cpp_type'] = 'std::optional<const char*>'
-                            args['py_type'] = 'str | None'
-                            args['cpp_default'] = 'nb::none()'
-                            args['py_default'] = 'None'
+                            if default == 'nullptr':
+                                args['cpp_type'] = 'std::optional<const char*>'
+                                args['py_type'] = 'str | None'
+                                args['cpp_default'] = 'nb::none()'
+                                args['py_default'] = 'None'
+                            else:
+                                args['cpp_default'] = default
+                                args['py_default'] = default.lstrip('"').rstrip('"')
                         else:
-                            args['cpp_type'] = 'const char*'
-                            args['py_type'] = 'str'
                             if arg_flags & ArgFlags.OPTIONAL:
                                 args['cpp_type'] = 'std::optional<const char*>'
                                 args['py_type'] = 'str | None'
@@ -144,6 +172,23 @@ class GenContext:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec2', py_type='tuple[float, float]', cpp_default=default, py_default=default.replace('ImVec2', '')))
                         else:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec2', py_type='tuple[float, float]'))
+                    case 'const ImVec4':
+                        if default is not None:
+                            py_default = default.replace('ImVec4', '')
+                            if py_default == '(0,0,0,-1)':
+                                py_default = 'AUTO_COL'
+                            out_args.append(FuncArg(arg_name, cpp_type='ImVec4', py_type='tuple[float, float, float, float]', cpp_default=default, py_default=py_default))
+                        else:
+                            out_args.append(FuncArg(arg_name, cpp_type='ImVec4', py_type='tuple[float, float, float, float]'))
+                    case 'float':
+                        args = { 'name': arg_name, 'cpp_type': 'float', 'py_type': 'float' }
+                        if default is not None:
+                            args['cpp_default'] = default
+                            py_default = default.replace('.f', '')
+                            if py_default == '-1':
+                                py_default = 'AUTO'
+                            args['py_default'] = py_default
+                        out_args.append(FuncArg(**args))
                     case 'double':
                         args = { 'name': arg_name, 'cpp_type': 'double', 'py_type': 'float' }
                         if default is not None:
@@ -152,6 +197,11 @@ class GenContext:
                         out_args.append(FuncArg(**args))
                     case 'int':
                         args = { 'name': arg_name, 'cpp_type': 'int', 'py_type': 'int' }
+                        args['cpp_default'] = default
+                        args['py_default'] = default
+                        out_args.append(FuncArg(**args))
+                    case 'ImU32':
+                        args = { 'name': arg_name, 'cpp_type': 'ImU32', 'py_type': 'int' }
                         args['cpp_default'] = default
                         args['py_default'] = default
                         out_args.append(FuncArg(**args))
@@ -171,8 +221,8 @@ class GenContext:
                                 cpp_default = f'{enum_cpp_type}None'
                             elif default in ['-1', 'IMPLOT_AUTO']:
                                 py_default = 'IMPLOT_AUTO'
-                                cpp_default = 'std::variant<ImPlotColormap_, int>(IMPLOT_AUTO)'
-                                enum_cpp_type = 'std::variant<ImPlotColormap_, int>'
+                                cpp_default = f'std::variant<{enum_cpp_type}, int>(IMPLOT_AUTO)'
+                                enum_cpp_type = f'std::variant<{enum_cpp_type}, int>'
                             elif default.startswith(enum_cpp_type):
                                 py_default = gen_utils.translate_enum_name(default)
                                 cpp_default = default
@@ -180,7 +230,7 @@ class GenContext:
                                 assert False, 'unknown default'
                         out_args.append(FuncArg(arg_name, cpp_type=enum_cpp_type, py_type=enum_py_type, cpp_default=cpp_default, py_default=py_default))
                     case _:
-                        print(a['type'])
+                        print(f"{f.cim_ov_name}: {a['type']}")
                         assert False
 
             # Start a nanobind def
