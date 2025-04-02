@@ -1,5 +1,5 @@
-from ..slimgui_ext import implot as implot_ext
-from ..slimgui_ext.implot import *
+from ..slimgui_ext import implot_ext
+from ..slimgui_ext.implot_ext import *
 
 class WrappedContext:
     def __init__(self, ctx: implot_ext.Context):

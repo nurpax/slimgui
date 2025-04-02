@@ -94,7 +94,7 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
 }
 
 NB_MODULE(slimgui_ext, top) {
-    nb::module_ m = top.def_submodule("imgui", "Dear ImGui bindings");
+    nb::module_ m = top.def_submodule("imgui_ext", "Dear ImGui bindings");
 
     m.attr("IMGUI_VERSION") = IMGUI_VERSION;
     m.attr("IMGUI_VERSION_NUM") = IMGUI_VERSION_NUM;
@@ -1206,6 +1206,6 @@ NB_MODULE(slimgui_ext, top) {
     m.def("set_nanobind_leak_warnings", &nb::set_leak_warnings, "enable"_a);
 
     // Implot
-    nb::module_ implot = top.def_submodule("implot", "ImPlot bindings");
+    nb::module_ implot = top.def_submodule("implot_ext", "ImPlot bindings");
     implot_bindings(implot);
 }
