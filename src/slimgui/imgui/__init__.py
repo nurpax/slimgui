@@ -1,8 +1,8 @@
 
 from typing import cast, Any
+from ..slimgui_ext import imgui as imgui_ext
 
-from ..slimgui_ext import imgui_ext
-from ..slimgui_ext.imgui_ext import *
+from ..slimgui_ext.imgui import *
 
 class WrappedContext:
     def __init__(self, ctx: imgui_ext.Context):
