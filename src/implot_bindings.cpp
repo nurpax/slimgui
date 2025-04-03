@@ -139,13 +139,5 @@ void implot_bindings(nb::module_& m) {
         ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)neg.data(), (const double*)pos.data(), count, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "neg"_a, "pos"_a, "flags"_a.sig("ErrorBarsFlags.NONE") = ImPlotErrorBarsFlags_None);
 
-    m.def("next_colormap_color", &ImPlot::NextColormapColor);
-    m.def("get_colormap_color", [](int idx, std::variant<ImPlotColormap_, int> cmap) {
-        return ImPlot::GetColormapColor(idx, variant_to_int(cmap));
-    }, "idx"_a, "cmap"_a.sig("AUTO") = -1);
-    m.def("sample_colormap", [](float t, std::variant<ImPlotColormap_, int> cmap) {
-        return ImPlot::SampleColormap(t, variant_to_int(cmap));
-    }, "t"_a, "cmap"_a.sig("AUTO") = -1);
-
 #include "implot_funcs.inl"
 }

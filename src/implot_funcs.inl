@@ -131,8 +131,7 @@ m.def(
       ImPlot::SetNextMarkerStyle(variant_to_int(marker), size, fill, weight,
                                  outline);
     },
-    "marker"_a.sig("IMPLOT_AUTO") =
-        std::variant<ImPlotMarker_, int>(IMPLOT_AUTO),
+    "marker"_a.sig("AUTO") = std::variant<ImPlotMarker_, int>(IMPLOT_AUTO),
     "size"_a.sig("AUTO") = -1, "fill"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1),
     "weight"_a.sig("AUTO") = -1,
     "outline"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1));
@@ -178,13 +177,27 @@ m.def(
 m.def(
     "pop_colormap", [](int count) { ImPlot::PopColormap(count); },
     "count"_a.sig("1") = 1);
+m.def("next_colormap_color", []() { return ImPlot::NextColormapColor(); });
 m.def(
     "get_colormap_size",
     [](std::variant<ImPlotColormap_, int> cmap) {
       return ImPlot::GetColormapSize(variant_to_int(cmap));
     },
-    "cmap"_a.sig("IMPLOT_AUTO") =
-        std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+    "cmap"_a.sig("AUTO") = std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+m.def(
+    "get_colormap_color",
+    [](int idx, std::variant<ImPlotColormap_, int> cmap) {
+      return ImPlot::GetColormapColor(idx, variant_to_int(cmap));
+    },
+    "idx"_a,
+    "cmap"_a.sig("AUTO") = std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+m.def(
+    "sample_colormap",
+    [](float t, std::variant<ImPlotColormap_, int> cmap) {
+      return ImPlot::SampleColormap(t, variant_to_int(cmap));
+    },
+    "t"_a,
+    "cmap"_a.sig("AUTO") = std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
 m.def(
     "colormap_scale",
     [](const char *label, double scale_min, double scale_max, ImVec2 size,
@@ -196,8 +209,7 @@ m.def(
     "label"_a, "scale_min"_a, "scale_max"_a,
     "size"_a.sig("(0,0)") = ImVec2(0, 0), "format"_a.sig("%g") = "%g",
     "flags"_a.sig("ColormapScaleFlags.NONE") = ImPlotColormapScaleFlags_None,
-    "cmap"_a.sig("IMPLOT_AUTO") =
-        std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+    "cmap"_a.sig("AUTO") = std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
 m.def(
     "colormap_button",
     [](const char *label, ImVec2 size,
@@ -205,8 +217,7 @@ m.def(
       return ImPlot::ColormapButton(label, size, variant_to_int(cmap));
     },
     "label"_a, "size"_a.sig("(0,0)") = ImVec2(0, 0),
-    "cmap"_a.sig("IMPLOT_AUTO") =
-        std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
+    "cmap"_a.sig("AUTO") = std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
 m.def(
     "bust_color_cache",
     [](std::optional<const char *> plot_title_id) {

@@ -80,10 +80,10 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_PushColormap_Str', 'push_colormap'),
     ImplotFunc('ImPlot_PopColormap', 'pop_colormap'),
 
-    #ImplotFunc('ImPlot_NextColormapColor', 'next_colormap_color'), <-- done manually, TODO move here from manual side
+    ImplotFunc('ImPlot_NextColormapColor', 'next_colormap_color'),
     ImplotFunc('ImPlot_GetColormapSize', 'get_colormap_size'),
-    #ImplotFunc('ImPlot_GetColormapColor', 'get_colormap_color'),   <-- done manually, TODO move here from manual side
-    #ImplotFunc('ImPlot_SampleColormap', 'sample_colormap'),        <-- done manually, TODO move here from manual side
+    ImplotFunc('ImPlot_GetColormapColor', 'get_colormap_color'),
+    ImplotFunc('ImPlot_SampleColormap', 'sample_colormap'),
     ImplotFunc('ImPlot_ColormapScale', 'colormap_scale'),
 
     # ImplotFunc('ImPlot_ColormapSlider', 'colormap_slider'), <-- TODO do manually, needs to return tuple[bool, tuple[float, float..]
@@ -135,6 +135,12 @@ class GenContext:
             for d in doc.values():
                 for ov in d:
                     defs[ov['ov_cimguiname']] = ov
+                    # Revert cimplot "return value to pOut" transform back to original struct return type.
+                    fn_def = ov
+                    args = fn_def["argsT"]
+                    if len(args) > 0 and args[0]['name'] == 'pOut' and args[0]['type'].endswith('*'):
+                        fn_def['ret'] = args[0]['type']
+                        fn_def['argsT'] = args[1:]
 
         known_enums = dict(gen_utils.enum_list_implot)
 
@@ -224,7 +230,7 @@ class GenContext:
                                 py_default = f'{enum_py_type}.NONE'
                                 cpp_default = f'{enum_cpp_type}None'
                             elif default in ['-1', 'IMPLOT_AUTO']:
-                                py_default = 'IMPLOT_AUTO'
+                                py_default = 'AUTO'
                                 cpp_default = f'std::variant<{enum_cpp_type}, int>(IMPLOT_AUTO)'
                                 enum_cpp_type = f'std::variant<{enum_cpp_type}, int>'
                             elif default.startswith(enum_cpp_type):
