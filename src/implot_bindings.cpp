@@ -14,6 +14,7 @@
 #include "implot.h"
 #include "implot_internal.h"
 #include "type_casts.h"
+#include "type_casts_implot.h"
 
 namespace nb = nanobind;
 using namespace nb::literals;

@@ -59,6 +59,15 @@ _implot_func_list: list[ImplotFunc] = [
     # Utils
     ImplotFunc('ImPlot_SetAxis', 'set_axis'),
     ImplotFunc('ImPlot_SetAxes', 'set_axes'),
+    ImplotFunc('ImPlot_PixelsToPlot_Vec2', 'pixels_to_plot'),
+    ImplotFunc('ImPlot_PixelsToPlot_Float', 'pixels_to_plot'),
+    ImplotFunc('ImPlot_PlotToPixels_PlotPoInt', 'plot_to_pixels'),
+    ImplotFunc('ImPlot_PlotToPixels_double', 'plot_to_pixels'),
+# 
+# IMPLOT_API ImPlotPoint PixelsToPlot(const ImVec2& pix, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
+# IMPLOT_API ImPlotPoint PixelsToPlot(float x, float y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
+# IMPLOT_API ImVec2 PlotToPixels(const ImPlotPoint& plt, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
+# IMPLOT_API ImVec2 PlotToPixels(double x, double y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
 
     # Styles
     ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style'),
@@ -182,6 +191,11 @@ class GenContext:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec2', py_type='tuple[float, float]', cpp_default=default, py_default=default.replace('ImVec2', '')))
                         else:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec2', py_type='tuple[float, float]'))
+                    case 'const ImPlotPoint':
+                        if default is not None:
+                            out_args.append(FuncArg(arg_name, cpp_type='ImPlotPoint', py_type='tuple[float, float]', cpp_default=default, py_default=default.replace('ImPlotPoint', '')))
+                        else:
+                            out_args.append(FuncArg(arg_name, cpp_type='ImPlotPoint', py_type='tuple[float, float]'))
                     case 'const ImVec4':
                         if default is not None:
                             py_default = default.replace('ImVec4', '')

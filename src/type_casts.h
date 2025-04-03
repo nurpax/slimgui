@@ -13,13 +13,11 @@ template <> struct nanobind::detail::type_caster<ImVec2> {
     template <typename T> using Cast = Value;
 
     // Value name for docstring generation
-    static constexpr auto Name =
-        const_name(NB_TYPING_TUPLE "[") + concat(Caster::Name, Caster::Name) + const_name("]");
+    static constexpr auto Name = const_name(NB_TYPING_TUPLE "[") + concat(Caster::Name, Caster::Name) + const_name("]");
 
     template <typename T_> static constexpr bool can_cast() { return true; }
 
-    bool from_python(handle src, uint8_t flags,
-                     cleanup_list *cleanup) noexcept {
+    bool from_python(handle src, uint8_t flags, cleanup_list *cleanup) noexcept {
         PyObject *temp; // always initialized by the following line
         PyObject **o = seq_get_with_size(src.ptr(), 2, &temp);
         bool success = o &&
@@ -37,8 +35,7 @@ template <> struct nanobind::detail::type_caster<ImVec2> {
     }
 
     template <typename T>
-    static handle from_cpp(T &&value, rv_policy policy,
-                           cleanup_list *cleanup) noexcept {
+    static handle from_cpp(T &&value, rv_policy policy, cleanup_list *cleanup) noexcept {
         object o1 = steal(Caster::from_cpp(forward_like_<T>(value.x), policy, cleanup));
         if (!o1.is_valid())
             return {};

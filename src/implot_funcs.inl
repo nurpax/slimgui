@@ -114,6 +114,44 @@ m.def(
     [](ImAxis_ x_axis, ImAxis_ y_axis) { ImPlot::SetAxes(x_axis, y_axis); },
     "x_axis"_a, "y_axis"_a);
 m.def(
+    "pixels_to_plot",
+    [](ImVec2 pix, std::variant<ImAxis_, int> x_axis,
+       std::variant<ImAxis_, int> y_axis) {
+      return ImPlot::PixelsToPlot(pix, variant_to_int(x_axis),
+                                  variant_to_int(y_axis));
+    },
+    "pix"_a, "x_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO),
+    "y_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO));
+m.def(
+    "pixels_to_plot",
+    [](float x, float y, std::variant<ImAxis_, int> x_axis,
+       std::variant<ImAxis_, int> y_axis) {
+      return ImPlot::PixelsToPlot(x, y, variant_to_int(x_axis),
+                                  variant_to_int(y_axis));
+    },
+    "x"_a, "y"_a,
+    "x_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO),
+    "y_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO));
+m.def(
+    "plot_to_pixels",
+    [](ImPlotPoint plt, std::variant<ImAxis_, int> x_axis,
+       std::variant<ImAxis_, int> y_axis) {
+      return ImPlot::PlotToPixels(plt, variant_to_int(x_axis),
+                                  variant_to_int(y_axis));
+    },
+    "plt"_a, "x_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO),
+    "y_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO));
+m.def(
+    "plot_to_pixels",
+    [](double x, double y, std::variant<ImAxis_, int> x_axis,
+       std::variant<ImAxis_, int> y_axis) {
+      return ImPlot::PlotToPixels(x, y, variant_to_int(x_axis),
+                                  variant_to_int(y_axis));
+    },
+    "x"_a, "y"_a,
+    "x_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO),
+    "y_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO));
+m.def(
     "set_next_line_style",
     [](ImVec4 col, float weight) { ImPlot::SetNextLineStyle(col, weight); },
     "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1), "weight"_a.sig("AUTO") = -1);
