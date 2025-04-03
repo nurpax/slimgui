@@ -56,6 +56,10 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_PlotText', 'plot_text'),
     ImplotFunc('ImPlot_PlotDummy', 'plot_dummy'),
 
+    # Utils
+    ImplotFunc('ImPlot_SetAxis', 'set_axis'),
+    ImplotFunc('ImPlot_SetAxes', 'set_axes'),
+
     # Styles
     ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style'),
     ImplotFunc('ImPlot_SetNextFillStyle', 'set_next_fill_style'),

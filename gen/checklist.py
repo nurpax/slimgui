@@ -10,7 +10,7 @@ import click
 
 from gen_utils import camel_to_snake
 
-_ignored_toplevel_funcs = {
+_ignored_toplevel_funcs_imgui = {
     "get_allocator_functions",  # not relevant for Python
     "set_allocator_functions",  # not relevant for Python
     "mem_alloc",                # not relevant for Python
@@ -34,15 +34,19 @@ _ignored_toplevel_funcs = {
     "get_foreground_draw_list", # wrapped in python, using internal funcs
 }
 
+_ignored_toplevel_funcs_implot: set[str] = {
+    "annotation_v",         # varargs not relevant in Python
+    "set_im_gui_context",   # not relevant for Python bindings
+}
 
 class Context:
-    def __init__(self, defs: dict[str, Any]):
-        self.slimgui = importlib.import_module("slimgui")
-        self.slimgui_ext = importlib.import_module("slimgui.slimgui_ext")
+    def __init__(self, module: str, ignored_toplevel_funcs: set[str]):
+        self.slimgui_ext = importlib.import_module(module)
+        self.ignored_toplevel_funcs = ignored_toplevel_funcs
 
-    def check_toplevel_func(self, sym: str, obj: dict[Any, Any]):
-        assert obj["namespace"] == "ImGui"
-        assert obj["location"].startswith("imgui:")
+    def check_toplevel_func(self, obj: dict[Any, Any]):
+        assert obj["namespace"] in {"ImGui", "ImPlot"}
+        assert any(obj["location"].startswith(prefix) for prefix in ["imgui:", "implot:"])
         members = inspect.getmembers(self.slimgui_ext)
         py_name = camel_to_snake(obj["funcname"])
 
@@ -52,7 +56,7 @@ class Context:
                 warnings.warn("implement overload sanity check to check for arg names")
                 return
 
-        if py_name in _ignored_toplevel_funcs:
+        if py_name in self.ignored_toplevel_funcs:
             return
 
         print(f"missing: {py_name}")
@@ -64,7 +68,14 @@ def main(cimgui_defs_dir):
     """Progress check tool for comparing cimgui symbols with Python symbols seen through import."""
     with open(os.path.join(cimgui_defs_dir, "definitions.json"), "rt", encoding="utf-8") as f:
         defs = json.load(f)
-        ctx = Context(defs)
+        if 'cimgui' in cimgui_defs_dir:
+            module = "slimgui.slimgui_ext.imgui"
+            ignored = _ignored_toplevel_funcs_imgui
+        else:
+            assert 'cimplot' in cimgui_defs_dir
+            module = "slimgui.slimgui_ext.implot"
+            ignored = _ignored_toplevel_funcs_implot
+        ctx = Context(module, ignored)
 
     for sym, obj in defs.items():
         obj = obj[0]  # TODO overloads?
@@ -72,13 +83,14 @@ def main(cimgui_defs_dir):
         if "location" not in obj:
             # cimgui only _destroy functions
             continue
-        if not obj.get("location", "").startswith("imgui:"):
-            # not a public function in the imgui.h header
+        location = obj.get("location", "")
+        if not location.startswith("imgui:") and not location.startswith("implot:"):
+            # not a public function in the imgui.h/implot.h header
             continue
 
-        if obj.get("namespace") == "ImGui":
+        if obj.get("namespace") in {"ImGui", "ImPlot"}:
             # handle ImGui namespace'd symbols
-            ctx.check_toplevel_func(sym, obj)
+            ctx.check_toplevel_func(obj)
         else:
             # print("unhandled class:", sym)
             # TODO handle class methods

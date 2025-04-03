@@ -108,6 +108,11 @@ m.def(
       ImPlot::PlotDummy(label_id, flags);
     },
     "label_id"_a, "flags"_a.sig("DummyFlag.NONE") = ImPlotDummyFlags_None);
+m.def("set_axis", [](ImAxis_ axis) { ImPlot::SetAxis(axis); }, "axis"_a);
+m.def(
+    "set_axes",
+    [](ImAxis_ x_axis, ImAxis_ y_axis) { ImPlot::SetAxes(x_axis, y_axis); },
+    "x_axis"_a, "y_axis"_a);
 m.def(
     "set_next_line_style",
     [](ImVec4 col, float weight) { ImPlot::SetNextLineStyle(col, weight); },
