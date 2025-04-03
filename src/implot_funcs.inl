@@ -331,4 +331,21 @@ m.def(
       ImPlot::BustColorCache(plot_title_id ? plot_title_id.value() : nullptr);
     },
     "plot_title_id"_a.sig("None") = nb::none());
+m.def(
+    "push_plot_clip_rect",
+    [](float expand) { ImPlot::PushPlotClipRect(expand); },
+    "expand"_a.sig("0") = 0);
+m.def("pop_plot_clip_rect", []() { ImPlot::PopPlotClipRect(); });
+m.def(
+    "show_style_selector",
+    [](const char *label) { return ImPlot::ShowStyleSelector(label); },
+    "label"_a);
+m.def(
+    "show_colormap_selector",
+    [](const char *label) { return ImPlot::ShowColormapSelector(label); },
+    "label"_a);
+m.def(
+    "show_input_map_selector",
+    [](const char *label) { return ImPlot::ShowInputMapSelector(label); },
+    "label"_a);
 

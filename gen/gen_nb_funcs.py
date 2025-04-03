@@ -121,6 +121,15 @@ _implot_func_list: list[ImplotFunc] = [
     # ImplotFunc('ImPlot_ColormapSlider', 'colormap_slider'), <-- TODO do manually, needs to return tuple[bool, tuple[float, float..]
     ImplotFunc('ImPlot_ColormapButton', 'colormap_button'),
     ImplotFunc('ImPlot_BustColorCache', 'bust_color_cache'),
+
+    # [SECTION] Miscellaneous
+    # IMPLOT_API ImDrawList* GetPlotDrawList(); <-- implemented manually due to references
+    ImplotFunc('ImPlot_PushPlotClipRect', 'push_plot_clip_rect'),
+    ImplotFunc('ImPlot_PopPlotClipRect', 'pop_plot_clip_rect'),
+
+    ImplotFunc('ImPlot_ShowStyleSelector', 'show_style_selector'),
+    ImplotFunc('ImPlot_ShowColormapSelector', 'show_colormap_selector'),
+    ImplotFunc('ImPlot_ShowInputMapSelector', 'show_input_map_selector'),
 ]
 
 @dataclass

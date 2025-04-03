@@ -101,6 +101,23 @@ def show_demo_window(show_window: bool):
     if imgui.collapsing_header('Error Bars')[0]:
         _error_bars()
 
+    if imgui.collapsing_header('Draw list and misc')[0]:
+        if implot.begin_plot("Plot 2"):
+            data_x = np.arange(0, 10, 0.25)
+            data_y = np.sin(data_x)
+            implot.plot_line("Sine Wave", data_y)
+            dl = implot.get_plot_draw_list()
+
+            # Draw a circle
+            implot.push_plot_clip_rect()
+            cntr = implot.plot_to_pixels((6.5, 0.1))
+            rmin = implot.plot_to_pixels((0.25, 0.75))
+            rmax = implot.plot_to_pixels((0.75, 0.25))
+            dl.add_circle_filled(cntr, 20, imgui.color_convert_float4_to_u32((1, 0.3, 0.5, 0.7)), 20)
+            dl.add_rect(rmin, rmax, imgui.color_convert_float4_to_u32((1, 1, 0.7, 0.4)), thickness=2)
+            implot.pop_plot_clip_rect()
+            implot.end_plot()
+
     imgui.end()
     return show_window
 

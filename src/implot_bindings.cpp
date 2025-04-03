@@ -36,7 +36,15 @@ void implot_bindings(nb::module_& m) {
     m.attr("AUTO") = -1;
     m.attr("AUTO_COL") = ImVec4(0, 0, 0, -1);
 
-    nb::class_<ImPlotContext>(m, "Context");
+    nb::class_<ImPlotContext>(m, "Context")
+    .def("get_plot_draw_list_internal", [](ImPlotContext* ctx) -> ImDrawList* {
+        ImPlotContext* prev = ImPlot::GetCurrentContext();
+        ImPlot::SetCurrentContext(ctx);
+        ImDrawList* drawList = ImPlot::GetPlotDrawList();
+        ImPlot::SetCurrentContext(prev);
+        return drawList;
+    }, nb::rv_policy::reference_internal);
+
     m.def("create_context_internal", &ImPlot::CreateContext, nb::rv_policy::reference);
     m.def("set_current_context_internal", &ImPlot::SetCurrentContext, nb::rv_policy::reference);
     m.def("destroy_context_internal", &ImPlot::DestroyContext);

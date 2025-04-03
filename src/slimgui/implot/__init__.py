@@ -1,3 +1,4 @@
+from ..slimgui_ext import imgui
 from ..slimgui_ext import implot as implot
 from ..slimgui_ext.implot import *
 
@@ -30,3 +31,9 @@ def destroy_context(ctx: WrappedContext | None):
     assert ctx is not None
     implot.destroy_context_internal(ctx.context)
     _current_context = None if ctx == prev_ctx else prev_ctx
+
+def get_plot_draw_list() -> imgui.DrawList:
+    '''Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_plot_draw_list_internal()
