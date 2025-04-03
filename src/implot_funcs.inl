@@ -267,6 +267,14 @@ m.def(
 m.def(
     "pop_style_var", [](int count) { ImPlot::PopStyleVar(count); },
     "count"_a.sig("1") = 1);
+m.def("get_colormap_count", []() { return ImPlot::GetColormapCount(); });
+m.def(
+    "get_colormap_name",
+    [](ImPlotColormap_ cmap) { return ImPlot::GetColormapName(cmap); },
+    "cmap"_a);
+m.def(
+    "get_colormap_index",
+    [](const char *name) { return ImPlot::GetColormapIndex(name); }, "name"_a);
 m.def(
     "push_colormap", [](ImPlotColormap_ cmap) { ImPlot::PushColormap(cmap); },
     "cmap"_a);

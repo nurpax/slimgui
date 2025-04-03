@@ -104,6 +104,10 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_PopStyleVar', 'pop_style_var'),
 
     # PROTO SECTION
+    ImplotFunc('ImPlot_GetColormapCount', 'get_colormap_count'),
+    ImplotFunc('ImPlot_GetColormapName', 'get_colormap_name'),
+    ImplotFunc('ImPlot_GetColormapIndex', 'get_colormap_index'),
+
     ImplotFunc('ImPlot_PushColormap_PlotColormap', 'push_colormap'),
     ImplotFunc('ImPlot_PushColormap_Str', 'push_colormap'),
     ImplotFunc('ImPlot_PopColormap', 'pop_colormap'),

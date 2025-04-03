@@ -37,7 +37,14 @@ _ignored_toplevel_funcs_imgui = {
 _ignored_toplevel_funcs_implot: set[str] = {
     "annotation_v",         # varargs not relevant in Python
     "set_im_gui_context",   # not relevant for Python bindings
+    "plot_bars_g",          # _g variants are not going to be implemented
+    "plot_digital_g",       # _g variants are not going to be implemented
+    "plot_line_g",          # _g variants are not going to be implemented
+    "plot_scatter_g",       # _g variants are not going to be implemented
+    "plot_shaded_g",        # _g variants are not going to be implemented
+    "plot_stairs_g",        # _g variants are not going to be implemented
 }
+
 
 class Context:
     def __init__(self, module: str, ignored_toplevel_funcs: set[str]):
