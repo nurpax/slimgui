@@ -78,6 +78,16 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_BeginAlignedPlots', 'begin_aligned_plots'),
     ImplotFunc('ImPlot_EndAlignedPlots', 'end_aligned_plots'),
 
+    # [SECTION] Drag and Drop
+    ImplotFunc('ImPlot_BeginDragDropTargetPlot', 'begin_drag_drop_target_plot'),
+    ImplotFunc('ImPlot_BeginDragDropTargetAxis', 'begin_drag_drop_target_axis'),
+    ImplotFunc('ImPlot_BeginDragDropTargetLegend', 'begin_drag_drop_target_legend'),
+    ImplotFunc('ImPlot_EndDragDropTarget', 'end_drag_drop_target'),
+    ImplotFunc('ImPlot_BeginDragDropSourcePlot', 'begin_drag_drop_source_plot'),
+    ImplotFunc('ImPlot_BeginDragDropSourceAxis', 'begin_drag_drop_source_axis'),
+    ImplotFunc('ImPlot_BeginDragDropSourceItem', 'begin_drag_drop_source_item'),
+    ImplotFunc('ImPlot_EndDragDropSource', 'end_drag_drop_source'),
+
     # Styles
     ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style'),
     ImplotFunc('ImPlot_SetNextFillStyle', 'set_next_fill_style'),
@@ -160,7 +170,7 @@ class GenContext:
                         fn_def['ret'] = args[0]['type']
                         fn_def['argsT'] = args[1:]
 
-        known_enums = dict(gen_utils.enum_list_implot)
+        known_enums = dict(gen_utils.enum_list_implot + gen_utils.enum_list_imgui)
 
         for f in self._func_list:
             fn_def = defs[f.cim_ov_name]
@@ -184,7 +194,7 @@ class GenContext:
                                 args['py_default'] = 'None'
                             else:
                                 args['cpp_default'] = default
-                                args['py_default'] = default.lstrip('"').rstrip('"')
+                                args['py_default'] = default.replace('"', "'")
                         else:
                             if arg_flags & ArgFlags.OPTIONAL:
                                 args['cpp_type'] = 'std::optional<const char*>'
@@ -246,6 +256,9 @@ class GenContext:
                     case maybe_enum if f'{maybe_enum}_' in known_enums:
                         enum_cpp_type = f'{maybe_enum}_'
                         enum_py_type = known_enums[enum_cpp_type]
+                        enum_mod_prefix = ''
+                        if 'ImGui' in enum_cpp_type:
+                            enum_mod_prefix = 'slimgui_ext.imgui.'
                         py_default = None
                         cpp_default = None
                         if default is not None:
@@ -261,6 +274,8 @@ class GenContext:
                                 cpp_default = default
                             else:
                                 assert False, 'unknown default'
+                        if py_default is not None:
+                            py_default = enum_mod_prefix + py_default
                         out_args.append(FuncArg(arg_name, cpp_type=enum_cpp_type, py_type=enum_py_type, cpp_default=cpp_default, py_default=py_default))
                     case _:
                         print(f"{f.cim_ov_name}: {a['type']}")

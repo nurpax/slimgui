@@ -142,8 +142,7 @@ def _match_funcname_parens(tokens: list[str]) -> tuple[int, str, str] | None:
     return tok_idx, funcname, ''.join(tokens[2:tok_idx-1])
 
 def translate_enum_name(sym: str) -> str | None:
-    '''Translate an enum name to a Python enum name.  Return a tuple of whether the name was
-    translated and the translated name.'''
+    '''Translate an enum name to a Python enum name.'''
 
     if any(sym.startswith(enum_name) for enum_name in _known_enums.keys()):
         if sym.startswith('ImGui'):

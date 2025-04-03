@@ -1,8 +1,8 @@
-from ..slimgui_ext import implot as implot_ext
+from ..slimgui_ext import implot as implot
 from ..slimgui_ext.implot import *
 
 class WrappedContext:
-    def __init__(self, ctx: implot_ext.Context):
+    def __init__(self, ctx: implot.Context):
         self.context = ctx
 
 _current_context: WrappedContext | None = None
@@ -11,7 +11,7 @@ _current_context: WrappedContext | None = None
 
 def create_context() -> WrappedContext:
     global _current_context
-    _current_context = WrappedContext(implot_ext.create_context_internal())
+    _current_context = WrappedContext(implot.create_context_internal())
     return _current_context
 
 def get_current_context() -> WrappedContext | None:
@@ -20,7 +20,7 @@ def get_current_context() -> WrappedContext | None:
 def set_current_context(ctx: WrappedContext) -> None:
     global _current_context
     _current_context = ctx
-    implot_ext.set_current_context_internal(ctx.context)
+    implot.set_current_context_internal(ctx.context)
 
 def destroy_context(ctx: WrappedContext | None):
     global _current_context
@@ -28,5 +28,5 @@ def destroy_context(ctx: WrappedContext | None):
     if ctx is None:
         ctx = prev_ctx
     assert ctx is not None
-    implot_ext.destroy_context_internal(ctx.context)
+    implot.destroy_context_internal(ctx.context)
     _current_context = None if ctx == prev_ctx else prev_ctx

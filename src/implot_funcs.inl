@@ -179,6 +179,39 @@ m.def(
     },
     "group_id"_a, "vertical"_a.sig("True") = true);
 m.def("end_aligned_plots", []() { ImPlot::EndAlignedPlots(); });
+m.def("begin_drag_drop_target_plot",
+      []() { return ImPlot::BeginDragDropTargetPlot(); });
+m.def(
+    "begin_drag_drop_target_axis",
+    [](ImAxis_ axis) { return ImPlot::BeginDragDropTargetAxis(axis); },
+    "axis"_a);
+m.def("begin_drag_drop_target_legend",
+      []() { return ImPlot::BeginDragDropTargetLegend(); });
+m.def("end_drag_drop_target", []() { ImPlot::EndDragDropTarget(); });
+m.def(
+    "begin_drag_drop_source_plot",
+    [](ImGuiDragDropFlags_ flags) {
+      return ImPlot::BeginDragDropSourcePlot(flags);
+    },
+    "flags"_a.sig("slimgui_ext.imgui.DragDropFlags.NONE") =
+        ImGuiDragDropFlags_None);
+m.def(
+    "begin_drag_drop_source_axis",
+    [](ImAxis_ axis, ImGuiDragDropFlags_ flags) {
+      return ImPlot::BeginDragDropSourceAxis(axis, flags);
+    },
+    "axis"_a,
+    "flags"_a.sig("slimgui_ext.imgui.DragDropFlags.NONE") =
+        ImGuiDragDropFlags_None);
+m.def(
+    "begin_drag_drop_source_item",
+    [](const char *label_id, ImGuiDragDropFlags_ flags) {
+      return ImPlot::BeginDragDropSourceItem(label_id, flags);
+    },
+    "label_id"_a,
+    "flags"_a.sig("slimgui_ext.imgui.DragDropFlags.NONE") =
+        ImGuiDragDropFlags_None);
+m.def("end_drag_drop_source", []() { ImPlot::EndDragDropSource(); });
 m.def(
     "set_next_line_style",
     [](ImVec4 col, float weight) { ImPlot::SetNextLineStyle(col, weight); },
@@ -273,7 +306,7 @@ m.def(
                             variant_to_int(cmap));
     },
     "label"_a, "scale_min"_a, "scale_max"_a,
-    "size"_a.sig("(0,0)") = ImVec2(0, 0), "format"_a.sig("%g") = "%g",
+    "size"_a.sig("(0,0)") = ImVec2(0, 0), "format"_a.sig("'%g'") = "%g",
     "flags"_a.sig("ColormapScaleFlags.NONE") = ImPlotColormapScaleFlags_None,
     "cmap"_a.sig("AUTO") = std::variant<ImPlotColormap_, int>(IMPLOT_AUTO));
 m.def(
