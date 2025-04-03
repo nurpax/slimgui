@@ -43,6 +43,10 @@ _ignored_toplevel_funcs_implot: set[str] = {
     "plot_scatter_g",       # _g variants are not going to be implemented
     "plot_shaded_g",        # _g variants are not going to be implemented
     "plot_stairs_g",        # _g variants are not going to be implemented
+    "create_context",       # implemented in Python, uses _internal funcs
+    "destroy_context",      # implemented in Python, uses _internal funcs
+    "get_current_context",  # implemented in Python, uses _internal funcs
+    "set_current_context",  # implemented in Python, uses _internal funcs
 }
 
 
