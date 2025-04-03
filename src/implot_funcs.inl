@@ -151,6 +151,34 @@ m.def(
     "x"_a, "y"_a,
     "x_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO),
     "y_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO));
+m.def("get_plot_pos", []() { return ImPlot::GetPlotPos(); });
+m.def("get_plot_size", []() { return ImPlot::GetPlotSize(); });
+m.def(
+    "get_plot_mouse_pos",
+    [](std::variant<ImAxis_, int> x_axis, std::variant<ImAxis_, int> y_axis) {
+      return ImPlot::GetPlotMousePos(variant_to_int(x_axis),
+                                     variant_to_int(y_axis));
+    },
+    "x_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO),
+    "y_axis"_a.sig("AUTO") = std::variant<ImAxis_, int>(IMPLOT_AUTO));
+m.def("is_plot_hovered", []() { return ImPlot::IsPlotHovered(); });
+m.def(
+    "is_axis_hovered", [](ImAxis_ axis) { return ImPlot::IsAxisHovered(axis); },
+    "axis"_a);
+m.def("is_subplots_hovered", []() { return ImPlot::IsSubplotsHovered(); });
+m.def("is_plot_selected", []() { return ImPlot::IsPlotSelected(); });
+m.def("cancel_plot_selection", []() { ImPlot::CancelPlotSelection(); });
+m.def(
+    "hide_next_item",
+    [](bool hidden, ImPlotCond_ cond) { ImPlot::HideNextItem(hidden, cond); },
+    "hidden"_a.sig("True") = true, "cond"_a.sig("Cond.ONCE") = ImPlotCond_Once);
+m.def(
+    "begin_aligned_plots",
+    [](const char *group_id, bool vertical) {
+      return ImPlot::BeginAlignedPlots(group_id, vertical);
+    },
+    "group_id"_a, "vertical"_a.sig("True") = true);
+m.def("end_aligned_plots", []() { ImPlot::EndAlignedPlots(); });
 m.def(
     "set_next_line_style",
     [](ImVec4 col, float weight) { ImPlot::SetNextLineStyle(col, weight); },

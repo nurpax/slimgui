@@ -63,11 +63,20 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_PixelsToPlot_Float', 'pixels_to_plot'),
     ImplotFunc('ImPlot_PlotToPixels_PlotPoInt', 'plot_to_pixels'),
     ImplotFunc('ImPlot_PlotToPixels_double', 'plot_to_pixels'),
-# 
-# IMPLOT_API ImPlotPoint PixelsToPlot(const ImVec2& pix, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
-# IMPLOT_API ImPlotPoint PixelsToPlot(float x, float y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
-# IMPLOT_API ImVec2 PlotToPixels(const ImPlotPoint& plt, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
-# IMPLOT_API ImVec2 PlotToPixels(double x, double y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);
+
+    ImplotFunc('ImPlot_GetPlotPos', 'get_plot_pos'),
+    ImplotFunc('ImPlot_GetPlotSize', 'get_plot_size'),
+    ImplotFunc('ImPlot_GetPlotMousePos', 'get_plot_mouse_pos'),
+    #ImplotFunc('ImPlot_GetPlotLimits', 'get_plot_limits'), <- TODO implotrect type
+    ImplotFunc('ImPlot_IsPlotHovered', 'is_plot_hovered'),
+    ImplotFunc('ImPlot_IsAxisHovered', 'is_axis_hovered'),
+    ImplotFunc('ImPlot_IsSubplotsHovered', 'is_subplots_hovered'),
+    ImplotFunc('ImPlot_IsPlotSelected', 'is_plot_selected'),
+    #ImplotFunc('ImPlot_GetPlotSelection', 'get_plot_selection'), <- TODO implotrect type
+    ImplotFunc('ImPlot_CancelPlotSelection', 'cancel_plot_selection'),
+    ImplotFunc('ImPlot_HideNextItem', 'hide_next_item'),
+    ImplotFunc('ImPlot_BeginAlignedPlots', 'begin_aligned_plots'),
+    ImplotFunc('ImPlot_EndAlignedPlots', 'end_aligned_plots'),
 
     # Styles
     ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style'),
