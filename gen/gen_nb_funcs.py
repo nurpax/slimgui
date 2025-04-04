@@ -136,6 +136,11 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_ColormapButton', 'colormap_button'),
     ImplotFunc('ImPlot_BustColorCache', 'bust_color_cache'),
 
+    # [SECTION] Input Mapping
+    # GetInputMap <- implemented in C++ side
+    ImplotFunc('ImPlot_MapInputDefault', 'map_input_default'),
+    ImplotFunc('ImPlot_MapInputReverse', 'map_input_reverse'),
+
     # [SECTION] Miscellaneous
     # IMPLOT_API ImDrawList* GetPlotDrawList(); <-- implemented manually due to references
     ImplotFunc('ImPlot_ItemIcon_Vec4', 'item_icon'),
@@ -238,8 +243,9 @@ class GenContext:
                         assert False
                         logging.warning('unimplemented const char* const[]')
                         out_args.append(FuncArg(arg_name, cpp_type='const char* const[]', py_type='list[str]'))
-                    case 'ImPlotStyle*':
-                        args = { 'name': arg_name, 'cpp_type': 'ImPlotStyle*', 'py_type': 'Style' }
+                    case ptrtype if ptrtype in {'ImPlotStyle*', 'ImPlotInputMap*'}:
+                        pname = { 'ImPlotStyle*': 'Style', 'ImPlotInputMap*': 'InputMap' }[ptrtype]
+                        args = { 'name': arg_name, 'cpp_type': ptrtype, 'py_type': pname }
                         if default is not None:
                             assert default == 'nullptr'
                             args['cpp_default'] = 'nb::none()'
