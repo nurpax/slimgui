@@ -78,6 +78,11 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_BeginAlignedPlots', 'begin_aligned_plots'),
     ImplotFunc('ImPlot_EndAlignedPlots', 'end_aligned_plots'),
 
+    # [SECTION] Legend Utils
+    ImplotFunc('ImPlot_BeginLegendPopup', 'begin_legend_popup'),
+    ImplotFunc('ImPlot_EndLegendPopup', 'end_legend_popup'),
+    ImplotFunc('ImPlot_IsLegendEntryHovered', 'is_legend_entry_hovered'),
+
     # [SECTION] Drag and Drop
     ImplotFunc('ImPlot_BeginDragDropTargetPlot', 'begin_drag_drop_target_plot'),
     ImplotFunc('ImPlot_BeginDragDropTargetAxis', 'begin_drag_drop_target_axis'),
@@ -303,6 +308,9 @@ class GenContext:
                             elif default.startswith(enum_cpp_type):
                                 py_default = gen_utils.translate_enum_name(default)
                                 cpp_default = default
+                            elif default == '1' and enum_cpp_type.startswith('ImGuiMouseButton'):
+                                py_default = f'{enum_py_type}.RIGHT'
+                                cpp_default = f'{enum_cpp_type}Right'
                             else:
                                 assert False, 'unknown default'
                         if py_default is not None:

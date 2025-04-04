@@ -179,6 +179,19 @@ m.def(
     },
     "group_id"_a, "vertical"_a.sig("True") = true);
 m.def("end_aligned_plots", []() { ImPlot::EndAlignedPlots(); });
+m.def(
+    "begin_legend_popup",
+    [](const char *label_id, ImGuiMouseButton_ mouse_button) {
+      return ImPlot::BeginLegendPopup(label_id, mouse_button);
+    },
+    "label_id"_a,
+    "mouse_button"_a.sig("slimgui_ext.imgui.MouseButton.RIGHT") =
+        ImGuiMouseButton_Right);
+m.def("end_legend_popup", []() { ImPlot::EndLegendPopup(); });
+m.def(
+    "is_legend_entry_hovered",
+    [](const char *label_id) { return ImPlot::IsLegendEntryHovered(label_id); },
+    "label_id"_a);
 m.def("begin_drag_drop_target_plot",
       []() { return ImPlot::BeginDragDropTargetPlot(); });
 m.def(
