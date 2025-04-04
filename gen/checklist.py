@@ -27,11 +27,6 @@ _ignored_toplevel_funcs_imgui = {
     "label_text_v",             # varargs not relevant in Python
     "bullet_text_v",            # varargs not relevant in Python
     "is_any_mouse_down",        # will obsolete
-    "get_style",                # wrapped in python, using internal funcs
-    "get_io",                   # wrapped in python, using internal funcs
-    "get_window_draw_list",     # wrapped in python, using internal funcs
-    "get_background_draw_list", # wrapped in python, using internal funcs
-    "get_foreground_draw_list", # wrapped in python, using internal funcs
 }
 
 _ignored_toplevel_funcs_implot: set[str] = {
@@ -43,10 +38,6 @@ _ignored_toplevel_funcs_implot: set[str] = {
     "plot_scatter_g",       # _g variants are not going to be implemented
     "plot_shaded_g",        # _g variants are not going to be implemented
     "plot_stairs_g",        # _g variants are not going to be implemented
-    "create_context",       # implemented in Python, uses _internal funcs
-    "destroy_context",      # implemented in Python, uses _internal funcs
-    "get_current_context",  # implemented in Python, uses _internal funcs
-    "set_current_context",  # implemented in Python, uses _internal funcs
 }
 
 
@@ -80,11 +71,11 @@ def main(cimgui_defs_dir):
     with open(os.path.join(cimgui_defs_dir, "definitions.json"), "rt", encoding="utf-8") as f:
         defs = json.load(f)
         if 'cimgui' in cimgui_defs_dir:
-            module = "slimgui.slimgui_ext.imgui"
+            module = "slimgui.imgui"
             ignored = _ignored_toplevel_funcs_imgui
         else:
             assert 'cimplot' in cimgui_defs_dir
-            module = "slimgui.slimgui_ext.implot"
+            module = "slimgui.implot"
             ignored = _ignored_toplevel_funcs_implot
         ctx = Context(module, ignored)
 
