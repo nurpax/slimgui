@@ -138,6 +138,10 @@ _implot_func_list: list[ImplotFunc] = [
 
     # [SECTION] Miscellaneous
     # IMPLOT_API ImDrawList* GetPlotDrawList(); <-- implemented manually due to references
+    ImplotFunc('ImPlot_ItemIcon_Vec4', 'item_icon'),
+    ImplotFunc('ImPlot_ItemIcon_U32', 'item_icon'),
+    ImplotFunc('ImPlot_ColormapIcon', 'colormap_icon'),
+
     ImplotFunc('ImPlot_PushPlotClipRect', 'push_plot_clip_rect'),
     ImplotFunc('ImPlot_PopPlotClipRect', 'pop_plot_clip_rect'),
 

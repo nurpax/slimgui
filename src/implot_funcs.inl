@@ -365,6 +365,11 @@ m.def(
       ImPlot::BustColorCache(plot_title_id ? plot_title_id.value() : nullptr);
     },
     "plot_title_id"_a.sig("None") = nb::none());
+m.def("item_icon", [](ImVec4 col) { ImPlot::ItemIcon(col); }, "col"_a);
+m.def("item_icon", [](ImU32 col) { ImPlot::ItemIcon(col); }, "col"_a);
+m.def(
+    "colormap_icon", [](ImPlotColormap_ cmap) { ImPlot::ColormapIcon(cmap); },
+    "cmap"_a);
 m.def(
     "push_plot_clip_rect",
     [](float expand) { ImPlot::PushPlotClipRect(expand); },

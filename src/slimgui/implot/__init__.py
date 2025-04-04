@@ -39,7 +39,13 @@ def get_plot_draw_list() -> imgui.DrawList:
     return ctx.context.get_plot_draw_list_internal()
 
 def get_style() -> implot.Style:
-    '''Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot.'''
+    '''Provides access to plot style structure for permanant modifications to colors, sizes, etc.'''
     ctx = get_current_context()
     assert ctx is not None
     return ctx.context.get_style_internal()
+
+def get_input_map() -> implot.InputMap:
+    '''Provides access to input mapping structure for permanant modifications to controls for pan, select, etc.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_input_map_internal()

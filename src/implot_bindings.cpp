@@ -46,6 +46,7 @@ void implot_bindings(nb::module_& m) {
     m.attr("AUTO_COL") = ImVec4(0, 0, 0, -1);
 
     nb::class_<ImPlotStyle>(m, "Style");
+    nb::class_<ImPlotInputMap>(m, "InputMap");
 
     nb::class_<ImPlotContext>(m, "Context")
     .def("get_plot_draw_list_internal", [](ImPlotContext* ctx) -> ImDrawList* {
@@ -53,6 +54,9 @@ void implot_bindings(nb::module_& m) {
     }, nb::rv_policy::reference_internal)
     .def("get_style_internal", [](ImPlotContext* ctx) -> ImPlotStyle* {
         return with_context(ctx, []() { auto& r = ImPlot::GetStyle(); return &r; });
+    }, nb::rv_policy::reference_internal)
+    .def("get_input_map_internal", [](ImPlotContext* ctx) -> ImPlotInputMap* {
+        return with_context(ctx, []() { auto& r = ImPlot::GetInputMap(); return &r; });
     }, nb::rv_policy::reference_internal);
 
     m.def("create_context_internal", &ImPlot::CreateContext, nb::rv_policy::reference);
