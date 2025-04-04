@@ -124,6 +124,9 @@ def show_demo_window(show_window: bool):
     if imgui.collapsing_header('Heatmaps')[0]:
         _heatmaps()
 
+    if imgui.collapsing_header('Annotations')[0]:
+        _annotations()
+
     if imgui.collapsing_header('Built-in windows')[0]:
         imgui.text('Style selector')
         implot.show_style_selector("Style selector")
@@ -226,3 +229,35 @@ def _heatmaps():
         implot.end_plot()
 
     implot.pop_colormap()
+
+_clamp = False
+def _annotations():
+    global _clamp
+    _, _clamp = imgui.checkbox("Clamp", _clamp)
+
+    if implot.begin_plot("##Annotations"):
+        implot.setup_axes_limits(0, 2, 0, 1)
+
+        p = np.array([0.25, 0.25, 0.75, 0.75, 0.25])
+
+        # ImPlot::PlotScatter("##Points",&p[0],&p[1],4);
+        implot.plot_scatter("##Points", p[:-1], p[1:])
+
+        col = implot.get_last_item_color()
+
+        implot.annotation(0.25, 0.25, col, (-15, 15), _clamp, "BL")
+        implot.annotation(0.75, 0.25, col, (15, 15), _clamp, "BR")
+        implot.annotation(0.75, 0.75, col, (15, -15), _clamp, "TR")
+        implot.annotation(0.25, 0.75, col, (-15, -15), _clamp, "TL")
+        implot.annotation(0.5, 0.5, col, (0, 0), _clamp, "Center")
+        implot.annotation(1.25, 0.75, (0, 1, 0, 1), (0, 0), _clamp)
+
+        bx = np.array([1.2, 1.5, 1.8], dtype=np.float32)
+        by = np.array([0.25, 0.5, 0.75], dtype=np.float32)
+        implot.plot_bars("##Bars", bx, by, bar_size=0.2)
+
+        for i in range(3):
+            implot.annotation(bx[i], by[i], (0, 0, 0, 0), (0, -5), _clamp, f"B[{i}]={by[i]:.2f}")
+
+        # ImPlot::EndPlot();
+        implot.end_plot()

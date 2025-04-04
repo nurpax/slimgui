@@ -231,6 +231,10 @@ void implot_bindings(nb::module_& m) {
         ImPlot::PlotDigital(label_id, (const double*)xs.data(), (const double*)ys.data(), count, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("DigitalFlags.NONE") = ImPlotDigitalFlags_None);
 
+    // Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.
+    m.def("annotation", [](double x, double y, ImVec4 col, ImVec2 pix_offset, bool clamp, bool round) { ImPlot::Annotation(x, y, col, pix_offset, clamp, round); }, "x"_a, "y"_a, "col"_a, "pix_offset"_a, "clamp"_a, "round"_a = false);
+    m.def("annotation", [](double x, double y, ImVec4 col, ImVec2 pix_offset, bool clamp, const char* text) { ImPlot::Annotation(x, y, col, pix_offset, clamp, "%s", text); }, "x"_a, "y"_a, "col"_a, "pix_offset"_a, "clamp"_a, "text"_a);
+
     m.def("tag_x", [](double x, ImVec4 col, bool round) { ImPlot::TagX(x, col, round); }, "x"_a, "col"_a, "round"_a = false);
     m.def("tag_x", [](double x, ImVec4 col, const char* text) { ImPlot::TagX(x, col, "%s", text); }, "x"_a, "col"_a, "text"_a);
 
