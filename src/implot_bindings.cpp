@@ -65,6 +65,12 @@ void implot_bindings(nb::module_& m) {
         return open;
     }, "closable"_a = false);
 
+    m.def("show_metrics_window", [](bool closable) {
+        bool open = true;
+        ImPlot::ShowMetricsWindow(closable ? &open : nullptr);
+        return open;
+    }, "closable"_a = false);
+
     // SetupAxisTicks overloads
     m.def("setup_axis_ticks", [](ImAxis axis, ndarray_1d& values, std::optional<std::vector<const char*>> labels, bool keep_default) {
         const char** labels_ptr = nullptr;

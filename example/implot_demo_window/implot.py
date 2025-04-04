@@ -121,6 +121,20 @@ def show_demo_window(show_window: bool):
     if imgui.collapsing_header('Styles')[0]:
         _styles()
 
+    if imgui.collapsing_header('Built-in windows')[0]:
+        imgui.text('Style selector')
+        implot.show_style_selector("Style selector")
+        imgui.text('Colormap selector')
+        implot.show_colormap_selector("Colormap selector")
+        imgui.text('Input map selector')
+        implot.show_input_map_selector("Input map selector")
+        imgui.text('Style editor')
+        implot.show_style_editor()
+
+    if imgui.collapsing_header('User guide')[0]:
+        imgui.text('User guide follows ->')
+        implot.show_user_guide()
+
     imgui.end()
     return show_window
 

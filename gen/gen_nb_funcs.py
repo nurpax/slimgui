@@ -139,6 +139,8 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_ShowStyleSelector', 'show_style_selector'),
     ImplotFunc('ImPlot_ShowColormapSelector', 'show_colormap_selector'),
     ImplotFunc('ImPlot_ShowInputMapSelector', 'show_input_map_selector'),
+    ImplotFunc('ImPlot_ShowStyleEditor', 'show_style_editor'),
+    ImplotFunc('ImPlot_ShowUserGuide', 'show_user_guide'),
 ]
 
 @dataclass

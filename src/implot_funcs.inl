@@ -369,4 +369,8 @@ m.def(
     "show_input_map_selector",
     [](const char *label) { return ImPlot::ShowInputMapSelector(label); },
     "label"_a);
+m.def(
+    "show_style_editor", [](ImPlotStyle *ref) { ImPlot::ShowStyleEditor(ref); },
+    "ref"_a.sig("None") = nb::none());
+m.def("show_user_guide", []() { ImPlot::ShowUserGuide(); });
 
