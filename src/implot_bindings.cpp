@@ -19,6 +19,7 @@
 namespace nb = nanobind;
 using namespace nb::literals;
 
+typedef nb::ndarray<const float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d_f32;
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
 typedef nb::ndarray<const double, nb::ndim<2>, nb::device::cpu, nb::c_contig> ndarray_2d;
 
@@ -99,6 +100,27 @@ void implot_bindings(nb::module_& m) {
         ImPlot::SetupAxisTicks(axis, v_min, v_max, n_ticks, labels_ptr, keep_default);
     }, "axis"_a, "v_min"_a, "v_max"_a, "n_ticks"_a, "labels"_a = nb::none(), "keep_default"_a = false);
 
+    // TODO how to model row/col ratio return?  BeginSubplots writes to the source arrays.
+    // // Subplots
+    // m.def("begin_subplots", [](const char* title_id, int rows, int cols, ImVec2 size, ImPlotSubplotFlags_ flags, std::optional<ndarray_1d_f32>& row_ratios, std::optional<ndarray_1d_f32>& col_ratios) {
+    //     const float* row_ratios_ptr = nullptr;
+    //     const float* col_ratios_ptr = nullptr;
+    //     if (row_ratios) {
+    //         if (row_ratios->shape(0) != rows) {
+    //             throw std::length_error("`row_ratios` must be same the length as `rows`.");
+    //         }
+    //         row_ratios_ptr = (const float*)row_ratios->data();
+    //     }
+    //     if (col_ratios) {
+    //         if (col_ratios->shape(0) != cols) {
+    //             throw std::length_error("`col_ratios` must be same the length as `cols`.");
+    //         }
+    //         col_ratios_ptr = (const float*)col_ratios->data();
+    //     }
+    //     return ImPlot::BeginSubplots(title_id, rows, cols, size, flags, row_ratios_ptr, col_ratios_ptr);
+    // }, "title_id"_a, "rows"_a, "cols"_a, "size"_a, "flags"_a.sig("SubplotFlags.NONE") = ImPlotSubplotFlags_None);
+    // m.def("end_subplots", &ImPlot::EndSubplots);
+
     // PlotLine functions
     m.def("plot_line", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotLineFlags_ flags) {
         ImPlot::PlotLine(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);
@@ -167,6 +189,53 @@ void implot_bindings(nb::module_& m) {
         }
         ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)neg.data(), (const double*)pos.data(), count, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "neg"_a, "pos"_a, "flags"_a.sig("ErrorBarsFlags.NONE") = ImPlotErrorBarsFlags_None);
+
+    // Plots stems. Vertical by default.
+    m.def("plot_stems", [](const char* label_id, ndarray_1d& values, double ref, double scale, double start, ImPlotStemsFlags_ flags) {
+        ImPlot::PlotStems(label_id, (const double*)values.data(), values.shape(0), ref, scale, start, flags);
+    }, "label_id"_a, "values"_a, "ref"_a = 0.0, "scale"_a = 1.0, "start"_a = 0.0, "flags"_a.sig("StemsFlags.NONE") = ImPlotStemsFlags_None);
+    m.def("plot_stems", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double ref, ImPlotStemsFlags_ flags) {
+        int count = xs.shape(0);
+        if (count != ys.shape(0)) {
+            throw std::length_error("`xs` and `ys` must be the same length");
+        }
+        ImPlot::PlotStems(label_id, (const double*)xs.data(), (const double*)ys.data(), count, ref, flags);
+    }, "label_id"_a, "xs"_a, "ys"_a, "ref"_a = 0.0, "flags"_a.sig("StemsFlags.NONE") = ImPlotStemsFlags_None);
+
+    // Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).
+    m.def("plot_inf_lines", [](const char* label_id, ndarray_1d& values, ImPlotInfLinesFlags_ flags) {
+        ImPlot::PlotInfLines(label_id, (const double*)values.data(), values.shape(0), flags);
+    }, "label_id"_a, "values"_a, "flags"_a.sig("InfLinesFlags.NONE") = ImPlotInfLinesFlags_None);
+
+    // Plots a 2D heatmap chart. Values are expected to be in row-major order by default. Leave #scale_min and scale_max both at 0 for automatic color scaling, or set them to a predefined range. #label_fmt can be set to nullptr for no labels.
+    m.def("plot_heatmap", [](const char* label_id, ndarray_2d& values, double scale_min, double scale_max, std::optional<const char*> label_fmt, ImPlotPoint bounds_min, ImPlotPoint bounds_max, ImPlotHeatmapFlags_ flags) {
+        ImPlot::PlotHeatmap(label_id, (const double*)values.data(), values.shape(0), values.shape(1), scale_min, scale_max, label_fmt ? label_fmt.value() : nullptr, bounds_min, bounds_max, flags);
+    }, "label_id"_a, "values"_a, "scale_min"_a = 0, "scale_max"_a = 0.0, "label_fmt"_a.none() = "%.1f", "bounds_min"_a = ImPlotPoint(0,0), "bounds_max"_a = ImPlotPoint(1,1), "flags"_a.sig("HeatmapFlags.NONE") = ImPlotHeatmapFlags_None);
+
+
+    // TODO range typecaster
+    // // Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.
+    // // Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
+    // IMPLOT_TMP double PlotHistogram(const char* label_id, const T* values, int count, int bins=ImPlotBin_Sturges, double bar_scale=1.0, ImPlotRange range=ImPlotRange(), ImPlotHistogramFlags flags=0);
+
+    // // Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of
+    // // #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
+    // IMPLOT_TMP double PlotHistogram2D(const char* label_id, const T* xs, const T* ys, int count, int x_bins=ImPlotBin_Sturges, int y_bins=ImPlotBin_Sturges, ImPlotRect range=ImPlotRect(), ImPlotHistogramFlags flags=0);
+
+    // Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
+    m.def("plot_digital", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ImPlotDigitalFlags_ flags) {
+        int count = xs.shape(0);
+        if (count != ys.shape(0)) {
+            throw std::length_error("`xs` and `ys` must be the same length");
+        }
+        ImPlot::PlotDigital(label_id, (const double*)xs.data(), (const double*)ys.data(), count, flags);
+    }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("DigitalFlags.NONE") = ImPlotDigitalFlags_None);
+
+    m.def("tag_x", [](double x, ImVec4 col, bool round) { ImPlot::TagX(x, col, round); }, "x"_a, "col"_a, "round"_a = false);
+    m.def("tag_x", [](double x, ImVec4 col, const char* text) { ImPlot::TagX(x, col, "%s", text); }, "x"_a, "col"_a, "text"_a);
+
+    m.def("tag_y", [](double y, ImVec4 col, bool round) { ImPlot::TagY(y, col, round); }, "y"_a, "col"_a, "round"_a = false);
+    m.def("tag_y", [](double y, ImVec4 col, const char* text) { ImPlot::TagY(y, col, "%s", text); }, "y"_a, "col"_a, "text"_a);
 
 #include "implot_funcs.inl"
 }

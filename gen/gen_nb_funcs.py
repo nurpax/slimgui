@@ -55,6 +55,7 @@ _implot_func_list: list[ImplotFunc] = [
 
     ImplotFunc('ImPlot_PlotText', 'plot_text'),
     ImplotFunc('ImPlot_PlotDummy', 'plot_dummy'),
+    ImplotFunc('ImPlot_PlotImage', 'plot_image'),
 
     # Utils
     ImplotFunc('ImPlot_SetAxis', 'set_axis'),
@@ -293,6 +294,10 @@ class GenContext:
                         args = { 'name': arg_name, 'cpp_type': 'ImU32', 'py_type': 'int' }
                         args['cpp_default'] = default
                         args['py_default'] = default
+                        out_args.append(FuncArg(**args))
+                    case 'ImTextureID':
+                        args = { 'name': arg_name, 'cpp_type': 'ImTextureID', 'py_type': 'int' }
+                        assert default is None
                         out_args.append(FuncArg(**args))
                     case 'bool':
                         args = { 'name': arg_name, 'cpp_type': 'bool', 'py_type': 'bool' }

@@ -31,6 +31,8 @@ _ignored_toplevel_funcs_imgui = {
 
 _ignored_toplevel_funcs_implot: set[str] = {
     "annotation_v",         # varargs not relevant in Python
+    "tag_xv",               # varargs not relevant in Python
+    "tag_yv",               # varargs not relevant in Python
     "set_im_gui_context",   # not relevant for Python bindings
     "plot_bars_g",          # _g variants are not going to be implemented
     "plot_digital_g",       # _g variants are not going to be implemented

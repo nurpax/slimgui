@@ -121,6 +121,9 @@ def show_demo_window(show_window: bool):
     if imgui.collapsing_header('Styles')[0]:
         _styles()
 
+    if imgui.collapsing_header('Heatmaps')[0]:
+        _heatmaps()
+
     if imgui.collapsing_header('Built-in windows')[0]:
         imgui.text('Style selector')
         implot.show_style_selector("Style selector")
@@ -183,3 +186,43 @@ def _styles():
                     implot.style_colors_dark(style)
                 case 3:
                     implot.style_colors_light(style)
+
+def _heatmaps():
+    values1 = np.array([
+        [0.8, 2.4, 2.5, 3.9, 0.0, 4.0, 0.0],
+        [2.4, 0.0, 4.0, 1.0, 2.7, 0.0, 0.0],
+        [1.1, 2.4, 0.8, 4.3, 1.9, 4.4, 0.0],
+        [0.6, 0.0, 0.3, 0.0, 3.1, 0.0, 0.0],
+        [0.7, 1.7, 0.6, 2.6, 2.2, 6.2, 0.0],
+        [1.3, 1.2, 0.0, 0.0, 0.0, 3.2, 5.1],
+        [0.1, 2.0, 0.0, 1.4, 0.0, 1.9, 6.3]
+    ], dtype=np.float64)
+    scale_min = 0.0
+    scale_max = 6.3
+    xlabels = ["C1", "C2", "C3", "C4", "C5", "C6", "C7"]
+    ylabels = ["R1", "R2", "R3", "R4", "R5", "R6", "R7"]
+
+    axes_flags = implot.AxisFlags.LOCK | implot.AxisFlags.NO_GRID_LINES | implot.AxisFlags.NO_TICK_MARKS
+
+    implot.push_colormap(implot.Colormap.VIRIDIS)
+
+    if implot.begin_plot("##Heatmap1", size=(225, 225), flags=implot.PlotFlags.NO_LEGEND | implot.PlotFlags.NO_MOUSE_TEXT):
+        implot.setup_axes(None, None, axes_flags, axes_flags)
+        implot.setup_axis_ticks(implot.Axis.X1, 0 + 1.0 / 14.0, 1 - 1.0 / 14.0, 7, xlabels)
+        implot.setup_axis_ticks(implot.Axis.Y1, 1 - 1.0 / 14.0, 0 + 1.0 / 14.0, 7, ylabels)
+        implot.plot_heatmap("heat", values1, scale_min, scale_max, label_fmt="%g", bounds_min=(0, 0), bounds_max=(1, 1))
+        implot.end_plot()
+
+    imgui.same_line()
+    implot.colormap_scale("##HeatScale", scale_min, scale_max, (60, 225))
+    imgui.same_line()
+
+    values2 = np.random.RandomState(int(time.time()*100) % (1<<31)).rand(80, 80)
+    if implot.begin_plot("##Heatmap2", size=(225, 225)):
+        implot.setup_axes(None, None, implot.AxisFlags.NO_DECORATIONS, implot.AxisFlags.NO_DECORATIONS)
+        implot.setup_axes_limits(-1, 1, -1, 1)
+        implot.plot_heatmap("heat1", values2, 0, 1, label_fmt=None)
+        implot.plot_heatmap("heat2", values2, 0, 1, label_fmt=None, bounds_min=(-1, -1), bounds_max=(0, 0))
+        implot.end_plot()
+
+    implot.pop_colormap()

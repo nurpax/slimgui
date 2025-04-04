@@ -108,6 +108,18 @@ m.def(
       ImPlot::PlotDummy(label_id, flags);
     },
     "label_id"_a, "flags"_a.sig("DummyFlag.NONE") = ImPlotDummyFlags_None);
+m.def(
+    "plot_image",
+    [](const char *label_id, ImTextureID user_texture_id,
+       ImPlotPoint bounds_min, ImPlotPoint bounds_max, ImVec2 uv0, ImVec2 uv1,
+       ImVec4 tint_col, ImPlotImageFlags_ flags) {
+      ImPlot::PlotImage(label_id, user_texture_id, bounds_min, bounds_max, uv0,
+                        uv1, tint_col, flags);
+    },
+    "label_id"_a, "user_texture_id"_a, "bounds_min"_a, "bounds_max"_a,
+    "uv0"_a.sig("(0,0)") = ImVec2(0, 0), "uv1"_a.sig("(1,1)") = ImVec2(1, 1),
+    "tint_col"_a.sig("(1,1,1,1)") = ImVec4(1, 1, 1, 1),
+    "flags"_a.sig("ImageFlag.NONE") = ImPlotImageFlags_None);
 m.def("set_axis", [](ImAxis_ axis) { ImPlot::SetAxis(axis); }, "axis"_a);
 m.def(
     "set_axes",
