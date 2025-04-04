@@ -118,6 +118,9 @@ def show_demo_window(show_window: bool):
             implot.pop_plot_clip_rect()
             implot.end_plot()
 
+    if imgui.collapsing_header('Styles')[0]:
+        _styles()
+
     imgui.end()
     return show_window
 
@@ -146,3 +149,23 @@ def _error_bars():
         implot.pop_style_color()
         implot.plot_scatter("Scatter", xs, lin2)
         implot.end_plot()
+
+_style_idx = 0
+def _styles():
+    global _style_idx
+    style = implot.get_style()
+    style_names = ["Auto", "Classic", "Dark", "Light"]
+    for i, name in enumerate(style_names):
+        if i != 0:
+            imgui.same_line()
+        if imgui.radio_button(name, _style_idx == i):
+            _style_idx = i
+            match _style_idx:
+                case 0:
+                    implot.style_colors_auto()
+                case 1:
+                    implot.style_colors_classic()
+                case 2:
+                    implot.style_colors_dark(style)
+                case 3:
+                    implot.style_colors_light(style)

@@ -213,6 +213,46 @@ m.def(
         ImGuiDragDropFlags_None);
 m.def("end_drag_drop_source", []() { ImPlot::EndDragDropSource(); });
 m.def(
+    "style_colors_auto", [](ImPlotStyle *dst) { ImPlot::StyleColorsAuto(dst); },
+    "dst"_a.sig("None") = nb::none());
+m.def(
+    "style_colors_classic",
+    [](ImPlotStyle *dst) { ImPlot::StyleColorsClassic(dst); },
+    "dst"_a.sig("None") = nb::none());
+m.def(
+    "style_colors_dark", [](ImPlotStyle *dst) { ImPlot::StyleColorsDark(dst); },
+    "dst"_a.sig("None") = nb::none());
+m.def(
+    "style_colors_light",
+    [](ImPlotStyle *dst) { ImPlot::StyleColorsLight(dst); },
+    "dst"_a.sig("None") = nb::none());
+m.def(
+    "push_style_color",
+    [](ImPlotCol_ idx, ImU32 col) { ImPlot::PushStyleColor(idx, col); },
+    "idx"_a, "col"_a);
+m.def(
+    "push_style_color",
+    [](ImPlotCol_ idx, ImVec4 col) { ImPlot::PushStyleColor(idx, col); },
+    "idx"_a, "col"_a);
+m.def(
+    "pop_style_color", [](int count) { ImPlot::PopStyleColor(count); },
+    "count"_a.sig("1") = 1);
+m.def(
+    "push_style_var",
+    [](ImPlotStyleVar_ idx, float val) { ImPlot::PushStyleVar(idx, val); },
+    "idx"_a, "val"_a);
+m.def(
+    "push_style_var",
+    [](ImPlotStyleVar_ idx, int val) { ImPlot::PushStyleVar(idx, val); },
+    "idx"_a, "val"_a);
+m.def(
+    "push_style_var",
+    [](ImPlotStyleVar_ idx, ImVec2 val) { ImPlot::PushStyleVar(idx, val); },
+    "idx"_a, "val"_a);
+m.def(
+    "pop_style_var", [](int count) { ImPlot::PopStyleVar(count); },
+    "count"_a.sig("1") = 1);
+m.def(
     "set_next_line_style",
     [](ImVec4 col, float weight) { ImPlot::SetNextLineStyle(col, weight); },
     "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1), "weight"_a.sig("AUTO") = -1);
@@ -241,32 +281,13 @@ m.def(
     },
     "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1), "size"_a.sig("AUTO") = -1,
     "weight"_a.sig("AUTO") = -1);
+m.def("get_last_item_color", []() { return ImPlot::GetLastItemColor(); });
 m.def(
-    "push_style_color",
-    [](ImPlotCol_ idx, ImU32 col) { ImPlot::PushStyleColor(idx, col); },
-    "idx"_a, "col"_a);
+    "get_style_color_name",
+    [](ImPlotCol_ idx) { return ImPlot::GetStyleColorName(idx); }, "idx"_a);
 m.def(
-    "push_style_color",
-    [](ImPlotCol_ idx, ImVec4 col) { ImPlot::PushStyleColor(idx, col); },
-    "idx"_a, "col"_a);
-m.def(
-    "pop_style_color", [](int count) { ImPlot::PopStyleColor(count); },
-    "count"_a.sig("1") = 1);
-m.def(
-    "push_style_var",
-    [](ImPlotStyleVar_ idx, float val) { ImPlot::PushStyleVar(idx, val); },
-    "idx"_a, "val"_a);
-m.def(
-    "push_style_var",
-    [](ImPlotStyleVar_ idx, int val) { ImPlot::PushStyleVar(idx, val); },
-    "idx"_a, "val"_a);
-m.def(
-    "push_style_var",
-    [](ImPlotStyleVar_ idx, ImVec2 val) { ImPlot::PushStyleVar(idx, val); },
-    "idx"_a, "val"_a);
-m.def(
-    "pop_style_var", [](int count) { ImPlot::PopStyleVar(count); },
-    "count"_a.sig("1") = 1);
+    "get_marker_name",
+    [](ImPlotMarker_ idx) { return ImPlot::GetMarkerName(idx); }, "idx"_a);
 m.def("get_colormap_count", []() { return ImPlot::GetColormapCount(); });
 m.def(
     "get_colormap_name",

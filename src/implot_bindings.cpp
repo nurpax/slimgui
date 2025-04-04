@@ -30,19 +30,29 @@ int variant_to_int(const std::variant<Enum, Int>& var) {
     return std::get<Int>(var);
 }
 
+template <typename Func>
+auto with_context(ImPlotContext* ctx, Func&& func) {
+    ImPlotContext* prev = ImPlot::GetCurrentContext();
+    ImPlot::SetCurrentContext(ctx);
+    decltype(auto) result = func(); // Use decltype(auto) to preserve references
+    ImPlot::SetCurrentContext(prev);
+    return result;
+}
+
 void implot_bindings(nb::module_& m) {
     #include "implot_enums.inl"
 
     m.attr("AUTO") = -1;
     m.attr("AUTO_COL") = ImVec4(0, 0, 0, -1);
 
+    nb::class_<ImPlotStyle>(m, "Style");
+
     nb::class_<ImPlotContext>(m, "Context")
     .def("get_plot_draw_list_internal", [](ImPlotContext* ctx) -> ImDrawList* {
-        ImPlotContext* prev = ImPlot::GetCurrentContext();
-        ImPlot::SetCurrentContext(ctx);
-        ImDrawList* drawList = ImPlot::GetPlotDrawList();
-        ImPlot::SetCurrentContext(prev);
-        return drawList;
+        return with_context(ctx, []() { return ImPlot::GetPlotDrawList(); });
+    }, nb::rv_policy::reference_internal)
+    .def("get_style_internal", [](ImPlotContext* ctx) -> ImPlotStyle* {
+        return with_context(ctx, []() { auto& r = ImPlot::GetStyle(); return &r; });
     }, nb::rv_policy::reference_internal);
 
     m.def("create_context_internal", &ImPlot::CreateContext, nb::rv_policy::reference);

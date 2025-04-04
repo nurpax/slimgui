@@ -89,10 +89,10 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_EndDragDropSource', 'end_drag_drop_source'),
 
     # Styles
-    ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style'),
-    ImplotFunc('ImPlot_SetNextFillStyle', 'set_next_fill_style'),
-    ImplotFunc('ImPlot_SetNextMarkerStyle', 'set_next_marker_style'),
-    ImplotFunc('ImPlot_SetNextErrorBarStyle', 'set_next_error_bar_style'),
+    ImplotFunc('ImPlot_StyleColorsAuto', 'style_colors_auto'),
+    ImplotFunc('ImPlot_StyleColorsClassic', 'style_colors_classic'),
+    ImplotFunc('ImPlot_StyleColorsDark', 'style_colors_dark'),
+    ImplotFunc('ImPlot_StyleColorsLight', 'style_colors_light'),
 
     ImplotFunc('ImPlot_PushStyleColor_U32', 'push_style_color'),
     ImplotFunc('ImPlot_PushStyleColor_Vec4', 'push_style_color'),
@@ -102,6 +102,15 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_PushStyleVar_Int', 'push_style_var'),
     ImplotFunc('ImPlot_PushStyleVar_Vec2', 'push_style_var'),
     ImplotFunc('ImPlot_PopStyleVar', 'pop_style_var'),
+
+    ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style'),
+    ImplotFunc('ImPlot_SetNextFillStyle', 'set_next_fill_style'),
+    ImplotFunc('ImPlot_SetNextMarkerStyle', 'set_next_marker_style'),
+    ImplotFunc('ImPlot_SetNextErrorBarStyle', 'set_next_error_bar_style'),
+
+    ImplotFunc('ImPlot_GetLastItemColor', 'get_last_item_color'),
+    ImplotFunc('ImPlot_GetStyleColorName', 'get_style_color_name'),
+    ImplotFunc('ImPlot_GetMarkerName', 'get_marker_name'),
 
     # PROTO SECTION
     ImplotFunc('ImPlot_GetColormapCount', 'get_colormap_count'),
@@ -142,7 +151,7 @@ class FuncArg:
     flags: ArgFlags = ArgFlags.NONE
 
     def unwrap_cpp_arg_value(self) -> str:
-        if self.cpp_type == 'std::optional<const char*>':
+        if self.cpp_type.startswith('std::optional<'):
             return f'{self.name} ? {self.name}.value() : nullptr'
         if 'std::variant<' in self.cpp_type:
             return f'variant_to_int({self.name})' # Note: variant_to_int defined in the file that includes the funcs inl file
@@ -218,6 +227,13 @@ class GenContext:
                         assert False
                         logging.warning('unimplemented const char* const[]')
                         out_args.append(FuncArg(arg_name, cpp_type='const char* const[]', py_type='list[str]'))
+                    case 'ImPlotStyle*':
+                        args = { 'name': arg_name, 'cpp_type': 'ImPlotStyle*', 'py_type': 'Style' }
+                        if default is not None:
+                            assert default == 'nullptr'
+                            args['cpp_default'] = 'nb::none()'
+                            args['py_default'] = 'None'
+                        out_args.append(FuncArg(**args))
                     case 'const ImVec2':
                         if default is not None:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec2', py_type='tuple[float, float]', cpp_default=default, py_default=default.replace('ImVec2', '')))

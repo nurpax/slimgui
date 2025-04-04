@@ -63,3 +63,9 @@ def test_setup_axis_ticks(frame_scope):
 def test_random_getter_setters(frame_scope):
     implot.set_next_marker_style(-1) # both variants should work for this function
     implot.set_next_marker_style(implot.Marker.CIRCLE)
+
+    implot.style_colors_classic()
+    implot.style_colors_classic(implot.get_style())
+
+    assert implot.get_style_color_name(implot.Col.MARKER_OUTLINE) == 'MarkerOutline'
+    assert implot.get_marker_name(implot.Marker.DIAMOND) == 'Diamond'

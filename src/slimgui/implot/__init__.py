@@ -37,3 +37,9 @@ def get_plot_draw_list() -> imgui.DrawList:
     ctx = get_current_context()
     assert ctx is not None
     return ctx.context.get_plot_draw_list_internal()
+
+def get_style() -> implot.Style:
+    '''Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_style_internal()
