@@ -90,18 +90,17 @@ def pyi_to_html_lookup(file_path, outf):
 
             outf.write('<div class="api">\n')
             outf.write(f'  <code>{_highlight_def_line(source_line)}</code>\n')
-            if docstring:
-                outf.write(f'  <p>{_expand_code_blocks_to_html(docstring)}</p>\n')
             outf.write('</div>\n')
+            if docstring:
+                outf.write(f'<p>{_expand_code_blocks_to_html(docstring)}</p>\n')
 
             outf.write('$$end\n')
         elif isinstance(node, ast.ClassDef):
             if not any(ty in source_line for ty in ['(enum.IntEnum)', '(enum.IntFlag)']):
                 continue
             outf.write(f'$$class={node.name}\n')
-            outf.write('<div class="api">\n')
+            outf.write('<div class="api-class">\n')
             outf.write(f'  <div><span class="class_name">{node.name}</span> (enum)</div>\n')
-
             outf.write('  <table>\n')
 
             expr_for_assign = {}

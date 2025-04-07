@@ -66,7 +66,9 @@ end
 -- Replace divs with 'raw-html-insert' class in them with raw HTML from a file
 function div (el)
     local funcrefs = el.attributes['data-apirefs']
-    local out_html = ""
+    local html = pandoc.write(pandoc.Pandoc(el.content), "html")
+
+    local out_html = "<div class=\"funclist\">\n"
     for func in string.gmatch(funcrefs, '([^,]+)') do
         name = func:match("^%s*(.-)%s*$") -- strip ws
         if func_dict[name] then
@@ -79,6 +81,8 @@ function div (el)
             print("[WARN] No function found for " .. name)
         end
     end
+    out_html = out_html .. html
+    out_html = out_html .. "</div>"
     return {
         pandoc.RawBlock('html', out_html)
     }

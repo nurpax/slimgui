@@ -166,14 +166,22 @@ code {
 }
 
 /* Styles for API reference */
-div.api {
-    margin-bottom: 1.0em;
+div.funclist {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 2em;
 }
 
-.api p {
+div.api { margin-top: 1em; }
+
+div.api-class {
+    margin-left: -2em;
+    margin-top: 1em;
+}
+
+.funclist p {
     margin-top: 3px;
-    margin-bottom: 0;
-    margin-left: 2em;
+    margin-bottom: 0.5em;
     font-size: 11pt;
 }
 
@@ -184,6 +192,7 @@ div.api {
 }
 
 .api > code {
+    margin-left: -2em;
     font-size: 11pt;
     color: #555;
 }
@@ -201,12 +210,12 @@ div.api {
     color: #000;
 }
 
-.api div span.class_name {
+.api-class div span.class_name {
     color: #000;
     font-weight: bold;
 }
 
-.api table {
+.api-class table {
     border: none;
     font-size: 10pt;
     margin-top: 0.5em;
@@ -215,12 +224,12 @@ div.api {
     border-collapse: collapse;
 }
 
-.api table tr {
+.api-class table tr {
     border: none;
     margin-top: 2em;
 }
 
-.api table code {
+.api-class table code {
     font-size: 9pt;
     margin-left: 0;
     margin-right: 0;
@@ -229,22 +238,22 @@ div.api {
     background-color: transparent;
 }
 
-.api table tr td:first-child,
-.api table tr th:first-child {
+.api-class table tr td:first-child,
+.api-class table tr th:first-child {
     width: 250px;
     max-width: 300px;
     min-width: 250px;
 }
 
-.api table tr:nth-child(even) {
+.api-class table tr:nth-child(even) {
     background-color: #f0f0f0; /* Light gray for even rows */
 }
 
-.api table tr:nth-child(odd) {
+.api-class table tr:nth-child(odd) {
     background-color: #fff; /* White for odd rows */
 }
 
-.api table td {
+.api-class table td {
     margin-left: 0;
     padding-left: 0;
     border: none;

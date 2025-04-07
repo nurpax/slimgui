@@ -93,7 +93,22 @@ Note: functions shown below intentionally do not accept `None` as the destinatio
 - Note that the bottom of window stack always contains a window called "Debug".
 
 #### Functions
-<div class="raw-html-insert" data-apirefs="begin, end"></div>
+<div class="raw-html-insert" data-apirefs="begin">
+When the `closable` argument is set to `True`, the created window will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:
+
+```
+win_open = True  # open/closed state
+
+visible, tab_open = imgui.begin(..., closable=tab_open)
+if visible:
+    # render window contents here..
+imgui.end()
+```
+</div>
+
+<div class="raw-html-insert" data-apirefs="end">
+Every `begin()` call must be paired with a corresponding `end()` call, regardless of the return value of `begin()` return value.
+</div>
 
 ### Child Windows
 
@@ -451,7 +466,20 @@ The typical call flow is:
 - Note: Tabs are automatically created by the docking system (when in 'docking' branch). Use this to create tab bars/tabs yourself.
 
 #### Functions
-<div class="raw-html-insert" data-apirefs="begin_tab_bar, end_tab_bar, begin_tab_item, end_tab_item, tab_item_button, set_tab_item_closed"></div>
+<div class="raw-html-insert" data-apirefs="begin_tab_bar, end_tab_bar, tab_item_button, set_tab_item_closed"></div>
+<div class="raw-html-insert" data-apirefs="begin_tab_item">
+When the `closable` argument is set to `True`, the created tab will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:
+
+```
+tab_open = True  # open/closed state
+
+visible, tab_open = imgui.begin_tab_item(..., closable=tab_open)
+if visible:
+    # render tab contents here..
+```
+
+</div>
+<div class="raw-html-insert" data-apirefs="end_tab_item"></div>
 
 ### Disabling [BETA API]
 
