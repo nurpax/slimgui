@@ -99,7 +99,7 @@ When the `closable` argument is set to `True`, the created window will display a
 ```
 win_open = True  # open/closed state
 
-visible, tab_open = imgui.begin(..., closable=tab_open)
+visible, tab_open = imgui.begin(..., closable=win_open)
 if visible:
     # render window contents here..
 imgui.end()
