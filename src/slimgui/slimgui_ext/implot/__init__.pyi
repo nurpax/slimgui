@@ -4,6 +4,18 @@ from typing import Annotated, overload
 
 from numpy.typing import ArrayLike
 
+from ...common_types import (
+    BoolRef,
+    DoubleRef,
+    FloatRef,
+    IntRef,
+    IntVec2Ref,
+    IntVec3Ref,
+    IntVec4Ref,
+    Vec2Ref,
+    Vec3Ref,
+    Vec4Ref
+)
 import slimgui_ext
 
 
@@ -851,11 +863,11 @@ def setup_mouse_text(location: Location, flags: MouseTextFlags = MouseTextFlags.
 
 def show_colormap_selector(label: str) -> bool: ...
 
-def show_demo_window(closable: bool = False) -> bool: ...
+def show_demo_window(open: BoolRef | None = None) -> None: ...
 
 def show_input_map_selector(label: str) -> bool: ...
 
-def show_metrics_window(closable: bool = False) -> bool: ...
+def show_metrics_window(open: BoolRef | None = None) -> None: ...
 
 def show_style_editor(ref: Style | None = None) -> None: ...
 

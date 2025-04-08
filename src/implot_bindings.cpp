@@ -10,14 +10,15 @@
 #include <vector>
 #include <array>
 
+namespace nb = nanobind;
+using namespace nb::literals;
+
 #include "imgui.h"
 #include "implot.h"
 #include "implot_internal.h"
 #include "type_casts.h"
 #include "type_casts_implot.h"
-
-namespace nb = nanobind;
-using namespace nb::literals;
+#include "helpers.h"
 
 typedef nb::ndarray<const float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d_f32;
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
@@ -64,17 +65,15 @@ void implot_bindings(nb::module_& m) {
     m.def("set_current_context_internal", &ImPlot::SetCurrentContext, nb::rv_policy::reference);
     m.def("destroy_context_internal", &ImPlot::DestroyContext);
 
-    m.def("show_demo_window", [](bool closable) {
-        bool open = true;
-        ImPlot::ShowDemoWindow(closable ? &open : nullptr);
-        return open;
-    }, "closable"_a = false);
+    m.def("show_demo_window", [](BoolRef open) {
+        RefHelper open_ref(open);
+        ImPlot::ShowDemoWindow(open_ref.ptr());
+    }, "open"_a = nb::none());
 
-    m.def("show_metrics_window", [](bool closable) {
-        bool open = true;
-        ImPlot::ShowMetricsWindow(closable ? &open : nullptr);
-        return open;
-    }, "closable"_a = false);
+    m.def("show_metrics_window", [](BoolRef open) {
+        RefHelper open_ref(open);
+        ImPlot::ShowMetricsWindow(open_ref.ptr());
+    }, "open"_a = nb::none());
 
     // SetupAxisTicks overloads
     m.def("setup_axis_ticks", [](ImAxis axis, ndarray_1d& values, std::optional<std::vector<const char*>> labels, bool keep_default) {

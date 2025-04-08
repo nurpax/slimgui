@@ -4,6 +4,19 @@ from typing import Annotated, overload
 
 from numpy.typing import ArrayLike
 
+from ...common_types import (
+    BoolRef,
+    DoubleRef,
+    FloatRef,
+    IntRef,
+    IntVec2Ref,
+    IntVec3Ref,
+    IntVec4Ref,
+    Vec2Ref,
+    Vec3Ref,
+    Vec4Ref
+)
+
 
 class BackendFlags(enum.IntFlag):
     __str__ = __repr__
@@ -2795,7 +2808,7 @@ def arrow_button(str_id: str, dir: Dir) -> bool:
     ...
 
 
-def begin(name: str, closable: bool = False, flags: WindowFlags = WindowFlags.NONE) -> tuple[bool, bool]:
+def begin(name: str, open: BoolRef | None = None, flags: WindowFlags = WindowFlags.NONE) -> bool:
     ...
 
 
@@ -2866,7 +2879,7 @@ def begin_tab_bar(str_id: str, flags: TabBarFlags = TabBarFlags.NONE) -> bool:
     ...
 
 
-def begin_tab_item(str_id: str, closable: bool = False, flags: TabItemFlags = TabItemFlags.NONE) -> tuple[bool, bool]:
+def begin_tab_item(str_id: str, open: BoolRef | None = None, flags: TabItemFlags = TabItemFlags.NONE) -> bool:
     """Create a Tab. Returns true if the Tab is selected."""
     ...
 
@@ -2904,11 +2917,11 @@ def calc_text_size(text: str, hide_text_after_double_hash: bool = False, wrap_wi
     ...
 
 
-def checkbox(label: str, v: bool) -> tuple[bool, bool]:
+def checkbox(label: str, v: BoolRef) -> bool:
     ...
 
 
-def checkbox_flags(label: str, flags: int, flags_value: int) -> tuple[bool, int]:
+def checkbox_flags(label: str, flags: IntRef, flags_value: int) -> bool:
     ...
 
 
@@ -2917,7 +2930,7 @@ def close_current_popup() -> None:
     ...
 
 
-def collapsing_header(label: str, visible: bool | None = None, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> tuple[bool, bool | None]:
+def collapsing_header(label: str, open: BoolRef | None = None, flags: TreeNodeFlags = TreeNodeFlags.NONE) -> bool:
     """If returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call `tree_pop()`."""
     ...
 
@@ -2943,19 +2956,19 @@ def color_convert_u32_to_float4(arg: int, /) -> tuple[float, float, float, float
     ...
 
 
-def color_edit3(label: str, col: tuple[float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+def color_edit3(label: str, col: Vec3Ref, flags: ColorEditFlags = ColorEditFlags.NONE) -> bool:
     ...
 
 
-def color_edit4(label: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+def color_edit4(label: str, col: Vec4Ref, flags: ColorEditFlags = ColorEditFlags.NONE) -> bool:
     ...
 
 
-def color_picker3(label: str, col: tuple[float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+def color_picker3(label: str, col: Vec3Ref, flags: ColorEditFlags = ColorEditFlags.NONE) -> bool:
     ...
 
 
-def color_picker4(label: str, col: tuple[float, float, float, float], flags: ColorEditFlags = ColorEditFlags.NONE, ref_col: tuple[float, float, float, float] | None = None) -> tuple[bool, tuple[float, float, float, float]]:
+def color_picker4(label: str, col: Vec4Ref, flags: ColorEditFlags = ColorEditFlags.NONE, ref_col: tuple[float, float, float, float] | None = None) -> bool:
     ...
 
 
@@ -2963,7 +2976,7 @@ def columns(count: int = 1, id: str | None = None, border: bool = True) -> None:
     ...
 
 
-def combo(label: str, current_item: int, items: Sequence[str], popup_max_height_in_items: int = -1) -> tuple[bool, int]:
+def combo(label: str, current_item: IntRef, items: Sequence[str], popup_max_height_in_items: int = -1) -> bool:
     ...
 
 
@@ -2976,37 +2989,37 @@ def destroy_context(arg: Context, /) -> None:
     ...
 
 
-def drag_float(label: str, v: float, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]:
+def drag_float(label: str, v: FloatRef, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     """If v_min >= v_max we have no bound"""
     ...
 
 
-def drag_float2(label: str, v: tuple[float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float]]:
+def drag_float2(label: str, v: Vec2Ref, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def drag_float3(label: str, v: tuple[float, float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+def drag_float3(label: str, v: Vec3Ref, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def drag_float4(label: str, v: tuple[float, float, float, float], v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+def drag_float4(label: str, v: Vec4Ref, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def drag_int(label: str, v: int, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]:
+def drag_int(label: str, v: IntRef, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     """If v_min >= v_max we have no bound"""
     ...
 
 
-def drag_int2(label: str, v: tuple[int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int]]:
+def drag_int2(label: str, v: IntVec2Ref, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def drag_int3(label: str, v: tuple[int, int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int]]:
+def drag_int3(label: str, v: IntVec3Ref, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def drag_int4(label: str, v: tuple[int, int, int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]:
+def drag_int4(label: str, v: IntVec4Ref, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
@@ -3332,51 +3345,51 @@ def indent(indent_w: float = 0.0) -> None:
     ...
 
 
-def input_double(label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = '%.6f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, float]:
+def input_double(label: str, v: DoubleRef, step: float = 0.0, step_fast: float = 0.0, format: str = '%.6f', flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_float(label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, float]:
+def input_float(label: str, v: FloatRef, step: float = 0.0, step_fast: float = 0.0, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_float2(label: str, v: tuple[float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float]]:
+def input_float2(label: str, v: Vec2Ref, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_float3(label: str, v: tuple[float, float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+def input_float3(label: str, v: Vec3Ref, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_float4(label: str, v: tuple[float, float, float, float], format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+def input_float4(label: str, v: Vec4Ref, format: str = '%.3f', flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_int(label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, int]:
+def input_int(label: str, v: IntRef, step: int = 1, step_fast: int = 100, flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_int2(label: str, v: tuple[int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int]]:
+def input_int2(label: str, v: IntVec2Ref, flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_int3(label: str, v: tuple[int, int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int, int]]:
+def input_int3(label: str, v: IntVec3Ref, flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_int4(label: str, v: tuple[int, int, int, int], flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]:
+def input_int4(label: str, v: IntVec4Ref, flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_text(label: str, text: str, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]:
+def input_text(label: str, text: StrRef, flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_text_multiline(label: str, text: str, size: tuple[float, float] = (0.0, 0.0), flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]:
+def input_text_multiline(label: str, text: StrRef, size: tuple[float, float] = (0.0, 0.0), flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
-def input_text_with_hint(label: str, hint: str, text: str, flags: InputTextFlags = InputTextFlags.NONE) -> tuple[bool, str]:
+def input_text_with_hint(label: str, hint: str, text: StrRef, flags: InputTextFlags = InputTextFlags.NONE) -> bool:
     ...
 
 
@@ -3549,7 +3562,7 @@ def label_text(label: str, text: str) -> None:
     ...
 
 
-def list_box(label: str, current_item: int, items: Sequence[str], height_in_items: int = -1) -> tuple[bool, int]:
+def list_box(label: str, current_item: IntRef, items: Sequence[str], height_in_items: int = -1) -> bool:
     ...
 
 
@@ -3583,8 +3596,14 @@ def log_to_tty(auto_open_depth: int = -1) -> None:
     ...
 
 
-def menu_item(label: str, shortcut: str | None = None, selected: bool = False, enabled: bool = True) -> tuple[bool, bool]:
+@overload
+def menu_item(label: str, shortcut: str | None = None, selected: bool = False, enabled: bool = True) -> bool:
     """Return true when activated."""
+    ...
+
+
+@overload
+def menu_item(label: str, shortcut: str | None, selected: BoolRef | None, enabled: bool = True) -> bool:
     ...
 
 
@@ -3735,7 +3754,7 @@ def radio_button(label: str, active: bool) -> bool:
 
 
 @overload
-def radio_button(label: str, v: int, v_button: int) -> tuple[bool, int]:
+def radio_button(label: str, v: IntRef, v_button: int) -> bool:
     ...
 
 
@@ -3753,8 +3772,14 @@ def same_line(offset_from_start_x: float = 0.0, spacing: float = -1.0) -> None:
     ...
 
 
-def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]:
+@overload
+def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> bool:
     """\"bool selected\" carry the selection state (read-only). `selectable()` is clicked is returns true so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height"""
+    ...
+
+
+@overload
+def selectable(label: str, selected: BoolRef, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> bool:
     ...
 
 
@@ -3983,17 +4008,17 @@ def set_window_size(name: str, size: tuple[float, float], cond: Cond = Cond.NONE
     ...
 
 
-def show_about_window(closable: bool = False) -> bool:
+def show_about_window(open: BoolRef | None = None) -> None:
     """Create About window. display Dear ImGui version, credits and build/system information."""
     ...
 
 
-def show_debug_log_window(closable: bool = False) -> bool:
+def show_debug_log_window(open: BoolRef | None = None) -> None:
     """Create Debug Log window. display a simplified log of important dear imgui events."""
     ...
 
 
-def show_demo_window(closable: bool = False) -> bool:
+def show_demo_window(open: BoolRef | None = None) -> None:
     """Create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!"""
     ...
 
@@ -4003,12 +4028,12 @@ def show_font_selector(label: str) -> None:
     ...
 
 
-def show_id_stack_tool_window(closable: bool = False) -> bool:
+def show_id_stack_tool_window(open: BoolRef | None = None) -> None:
     """Create Stack Tool window. hover items with mouse to query information about the source of their unique ID."""
     ...
 
 
-def show_metrics_window(closable: bool = False) -> bool:
+def show_metrics_window(open: BoolRef | None = None) -> None:
     """Create Metrics/Debugger window. display Dear ImGui internals: windows, draw commands, various internal state, etc."""
     ...
 
@@ -4028,40 +4053,40 @@ def show_user_guide() -> None:
     ...
 
 
-def slider_angle(label: str, v: float, v_degrees_min: float = -360.0, v_degrees_max: float = 360.0, format: str = '%.0f deg', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]:
+def slider_angle(label: str, v: FloatRef, v_degrees_min: float = -360.0, v_degrees_max: float = 360.0, format: str = '%.0f deg', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def slider_float(label: str, v: float, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]:
+def slider_float(label: str, v: FloatRef, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     """Adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display."""
     ...
 
 
-def slider_float2(label: str, v: tuple[float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float]]:
+def slider_float2(label: str, v: Vec2Ref, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def slider_float3(label: str, v: tuple[float, float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float]]:
+def slider_float3(label: str, v: Vec3Ref, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def slider_float4(label: str, v: tuple[float, float, float, float], v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[float, float, float, float]]:
+def slider_float4(label: str, v: Vec4Ref, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def slider_int(label: str, v: int, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]:
+def slider_int(label: str, v: IntRef, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def slider_int2(label: str, v: tuple[int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int]]:
+def slider_int2(label: str, v: IntVec2Ref, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def slider_int3(label: str, v: tuple[int, int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int]]:
+def slider_int3(label: str, v: IntVec3Ref, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 
-def slider_int4(label: str, v: tuple[int, int, int, int], v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]:
+def slider_int4(label: str, v: IntVec4Ref, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> bool:
     ...
 
 

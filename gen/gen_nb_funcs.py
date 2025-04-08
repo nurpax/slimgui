@@ -68,12 +68,12 @@ _implot_func_list: list[ImplotFunc] = [
     ImplotFunc('ImPlot_GetPlotPos', 'get_plot_pos'),
     ImplotFunc('ImPlot_GetPlotSize', 'get_plot_size'),
     ImplotFunc('ImPlot_GetPlotMousePos', 'get_plot_mouse_pos'),
-    #ImplotFunc('ImPlot_GetPlotLimits', 'get_plot_limits'), <- TODO implotrect type
+    #ImplotFunc('ImPlot_GetPlotLimits', 'get_plot_limits'), <- TODO implotrect caster
     ImplotFunc('ImPlot_IsPlotHovered', 'is_plot_hovered'),
     ImplotFunc('ImPlot_IsAxisHovered', 'is_axis_hovered'),
     ImplotFunc('ImPlot_IsSubplotsHovered', 'is_subplots_hovered'),
     ImplotFunc('ImPlot_IsPlotSelected', 'is_plot_selected'),
-    #ImplotFunc('ImPlot_GetPlotSelection', 'get_plot_selection'), <- TODO implotrect type
+    #ImplotFunc('ImPlot_GetPlotSelection', 'get_plot_selection'), <- TODO implotrect caster
     ImplotFunc('ImPlot_CancelPlotSelection', 'cancel_plot_selection'),
     ImplotFunc('ImPlot_HideNextItem', 'hide_next_item'),
     ImplotFunc('ImPlot_BeginAlignedPlots', 'begin_aligned_plots'),

@@ -1,5 +1,5 @@
 
-from slimgui import imgui
+from slimgui import imgui, FloatRef
 from slimgui.imgui import TreeNodeFlags
 
 from .types import State
@@ -37,17 +37,18 @@ def show_placeholder_object(prefix: str, uid: int):
                 imgui.set_next_item_width(-imgui.FLOAT_MIN)
 
                 offs = i - 2 # Note: original code has a stack overflow here
+                ref = FloatRef(_placeholder_members[offs])
                 if i >= 5:
-                    _placeholder_members[offs] = imgui.input_float("##value", _placeholder_members[offs], 1.0)[1]
+                    imgui.input_float("##value", ref, 1.0)
                 else:
-                    _placeholder_members[offs] = imgui.drag_float("##value", _placeholder_members[offs], 0.01)[1]
+                    imgui.drag_float("##value", ref, 0.01)
+                _placeholder_members[offs] = ref.value
             imgui.pop_id()
         imgui.tree_pop()
 
 def show_example_app_property_editor(st: State):
     imgui.set_next_window_size((430, 450), imgui.Cond.FIRST_USE_EVER)
-    visible, st.show_app_property_editor = imgui.begin("Example: Property editor", st.show_app_property_editor)
-    if not visible:
+    if not imgui.begin("Example: Property editor", st.show_app_property_editor):
         imgui.end()
         return
 

@@ -7,11 +7,9 @@ import demo_window
 import implot_demo_window
 import requests
 
-from slimgui import imgui
-from slimgui import implot
+from slimgui import imgui, implot, BoolRef, StrRef
 
 from util import imgui_window
-
 
 def download_and_cache(url, cache_dir='cache', filename=None) -> str:
     os.makedirs(cache_dir, exist_ok=True)
@@ -30,12 +28,12 @@ def download_and_cache(url, cache_dir='cache', filename=None) -> str:
 
 @dataclass
 class State:
-    show_python_demo_window = True
-    show_implot_demo_window = True
-    show_python_implot_demo_window = True
+    show_python_demo_window = BoolRef(True)
+    show_implot_demo_window = BoolRef(True)
+    show_python_implot_demo_window = BoolRef(True)
     click_count: int = 0
-    text: str = ""
-    foo_enabled: bool = False
+    text = StrRef("")
+    foo_enabled = BoolRef(False)
     saved_text: str = ""
 
 def _make_texture():
@@ -111,23 +109,19 @@ def run():
         io = imgui.get_io()
         io.ini_filename = None
 
-        submit, state.text = imgui.input_text(
-            "Prompt:", state.text, flags=imgui.InputTextFlags.ENTER_RETURNS_TRUE | imgui.InputTextFlags.AUTO_SELECT_ALL
-        )
-        if submit:
-            state.saved_text = state.text
+        if imgui.input_text("Prompt:", state.text, flags=imgui.InputTextFlags.ENTER_RETURNS_TRUE | imgui.InputTextFlags.AUTO_SELECT_ALL):
+            state.saved_text = state.text.value
+
         imgui.text(state.saved_text)
 
-        clicked, v = imgui.checkbox("Some setting", state.foo_enabled)
-        if clicked:
+        if imgui.checkbox("Some setting", state.foo_enabled):
             print('checkbox state changed')
-            state.foo_enabled = v
 
         if state.show_python_demo_window:
-            state.show_python_demo_window = demo_window.show_demo_window(state.show_python_demo_window, texture)
+            demo_window.show_demo_window(state.show_python_demo_window, texture)
 
         if state.show_implot_demo_window:
-            state.show_implot_demo_window = implot.show_demo_window(state.show_implot_demo_window)
+            implot.show_demo_window(state.show_implot_demo_window)
 
         if state.show_python_implot_demo_window:
             state.show_python_implot_demo_window = implot_demo_window.show_demo_window(state.show_python_implot_demo_window)

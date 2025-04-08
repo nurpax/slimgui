@@ -1,25 +1,22 @@
 
-from slimgui import imgui
+from slimgui import imgui, Vec4Ref
 import numpy as np
 
-edit_color: tuple = (0.5, 0.6, 0.1, 1.0)
+edit_color = Vec4Ref(0.5, 0.6, 0.1, 1.0)
 tex = None
 
 def show(tex_id: int):
-    global edit_color
-
-    expanded, _ = imgui.collapsing_header("DrawLists")
-    if not expanded:
+    if not imgui.collapsing_header("DrawLists"):
         return
 
-    _c, edit_color = imgui.color_edit4("Color", edit_color)
+    imgui.color_edit4("Color", edit_color)
     _render_shapes(tex_id)
 
 
 def _render_shapes(tex_id: int):
     px, py = imgui.get_cursor_screen_pos()
     dl = imgui.get_window_draw_list()
-    color = imgui.color_convert_float4_to_u32(edit_color)
+    color = imgui.color_convert_float4_to_u32(edit_color.value)
     color2 = imgui.color_convert_float4_to_u32((0.5, 0.6, 0.5, 1.0))
     color3 = imgui.color_convert_float4_to_u32((0.2, 0.4, 0.8, 1))
     dl.add_line((px + 10, py + 10), (px + 50, py + 50), color, 1)

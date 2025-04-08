@@ -10,30 +10,15 @@
 #include <vector>
 #include <array>
 
-#include "imgui.h"
-#include "imgui_internal.h"
-
 namespace nb = nanobind;
 using namespace nb::literals;
 
-extern void implot_bindings(nb::module_& implot);  // implot_bindings.cpp
-
+#include "imgui.h"
+#include "imgui_internal.h"
 #include "type_casts.h"
+#include "helpers.h"
 
-template<typename T, typename... Args>
-auto tuple_to_array(const std::tuple<Args...>& tpl) {
-    return std::apply([](auto&&... args) { return std::array<T, sizeof...(Args)>{args...}; }, tpl);
-}
-
-template<typename Array, std::size_t... I>
-auto array_to_tuple_impl(const Array& arr, std::index_sequence<I...>) {
-    return std::make_tuple(arr[I]...);
-}
-
-template<typename T, std::size_t N>
-auto array_to_tuple(const std::array<T, N>& arr) {
-    return array_to_tuple_impl(arr, std::make_index_sequence<N>{});
-}
+extern void implot_bindings(nb::module_& implot);  // implot_bindings.cpp
 
 struct InputTextCallback_UserData
 {
@@ -451,31 +436,26 @@ NB_MODULE(slimgui_ext, top) {
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);
 
     // Demo, Debug, Information
-    m.def("show_demo_window", [](bool closable) {
-        bool open = true;
-        ImGui::ShowDemoWindow(closable ? &open : nullptr);
-        return open;
-    }, "closable"_a = false);
-    m.def("show_metrics_window", [](bool closable) {
-        bool open = true;
-        ImGui::ShowMetricsWindow(closable ? &open : nullptr);
-        return open;
-    }, "closable"_a = false);
-    m.def("show_debug_log_window", [](bool closable) {
-        bool open = true;
-        ImGui::ShowDebugLogWindow(closable ? &open : nullptr);
-        return open;
-    }, "closable"_a = false);
-    m.def("show_id_stack_tool_window", [](bool closable) {
-        bool open = true;
-        ImGui::ShowIDStackToolWindow(closable ? &open : nullptr);
-        return open;
-    }, "closable"_a = false);
-    m.def("show_about_window", [](bool closable) {
-        bool open = true;
-        ImGui::ShowAboutWindow(closable ? &open : nullptr);
-        return open;
-    }, "closable"_a = false);
+    m.def("show_demo_window", [](BoolRef open) {
+        RefHelper ref(open);
+        ImGui::ShowDemoWindow(ref.ptr());
+    }, "open"_a = nb::none());
+    m.def("show_metrics_window", [](BoolRef open) {
+        RefHelper ref(open);
+        ImGui::ShowMetricsWindow(ref.ptr());
+    }, "open"_a = nb::none());
+    m.def("show_debug_log_window", [](BoolRef open) {
+        RefHelper ref(open);
+        ImGui::ShowDebugLogWindow(ref.ptr());
+    }, "open"_a = nb::none());
+    m.def("show_id_stack_tool_window", [](BoolRef open) {
+        RefHelper ref(open);
+        ImGui::ShowIDStackToolWindow(ref.ptr());
+    }, "open"_a = nb::none());
+    m.def("show_about_window", [](BoolRef open) {
+        RefHelper ref(open);
+        ImGui::ShowAboutWindow(ref.ptr());
+    }, "open"_a = nb::none());
     m.def("show_style_editor", []() {
         ImGui::ShowStyleEditor(nullptr); // TODO styleref
     });
@@ -489,12 +469,15 @@ NB_MODULE(slimgui_ext, top) {
     m.def("style_colors_light", &ImGui::StyleColorsLight, "dst"_a);
     m.def("style_colors_classic", &ImGui::StyleColorsClassic, "dst"_a);
 
-    // ...
-    m.def("begin", [](const char* name, bool closable, ImGuiWindowFlags_ flags) {
-        bool open = true;
-        bool visible = ImGui::Begin(name, closable ? &open : NULL, flags);
-        return std::pair<bool, bool>(visible, open);
-    }, "name"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
+    // nb::handle
+    m.def("begin", [](const char* name, std::optional<BoolRef> open, ImGuiWindowFlags_ flags) {
+        if (open) {
+            RefHelper ref(open.value());
+            return ImGui::Begin(name, ref.ptr(), flags);
+        } else {
+            return ImGui::Begin(name, nullptr, flags);
+        }
+    }, "name"_a, "open"_a = nb::none(), "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
     m.def("end", &ImGui::End);
 
 
@@ -624,20 +607,20 @@ NB_MODULE(slimgui_ext, top) {
         return ImGui::InvisibleButton(str_id, size, flags);
     }, "str_id"_a, "size"_a, "flags"_a.sig("ButtonFlags.NONE") = ImGuiButtonFlags_None);
     m.def("arrow_button", &ImGui::ArrowButton, "str_id"_a, "dir"_a);
-    m.def("checkbox", [](const char* label, bool v) {
-        bool pressed = ImGui::Checkbox(label, &v);
-        return std::tuple(pressed, v);
+    m.def("checkbox", [](const char* label, BoolRef v) {
+        RefHelper ref(v);
+        return ImGui::Checkbox(label, ref.ptr());
     }, "label"_a, "v"_a);
-    m.def("checkbox_flags", [](const char* label, ImU64 flags, ImU64 flags_value) {
-        bool pressed = ImGui::CheckboxFlags(label, &flags, flags_value);
-        return std::tuple(pressed, flags);
+    m.def("checkbox_flags", [](const char* label, IntRef flags, ImU64 flags_value) {
+        RefHelper ref(flags);
+        return ImGui::CheckboxFlags(label, ref.ptr(), flags_value);
     }, "label"_a, "flags"_a, "flags_value"_a);
     m.def("radio_button", [](const char* label, bool active) {
         return ImGui::RadioButton(label, active);
     }, "label"_a, "active"_a);
-    m.def("radio_button", [](const char* label, int v, int v_button) {
-        bool pressed = ImGui::RadioButton(label, &v, v_button);
-        return std::tuple(pressed, v);
+    m.def("radio_button", [](const char* label, IntRef v, int v_button) {
+        RefHelper ref(v);
+        return ImGui::RadioButton(label, ref.ptr(), v_button);
     }, "label"_a, "v"_a, "v_button"_a);
     m.def("progress_bar", [](float fraction, ImVec2 size_arg, std::optional<std::string> overlay) {
         ImGui::ProgressBar(fraction, size_arg, overlay ? overlay.value().c_str() : nullptr);
@@ -658,9 +641,9 @@ NB_MODULE(slimgui_ext, top) {
         return ImGui::BeginCombo(label, preview_value, flags);
     }, "label"_a, "preview_value"_a, "flags"_a.sig("ComboFlags.NONE") = ImGuiComboFlags_None);
     m.def("end_combo", &ImGui::EndCombo);
-    m.def("combo", [](const char* label, int current_item, const std::vector<const char*>& items, int popup_max_height_in_items) {
-        bool changed = ImGui::Combo(label, &current_item, &items[0], items.size(), popup_max_height_in_items);
-        return std::tuple(changed, current_item);
+    m.def("combo", [](const char* label, IntRef current_item, const std::vector<const char*>& items, int popup_max_height_in_items) {
+        RefHelper ref(current_item);
+        return ImGui::Combo(label, ref.ptr(), &items[0], items.size(), popup_max_height_in_items);
     }, "label"_a, "current_item"_a, "items"_a, "popup_max_height_in_items"_a = -1);
 
     m.def("get_cursor_screen_pos", &ImGui::GetCursorScreenPos);
@@ -697,10 +680,12 @@ NB_MODULE(slimgui_ext, top) {
     m.def("begin_menu", &ImGui::BeginMenu, "label"_a, "enabled"_a = true);
     m.def("end_menu", &ImGui::EndMenu);
     m.def("menu_item", [](const char* label, std::optional<std::string> shortcut, bool selected, bool enabled) {
-        bool mut_selected = selected;
-        bool clicked = ImGui::MenuItem(label, shortcut ? shortcut.value().c_str() : nullptr, &mut_selected, enabled);
-        return std::pair(clicked, mut_selected);
+        return ImGui::MenuItem(label, shortcut ? shortcut->c_str() : nullptr, selected, enabled);
     }, "label"_a, "shortcut"_a = nb::none(), "selected"_a = false, "enabled"_a = true);
+    m.def("menu_item", [](const char* label, std::optional<std::string> shortcut, BoolRef selected, bool enabled) {
+        RefHelper ref(selected);
+        return ImGui::MenuItem(label, shortcut ? shortcut->c_str() : nullptr, ref.ptr(), enabled);
+    }, "label"_a, "shortcut"_a.none(), "selected"_a.none(), "enabled"_a = true);
 
     // Tooltips
 
@@ -763,28 +748,30 @@ NB_MODULE(slimgui_ext, top) {
     m.def("set_next_item_open", [](bool is_open, ImGuiCond_ cond) {
         ImGui::SetNextItemOpen(is_open, cond);
     }, "is_open"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
-    m.def("collapsing_header", [](const char* label, std::optional<bool> visible, ImGuiTreeNodeFlags_ flags) {
-        if (!visible) {
-            bool clicked = ImGui::CollapsingHeader(label, nullptr, flags);
-            return std::pair(clicked, std::optional<bool>{});
+    m.def("collapsing_header", [](const char* label, std::optional<BoolRef> open, ImGuiTreeNodeFlags_ flags) {
+        if (open) {
+            RefHelper ref(open.value());
+            return ImGui::CollapsingHeader(label, ref.ptr(), flags);
+        }  else {
+            return ImGui::CollapsingHeader(label, nullptr, flags);
         }
-        bool inout_visible = visible.value();
-        bool open = ImGui::CollapsingHeader(label, &inout_visible, flags);
-        return std::pair(open, std::optional<bool>{inout_visible});
-    }, "label"_a, "visible"_a = nb::none(), "flags"_a.sig("TreeNodeFlags.NONE") = ImGuiTreeNodeFlags_None);
+    }, "label"_a, "open"_a = nb::none(), "flags"_a.sig("TreeNodeFlags.NONE") = ImGuiTreeNodeFlags_None);
 
     // Widgets: Selectables
     m.def("selectable", [](const char* label, bool selected, ImGuiSelectableFlags_ flags, const ImVec2& size) {
-        bool clicked = ImGui::Selectable(label, &selected, flags, size);
-        return std::pair(clicked, selected);
+        return ImGui::Selectable(label, selected, flags, size);
     }, "label"_a, "selected"_a = false, "flags"_a.sig("SelectableFlags.NONE") = ImGuiSelectableFlags_None, "size"_a = ImVec2(0, 0));
+    m.def("selectable", [](const char* label, BoolRef selected, ImGuiSelectableFlags_ flags, const ImVec2& size) {
+        RefHelper ref(selected);
+        return ImGui::Selectable(label, ref.ptr(), flags, size);
+    }, "label"_a, "selected"_a, "flags"_a.sig("SelectableFlags.NONE") = ImGuiSelectableFlags_None, "size"_a = ImVec2(0, 0));
 
     // Widgets: List Boxes
     m.def("begin_list_box", &ImGui::BeginListBox, "label"_a, "size"_a = ImVec2(0, 0));
     m.def("end_list_box", &ImGui::EndListBox);
-    m.def("list_box", [](const char* label, int current_item, const std::vector<const char*>& items, int height_in_items) {
-        bool changed = ImGui::ListBox(label, &current_item, &items[0], items.size(), height_in_items);
-        return std::tuple(changed, current_item);
+    m.def("list_box", [](const char* label, IntRef current_item, const std::vector<const char*>& items, int height_in_items) {
+        RefHelper ref(current_item);
+        return ImGui::ListBox(label, ref.ptr(), &items[0], items.size(), height_in_items);
     }, "label"_a, "current_item"_a, "items"_a, "height_in_items"_a = -1);
 
 
@@ -798,56 +785,50 @@ NB_MODULE(slimgui_ext, top) {
     }, "label"_a, "values"_a, "overlay_text"_a = nb::none(), "scale_min"_a.sig("FLT_MAX") = FLT_MAX, "scale_max"_a.sig("FLT_MAX") = FLT_MAX, "graph_size"_a = ImVec2(0,0));
 
 
-    // // Widgets: Regular Sliders
-    m.def("slider_float", [](const char* label, float v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::SliderFloat(label, &v, v_min, v_max, format, flags);
-        return std::pair(changed, v);
+    // Widgets: Regular Sliders
+    m.def("slider_float", [](const char* label, FloatRef v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderFloat(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_float2", [](const char* label, std::tuple<float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<float>(v);
-        bool changed = ImGui::SliderFloat2(label, vals.data(), v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple<float>(vals));
+    m.def("slider_float2", [](const char* label, Vec2Ref v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderFloat2(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_float3", [](const char* label, std::tuple<float, float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<float>(v);
-        bool changed = ImGui::SliderFloat3(label, vals.data(), v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple<float>(vals));
+    m.def("slider_float3", [](const char* label, Vec3Ref v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderFloat3(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_float4", [](const char* label, std::tuple<float, float, float, float> v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<float>(v);
-        bool changed = ImGui::SliderFloat4(label, vals.data(), v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple<float>(vals));
+    m.def("slider_float4", [](const char* label, Vec4Ref v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderFloat4(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_angle", [](const char* label, float v_rad, float v_degrees_min, float v_degrees_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::SliderAngle(label, &v_rad, v_degrees_min, v_degrees_max, format, flags);
-        return std::pair(changed, v_rad);
+    m.def("slider_angle", [](const char* label, FloatRef v_rad, float v_degrees_min, float v_degrees_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v_rad);
+        return ImGui::SliderAngle(label, ref.ptr(), v_degrees_min, v_degrees_max, format, flags);
     }, "label"_a, "v"_a, "v_degrees_min"_a = -360.f, "v_degrees_max"_a = 360.f, "format"_a = "%.0f deg", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int", [](const char* label, int v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::SliderInt(label, &v, v_min, v_max, format, flags);
-        return std::pair(changed, v);
+    m.def("slider_int", [](const char* label, IntRef v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderInt(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int2", [](const char* label, std::tuple<int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::SliderInt2(label, vals.data(), v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple<int>(vals));
+    m.def("slider_int2", [](const char* label, IntVec2Ref v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderInt2(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int3", [](const char* label, std::tuple<int, int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::SliderInt3(label, vals.data(), v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple<int>(vals));
+    m.def("slider_int3", [](const char* label, IntVec3Ref v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderInt3(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("slider_int4", [](const char* label, std::tuple<int, int, int, int> v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::SliderInt4(label, vals.data(), v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple<int>(vals));
+    m.def("slider_int4", [](const char* label, IntVec4Ref v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::SliderInt4(label, ref.ptr(), v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     // IMGUI_API bool          SliderScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);
@@ -861,49 +842,47 @@ NB_MODULE(slimgui_ext, top) {
     // IMGUI_API bool          DragIntRange2(const char* label, int* v_current_min, int* v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", const char* format_max = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragScalar(const char* label, ImGuiDataType data_type, void* p_data, float v_speed = 1.0f, const void* p_min = NULL, const void* p_max = NULL, const char* format = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, float v_speed = 1.0f, const void* p_min = NULL, const void* p_max = NULL, const char* format = NULL, ImGuiSliderFlags flags = 0);
-    m.def("drag_float", [](const char* label, float v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::DragFloat(label, &v, v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, v);
+    m.def("drag_float", [](const char* label, FloatRef v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragFloat(label, ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
-    m.def("drag_float2", [](const char* label, ImVec2 v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::DragFloat2(label, &v.x, v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, v);
+    m.def("drag_float2", [](const char* label, Vec2Ref v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragFloat2(label, (float*)ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
-    m.def("drag_float3", [](const char* label, Vec3 v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::DragFloat3(label, &v.x, v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, v);
+    m.def("drag_float3", [](const char* label, Vec3Ref v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragFloat3(label, (float*)ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
-    m.def("drag_float4", [](const char* label, ImVec4 v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::DragFloat4(label, &v.x, v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, v);
+    m.def("drag_float4", [](const char* label, Vec4Ref v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragFloat4(label, (float*)ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
-    m.def("drag_int", [](const char* label, int v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        bool changed = ImGui::DragInt(label, &v, v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, v);
+    m.def("drag_int", [](const char* label, IntRef v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragInt(label, (int*)ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%d",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
-    m.def("drag_int2", [](const char* label, std::tuple<int, int> v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::DragInt2(label, vals.data(), v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple(vals));
+    m.def("drag_int2", [](const char* label, IntVec2Ref v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragInt2(label, (int*)ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%d",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
-    m.def("drag_int3", [](const char* label, std::tuple<int, int, int> v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::DragInt3(label, vals.data(), v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple(vals));
+    m.def("drag_int3", [](const char* label, IntVec3Ref v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragInt3(label, (int*)ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%d",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
-    m.def("drag_int4", [](const char* label, std::tuple<int, int, int, int> v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::DragInt4(label, vals.data(), v_speed, v_min, v_max, format, flags);
-        return std::pair(changed, array_to_tuple(vals));
+    m.def("drag_int4", [](const char* label, IntVec4Ref v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::DragInt4(label, (int*)ref.ptr(), v_speed, v_min, v_max, format, flags);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%d",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     // Widgets: Input with Keyboard
-    auto input_text_handler = [](const char* label, const char* hint, std::string text, ImGuiInputTextFlags flags, bool multiline, ImVec2 size = ImVec2(0, 0)) {
+    auto input_text_handler = [](const char* label, const char* hint, StrRef text_ref, ImGuiInputTextFlags flags, bool multiline, ImVec2 size = ImVec2(0, 0)) {
         IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
         flags |= ImGuiInputTextFlags_CallbackResize;
 
-        // TODO nurpax
+        std::string text = nb::cast<std::string>(nb::getattr(text_ref, "value"));
+
         ImGuiInputTextCallback callback = nullptr;
         void* user_data = nullptr;
 
@@ -920,87 +899,82 @@ NB_MODULE(slimgui_ext, top) {
         } else {
             changed = ImGui::InputTextMultiline(label, (char*)text.c_str(), text.capacity() + 1, size, flags, InputTextCallback, &cb_user_data);
         }
-        return std::pair(changed, text);
+        nb::setattr(text_ref, "value", nb::cast(text));
+        return changed;
     };
-    m.def("input_text", [&](const char* label, std::string text, ImGuiInputTextFlags_ flags) {
+    m.def("input_text", [&](const char* label, StrRef text, ImGuiInputTextFlags_ flags) {
         return input_text_handler(label, nullptr, text, flags, false);
     }, "label"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    m.def("input_text_with_hint", [&](const char* label, const char* hint, std::string text, ImGuiInputTextFlags_ flags) {
+    m.def("input_text_with_hint", [&](const char* label, const char* hint, StrRef text, ImGuiInputTextFlags_ flags) {
         return input_text_handler(label, hint, text, flags, false);
     }, "label"_a, "hint"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    m.def("input_text_multiline", [&](const char* label, std::string text, ImVec2 size, ImGuiInputTextFlags_ flags) {
+    m.def("input_text_multiline", [&](const char* label, StrRef text, ImVec2 size, ImGuiInputTextFlags_ flags) {
         return input_text_handler(label, nullptr, text, flags, true, size);
     }, "label"_a, "text"_a, "size"_a = ImVec2(0, 0), "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
-    m.def("input_int", [](const char* label, int v, int step, int step_fast, ImGuiInputTextFlags_ flags) {
-        bool changed = ImGui::InputInt(label, &v, step, step_fast, flags);
-        return std::pair(changed, v);
+    m.def("input_int", [](const char* label, IntRef v, int step, int step_fast, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputInt(label, (int*)ref.ptr(), step, step_fast, flags);
     }, "label"_a, "v"_a, "step"_a = 1, "step_fast"_a = 100, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    m.def("input_int2", [](const char* label, std::tuple<int, int> v, ImGuiInputTextFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::InputInt2(label, vals.data(), flags);
-        return std::pair(changed, array_to_tuple(vals));
+    m.def("input_int2", [](const char* label, IntVec2Ref v, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputInt2(label, (int*)ref.ptr(), flags);
     }, "label"_a, "v"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    m.def("input_int3", [](const char* label, std::tuple<int, int, int> v, ImGuiInputTextFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::InputInt3(label, vals.data(), flags);
-        return std::pair(changed, array_to_tuple(vals));
+    m.def("input_int3", [](const char* label, IntVec3Ref v, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputInt3(label, (int*)ref.ptr(), flags);
     }, "label"_a, "v"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
-    m.def("input_int4", [](const char* label, std::tuple<int, int, int, int> v, ImGuiInputTextFlags_ flags) {
-        auto vals = tuple_to_array<int>(v);
-        bool changed = ImGui::InputInt4(label, vals.data(), flags);
-        return std::pair(changed, array_to_tuple(vals));
+    m.def("input_int4", [](const char* label, IntVec4Ref v, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputInt4(label, (int*)ref.ptr(), flags);
     }, "label"_a, "v"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
-    m.def("input_float", [](const char* label, float v, float step, float step_fast, const char* format, ImGuiInputTextFlags_ flags) {
-        bool changed = ImGui::InputFloat(label, &v, step, step_fast, format, flags);
-        return std::pair(changed, v);
+    m.def("input_float", [](const char* label, FloatRef v, float step, float step_fast, const char* format, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputFloat(label, (float*)ref.ptr(), step, step_fast, format, flags);
     }, "label"_a, "v"_a, "step"_a = 0.f, "step_fast"_a = 0.f, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
-    m.def("input_float2", [](const char* label, ImVec2 v, const char* format, ImGuiInputTextFlags_ flags) {
-        bool changed = ImGui::InputFloat2(label, &v.x, format, flags);
-        return std::pair(changed, v);
+    m.def("input_float2", [](const char* label, Vec2Ref v, const char* format, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputFloat2(label, (float*)ref.ptr(), format, flags);
     }, "label"_a, "v"_a, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
-    m.def("input_float3", [](const char* label, Vec3 v, const char* format, ImGuiInputTextFlags_ flags) {
-        bool changed = ImGui::InputFloat3(label, &v.x, format, flags);
-        return std::pair(changed, v);
+    m.def("input_float3", [](const char* label, Vec3Ref v, const char* format, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputFloat3(label, (float*)ref.ptr(), format, flags);
     }, "label"_a, "v"_a, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
-    m.def("input_float4", [](const char* label, ImVec4 v, const char* format, ImGuiInputTextFlags_ flags) {
-        bool changed = ImGui::InputFloat4(label, &v.x, format, flags);
-        return std::pair(changed, v);
+    m.def("input_float4", [](const char* label, Vec4Ref v, const char* format, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputFloat4(label, (float*)ref.ptr(), format, flags);
     }, "label"_a, "v"_a, "format"_a = "%.3f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
-    m.def("input_double", [](const char* label, double v, double step, double step_fast, const char* format, ImGuiInputTextFlags_ flags) {
-        bool changed = ImGui::InputDouble(label, &v, step, step_fast, format, flags);
-        return std::pair(changed, v);
+    // TODO
+    m.def("input_double", [](const char* label, DoubleRef v, double step, double step_fast, const char* format, ImGuiInputTextFlags_ flags) {
+        RefHelper ref(v);
+        return ImGui::InputDouble(label, ref.ptr(), step, step_fast, format, flags);
     }, "label"_a, "v"_a, "step"_a = 0.0, "step_fast"_a = 0.0, "format"_a = "%.6f", "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None);
 
     // IMGUI_API bool          InputScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_step = NULL, const void* p_step_fast = NULL, const char* format = NULL, ImGuiInputTextFlags flags = 0);
     // IMGUI_API bool          InputScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_step = NULL, const void* p_step_fast = NULL, const char* format = NULL, ImGuiInputTextFlags flags = 0);
 
     // Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.)
-    m.def("color_edit3", [](const char* label, const Vec3& col, ImGuiColorEditFlags_ flags) {
-        Vec3 c(col);
-        bool changed = ImGui::ColorEdit3(label, &c.x, flags);
-        return std::tuple(changed, c);
+    m.def("color_edit3", [](const char* label, Vec3Ref col, ImGuiColorEditFlags_ flags) {
+        RefHelper ref(col);
+        return ImGui::ColorEdit3(label, ref.ptr(), flags);
     }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None);
-    m.def("color_edit4", [](const char* label, const ImVec4& col, ImGuiColorEditFlags_ flags) {
-        ImVec4 c(col);
-        bool changed = ImGui::ColorEdit4(label, &c.x, flags);
-        return std::tuple(changed, c);
+    m.def("color_edit4", [](const char* label, const Vec4Ref col, ImGuiColorEditFlags_ flags) {
+        RefHelper ref(col);
+        return ImGui::ColorEdit4(label, ref.ptr(), flags);
     }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None);
-    m.def("color_picker3", [](const char* label, const Vec3& col, ImGuiColorEditFlags_ flags) {
-        Vec3 c(col);
-        bool changed = ImGui::ColorPicker3(label, &c.x, flags);
-        return std::tuple(changed, c);
+    m.def("color_picker3", [](const char* label, Vec3Ref col, ImGuiColorEditFlags_ flags) {
+        RefHelper ref(col);
+        return ImGui::ColorPicker3(label, ref.ptr(), flags);
     }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None);
-    m.def("color_picker4", [](const char* label, const ImVec4& col, ImGuiColorEditFlags_ flags, std::optional<ImVec4> ref_col) {
-        ImVec4 c(col);
-        ImVec4 ref = ref_col ? ref_col.value() : ImVec4(0, 1, 0, 0);
-        bool changed = ImGui::ColorPicker4(label, &c.x, flags, ref_col ? &ref.x : nullptr);
-        return std::tuple(changed, c);
+    m.def("color_picker4", [](const char* label, Vec4Ref col, ImGuiColorEditFlags_ flags, std::optional<ImVec4> ref_col) {
+        RefHelper ref(col);
+        ImVec4 rc = ref_col ? ref_col.value() : ImVec4(0, 1, 0, 0);
+        return ImGui::ColorPicker4(label, ref.ptr(), flags, ref_col ? &rc.x : nullptr);
     }, "label"_a, "col"_a, "flags"_a.sig("ColorEditFlags.NONE") = ImGuiColorEditFlags_None, "ref_col"_a = nb::none());
     m.def("color_button", [](const char* desc_id, const ImVec4& col, ImGuiColorEditFlags_ flags, const ImVec2& size) {
         return ImGui::ColorButton(desc_id, col, flags, size);
@@ -1058,11 +1032,10 @@ NB_MODULE(slimgui_ext, top) {
     }, "str_id"_a, "flags"_a.sig("TabBarFlags.NONE") = ImGuiTabBarFlags_None);
     m.def("end_tab_bar", &ImGui::EndTabBar);
 
-    m.def("begin_tab_item", [](const char* label, bool closable, ImGuiTabItemFlags_ flags) {
-        bool open = true;
-        bool selected = ImGui::BeginTabItem(label, closable ? &open : NULL, flags);
-        return std::pair<bool, bool>(selected, open);
-    }, "str_id"_a, "closable"_a = false, "flags"_a.sig("TabItemFlags.NONE") = ImGuiTabItemFlags_None);
+    m.def("begin_tab_item", [](const char* label, BoolRef open, ImGuiTabItemFlags_ flags) {
+        RefHelper ref(open);
+        return ImGui::BeginTabItem(label, ref.ptr(), flags);
+    }, "str_id"_a, "open"_a = nb::none(), "flags"_a.sig("TabItemFlags.NONE") = ImGuiTabItemFlags_None);
     m.def("end_tab_item", &ImGui::EndTabItem);
 
     m.def("tab_item_button", [](const char* label, ImGuiTabItemFlags_ flags) {

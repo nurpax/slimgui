@@ -1,25 +1,24 @@
 import time
 import numpy as np
-from slimgui import imgui
+import slimgui
+from slimgui import imgui, BoolRef
 from slimgui import implot
+from slimgui.implot import PlotFlags
 
-from slimgui.implot import LineFlags, PlotFlags, ScatterFlags
+_surf_it = BoolRef(False)
 
-_surf_it = False
-
-def show_demo_window(show_window: bool):
+def show_demo_window(show_window: slimgui.BoolRef):
     global _surf_it
     main_viewport = imgui.get_main_viewport()
     imgui.set_next_window_pos((main_viewport.work_pos[0] + 800, main_viewport.work_pos[1] + 40), imgui.Cond.FIRST_USE_EVER)
     imgui.set_next_window_size((640, 900), imgui.Cond.FIRST_USE_EVER)
 
-    visible, show_window = imgui.begin("Implot tests", closable=show_window)
-    if not visible:
+    if not imgui.begin("Implot tests", open=show_window):
         imgui.end()
         return show_window
 
-    if imgui.collapsing_header('Basic line plots')[0]:
-        _c, _surf_it = imgui.checkbox("Surf it!", _surf_it)
+    if imgui.collapsing_header('Basic line plots'):
+        imgui.checkbox("Surf it!", _surf_it)
 
         if implot.begin_plot("Plot", flags=PlotFlags.NO_LEGEND):
             data_x = np.arange(0, 10, 0.25)
@@ -38,7 +37,7 @@ def show_demo_window(show_window: bool):
 
             implot.end_plot()
 
-    if imgui.collapsing_header('Line and scatter')[0]:
+    if imgui.collapsing_header('Line and scatter'):
         if implot.begin_plot("Plot 2"):
             data_x = np.arange(0, 10, 0.25)
             data_y = np.sin(data_x)
@@ -54,7 +53,7 @@ def show_demo_window(show_window: bool):
 
             implot.end_plot()
 
-    if imgui.collapsing_header('Stairs##heading')[0]:
+    if imgui.collapsing_header('Stairs##heading'):
         if implot.begin_plot("Stairs"):
             x_steps = np.arange(0, 10, 1)
             y_steps = np.repeat(np.arange(1, 11), 2)[1:-1]
@@ -67,7 +66,7 @@ def show_demo_window(show_window: bool):
             implot.plot_shaded("Shaded", x_steps, y_steps, yref=2.3)
             implot.end_plot()
 
-    if imgui.collapsing_header('Bar charts##heading')[0]:
+    if imgui.collapsing_header('Bar charts##heading'):
         if implot.begin_plot("Bar"):
             ys = np.random.RandomState(13).rand(10)
             implot.plot_bars("rand", ys)
@@ -78,7 +77,7 @@ def show_demo_window(show_window: bool):
             implot.plot_bars("rand", ys, flags=implot.BarsFlags.HORIZONTAL)
             implot.end_plot()
 
-    if imgui.collapsing_header('Bar chart ticks')[0]:
+    if imgui.collapsing_header('Bar chart ticks'):
         if implot.begin_plot("##ticks"):
             labels = ['S1', 'S2', 'S4', 'S4']
             xs = np.arange(4)
@@ -87,7 +86,7 @@ def show_demo_window(show_window: bool):
             implot.plot_bars("rand", ys)
             implot.end_plot()
 
-    if imgui.collapsing_header('Bar Groups')[0]:
+    if imgui.collapsing_header('Bar Groups'):
         if implot.begin_plot("##groups"):
             labels = ['A', 'B', 'C']
             vals = np.random.RandomState(15).rand(3, 4)
@@ -98,10 +97,10 @@ def show_demo_window(show_window: bool):
             # implot.plot_bars("rand", ys)
             implot.end_plot()
 
-    if imgui.collapsing_header('Error Bars')[0]:
+    if imgui.collapsing_header('Error Bars'):
         _error_bars()
 
-    if imgui.collapsing_header('Draw list and misc')[0]:
+    if imgui.collapsing_header('Draw list and misc'):
         if implot.begin_plot("Plot 2"):
             data_x = np.arange(0, 10, 0.25)
             data_y = np.sin(data_x)
@@ -118,16 +117,16 @@ def show_demo_window(show_window: bool):
             implot.pop_plot_clip_rect()
             implot.end_plot()
 
-    if imgui.collapsing_header('Styles')[0]:
+    if imgui.collapsing_header('Styles'):
         _styles()
 
-    if imgui.collapsing_header('Heatmaps')[0]:
+    if imgui.collapsing_header('Heatmaps'):
         _heatmaps()
 
-    if imgui.collapsing_header('Annotations')[0]:
+    if imgui.collapsing_header('Annotations'):
         _annotations()
 
-    if imgui.collapsing_header('Built-in windows')[0]:
+    if imgui.collapsing_header('Built-in windows'):
         imgui.text('Style selector')
         implot.show_style_selector("Style selector")
         imgui.text('Colormap selector')
@@ -137,7 +136,7 @@ def show_demo_window(show_window: bool):
         imgui.text('Style editor')
         implot.show_style_editor()
 
-    if imgui.collapsing_header('User guide')[0]:
+    if imgui.collapsing_header('User guide'):
         imgui.text('User guide follows ->')
         implot.show_user_guide()
 
@@ -230,10 +229,10 @@ def _heatmaps():
 
     implot.pop_colormap()
 
-_clamp = False
+_clamp = BoolRef(False)
 def _annotations():
     global _clamp
-    _, _clamp = imgui.checkbox("Clamp", _clamp)
+    imgui.checkbox("Clamp", _clamp)
 
     if implot.begin_plot("##Annotations"):
         implot.setup_axes_limits(0, 2, 0, 1)
@@ -245,19 +244,20 @@ def _annotations():
 
         col = implot.get_last_item_color()
 
-        implot.annotation(0.25, 0.25, col, (-15, 15), _clamp, "BL")
-        implot.annotation(0.75, 0.25, col, (15, 15), _clamp, "BR")
-        implot.annotation(0.75, 0.75, col, (15, -15), _clamp, "TR")
-        implot.annotation(0.25, 0.75, col, (-15, -15), _clamp, "TL")
-        implot.annotation(0.5, 0.5, col, (0, 0), _clamp, "Center")
-        implot.annotation(1.25, 0.75, (0, 1, 0, 1), (0, 0), _clamp)
+        c = bool(_clamp)
+        implot.annotation(0.25, 0.25, col, (-15, 15), c, "BL")
+        implot.annotation(0.75, 0.25, col, (15, 15), c, "BR")
+        implot.annotation(0.75, 0.75, col, (15, -15), c, "TR")
+        implot.annotation(0.25, 0.75, col, (-15, -15), c, "TL")
+        implot.annotation(0.5, 0.5, col, (0, 0), c, "Center")
+        implot.annotation(1.25, 0.75, (0, 1, 0, 1), (0, 0), c)
 
         bx = np.array([1.2, 1.5, 1.8], dtype=np.float32)
         by = np.array([0.25, 0.5, 0.75], dtype=np.float32)
         implot.plot_bars("##Bars", bx, by, bar_size=0.2)
 
         for i in range(3):
-            implot.annotation(bx[i], by[i], (0, 0, 0, 0), (0, -5), _clamp, f"B[{i}]={by[i]:.2f}")
+            implot.annotation(bx[i], by[i], (0, 0, 0, 0), (0, -5), c, f"B[{i}]={by[i]:.2f}")
 
         # ImPlot::EndPlot();
         implot.end_plot()

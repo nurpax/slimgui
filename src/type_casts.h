@@ -164,4 +164,3 @@ template <> struct nanobind::detail::type_caster<ImVec4> {
 
     Caster caster1, caster2, caster3, caster4;
 };
-

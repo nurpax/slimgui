@@ -1,5 +1,5 @@
 import pytest
-from slimgui import imgui
+from slimgui import imgui, BoolRef, IntRef, FloatRef, StrRef, Vec2Ref, Vec3Ref, Vec4Ref, IntVec2Ref, IntVec3Ref, IntVec4Ref
 import numpy as np
 
 # Define a fixture
@@ -73,35 +73,40 @@ def test_set_current_context(imgui_context):
 
 
 def test_begin_base_window(frame_scope):
-    visible, _ = imgui.begin("Window")
+    _visible = imgui.begin("Window")
     imgui.end()
 
 def test_input_widgets(frame_scope):
     imgui.set_next_window_pos((10, 10))
     imgui.set_next_window_size((100, 100))
-    visible, _ = imgui.begin("Window")
+    visible = imgui.begin("Window")
     assert visible
 
     # The value shouldn't change when going through drag_float
-    changed, v = imgui.drag_float("DragFloat", 0.5)
+    vref = FloatRef(0.5)
+    changed = imgui.drag_float("DragFloat", vref)
     assert not changed
-    assert v == 0.5
+    assert vref == 0.5
 
-    changed, v = imgui.drag_float2("DragFloat", (0.5, 1))
+    v2ref = Vec2Ref(0.5, 1)
+    changed = imgui.drag_float2("DragFloat", v2ref)
     assert not changed
-    assert v == (0.5, 1)
+    assert v2ref.value == (0.5, 1)
 
-    changed, v = imgui.drag_float3("DragFloat", (0.5, 1, 2))
+    v3ref = Vec3Ref(0.5, 1, 2)
+    changed = imgui.drag_float3("DragFloat", v3ref)
     assert not changed
-    assert v == (0.5, 1, 2)
+    assert v3ref == (0.5, 1, 2)
 
-    changed, v = imgui.drag_float4("DragFloat", (0.5, 1, 2, 4))
+    v4ref = Vec4Ref(0.5, 1, 2, 4)
+    changed = imgui.drag_float4("DragFloat", v4ref)
     assert not changed
-    assert v == (0.5, 1, 2, 4)
+    assert v4ref == (0.5, 1, 2, 4)
 
-    changed, t = imgui.input_text("##label", "this is text 🔥")
+    str_ref = StrRef("this is text 🔥")
+    imgui.input_text("##label", str_ref)
     assert not changed
-    assert t == "this is text 🔥"
+    assert str_ref == "this is text 🔥"
 
     imgui.end()
 
@@ -121,3 +126,49 @@ def test_draw_list(frame_scope):
     assert vert.shape[1] == 2
     dl.add_concave_poly_filled(vert, color) # should work
     dl.add_concave_poly_filled(vert.astype(np.int32), color) # should work too, autocast to float
+
+def test_reftypes():
+    '''Sanity checks for RefType constructors.'''
+    br = BoolRef(True)
+    assert br.value
+    assert br
+    br_not = BoolRef(False)
+    assert not br_not.value
+    assert not br_not
+
+    assert IntRef(42) == 42
+    assert IntRef(42).value == 42
+
+    assert FloatRef(0.5) == 0.5
+    assert FloatRef(0.25).value == 0.25
+    assert FloatRef(0.25) != 0.5
+
+    assert Vec2Ref(1.5, 2).value == (1.5, 2)
+    assert Vec2Ref((1.5, 2)) == (1.5, 2)
+    assert Vec3Ref(1.5, 2, 3) == (1.5, 2, 3)
+    assert Vec3Ref((4, 5, 6)) == (4, 5, 6,)
+    with pytest.raises(TypeError):
+        Vec3Ref(1, 2, 3, 4) # pyright: ignore
+    with pytest.raises(TypeError):
+        Vec3Ref('break it') # pyright: ignore
+    assert Vec4Ref(1.5, 2, 3, 4).value == (1.5, 2, 3, 4)
+    assert Vec4Ref((4, 5, 6, 7.5)) == (4, 5, 6, 7.5)
+
+    assert IntVec2Ref(1, 2).value == (1, 2)
+    assert IntVec2Ref((4, 5)) == (4, 5)
+    with pytest.raises(TypeError):
+        IntVec2Ref(1, 2, 3) # pyright: ignore
+    with pytest.raises(TypeError):
+        IntVec2Ref('break it') # pyright: ignore
+    assert IntVec3Ref(1, 2, 3) == (1, 2, 3)
+    assert IntVec3Ref((4, 5, 6)) == (4, 5, 6)
+    with pytest.raises(TypeError):
+        IntVec3Ref(1, 2, 3, 4) # pyright: ignore
+    with pytest.raises(TypeError):
+        IntVec3Ref('break it') # pyright: ignore
+    assert IntVec4Ref(1, 2, 3, 4).value == (1, 2, 3, 4)
+    assert IntVec4Ref((4, 5, 6, 7)) == (4, 5, 6, 7)
+    with pytest.raises(TypeError):
+        IntVec4Ref(1, 2, 3) # pyright: ignore
+    with pytest.raises(TypeError):
+        IntVec4Ref('break it') # pyright: ignore

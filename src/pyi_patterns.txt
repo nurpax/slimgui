@@ -1,0 +1,7 @@
+slimgui_ext.imgui.show_about_window$:
+    \from ...common_types import BoolRef, IntRef, IntVec2Ref, IntVec3Ref, IntVec4Ref, FloatRef, DoubleRef, Vec2Ref, Vec3Ref, Vec4Ref
+    def show_about_window(open: BoolRef | None = None) -> None: ...
+
+slimgui_ext.implot.show_demo_window$:
+    \from ...common_types import BoolRef, IntRef, IntVec2Ref, IntVec3Ref, IntVec4Ref, FloatRef, DoubleRef, Vec2Ref, Vec3Ref, Vec4Ref
+    def show_demo_window(open: BoolRef | None = None) -> None: ...

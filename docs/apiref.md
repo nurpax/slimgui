@@ -7,8 +7,12 @@ subtitle: 'Python bindings for Dear ImGui'
 
 ## Overview
 
-The Slimgui package provides modern Python bindings for the [Dear ImGui](https://github.com/ocornut/imgui) library.  Slimgui has been
-developed with the following goals in mind:
+The Slimgui package provides modern Python bindings for the following libraries:
+
+- [Dear ImGui](https://github.com/ocornut/imgui)
+- [ImPlot](https://github.com/epezent/implot)
+
+Slimgui has been developed with the following goals in mind:
 
 - Support typing through .pyi files to enable good IDE support (auto-complete, type checking, docstrings)
 - Closely match the Dear ImGui API but adapt for Python as necessary. Don't invent new API concepts.
@@ -43,11 +47,44 @@ The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) exce
 
 - Enums in ImGui are exposed as typed Python enums using `enum.IntEnum` and `enum.IntFlag` to make it clear which API functions consume what type of enums.
 - Vector types such as `ImVec2`, `ImVec4`, and `float*` arrays are converted to Python tuples such as `tuple[float, float]` (for `ImVec2`), `tuple[float, float, float, float]` (for `ImVec4`).
-- Mutable bool args such as `bool* p_open` are input as normal `bool` values and returned as the second element of a 2-tuple.  For example `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]` that returns a 2-tuple where the first element is the boolean return value of `bool ImGui::Checkbox()` and the second element is the new value of the checkbox state.
+- Mutable input/output args such as `bool* p_open` are modeled as 'ref types' which are implemented as a Python class with a single `value` field.
+
+### Pass by Reference Conventions
+
+Many Dear ImGui C++ functions follow a pattern where you pass a pointer to a value, which the function then updates. For example:
+
+```
+static bool ref_color = false;
+static ImVec4 ref_color_v(1.0f, 0.0f, 1.0f, 0.5f);
+
+ImGui::Checkbox("With Ref Color", &ref_color);
+if (ref_color)
+{
+    ImGui::ColorEdit4("##RefColor", &ref_color_v.x, ImGuiColorEditFlags_NoInputs | base_flags);
+}
+```
+
+In Python, you can't pass primitive types by reference. To work around this, Slimgui defines 'ref types' like `BoolRef` that allow values to be passed by reference. Here's how to implement the example using these ref types:
+
+```
+from slimgui import imgui, BoolRef, Vec4Ref
+
+# store these in your app state somewhere
+ref_color = BoolRef(False)
+ref_color_v = Vec4Ref(1.0, 0.0, 1.0, 0.5)
+
+# ...
+
+imgui.checkbox("With Ref Color", ref_color)
+if ref_color:
+    imgui.color_edit4("##RefColor", ref_color_v, imgui.ColorEditFlags.NO_INPUTS)
+```
+
+The actual value of a ref is stored in its `.value` field.  For example, `ref_color_v.value` holds the updated value as a 4-tuple of floats.
 
 ## Dear ImGui Enums
 
-<!-- could list enums here like in a forward decl? -->
+<!-- TODO could list enums here like in a forward decl? -->
 A detailed enum and class reference can be found here: [Enum Reference](#enum-reference)
 
 ## Dear ImGui API functions
@@ -82,8 +119,6 @@ Note: functions shown below intentionally do not accept `None` as the destinatio
 ### Windows
 
 - `begin()` = push window to the stack and start appending to it. `end()` = pop window from the stack.
-- Passing `closable = True` shows a window-closing widget in the upper-right corner of the window,
-  which clicking will set the boolean to false when clicked.
 - You may append multiple times to the same window during the same frame by calling `begin()`/`end()` pairs multiple times. Some information such as `flags` or `closable` will only be considered by the first call to `begin()`.
 - `begin()` returns `False` to indicate the window is collapsed or fully clipped, so you may early out and omit submitting
   anything to the window. Always call a matching `end()` for each `begin()` call, regardless of its return value!
@@ -94,13 +129,13 @@ Note: functions shown below intentionally do not accept `None` as the destinatio
 
 #### Functions
 <div class="raw-html-insert" data-apirefs="begin">
-When the `closable` argument is set to `True`, the created window will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:
+Passing a `BoolRef` for the `open` argument shows a window-closing widget in the upper-right corner of the window,
+which clicking will set the boolean to false when clicked.
 
 ```
-win_open = True  # open/closed state
+win_open = BoolRef(True)  # window initially open
 
-visible, tab_open = imgui.begin(..., closable=win_open)
-if visible:
+if imgui.begin("Some Window", open=win_open):
     # render window contents here..
 imgui.end()
 ```
@@ -315,7 +350,7 @@ Tip: the `color_edit_*` functions have a little color square that can be left-cl
 
 ### Widgets: Data Plotting
 
-Consider using ImPlot (https://github.com/epezent/implot) which is much better!
+Consider using ImPlot (https://github.com/epezent/implot) which is much better!  Slimgui includes ImPlot bindings, which can be imported with `from slimgui import implot`.
 
 #### Functions
 <div class="raw-html-insert" data-apirefs="plot_lines, plot_histogram"></div>

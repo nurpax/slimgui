@@ -3,41 +3,41 @@ import math
 import warnings
 
 import numpy as np
-from slimgui import imgui
+from slimgui import imgui, BoolRef, IntRef, FloatRef, DoubleRef, StrRef, IntVec2Ref, Vec2Ref, Vec3Ref, Vec4Ref
 
 from .types import State
 from .utils import help_marker
 
 _widgets_statics = {
-    "i0": 123,
-    "i1": 0,
-    "i2": (0, 0),
-    "f0": 0.001,
-    "f1": 0.123,
-    "f1_": 0,
-    "f2": (0, 0),
-    "f_e0": 1.e10,
-    "d0": 999999.00000001,
-    "vec3a": (0.1, 0.2, 0.3),
-    "ang": 0,
-    "elem": 0,
+    "i0": IntRef(123),
+    "i1": IntRef(0),
+    "i2": IntVec2Ref(0, 0),
+    "f0": FloatRef(0.001),
+    "f1": FloatRef(0.123),
+    "f1_": FloatRef(0),
+    "f2": Vec2Ref(0, 0),
+    "f_e0": FloatRef(1.e10),
+    "d0": DoubleRef(999999.00000001),
+    "vec3a": Vec3Ref(0.1, 0.2, 0.3),
+    "ang": FloatRef(0),
+    "elem": IntRef(0),
     "clicked": 0,
-    "checkbox": True,
-    "radio": 0,
+    "checkbox": BoolRef(True),
+    "radio": IntRef(0),
     "repcnt": 0,
-    "input_text": "Hello, world!",
-    "input_text2": "",
-    "col1": (1, 0, 0.2),
-    "col2": (0.4, 0.7, 0, 0.5),
-    "combo_item": 0,
-    "listbox_item": 0,
-    "always_on": 0,
-    "closable_group": True,
-    "wrap_width": 200.0,
+    "input_text": StrRef("Hello, world!"),
+    "input_text2": StrRef(""),
+    "col1": Vec3Ref(1, 0, 0.2),
+    "col2": Vec4Ref(0.4, 0.7, 0, 0.5),
+    "combo_item": IntRef(0),
+    "listbox_item": IntRef(0),
+    "always_on": IntRef(0),
+    "closable_group": BoolRef(True),
+    "wrap_width": FloatRef(200.0),
 }
 
 _widgets_combo = {
-    "flags": 0,
+    "flags": IntRef(0),
     "item_current_idx": 0,
 }
 
@@ -49,8 +49,7 @@ _widgets_listbox = {
 
 def show_demo_window_widgets(st: State):
 #     IMGUI_DEMO_MARKER("Widgets");
-    expanded, _ = imgui.collapsing_header("Widgets")
-    if not expanded:
+    if not imgui.collapsing_header("Widgets"):
         return
 
     statics = _widgets_statics
@@ -69,11 +68,11 @@ def show_demo_window_widgets(st: State):
             imgui.same_line()
             imgui.text("Thanks for clicking me!")
 
-        _, statics["checkbox"] = imgui.checkbox("checkbox", statics["checkbox"])
+        imgui.checkbox("checkbox", statics["checkbox"])
 
-        _, statics["radio"] = imgui.radio_button("radio a", statics["radio"], 0); imgui.same_line()
-        _, statics["radio"] = imgui.radio_button("radio b", statics["radio"], 1); imgui.same_line()
-        _, statics["radio"] = imgui.radio_button("radio c", statics["radio"], 2)
+        imgui.radio_button("radio a", statics["radio"], 0); imgui.same_line()
+        imgui.radio_button("radio b", statics["radio"], 1); imgui.same_line()
+        imgui.radio_button("radio c", statics["radio"], 2)
 
         for i in range(7):
             if i > 0:
@@ -108,7 +107,7 @@ def show_demo_window_widgets(st: State):
 
         imgui.separator_text("Inputs")
 
-        _, statics["input_text"] = imgui.input_text("input text", statics["input_text"])
+        imgui.input_text("input text", statics["input_text"])
         imgui.same_line()
         help_marker("""\
 USER:
@@ -124,21 +123,21 @@ You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire 
 to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example (this is not demonstrated
 in imgui_demo.cpp).""")
 
-        _, statics["input_text2"] = imgui.input_text_with_hint("input text (w/ hint)", "enter text here", statics["input_text2"])
+        imgui.input_text_with_hint("input text (w/ hint)", "enter text here", statics["input_text2"])
 
-        _, statics["i0"] = imgui.input_int("input int", statics["i0"])
+        imgui.input_int("input int", statics["i0"])
 
-        _, statics["f0"] = imgui.input_float("input float", statics["f0"], 0.01, 1.0, "%.3f")
+        imgui.input_float("input float", statics["f0"], 0.01, 1.0, "%.3f")
 
-        _, statics["d0"] = imgui.input_double("input double", statics["d0"], 0.01, 1.0, "%.8f")
+        imgui.input_double("input double", statics["d0"], 0.01, 1.0, "%.8f")
 
-        _, statics["f_e0"] = imgui.input_float("input scientific", statics["f_e0"], format="%e")
+        imgui.input_float("input scientific", statics["f_e0"], format="%e")
         imgui.same_line()
         help_marker("""You can input value using the scientific notation,\n
 e.g. \"1e+8\" becomes \"100000000\"." """)
 
 
-        _, statics["vec3a"] = imgui.input_float3("input float3", statics["vec3a"])
+        imgui.input_float3("input float3", statics["vec3a"])
 
         imgui.separator_text("Drags")
 #         {
@@ -159,46 +158,46 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
 
         imgui.separator_text("Sliders")
 
-        _, statics["i1"] = imgui.slider_int("slider int", statics["i1"], -1, 3)
+        imgui.slider_int("slider int", statics["i1"], -1, 3)
         imgui.same_line(); help_marker("CTRL+click to input value.")
 
         # TODO jhellsten
-        _, statics["i2"] = imgui.slider_int2("slider int 2", statics["i2"], 0, 255)
+        imgui.slider_int2("slider int 2", statics["i2"], 0, 255)
         imgui.same_line(); help_marker("CTRL+click to input value.")
-        _, statics["f2"] = imgui.slider_float2("slider float 2", statics["f2"], 0.0, 1.0)
+        imgui.slider_float2("slider float 2", statics["f2"], 0.0, 1.0)
         imgui.same_line(); help_marker("CTRL+click to input value.")
 
-        _, statics["f1"]  = imgui.slider_float("slider float", statics["f1"], 0.0, 1.0, "ratio = %.3f")
-        _, statics["f1_"] = imgui.slider_float("slider float (log)", statics["f1_"], -10.0, 10.0, "%.4f", imgui.SliderFlags.LOGARITHMIC)
-        _, statics["ang"] = imgui.slider_angle("slider angle", statics["ang"])
+        imgui.slider_float("slider float", statics["f1"], 0.0, 1.0, "ratio = %.3f")
+        imgui.slider_float("slider float (log)", statics["f1_"], -10.0, 10.0, "%.4f", imgui.SliderFlags.LOGARITHMIC)
+        imgui.slider_angle("slider angle", statics["ang"])
 
         # Using the format string to display a name instead of an integer.
         # Here we completely omit '%d' from the format string, so it'll only display a name.
         # This technique can also be used with DragInt().
         elem_names = ['Fire', 'Earth', 'Air', 'Water']
         name = elem_names[statics['elem']]
-        _, statics["elem"] = imgui.slider_int("slider enum", statics['elem'], 0, len(elem_names)-1, name, flags=imgui.SliderFlags.NO_INPUT)
+        imgui.slider_int("slider enum", statics['elem'], 0, len(elem_names)-1, name, flags=imgui.SliderFlags.NO_INPUT)
 
         #---------------------------------------------------------
         imgui.separator_text("Selectors/Pickers")
 
-        _, statics["col1"] = imgui.color_edit3("color 1", statics["col1"])
+        imgui.color_edit3("color 1", statics["col1"])
         help_marker(
             "Click on the color square to open a color picker.\n"
             "Click and hold to use drag and drop.\n"
             "Right-click on the color square to show options.\n"
             "CTRL+click on individual component to input value.\n")
-        _, statics["col2"] = imgui.color_edit4("color 2", statics["col2"])
+        imgui.color_edit4("color 2", statics["col2"])
 
         items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK"]
-        _, statics["combo_item"] = imgui.combo("combo", statics["combo_item"], items)
+        imgui.combo("combo", statics["combo_item"], items)
         imgui.same_line(); help_marker(
             "Using the simplified one-liner Combo API here.\n"
             "Refer to the \"Combo\" section below for an explanation of how to use the more flexible and general BeginCombo/EndCombo API."
         )
 
         items = ["Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon"]
-        _, statics["listbox_item"] = imgui.list_box("listbox", statics["listbox_item"], items, 4)
+        imgui.list_box("listbox", statics["listbox_item"], items, 4)
         imgui.same_line(); help_marker(
             "Using the simplified one-liner ListBox API here.\n"
             "Refer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API."
@@ -226,11 +225,11 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
             imgui.end_tooltip()
 
         imgui.separator_text("Always On")
-        _, statics["always_on"] = imgui.radio_button("Off", statics["always_on"], 0)
+        imgui.radio_button("Off", statics["always_on"], 0)
         imgui.same_line()
-        _, statics["always_on"] = imgui.radio_button("Always On (Simple)", statics["always_on"], 1)
+        imgui.radio_button("Always On (Simple)", statics["always_on"], 1)
         imgui.same_line()
-        _, statics["always_on"] = imgui.radio_button("Always On (Advanced)", statics["always_on"], 2)
+        imgui.radio_button("Always On (Advanced)", statics["always_on"], 2)
         if statics["always_on"] == 1:
             imgui.set_tooltip("I am following you around.")
         elif statics["always_on"] == 2 and imgui.begin_tooltip():
@@ -387,13 +386,12 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
 #     }
 
     if imgui.tree_node("Collapsing Headers"):
-        _, statics['closable_group'] = imgui.checkbox("Show 2nd header", statics['closable_group'])
-        if imgui.collapsing_header("Header")[0]:
+        imgui.checkbox("Show 2nd header", statics['closable_group'])
+        if imgui.collapsing_header("Header"):
             imgui.text(f"IsItemHovered: {imgui.is_item_hovered()}")
             for i in range(5):
                 imgui.text(f"Some content {i}")
-        expanded, statics['closable_group'] = imgui.collapsing_header("Header with a close button", statics['closable_group'])
-        if expanded:
+        if imgui.collapsing_header("Header with a close button", statics['closable_group']):
             imgui.text(f"IsItemHovered: {imgui.is_item_hovered()}")
             for i in range(5):
                 imgui.text(f"More content {i}")
@@ -426,7 +424,7 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
                 "for text wrapping follows simple rules suitable for English and possibly other languages.")
             imgui.spacing()
 
-            _, statics['wrap_width'] = imgui.slider_float("Wrap width", statics['wrap_width'], -20, 600, "%.0f")
+            imgui.slider_float("Wrap width", statics['wrap_width'], -20, 600, "%.0f")
             warnings.warn('TODO draw_list business not implemented yet')
             # draw_list = imgui.get_window_draw_list()
             # for n in range(2):
@@ -545,34 +543,28 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
     if imgui.tree_node("Combo"):
         combo = _widgets_combo
 
-        _, combo["flags"] = imgui.checkbox_flags("ComboFlags.POPUP_ALIGN_LEFT", combo["flags"], imgui.ComboFlags.POPUP_ALIGN_LEFT)
+        imgui.checkbox_flags("ComboFlags.POPUP_ALIGN_LEFT", combo["flags"], imgui.ComboFlags.POPUP_ALIGN_LEFT)
         imgui.same_line(); help_marker("Only makes a difference if the popup is larger than the combo")
-        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.NO_ARROW_BUTTON", combo["flags"], imgui.ComboFlags.NO_ARROW_BUTTON)
-        if clicked:
-            combo["flags"] &= ~imgui.ComboFlags.NO_PREVIEW
-        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.NO_PREVIEW", combo["flags"], imgui.ComboFlags.NO_PREVIEW)
-        if clicked:
-            combo["flags"] &= ~(imgui.ComboFlags.NO_ARROW_BUTTON | imgui.ComboFlags.WIDTH_FIT_PREVIEW)
-        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.WIDTH_FIT_PREVIEW", combo["flags"], imgui.ComboFlags.WIDTH_FIT_PREVIEW)
-        if clicked:
-            combo["flags"] &= ~imgui.ComboFlags.NO_PREVIEW
+        if imgui.checkbox_flags("ComboFlags.NO_ARROW_BUTTON", combo["flags"], imgui.ComboFlags.NO_ARROW_BUTTON):
+            combo["flags"].value &= ~imgui.ComboFlags.NO_PREVIEW
+        if imgui.checkbox_flags("ComboFlags.NO_PREVIEW", combo["flags"], imgui.ComboFlags.NO_PREVIEW):
+            combo["flags"].value &= ~(imgui.ComboFlags.NO_ARROW_BUTTON | imgui.ComboFlags.WIDTH_FIT_PREVIEW)
+        if imgui.checkbox_flags("ComboFlags.WIDTH_FIT_PREVIEW", combo["flags"], imgui.ComboFlags.WIDTH_FIT_PREVIEW):
+            combo["flags"].value &= ~imgui.ComboFlags.NO_PREVIEW
         # Override default popup height
-        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_SMALL", combo["flags"], imgui.ComboFlags.HEIGHT_SMALL)
-        if clicked:
-            combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_SMALL)
-        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_REGULAR", combo["flags"], imgui.ComboFlags.HEIGHT_REGULAR)
-        if clicked:
-            combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_REGULAR)
-        clicked, combo["flags"] = imgui.checkbox_flags("ComboFlags.HEIGHT_LARGEST", combo["flags"], imgui.ComboFlags.HEIGHT_LARGEST)
-        if clicked:
-            combo["flags"] &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_LARGEST)
+        if imgui.checkbox_flags("ComboFlags.HEIGHT_SMALL", combo["flags"], imgui.ComboFlags.HEIGHT_SMALL):
+            combo["flags"].value &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_SMALL)
+        if imgui.checkbox_flags("ComboFlags.HEIGHT_REGULAR", combo["flags"], imgui.ComboFlags.HEIGHT_REGULAR):
+            combo["flags"].value &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_REGULAR)
+        if imgui.checkbox_flags("ComboFlags.HEIGHT_LARGEST", combo["flags"], imgui.ComboFlags.HEIGHT_LARGEST):
+            combo["flags"].value &= ~(imgui.ComboFlags.HEIGHT_MASK_ & ~imgui.ComboFlags.HEIGHT_LARGEST)
 
         items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
         preview = items[combo["item_current_idx"]]
-        if imgui.begin_combo("combo 1", preview, imgui.ComboFlags(combo["flags"])):
+        if imgui.begin_combo("combo 1", preview, imgui.ComboFlags(int(combo["flags"]))):
             for n, item in enumerate(items):
                 is_selected = combo["item_current_idx"] == n
-                if imgui.selectable(item, is_selected)[0]:
+                if imgui.selectable(item, is_selected):
                     combo["item_current_idx"] = n
                 if is_selected:
                     imgui.set_item_default_focus()
@@ -588,7 +580,7 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
         if imgui.begin_list_box("listbox 1"):
             for n, item in enumerate(items):
                 is_selected = listbox["item_current_idx"] == n
-                if imgui.selectable(item, is_selected)[0]:
+                if imgui.selectable(item, is_selected):
                     listbox["item_current_idx"] = n
                 if is_selected:
                     imgui.set_item_default_focus()
@@ -598,7 +590,7 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
         if imgui.begin_list_box("##listbox 2", (-imgui.FLOAT_MIN, 5 * imgui.get_text_line_height_with_spacing())):
             for n, item in enumerate(items):
                 is_selected = listbox["item_current_idx2"] == n
-                if imgui.selectable(item, is_selected)[0]:
+                if imgui.selectable(item, is_selected):
                     listbox["item_current_idx2"] = n
                 if is_selected:
                     imgui.set_item_default_focus()
