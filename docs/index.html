@@ -270,7 +270,12 @@ div.api-class {
 
 <h1 id="slimgui---python-bindings-for-dear-imgui">slimgui - Python bindings for Dear ImGui</h1>
 <h2 id="overview">Overview</h2>
-<p>The Slimgui package provides modern Python bindings for the <a href="https://github.com/ocornut/imgui">Dear ImGui</a> library. Slimgui has been developed with the following goals in mind:</p>
+<p>The Slimgui package provides modern Python bindings for the following libraries:</p>
+<ul>
+<li><a href="https://github.com/ocornut/imgui">Dear ImGui</a></li>
+<li><a href="https://github.com/epezent/implot">ImPlot</a></li>
+</ul>
+<p>Slimgui has been developed with the following goals in mind:</p>
 <ul>
 <li>Support typing through .pyi files to enable good IDE support (auto-complete, type checking, docstrings)</li>
 <li>Closely match the Dear ImGui API but adapt for Python as necessary. Don’t invent new API concepts.</li>
@@ -1214,7 +1219,7 @@ imgui.end()</code></pre></div>
 </div>
 </div>
 <h3 id="widgets-data-plotting">Widgets: Data Plotting</h3>
-<p>Consider using ImPlot (https://github.com/epezent/implot) which is much better!</p>
+<p>Consider using ImPlot (https://github.com/epezent/implot) which is much better! Slimgui includes ImPlot bindings, which can be imported with <code>from slimgui import implot</code>.</p>
 <h4 id="functions-26">Functions</h4>
 <div class="funclist">
 <div class="api">
