@@ -145,6 +145,13 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
     def mouse_pos_callback(self, window, x, y):
         if self._prev_cursor_pos_callback is not None:
             self._prev_cursor_pos_callback(window, x, y)
+
+        w, h = glfw.get_window_size(window)
+        if w <= 0 or h <= 0:
+            return
+        fb_w, fb_h = glfw.get_framebuffer_size(window)
+        x *= fb_w / w
+        y *= fb_h / h
         self.io.add_mouse_pos_event(x, y)
 
     def mouse_button_callback(self, window, btn, action, mods):
@@ -163,14 +170,9 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
     def new_frame(self):
         io = imgui.get_io()
 
-        window_size = glfw.get_window_size(self.window)
-        display_w, display_h = glfw.get_framebuffer_size(self.window)
-
-        io.display_size = window_size
-
-        w, h = window_size
-        if w != 0 and h != 0:
-            io.display_fb_scale = (display_w / w, display_h / h)
+        # See https://github.com/ocornut/imgui/issues/5081
+        io.display_size = glfw.get_framebuffer_size(self.window)
+        io.display_fb_scale = (1, 1)
 
         current_time = glfw.get_time()
         if self._gui_time:

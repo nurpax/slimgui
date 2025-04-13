@@ -206,6 +206,10 @@ class ImguiWindow(GlfwWindow):
             self._imgui_fonts = {size: imgui.get_io().fonts.add_font_from_memory_ttf(font_bytes, size) for size in font_sizes}
         self._imgui_renderer.refresh_font_texture()
 
+        #scl = glfw.get_window_content_scale(self._glfw_window)
+        #style = imgui.get_style()
+        #style.scale_all_sizes(scl[0])
+
     def close(self):
         self.make_context_current()
         self._imgui_fonts = None
