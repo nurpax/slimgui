@@ -21,5 +21,15 @@ python -c "from slimgui import imgui; assert imgui.get_version() == '$IMGUI_VERS
 
 python -m nanobind.stubgen -i build/cp312-abi3-macosx_15_0_arm64 -q -m slimgui_ext -r -O src/slimgui/slimgui_ext
 mv src/slimgui/slimgui_ext/slimgui_ext.pyi src/slimgui/slimgui_ext/__init__.pyi
+# imgui docs:
 python gen/amend_func_docs.py --cimgui-definitions-file gen/cimgui/definitions.json --imgui-h src/c/imgui/imgui.h --pyi-file src/slimgui/slimgui_ext/imgui/__init__.pyi -o src/slimgui/slimgui_ext/imgui/__init__.pyi
-python gen/build_docs.py --imgui-version=${IMGUI_VERSION} --pyi-file src/slimgui/slimgui_ext/imgui/__init__.pyi --output docs/index.html docs/apiref.md
+rm -rf dist && mkdir -p dist 
+python gen/build_docs.py --imgui-version=${IMGUI_VERSION} \
+    --module slimgui.imgui \
+    --pyi-file src/slimgui/slimgui_ext/imgui/__init__.pyi \
+    --output dist/index.html docs/apiref.md
+# implot docs:
+python gen/build_docs.py --imgui-version=${IMGUI_VERSION} \
+    --module slimgui.implot \
+    --pyi-file src/slimgui/slimgui_ext/implot/__init__.pyi \
+    --output dist/apiref_implot.html docs/apiref_implot.md

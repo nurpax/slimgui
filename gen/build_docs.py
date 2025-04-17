@@ -1,9 +1,12 @@
 
 import argparse
+import inspect
 import os
 import re
 import subprocess
 import sys
+import importlib
+import types
 
 import ast
 import tempfile
@@ -129,18 +132,46 @@ def pyi_to_html_lookup(file_path, outf):
                             outf.write(f'  <tr><td class="field">{target.id}</td><td class="fielddoc">{doc_string}</td></tr>\n')
 
             outf.write('  </table>\n')
-
             outf.write('</div>\n')
             outf.write('$$end\n')
 
+def _format_annotation(ann):
+    if ann is inspect.Signature.empty:
+        return None
+    if hasattr(ann, '__module__') and hasattr(ann, '__qualname__'):
+        return f"{ann.__module__}.{ann.__qualname__}"
+    return str(ann)
+
+def module_to_html_lookup(module, outf):
+    m =  importlib.import_module(module)
+    for name in dir(m):
+        obj = getattr(m, name)
+
+        # Handle only functions and classes defined in Python.  This is because
+        # it seems to be easier to get docs and arg names from the pyi file.
+        if isinstance(obj, types.FunctionType):
+            func = obj
+            outf.write(f'$$func={name}\n')
+            sig = inspect.signature(func)
+            sig = inspect.signature(func)
+            func_def = f'def {func.__name__}{sig}'
+
+            outf.write('<div class="api">\n')
+            outf.write(f'  <code>{_highlight_def_line(func_def)}</code>\n')
+            outf.write('</div>\n')
+            docs = inspect.getdoc(obj)
+            if docs:
+                outf.write(f'<p>{_expand_code_blocks_to_html(docs)}</p>\n')
+            outf.write('$$end\n')
 
 def main():
     parser = argparse.ArgumentParser(description="Build documentation.")
     parser.add_argument("input_file", type=str, help="The input markdown file.")
     parser.add_argument("--pyi-file", type=str, help=".pyi file to extract type information from.")
+    parser.add_argument("--module", type=str, help="module path to import for doc strings (use this or --pyi-file, not both).")
     parser.add_argument("--output", type=str, help="The output HTML file.")
     parser.add_argument("--imgui-version", type=str, help="The version of imgui")
-    parser.add_argument("--print-pyi-html", action="store_true", help="Enable HTML for .pyi generated HTML API ref content.")
+    parser.add_argument("--print-apiref-html", action="store_true", help="Enable HTML for .pyi generated HTML API ref content.")
     args = parser.parse_args()
 
     print(f"Building docs from {args.input_file}...")
@@ -153,11 +184,14 @@ def main():
     with tempfile.TemporaryDirectory() as tmpdir:
         lua_filter = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'docbuild_extras.lua')
 
-        api_html = f'{tmpdir}/api_mockup.html'
+        api_html = f'{tmpdir}/api.html'
         with open(api_html, 'wt', encoding='utf-8') as file:
-            pyi_to_html_lookup(args.pyi_file, file)
+            if args.pyi_file is not None:
+                pyi_to_html_lookup(args.pyi_file, file)
+            if args.module is not None:
+                module_to_html_lookup(args.module, file)
 
-        if args.print_pyi_html:
+        if args.print_apiref_html:
             print('Generated HTML API ref content:')
             with open(api_html, 'rt', encoding='utf-8') as file:
                 print(file.read())

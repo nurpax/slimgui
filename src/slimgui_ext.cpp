@@ -439,11 +439,11 @@ NB_MODULE(slimgui_ext, top) {
             return drawList;
         }, nb::rv_policy::reference_internal);
 
-    m.def("create_context", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
-    m.def("get_current_context", &ImGui::GetCurrentContext, nb::rv_policy::reference);
-    m.def("set_current_context", &ImGui::SetCurrentContext, nb::rv_policy::reference);
-    m.def("destroy_context", &ImGui::DestroyContext);
-    m.def("get_style", &ImGui::GetStyle, nb::rv_policy::reference); // TODO docs should refer to slimgui/__init__.py declarations
+    m.def("create_context_internal", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
+    m.def("get_current_context_internal", &ImGui::GetCurrentContext, nb::rv_policy::reference);
+    m.def("set_current_context_internal", &ImGui::SetCurrentContext, nb::rv_policy::reference);
+    m.def("destroy_context_internal", &ImGui::DestroyContext);
+    m.def("get_style_internal", &ImGui::GetStyle, nb::rv_policy::reference);
     m.def("render", &ImGui::Render);
     m.def("new_frame", &ImGui::NewFrame);
     m.def("end_frame", &ImGui::EndFrame);

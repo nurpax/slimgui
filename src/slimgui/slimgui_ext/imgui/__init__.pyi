@@ -2967,12 +2967,11 @@ def combo(label: str, current_item: int, items: Sequence[str], popup_max_height_
     ...
 
 
-def create_context(shared_font_atlas: FontAtlas | None = None) -> Context:
+def create_context_internal(shared_font_atlas: FontAtlas | None = None) -> Context:
     ...
 
 
-def destroy_context(arg: Context, /) -> None:
-    """NULL = destroy current context"""
+def destroy_context_internal(arg: Context, /) -> None:
     ...
 
 
@@ -3121,7 +3120,7 @@ def get_content_region_avail() -> tuple[float, float]:
     ...
 
 
-def get_current_context() -> Context:
+def get_current_context_internal() -> Context:
     ...
 
 
@@ -3255,11 +3254,6 @@ def get_scroll_y() -> float:
     ...
 
 
-def get_style() -> Style:
-    """Access the Style structure (colors, sizes). Always use `push_style_color()`, `push_style_var()` to modify style mid-frame!"""
-    ...
-
-
 def get_style_color_name(col: Col) -> str:
     """Get a string corresponding to the enum value (for display, saving, etc.)."""
     ...
@@ -3267,6 +3261,10 @@ def get_style_color_name(col: Col) -> str:
 
 def get_style_color_vec4(col: Col) -> tuple[float, float, float, float]:
     """Retrieve style color as stored in ImGuiStyle structure. use to feed back into `push_style_color()`, otherwise use `get_color_u32()` to get style color with style alpha baked in."""
+    ...
+
+
+def get_style_internal() -> Style:
     ...
 
 
@@ -3783,7 +3781,7 @@ def set_column_width(column_index: int, width: float) -> None:
     ...
 
 
-def set_current_context(arg: Context, /) -> None:
+def set_current_context_internal(arg: Context, /) -> None:
     ...
 
 
