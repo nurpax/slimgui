@@ -881,173 +881,173 @@ need this function, but it is available for applications that require runtime co
 <div class="api-class">
   <div><span class="class_name">Axis</span> (enum)</div>
   <table>
-  <tr><td class="field">X1</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">X2</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">X3</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">Y1</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">Y2</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">Y3</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">X1</td><td class="fielddoc">Enabled by default</td></tr>
+  <tr><td class="field">X2</td><td class="fielddoc">Disabled by default</td></tr>
+  <tr><td class="field">X3</td><td class="fielddoc">Disabled by default</td></tr>
+  <tr><td class="field">Y1</td><td class="fielddoc">Enabled by default</td></tr>
+  <tr><td class="field">Y2</td><td class="fielddoc">Disabled by default</td></tr>
+  <tr><td class="field">Y3</td><td class="fielddoc">Disabled by default</td></tr>
   <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">Bin</span> (enum)</div>
   <table>
-  <tr><td class="field">SQRT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">STURGES</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">RICE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SCOTT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">SQRT</td><td class="fielddoc">K = sqrt(n)</td></tr>
+  <tr><td class="field">STURGES</td><td class="fielddoc">K = 1 + log2(n)</td></tr>
+  <tr><td class="field">RICE</td><td class="fielddoc">K = 2 * cbrt(n)</td></tr>
+  <tr><td class="field">SCOTT</td><td class="fielddoc">W = 3.49 * sigma / cbrt(n)</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">Col</span> (enum)</div>
   <table>
-  <tr><td class="field">LINE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">FILL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MARKER_OUTLINE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MARKER_FILL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ERROR_BAR</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">FRAME_BG</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLOT_BG</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLOT_BORDER</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LEGEND_BG</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LEGEND_BORDER</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LEGEND_TEXT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">TITLE_TEXT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">INLAY_TEXT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">AXIS_TEXT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">AXIS_GRID</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">AXIS_TICK</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">AXIS_BG</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">AXIS_BG_HOVERED</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">AXIS_BG_ACTIVE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SELECTION</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">CROSSHAIRS</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">LINE</td><td class="fielddoc">Plot line/outline color (defaults to next unused color in current colormap)</td></tr>
+  <tr><td class="field">FILL</td><td class="fielddoc">Plot fill color for bars (defaults to the current line color)</td></tr>
+  <tr><td class="field">MARKER_OUTLINE</td><td class="fielddoc">Marker outline color (defaults to the current line color)</td></tr>
+  <tr><td class="field">MARKER_FILL</td><td class="fielddoc">Marker fill color (defaults to the current line color)</td></tr>
+  <tr><td class="field">ERROR_BAR</td><td class="fielddoc">Error bar color (defaults to <code>Col.TEXT</code>)</td></tr>
+  <tr><td class="field">FRAME_BG</td><td class="fielddoc">Plot frame background color (defaults to <code>Col.FRAME_BG</code>)</td></tr>
+  <tr><td class="field">PLOT_BG</td><td class="fielddoc">Plot area background color (defaults to <code>Col.WINDOW_BG</code>)</td></tr>
+  <tr><td class="field">PLOT_BORDER</td><td class="fielddoc">Plot area border color (defaults to <code>Col.BORDER</code>)</td></tr>
+  <tr><td class="field">LEGEND_BG</td><td class="fielddoc">Legend background color (defaults to <code>Col.POPUP_BG</code>)</td></tr>
+  <tr><td class="field">LEGEND_BORDER</td><td class="fielddoc">Legend border color (defaults to <code>Col.PLOT_BORDER</code>)</td></tr>
+  <tr><td class="field">LEGEND_TEXT</td><td class="fielddoc">Legend text color (defaults to <code>Col.INLAY_TEXT</code>)</td></tr>
+  <tr><td class="field">TITLE_TEXT</td><td class="fielddoc">Plot title text color (defaults to <code>Col.TEXT</code>)</td></tr>
+  <tr><td class="field">INLAY_TEXT</td><td class="fielddoc">Color of text appearing inside of plots (defaults to <code>Col.TEXT</code>)</td></tr>
+  <tr><td class="field">AXIS_TEXT</td><td class="fielddoc">Axis label and tick lables color (defaults to <code>Col.TEXT</code>)</td></tr>
+  <tr><td class="field">AXIS_GRID</td><td class="fielddoc">Axis grid color (defaults to 25% <code>Col.AXIS_TEXT</code>)</td></tr>
+  <tr><td class="field">AXIS_TICK</td><td class="fielddoc">Axis tick color (defaults to AxisGrid)</td></tr>
+  <tr><td class="field">AXIS_BG</td><td class="fielddoc">Background color of axis hover region (defaults to transparent)</td></tr>
+  <tr><td class="field">AXIS_BG_HOVERED</td><td class="fielddoc">Axis hover color (defaults to <code>Col.BUTTON_HOVERED</code>)</td></tr>
+  <tr><td class="field">AXIS_BG_ACTIVE</td><td class="fielddoc">Axis active color (defaults to <code>Col.BUTTON_ACTIVE</code>)</td></tr>
+  <tr><td class="field">SELECTION</td><td class="fielddoc">Box-selection color (defaults to yellow)</td></tr>
+  <tr><td class="field">CROSSHAIRS</td><td class="fielddoc">Crosshairs color (defaults to <code>Col.PLOT_BORDER</code>)</td></tr>
   <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">Colormap</span> (enum)</div>
   <table>
-  <tr><td class="field">DEEP</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DARK</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PASTEL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PAIRED</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">VIRIDIS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLASMA</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HOT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">COOL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PINK</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">JET</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">TWILIGHT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">RD_BU</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">BR_BG</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PI_YG</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SPECTRAL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">GREYS</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">DEEP</td><td class="fielddoc">A.k.a. seaborn deep             (qual=true,  n=10) (default)</td></tr>
+  <tr><td class="field">DARK</td><td class="fielddoc">A.k.a. matplotlib "Set1"        (qual=true,  n=9 )</td></tr>
+  <tr><td class="field">PASTEL</td><td class="fielddoc">A.k.a. matplotlib "Pastel1"     (qual=true,  n=9 )</td></tr>
+  <tr><td class="field">PAIRED</td><td class="fielddoc">A.k.a. matplotlib "Paired"      (qual=true,  n=12)</td></tr>
+  <tr><td class="field">VIRIDIS</td><td class="fielddoc">A.k.a. matplotlib "viridis"     (qual=false, n=11)</td></tr>
+  <tr><td class="field">PLASMA</td><td class="fielddoc">A.k.a. matplotlib "plasma"      (qual=false, n=11)</td></tr>
+  <tr><td class="field">HOT</td><td class="fielddoc">A.k.a. matplotlib/MATLAB "hot"  (qual=false, n=11)</td></tr>
+  <tr><td class="field">COOL</td><td class="fielddoc">A.k.a. matplotlib/MATLAB "cool" (qual=false, n=11)</td></tr>
+  <tr><td class="field">PINK</td><td class="fielddoc">A.k.a. matplotlib/MATLAB "pink" (qual=false, n=11)</td></tr>
+  <tr><td class="field">JET</td><td class="fielddoc">A.k.a. MATLAB "jet"             (qual=false, n=11)</td></tr>
+  <tr><td class="field">TWILIGHT</td><td class="fielddoc">A.k.a. matplotlib "twilight"    (qual=false, n=11)</td></tr>
+  <tr><td class="field">RD_BU</td><td class="fielddoc">Red/blue, Color Brewer          (qual=false, n=11)</td></tr>
+  <tr><td class="field">BR_BG</td><td class="fielddoc">Brown/blue-green, Color Brewer  (qual=false, n=11)</td></tr>
+  <tr><td class="field">PI_YG</td><td class="fielddoc">Pink/yellow-green, Color Brewer (qual=false, n=11)</td></tr>
+  <tr><td class="field">SPECTRAL</td><td class="fielddoc">Color spectrum, Color Brewer    (qual=false, n=11)</td></tr>
+  <tr><td class="field">GREYS</td><td class="fielddoc">White/black                     (qual=false, n=2 )</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">Cond</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ALWAYS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ONCE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">No condition (always set the variable), same as _Always</td></tr>
+  <tr><td class="field">ALWAYS</td><td class="fielddoc">No condition (always set the variable)</td></tr>
+  <tr><td class="field">ONCE</td><td class="fielddoc">Set the variable once per runtime session (only the first call will succeed)</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">Location</span> (enum)</div>
   <table>
-  <tr><td class="field">CENTER</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NORTH</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SOUTH</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">WEST</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">EAST</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NORTH_WEST</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NORTH_EAST</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SOUTH_WEST</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SOUTH_EAST</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">CENTER</td><td class="fielddoc">Center-center</td></tr>
+  <tr><td class="field">NORTH</td><td class="fielddoc">Top-center</td></tr>
+  <tr><td class="field">SOUTH</td><td class="fielddoc">Bottom-center</td></tr>
+  <tr><td class="field">WEST</td><td class="fielddoc">Center-left</td></tr>
+  <tr><td class="field">EAST</td><td class="fielddoc">Center-right</td></tr>
+  <tr><td class="field">NORTH_WEST</td><td class="fielddoc">Top-left</td></tr>
+  <tr><td class="field">NORTH_EAST</td><td class="fielddoc">Top-right</td></tr>
+  <tr><td class="field">SOUTH_WEST</td><td class="fielddoc">Bottom-left</td></tr>
+  <tr><td class="field">SOUTH_EAST</td><td class="fielddoc">Bottom-right</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">Marker</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">CIRCLE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SQUARE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DIAMOND</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">UP</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DOWN</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LEFT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">RIGHT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">CROSS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLUS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ASTERISK</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">No marker</td></tr>
+  <tr><td class="field">CIRCLE</td><td class="fielddoc">A circle marker (default)</td></tr>
+  <tr><td class="field">SQUARE</td><td class="fielddoc">A square maker</td></tr>
+  <tr><td class="field">DIAMOND</td><td class="fielddoc">A diamond marker</td></tr>
+  <tr><td class="field">UP</td><td class="fielddoc">An upward-pointing triangle marker</td></tr>
+  <tr><td class="field">DOWN</td><td class="fielddoc">An downward-pointing triangle marker</td></tr>
+  <tr><td class="field">LEFT</td><td class="fielddoc">An leftward-pointing triangle marker</td></tr>
+  <tr><td class="field">RIGHT</td><td class="fielddoc">An rightward-pointing triangle marker</td></tr>
+  <tr><td class="field">CROSS</td><td class="fielddoc">A cross marker (not fillable)</td></tr>
+  <tr><td class="field">PLUS</td><td class="fielddoc">A plus marker (not fillable)</td></tr>
+  <tr><td class="field">ASTERISK</td><td class="fielddoc">A asterisk marker (not fillable)</td></tr>
   <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">Scale</span> (enum)</div>
   <table>
-  <tr><td class="field">LINEAR</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">TIME</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LOG10</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SYM_LOG</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">LINEAR</td><td class="fielddoc">Default linear scale</td></tr>
+  <tr><td class="field">TIME</td><td class="fielddoc">Date/time scale</td></tr>
+  <tr><td class="field">LOG10</td><td class="fielddoc">Base 10 logartithmic scale</td></tr>
+  <tr><td class="field">SYM_LOG</td><td class="fielddoc">Symmetric log scale</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">StyleVar</span> (enum)</div>
   <table>
-  <tr><td class="field">LINE_WEIGHT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MARKER</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MARKER_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MARKER_WEIGHT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">FILL_ALPHA</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ERROR_BAR_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ERROR_BAR_WEIGHT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DIGITAL_BIT_HEIGHT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DIGITAL_BIT_GAP</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLOT_BORDER_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MINOR_ALPHA</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MAJOR_TICK_LEN</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MINOR_TICK_LEN</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MAJOR_TICK_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MINOR_TICK_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MAJOR_GRID_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MINOR_GRID_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLOT_PADDING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LABEL_PADDING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LEGEND_PADDING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LEGEND_INNER_PADDING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LEGEND_SPACING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">MOUSE_POS_PADDING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">ANNOTATION_PADDING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">FIT_PADDING</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLOT_DEFAULT_SIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PLOT_MIN_SIZE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">LINE_WEIGHT</td><td class="fielddoc">Float,  plot item line weight in pixels</td></tr>
+  <tr><td class="field">MARKER</td><td class="fielddoc">Int,    marker specification</td></tr>
+  <tr><td class="field">MARKER_SIZE</td><td class="fielddoc">Float,  marker size in pixels (roughly the marker's "radius")</td></tr>
+  <tr><td class="field">MARKER_WEIGHT</td><td class="fielddoc">Float,  plot outline weight of markers in pixels</td></tr>
+  <tr><td class="field">FILL_ALPHA</td><td class="fielddoc">Float,  alpha modifier applied to all plot item fills</td></tr>
+  <tr><td class="field">ERROR_BAR_SIZE</td><td class="fielddoc">Float,  error bar whisker width in pixels</td></tr>
+  <tr><td class="field">ERROR_BAR_WEIGHT</td><td class="fielddoc">Float,  error bar whisker weight in pixels</td></tr>
+  <tr><td class="field">DIGITAL_BIT_HEIGHT</td><td class="fielddoc">Float,  digital channels bit height (at 1) in pixels</td></tr>
+  <tr><td class="field">DIGITAL_BIT_GAP</td><td class="fielddoc">Float,  digital channels bit padding gap in pixels</td></tr>
+  <tr><td class="field">PLOT_BORDER_SIZE</td><td class="fielddoc">Float,  thickness of border around plot area</td></tr>
+  <tr><td class="field">MINOR_ALPHA</td><td class="fielddoc">Float,  alpha multiplier applied to minor axis grid lines</td></tr>
+  <tr><td class="field">MAJOR_TICK_LEN</td><td class="fielddoc">ImVec2, major tick lengths for X and Y axes</td></tr>
+  <tr><td class="field">MINOR_TICK_LEN</td><td class="fielddoc">ImVec2, minor tick lengths for X and Y axes</td></tr>
+  <tr><td class="field">MAJOR_TICK_SIZE</td><td class="fielddoc">ImVec2, line thickness of major ticks</td></tr>
+  <tr><td class="field">MINOR_TICK_SIZE</td><td class="fielddoc">ImVec2, line thickness of minor ticks</td></tr>
+  <tr><td class="field">MAJOR_GRID_SIZE</td><td class="fielddoc">ImVec2, line thickness of major grid lines</td></tr>
+  <tr><td class="field">MINOR_GRID_SIZE</td><td class="fielddoc">ImVec2, line thickness of minor grid lines</td></tr>
+  <tr><td class="field">PLOT_PADDING</td><td class="fielddoc">ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)</td></tr>
+  <tr><td class="field">LABEL_PADDING</td><td class="fielddoc">ImVec2, padding between axes labels, tick labels, and plot edge</td></tr>
+  <tr><td class="field">LEGEND_PADDING</td><td class="fielddoc">ImVec2, legend padding from plot edges</td></tr>
+  <tr><td class="field">LEGEND_INNER_PADDING</td><td class="fielddoc">ImVec2, legend inner padding from legend edges</td></tr>
+  <tr><td class="field">LEGEND_SPACING</td><td class="fielddoc">ImVec2, spacing between legend entries</td></tr>
+  <tr><td class="field">MOUSE_POS_PADDING</td><td class="fielddoc">ImVec2, padding between plot edge and interior info text</td></tr>
+  <tr><td class="field">ANNOTATION_PADDING</td><td class="fielddoc">ImVec2, text padding around annotation labels</td></tr>
+  <tr><td class="field">FIT_PADDING</td><td class="fielddoc">ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)</td></tr>
+  <tr><td class="field">PLOT_DEFAULT_SIZE</td><td class="fielddoc">ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot</td></tr>
+  <tr><td class="field">PLOT_MIN_SIZE</td><td class="fielddoc">ImVec2, minimum size plot frame can be when shrunk</td></tr>
   <tr><td class="field">COUNT</td><td class="fielddoc"></td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">AxisFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_LABEL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_GRID_LINES</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_TICK_MARKS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_TICK_LABELS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_INITIAL_FIT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_MENUS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_SIDE_SWITCH</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_HIGHLIGHT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">OPPOSITE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">FOREGROUND</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">INVERT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">AUTO_FIT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">RANGE_FIT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PAN_STRETCH</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LOCK_MIN</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LOCK_MAX</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_LABEL</td><td class="fielddoc">The axis label will not be displayed (axis labels are also hidden if the supplied string name is nullptr)</td></tr>
+  <tr><td class="field">NO_GRID_LINES</td><td class="fielddoc">No grid lines will be displayed</td></tr>
+  <tr><td class="field">NO_TICK_MARKS</td><td class="fielddoc">No tick marks will be displayed</td></tr>
+  <tr><td class="field">NO_TICK_LABELS</td><td class="fielddoc">No text labels will be displayed</td></tr>
+  <tr><td class="field">NO_INITIAL_FIT</td><td class="fielddoc">Axis will not be initially fit to data extents on the first rendered frame</td></tr>
+  <tr><td class="field">NO_MENUS</td><td class="fielddoc">The user will not be able to open context menus with right-click</td></tr>
+  <tr><td class="field">NO_SIDE_SWITCH</td><td class="fielddoc">The user will not be able to switch the axis side by dragging it</td></tr>
+  <tr><td class="field">NO_HIGHLIGHT</td><td class="fielddoc">The axis will not have its background highlighted when hovered or held</td></tr>
+  <tr><td class="field">OPPOSITE</td><td class="fielddoc">Axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)</td></tr>
+  <tr><td class="field">FOREGROUND</td><td class="fielddoc">Grid lines will be displayed in the foreground (i.e. on top of data) instead of the background</td></tr>
+  <tr><td class="field">INVERT</td><td class="fielddoc">The axis will be inverted</td></tr>
+  <tr><td class="field">AUTO_FIT</td><td class="fielddoc">Axis will be auto-fitting to data extents</td></tr>
+  <tr><td class="field">RANGE_FIT</td><td class="fielddoc">Axis will only fit points if the point is in the visible range of the **orthogonal** axis</td></tr>
+  <tr><td class="field">PAN_STRETCH</td><td class="fielddoc">Panning in a locked or constrained state will cause the axis to stretch if possible</td></tr>
+  <tr><td class="field">LOCK_MIN</td><td class="fielddoc">The axis minimum value will be locked when panning/zooming</td></tr>
+  <tr><td class="field">LOCK_MAX</td><td class="fielddoc">The axis maximum value will be locked when panning/zooming</td></tr>
   <tr><td class="field">LOCK</td><td class="fielddoc"></td></tr>
   <tr><td class="field">NO_DECORATIONS</td><td class="fielddoc"></td></tr>
   <tr><td class="field">AUX_DEFAULT</td><td class="fielddoc"></td></tr>
@@ -1056,203 +1056,203 @@ need this function, but it is available for applications that require runtime co
 <div class="api-class">
   <div><span class="class_name">BarGroupsFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HORIZONTAL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">STACKED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">HORIZONTAL</td><td class="fielddoc">Bar groups will be rendered horizontally on the current y-axis</td></tr>
+  <tr><td class="field">STACKED</td><td class="fielddoc">Items in a group will be stacked on top of each other</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">BarsFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HORIZONTAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">HORIZONTAL</td><td class="fielddoc">Bars will be rendered horizontally on the current y-axis</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">ColormapScaleFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_LABEL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">OPPOSITE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">INVERT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_LABEL</td><td class="fielddoc">The colormap axis label will not be displayed</td></tr>
+  <tr><td class="field">OPPOSITE</td><td class="fielddoc">Render the colormap label and tick labels on the opposite side</td></tr>
+  <tr><td class="field">INVERT</td><td class="fielddoc">Invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">DigitalFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">DragToolFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_CURSORS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_FIT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_INPUTS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DELAYED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_CURSORS</td><td class="fielddoc">Drag tools won't change cursor icons when hovered or held</td></tr>
+  <tr><td class="field">NO_FIT</td><td class="fielddoc">The drag tool won't be considered for plot fits</td></tr>
+  <tr><td class="field">NO_INPUTS</td><td class="fielddoc">Lock the tool from user inputs</td></tr>
+  <tr><td class="field">DELAYED</td><td class="fielddoc">Tool rendering will be delayed one frame; useful when applying position-constraints</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">DummyFlag</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">ErrorBarsFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HORIZONTAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">HORIZONTAL</td><td class="fielddoc">Error bars will be rendered horizontally on the current y-axis</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">HeatmapFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">COL_MAJOR</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">COL_MAJOR</td><td class="fielddoc">Data will be read in column major order</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">HistogramFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HORIZONTAL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">CUMULATIVE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">DENSITY</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_OUTLIERS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">COL_MAJOR</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">HORIZONTAL</td><td class="fielddoc">Histogram bars will be rendered horizontally (not supported by PlotHistogram2D)</td></tr>
+  <tr><td class="field">CUMULATIVE</td><td class="fielddoc">Each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)</td></tr>
+  <tr><td class="field">DENSITY</td><td class="fielddoc">Counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set</td></tr>
+  <tr><td class="field">NO_OUTLIERS</td><td class="fielddoc">Exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts</td></tr>
+  <tr><td class="field">COL_MAJOR</td><td class="fielddoc">Data will be read in column major order (not supported by <code>plot_histogram</code>)</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">ImageFlag</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">InfLinesFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HORIZONTAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">HORIZONTAL</td><td class="fielddoc">Lines will be rendered horizontally on the current y-axis</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">ItemFlags</span> (enum)</div>
   <table>
   <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_LEGEND</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_FIT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NO_LEGEND</td><td class="fielddoc">The item won't have a legend entry displayed</td></tr>
+  <tr><td class="field">NO_FIT</td><td class="fielddoc">The item won't be considered for plot fits</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">LegendFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_BUTTONS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_HIGHLIGHT_ITEM</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_HIGHLIGHT_AXIS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_MENUS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">OUTSIDE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HORIZONTAL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SORT</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_BUTTONS</td><td class="fielddoc">Legend icons will not function as hide/show buttons</td></tr>
+  <tr><td class="field">NO_HIGHLIGHT_ITEM</td><td class="fielddoc">Plot items will not be highlighted when their legend entry is hovered</td></tr>
+  <tr><td class="field">NO_HIGHLIGHT_AXIS</td><td class="fielddoc">Axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)</td></tr>
+  <tr><td class="field">NO_MENUS</td><td class="fielddoc">The user will not be able to open context menus with right-click</td></tr>
+  <tr><td class="field">OUTSIDE</td><td class="fielddoc">Legend will be rendered outside of the plot area</td></tr>
+  <tr><td class="field">HORIZONTAL</td><td class="fielddoc">Legend entries will be displayed horizontally</td></tr>
+  <tr><td class="field">SORT</td><td class="fielddoc">Legend entries will be displayed in alphabetical order</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">LineFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SEGMENTS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LOOP</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SKIP_NA_N</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_CLIP</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SHADED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">SEGMENTS</td><td class="fielddoc">A line segment will be rendered from every two consecutive points</td></tr>
+  <tr><td class="field">LOOP</td><td class="fielddoc">The last and first point will be connected to form a closed loop</td></tr>
+  <tr><td class="field">SKIP_NA_N</td><td class="fielddoc">NaNs values will be skipped instead of rendered as missing data</td></tr>
+  <tr><td class="field">NO_CLIP</td><td class="fielddoc">Markers (if displayed) on the edge of a plot will not be clipped</td></tr>
+  <tr><td class="field">SHADED</td><td class="fielddoc">A filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">MouseTextFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_AUX_AXES</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_FORMAT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SHOW_ALWAYS</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_AUX_AXES</td><td class="fielddoc">Only show the mouse position for primary axes</td></tr>
+  <tr><td class="field">NO_FORMAT</td><td class="fielddoc">Axes label formatters won't be used to render text</td></tr>
+  <tr><td class="field">SHOW_ALWAYS</td><td class="fielddoc">Always display mouse position even if plot not hovered</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">PieChartFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NORMALIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">IGNORE_HIDDEN</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">EXPLODING</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NORMALIZE</td><td class="fielddoc">Force normalization of pie chart values (i.e. always make a full circle if sum < 0)</td></tr>
+  <tr><td class="field">IGNORE_HIDDEN</td><td class="fielddoc">Ignore hidden slices when drawing the pie chart (as if they were not there)</td></tr>
+  <tr><td class="field">EXPLODING</td><td class="fielddoc">Explode legend-hovered slice</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">PlotFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_TITLE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_LEGEND</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_MOUSE_TEXT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_INPUTS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_MENUS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_BOX_SELECT</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_FRAME</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">EQUAL</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">CROSSHAIRS</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_TITLE</td><td class="fielddoc">The plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MyPlot")</td></tr>
+  <tr><td class="field">NO_LEGEND</td><td class="fielddoc">The legend will not be displayed</td></tr>
+  <tr><td class="field">NO_MOUSE_TEXT</td><td class="fielddoc">The mouse position, in plot coordinates, will not be displayed inside of the plot</td></tr>
+  <tr><td class="field">NO_INPUTS</td><td class="fielddoc">The user will not be able to interact with the plot</td></tr>
+  <tr><td class="field">NO_MENUS</td><td class="fielddoc">The user will not be able to open context menus</td></tr>
+  <tr><td class="field">NO_BOX_SELECT</td><td class="fielddoc">The user will not be able to box-select</td></tr>
+  <tr><td class="field">NO_FRAME</td><td class="fielddoc">The ImGui frame will not be rendered</td></tr>
+  <tr><td class="field">EQUAL</td><td class="fielddoc">X and y axes pairs will be constrained to have the same units/pixel</td></tr>
+  <tr><td class="field">CROSSHAIRS</td><td class="fielddoc">The default mouse cursor will be replaced with a crosshair when hovered</td></tr>
   <tr><td class="field">CANVAS_ONLY</td><td class="fielddoc"></td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">ScatterFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_CLIP</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_CLIP</td><td class="fielddoc">Markers on the edge of a plot will not be clipped</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">ShadedFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">StairsFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">PRE_STEP</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SHADED</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">PRE_STEP</td><td class="fielddoc">The y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]</td></tr>
+  <tr><td class="field">SHADED</td><td class="fielddoc">A filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">StemsFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">HORIZONTAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">HORIZONTAL</td><td class="fielddoc">Stems will be rendered horizontally on the current y-axis</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">SubplotFlags</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_TITLE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_LEGEND</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_MENUS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_RESIZE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">NO_ALIGN</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">SHARE_ITEMS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LINK_ROWS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LINK_COLS</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LINK_ALL_X</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">LINK_ALL_Y</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">COL_MAJOR</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">NO_TITLE</td><td class="fielddoc">The subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MySubplot")</td></tr>
+  <tr><td class="field">NO_LEGEND</td><td class="fielddoc">The legend will not be displayed (only applicable if <code>SubplotFlags.SHARE_ITEMS</code> is enabled)</td></tr>
+  <tr><td class="field">NO_MENUS</td><td class="fielddoc">The user will not be able to open context menus with right-click</td></tr>
+  <tr><td class="field">NO_RESIZE</td><td class="fielddoc">Resize splitters between subplot cells will be not be provided</td></tr>
+  <tr><td class="field">NO_ALIGN</td><td class="fielddoc">Subplot edges will not be aligned vertically or horizontally</td></tr>
+  <tr><td class="field">SHARE_ITEMS</td><td class="fielddoc">Items across all subplots will be shared and rendered into a single legend entry</td></tr>
+  <tr><td class="field">LINK_ROWS</td><td class="fielddoc">Link the y-axis limits of all plots in each row (does not apply to auxiliary axes)</td></tr>
+  <tr><td class="field">LINK_COLS</td><td class="fielddoc">Link the x-axis limits of all plots in each column (does not apply to auxiliary axes)</td></tr>
+  <tr><td class="field">LINK_ALL_X</td><td class="fielddoc">Link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)</td></tr>
+  <tr><td class="field">LINK_ALL_Y</td><td class="fielddoc">Link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)</td></tr>
+  <tr><td class="field">COL_MAJOR</td><td class="fielddoc">Subplots are added in column major order instead of the default row major order</td></tr>
   </table>
 </div>
 <div class="api-class">
   <div><span class="class_name">TextFlag</span> (enum)</div>
   <table>
-  <tr><td class="field">NONE</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">VERTICAL</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">NONE</td><td class="fielddoc">Default</td></tr>
+  <tr><td class="field">VERTICAL</td><td class="fielddoc">Text will be rendered vertically</td></tr>
   </table>
 </div>
 </div>
