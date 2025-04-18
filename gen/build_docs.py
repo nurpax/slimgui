@@ -33,6 +33,12 @@ def _tokenize_code(line):
     return tokens
 
 def _highlight_def_line(line: str) -> str:
+    line = line.replace('slimgui.slimgui_ext.imgui.', 'imgui.')
+    line = line.replace('slimgui.slimgui_ext.implot.', 'implot.')
+    line = line.replace('slimgui_ext.imgui.', 'imgui.')
+    line = line.replace('slimgui_ext.implot.', 'implot.')
+    line = line.replace('slimgui.imgui.', 'imgui.')
+    line = line.replace('slimgui.implot.', 'implot.')
     tokens = _tokenize_code(line)
 
     # Initialize the highlighted output
@@ -68,10 +74,22 @@ def _highlight_def_line(line: str) -> str:
     return ''.join(output)
 
 def _expand_code_blocks_to_html(s: str) -> str:
-    '''In an arbitrary string, replace occurrences of "foo bar `baz`" with "foo bar <code>baz</code>".'''
-    def repl(match):
-        return f'<code>{match.group(1)}</code>'
-    return re.sub(r'`([^`]+)`', repl, s)
+    '''Convert:
+    - inline `code` to <code>
+    - triple-backtick blocks to <pre>
+    - double newlines to <br>
+    '''
+    
+    # Handle fenced code blocks
+    def block_repl(match):
+        code = match.group(1)
+        return f'<pre>{code.strip()}</pre>'
+    s = re.sub(r'```(?:\w*\n)?(.*?)```', block_repl, s, flags=re.DOTALL)
+    # Handle inline code (single-line only)
+    s = re.sub(r'`([^`\n]+)`', lambda m: f'<code>{m.group(1)}</code>', s)
+    # Convert double newlines to <br>
+    s = re.sub(r'\n{2,}', '<br>', s)
+    return s
 
 # Parse a .pyi file to extract top-level symbols, their args and return
 # values.  Documentation renderer will use this information to generate

@@ -4073,18 +4073,15 @@ def spacing() -> None:
     ...
 
 
-def style_colors_classic(dst: Style) -> None:
-    """Classic imgui style"""
+def style_colors_classic_internal(dst: Style) -> None:
     ...
 
 
-def style_colors_dark(dst: Style) -> None:
-    """New, recommended style (default)"""
+def style_colors_dark_internal(dst: Style) -> None:
     ...
 
 
-def style_colors_light(dst: Style) -> None:
-    """Best used with borders and a custom, thicker font"""
+def style_colors_light_internal(dst: Style) -> None:
     ...
 
 

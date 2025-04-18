@@ -658,7 +658,7 @@ def begin_plot(title_id: str, size: tuple[float, float] = (-1,0), flags: PlotFla
     Starts a 2D plotting context. If this function returns `True`, `implot.end_plot()` MUST
     be called! You are encouraged to use the following convention:
 
-    ```python
+    ```
     if implot.begin_plot(...):
         implot.plot_line(...)
         ...
@@ -666,16 +666,18 @@ def begin_plot(title_id: str, size: tuple[float, float] = (-1,0), flags: PlotFla
     ```
 
     Important notes:
-    - `#title_id` must be unique to the current ImGui ID scope. If you need to avoid ID
+
+    - `title_id` must be unique to the current ImGui ID scope. If you need to avoid ID
       collisions or don't want to display a title in the plot, use double hashes
-      (e.g. "MyPlot##HiddenIdText" or "##NoTitle").
-    - #size is the **frame** size of the plot widget, not the plot area. The default
+      (e.g. `"MyPlot##HiddenIdText"` or `"##NoTitle"`).
+
+    - `size` is the **frame** size of the plot widget, not the plot area. The default
       size of plots (i.e. when `(0,0)`) can be modified in your `implot.Style`.
     """
 
 def bust_color_cache(plot_title_id: str | None = None) -> None:
     """
-    // When items in a plot sample their color from a colormap, the color is cached and does not change
+    When items in a plot sample their color from a colormap, the color is cached and does not change
     unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,
     item colors will NOT update. If you need item colors to resample the new colormap, then use this
     function to bust the cached colors. If #plot_title_id is nullptr, then every item in EVERY existing plot

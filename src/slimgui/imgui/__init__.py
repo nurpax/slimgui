@@ -101,16 +101,16 @@ def style_colors_dark(dst: imgui_ext.Style | None = None) -> None:
     '''Write dark mode styles into the destination style.  Set directly to context's style if dst is None.'''
     if dst is None:
         dst = get_style()
-    imgui_ext.style_colors_dark(dst)
+    imgui_ext.style_colors_dark_internal(dst)
 
 def style_colors_light(dst: imgui_ext.Style | None = None) -> None:
     '''Write light mode styles into the destination style.  Set directly to context's style if dst is None.'''
     if dst is None:
         dst = get_style()
-    imgui_ext.style_colors_light(dst)
+    imgui_ext.style_colors_light_internal(dst)
 
 def style_colors_classic(dst: imgui_ext.Style | None = None) -> None:
     '''Write classic mode styles into the destination style.  Set directly to context's style if dst is None.'''
     if dst is None:
         dst = get_style()
-    imgui_ext.style_colors_classic(dst)
+    imgui_ext.style_colors_classic_internal(dst)

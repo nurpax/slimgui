@@ -485,9 +485,9 @@ NB_MODULE(slimgui_ext, top) {
     m.def("get_version", &ImGui::GetVersion);
 
     // Styles
-    m.def("style_colors_dark", &ImGui::StyleColorsDark, "dst"_a);
-    m.def("style_colors_light", &ImGui::StyleColorsLight, "dst"_a);
-    m.def("style_colors_classic", &ImGui::StyleColorsClassic, "dst"_a);
+    m.def("style_colors_dark_internal", &ImGui::StyleColorsDark, "dst"_a);
+    m.def("style_colors_light_internal", &ImGui::StyleColorsLight, "dst"_a);
+    m.def("style_colors_classic_internal", &ImGui::StyleColorsClassic, "dst"_a);
 
     // ...
     m.def("begin", [](const char* name, bool closable, ImGuiWindowFlags_ flags) {

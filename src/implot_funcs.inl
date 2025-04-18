@@ -9,7 +9,7 @@ m.def(
     "`implot.end_plot()` MUST\n"
     "be called! You are encouraged to use the following convention:\n"
     "\n"
-    "```python\n"
+    "```\n"
     "if implot.begin_plot(...):\n"
     "    implot.plot_line(...)\n"
     "    ...\n"
@@ -17,12 +17,14 @@ m.def(
     "```\n"
     "\n"
     "Important notes:\n"
-    "- `#title_id` must be unique to the current ImGui ID scope. If you need "
-    "to avoid ID\n"
+    "\n"
+    "- `title_id` must be unique to the current ImGui ID scope. If you need to "
+    "avoid ID\n"
     "  collisions or don't want to display a title in the plot, use double "
     "hashes\n"
-    "  (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n"
-    "- #size is the **frame** size of the plot widget, not the plot area. The "
+    "  (e.g. `\"MyPlot##HiddenIdText\"` or `\"##NoTitle\"`).\n"
+    "\n"
+    "- `size` is the **frame** size of the plot widget, not the plot area. The "
     "default\n"
     "  size of plots (i.e. when `(0,0)`) can be modified in your "
     "`implot.Style`.\n");
@@ -553,7 +555,7 @@ m.def(
       ImPlot::BustColorCache(plot_title_id ? plot_title_id.value() : nullptr);
     },
     "plot_title_id"_a.sig("None") = nb::none(),
-    "// When items in a plot sample their color from a colormap, the color is "
+    "When items in a plot sample their color from a colormap, the color is "
     "cached and does not change\n"
     "unless explicitly overriden. Therefore, if you change the colormap after "
     "the item has already been plotted,\n"
