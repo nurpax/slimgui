@@ -9,7 +9,7 @@ set -e
 
 # generate the enums
 python gen/gen_nb_enums.py --cimgui-defs-dir gen/cimgui > src/imgui_enums.inl
-python gen/gen_nb_enums.py --cimgui-defs-dir gen/cimplot > src/implot_enums.inl
+python gen/gen_nb_enums.py --cimgui-defs-dir gen/cimplot --imgui-h src/c/implot/implot.h > src/implot_enums.inl
 python gen/gen_nb_funcs.py --cimgui-defs-dir gen/cimplot > src/implot_funcs.inl
 pip install --no-build-isolation -v .
 

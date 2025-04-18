@@ -13,16 +13,22 @@ AUTO_COL: tuple = (0.0, 0.0, 0.0, -1.0)
 
 class Axis(enum.IntEnum):
     X1 = 0
+    """Enabled by default"""
 
     X2 = 1
+    """Disabled by default"""
 
     X3 = 2
+    """Disabled by default"""
 
     Y1 = 3
+    """Enabled by default"""
 
     Y2 = 4
+    """Disabled by default"""
 
     Y3 = 5
+    """Disabled by default"""
 
     COUNT = 6
 
@@ -33,38 +39,67 @@ class AxisFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_LABEL = 1
+    """
+    The axis label will not be displayed (axis labels are also hidden if the supplied string name is nullptr)
+    """
 
     NO_GRID_LINES = 2
+    """No grid lines will be displayed"""
 
     NO_TICK_MARKS = 4
+    """No tick marks will be displayed"""
 
     NO_TICK_LABELS = 8
+    """No text labels will be displayed"""
 
     NO_INITIAL_FIT = 16
+    """
+    Axis will not be initially fit to data extents on the first rendered frame
+    """
 
     NO_MENUS = 32
+    """The user will not be able to open context menus with right-click"""
 
     NO_SIDE_SWITCH = 64
+    """The user will not be able to switch the axis side by dragging it"""
 
     NO_HIGHLIGHT = 128
+    """The axis will not have its background highlighted when hovered or held"""
 
     OPPOSITE = 256
+    """
+    Axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)
+    """
 
     FOREGROUND = 512
+    """
+    Grid lines will be displayed in the foreground (i.e. on top of data) instead of the background
+    """
 
     INVERT = 1024
+    """The axis will be inverted"""
 
     AUTO_FIT = 2048
+    """Axis will be auto-fitting to data extents"""
 
     RANGE_FIT = 4096
+    """
+    Axis will only fit points if the point is in the visible range of the **orthogonal** axis
+    """
 
     PAN_STRETCH = 8192
+    """
+    Panning in a locked or constrained state will cause the axis to stretch if possible
+    """
 
     LOCK_MIN = 16384
+    """The axis minimum value will be locked when panning/zooming"""
 
     LOCK_MAX = 32768
+    """The axis maximum value will be locked when panning/zooming"""
 
     LOCK = 49152
 
@@ -79,10 +114,13 @@ class BarGroupsFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     HORIZONTAL = 1024
+    """Bar groups will be rendered horizontally on the current y-axis"""
 
     STACKED = 2048
+    """Items in a group will be stacked on top of each other"""
 
 class BarsFlags(enum.IntFlag):
     __str__ = __repr__
@@ -91,95 +129,140 @@ class BarsFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     HORIZONTAL = 1024
+    """Bars will be rendered horizontally on the current y-axis"""
 
 class Bin(enum.IntEnum):
     SQRT = -1
+    """K = sqrt(n)"""
 
     STURGES = -2
+    """K = 1 + log2(n)"""
 
     RICE = -3
+    """K = 2 * cbrt(n)"""
 
     SCOTT = -4
+    """W = 3.49 * sigma / cbrt(n)"""
 
 class Col(enum.IntEnum):
     LINE = 0
+    """
+    Plot line/outline color (defaults to next unused color in current colormap)
+    """
 
     FILL = 1
+    """Plot fill color for bars (defaults to the current line color)"""
 
     MARKER_OUTLINE = 2
+    """Marker outline color (defaults to the current line color)"""
 
     MARKER_FILL = 3
+    """Marker fill color (defaults to the current line color)"""
 
     ERROR_BAR = 4
+    """Error bar color (defaults to `Col.TEXT`)"""
 
     FRAME_BG = 5
+    """Plot frame background color (defaults to `Col.FRAME_BG`)"""
 
     PLOT_BG = 6
+    """Plot area background color (defaults to `Col.WINDOW_BG`)"""
 
     PLOT_BORDER = 7
+    """Plot area border color (defaults to `Col.BORDER`)"""
 
     LEGEND_BG = 8
+    """Legend background color (defaults to `Col.POPUP_BG`)"""
 
     LEGEND_BORDER = 9
+    """Legend border color (defaults to `Col.PLOT_BORDER`)"""
 
     LEGEND_TEXT = 10
+    """Legend text color (defaults to `Col.INLAY_TEXT`)"""
 
     TITLE_TEXT = 11
+    """Plot title text color (defaults to `Col.TEXT`)"""
 
     INLAY_TEXT = 12
+    """Color of text appearing inside of plots (defaults to `Col.TEXT`)"""
 
     AXIS_TEXT = 13
+    """Axis label and tick lables color (defaults to `Col.TEXT`)"""
 
     AXIS_GRID = 14
+    """Axis grid color (defaults to 25% `Col.AXIS_TEXT`)"""
 
     AXIS_TICK = 15
+    """Axis tick color (defaults to AxisGrid)"""
 
     AXIS_BG = 16
+    """Background color of axis hover region (defaults to transparent)"""
 
     AXIS_BG_HOVERED = 17
+    """Axis hover color (defaults to `Col.BUTTON_HOVERED`)"""
 
     AXIS_BG_ACTIVE = 18
+    """Axis active color (defaults to `Col.BUTTON_ACTIVE`)"""
 
     SELECTION = 19
+    """Box-selection color (defaults to yellow)"""
 
     CROSSHAIRS = 20
+    """Crosshairs color (defaults to `Col.PLOT_BORDER`)"""
 
     COUNT = 21
 
 class Colormap(enum.IntEnum):
     DEEP = 0
+    """A.k.a. seaborn deep             (qual=true,  n=10) (default)"""
 
     DARK = 1
+    """A.k.a. matplotlib "Set1"        (qual=true,  n=9 )"""
 
     PASTEL = 2
+    """A.k.a. matplotlib "Pastel1"     (qual=true,  n=9 )"""
 
     PAIRED = 3
+    """A.k.a. matplotlib "Paired"      (qual=true,  n=12)"""
 
     VIRIDIS = 4
+    """A.k.a. matplotlib "viridis"     (qual=false, n=11)"""
 
     PLASMA = 5
+    """A.k.a. matplotlib "plasma"      (qual=false, n=11)"""
 
     HOT = 6
+    """A.k.a. matplotlib/MATLAB "hot"  (qual=false, n=11)"""
 
     COOL = 7
+    """A.k.a. matplotlib/MATLAB "cool" (qual=false, n=11)"""
 
     PINK = 8
+    """A.k.a. matplotlib/MATLAB "pink" (qual=false, n=11)"""
 
     JET = 9
+    """A.k.a. MATLAB "jet"             (qual=false, n=11)"""
 
     TWILIGHT = 10
+    """A.k.a. matplotlib "twilight"    (qual=false, n=11)"""
 
     RD_BU = 11
+    """Red/blue, Color Brewer          (qual=false, n=11)"""
 
     BR_BG = 12
+    """Brown/blue-green, Color Brewer  (qual=false, n=11)"""
 
     PI_YG = 13
+    """Pink/yellow-green, Color Brewer (qual=false, n=11)"""
 
     SPECTRAL = 14
+    """Color spectrum, Color Brewer    (qual=false, n=11)"""
 
     GREYS = 15
+    """White/black                     (qual=false, n=2 )"""
 
 class ColormapScaleFlags(enum.IntFlag):
     __str__ = __repr__
@@ -188,19 +271,30 @@ class ColormapScaleFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_LABEL = 1
+    """The colormap axis label will not be displayed"""
 
     OPPOSITE = 2
+    """Render the colormap label and tick labels on the opposite side"""
 
     INVERT = 4
+    """
+    Invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
+    """
 
 class Cond(enum.IntEnum):
     NONE = 0
+    """No condition (always set the variable), same as _Always"""
 
     ALWAYS = 1
+    """No condition (always set the variable)"""
 
     ONCE = 2
+    """
+    Set the variable once per runtime session (only the first call will succeed)
+    """
 
 class Context:
     """ImPlot context (opaque struct, see implot_internal.h)"""
@@ -218,6 +312,7 @@ class DigitalFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
 class DragToolFlags(enum.IntFlag):
     __str__ = __repr__
@@ -226,14 +321,21 @@ class DragToolFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_CURSORS = 1
+    """Drag tools won't change cursor icons when hovered or held"""
 
     NO_FIT = 2
+    """The drag tool won't be considered for plot fits"""
 
     NO_INPUTS = 4
+    """Lock the tool from user inputs"""
 
     DELAYED = 8
+    """
+    Tool rendering will be delayed one frame; useful when applying position-constraints
+    """
 
 class DummyFlag(enum.IntFlag):
     __str__ = __repr__
@@ -242,6 +344,7 @@ class DummyFlag(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
 class ErrorBarsFlags(enum.IntFlag):
     __str__ = __repr__
@@ -250,8 +353,10 @@ class ErrorBarsFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     HORIZONTAL = 1024
+    """Error bars will be rendered horizontally on the current y-axis"""
 
 class HeatmapFlags(enum.IntFlag):
     __str__ = __repr__
@@ -260,8 +365,10 @@ class HeatmapFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     COL_MAJOR = 1024
+    """Data will be read in column major order"""
 
 class HistogramFlags(enum.IntFlag):
     __str__ = __repr__
@@ -270,16 +377,32 @@ class HistogramFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     HORIZONTAL = 1024
+    """
+    Histogram bars will be rendered horizontally (not supported by PlotHistogram2D)
+    """
 
     CUMULATIVE = 2048
+    """
+    Each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)
+    """
 
     DENSITY = 4096
+    """
+    Counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set
+    """
 
     NO_OUTLIERS = 8192
+    """
+    Exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts
+    """
 
     COL_MAJOR = 16384
+    """
+    Data will be read in column major order (not supported by `plot_histogram`)
+    """
 
 class ImageFlag(enum.IntFlag):
     __str__ = __repr__
@@ -288,6 +411,7 @@ class ImageFlag(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
 class InfLinesFlags(enum.IntFlag):
     __str__ = __repr__
@@ -296,8 +420,10 @@ class InfLinesFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     HORIZONTAL = 1024
+    """Lines will be rendered horizontally on the current y-axis"""
 
 class InputMap:
     """
@@ -313,8 +439,10 @@ class ItemFlags(enum.IntFlag):
     NONE = 0
 
     NO_LEGEND = 1
+    """The item won't have a legend entry displayed"""
 
     NO_FIT = 2
+    """The item won't be considered for plot fits"""
 
 class LegendFlags(enum.IntFlag):
     __str__ = __repr__
@@ -323,20 +451,30 @@ class LegendFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_BUTTONS = 1
+    """Legend icons will not function as hide/show buttons"""
 
     NO_HIGHLIGHT_ITEM = 2
+    """Plot items will not be highlighted when their legend entry is hovered"""
 
     NO_HIGHLIGHT_AXIS = 4
+    """
+    Axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)
+    """
 
     NO_MENUS = 8
+    """The user will not be able to open context menus with right-click"""
 
     OUTSIDE = 16
+    """Legend will be rendered outside of the plot area"""
 
     HORIZONTAL = 32
+    """Legend entries will be displayed horizontally"""
 
     SORT = 64
+    """Legend entries will be displayed in alphabetical order"""
 
 class LineFlags(enum.IntFlag):
     __str__ = __repr__
@@ -345,58 +483,86 @@ class LineFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     SEGMENTS = 1024
+    """A line segment will be rendered from every two consecutive points"""
 
     LOOP = 2048
+    """The last and first point will be connected to form a closed loop"""
 
     SKIP_NA_N = 4096
+    """NaNs values will be skipped instead of rendered as missing data"""
 
     NO_CLIP = 8192
+    """Markers (if displayed) on the edge of a plot will not be clipped"""
 
     SHADED = 16384
+    """
+    A filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases
+    """
 
 class Location(enum.IntEnum):
     CENTER = 0
+    """Center-center"""
 
     NORTH = 1
+    """Top-center"""
 
     SOUTH = 2
+    """Bottom-center"""
 
     WEST = 4
+    """Center-left"""
 
     EAST = 8
+    """Center-right"""
 
     NORTH_WEST = 5
+    """Top-left"""
 
     NORTH_EAST = 9
+    """Top-right"""
 
     SOUTH_WEST = 6
+    """Bottom-left"""
 
     SOUTH_EAST = 10
+    """Bottom-right"""
 
 class Marker(enum.IntEnum):
     NONE = -1
+    """No marker"""
 
     CIRCLE = 0
+    """A circle marker (default)"""
 
     SQUARE = 1
+    """A square maker"""
 
     DIAMOND = 2
+    """A diamond marker"""
 
     UP = 3
+    """An upward-pointing triangle marker"""
 
     DOWN = 4
+    """An downward-pointing triangle marker"""
 
     LEFT = 5
+    """An leftward-pointing triangle marker"""
 
     RIGHT = 6
+    """An rightward-pointing triangle marker"""
 
     CROSS = 7
+    """A cross marker (not fillable)"""
 
     PLUS = 8
+    """A plus marker (not fillable)"""
 
     ASTERISK = 9
+    """A asterisk marker (not fillable)"""
 
     COUNT = 10
 
@@ -407,12 +573,16 @@ class MouseTextFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_AUX_AXES = 1
+    """Only show the mouse position for primary axes"""
 
     NO_FORMAT = 2
+    """Axes label formatters won't be used to render text"""
 
     SHOW_ALWAYS = 4
+    """Always display mouse position even if plot not hovered"""
 
 class PieChartFlags(enum.IntFlag):
     __str__ = __repr__
@@ -421,12 +591,20 @@ class PieChartFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NORMALIZE = 1024
+    """
+    Force normalization of pie chart values (i.e. always make a full circle if sum < 0)
+    """
 
     IGNORE_HIDDEN = 2048
+    """
+    Ignore hidden slices when drawing the pie chart (as if they were not there)
+    """
 
     EXPLODING = 4096
+    """Explode legend-hovered slice"""
 
 class PlotFlags(enum.IntFlag):
     __str__ = __repr__
@@ -435,35 +613,55 @@ class PlotFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_TITLE = 1
+    """
+    The plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MyPlot")
+    """
 
     NO_LEGEND = 2
+    """The legend will not be displayed"""
 
     NO_MOUSE_TEXT = 4
+    """
+    The mouse position, in plot coordinates, will not be displayed inside of the plot
+    """
 
     NO_INPUTS = 8
+    """The user will not be able to interact with the plot"""
 
     NO_MENUS = 16
+    """The user will not be able to open context menus"""
 
     NO_BOX_SELECT = 32
+    """The user will not be able to box-select"""
 
     NO_FRAME = 64
+    """The ImGui frame will not be rendered"""
 
     EQUAL = 128
+    """X and y axes pairs will be constrained to have the same units/pixel"""
 
     CROSSHAIRS = 256
+    """
+    The default mouse cursor will be replaced with a crosshair when hovered
+    """
 
     CANVAS_ONLY = 55
 
 class Scale(enum.IntEnum):
     LINEAR = 0
+    """Default linear scale"""
 
     TIME = 1
+    """Date/time scale"""
 
     LOG10 = 2
+    """Base 10 logartithmic scale"""
 
     SYM_LOG = 3
+    """Symmetric log scale"""
 
 class ScatterFlags(enum.IntFlag):
     __str__ = __repr__
@@ -472,8 +670,10 @@ class ScatterFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_CLIP = 1024
+    """Markers on the edge of a plot will not be clipped"""
 
 class ShadedFlags(enum.IntFlag):
     __str__ = __repr__
@@ -482,6 +682,7 @@ class ShadedFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
 class StairsFlags(enum.IntFlag):
     __str__ = __repr__
@@ -490,10 +691,17 @@ class StairsFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     PRE_STEP = 1024
+    """
+    The y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]
+    """
 
     SHADED = 2048
+    """
+    A filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases
+    """
 
 class StemsFlags(enum.IntFlag):
     __str__ = __repr__
@@ -502,66 +710,99 @@ class StemsFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     HORIZONTAL = 1024
+    """Stems will be rendered horizontally on the current y-axis"""
 
 class Style:
     """Plot style structure"""
 
 class StyleVar(enum.IntEnum):
     LINE_WEIGHT = 0
+    """Float,  plot item line weight in pixels"""
 
     MARKER = 1
+    """Int,    marker specification"""
 
     MARKER_SIZE = 2
+    """Float,  marker size in pixels (roughly the marker's "radius")"""
 
     MARKER_WEIGHT = 3
+    """Float,  plot outline weight of markers in pixels"""
 
     FILL_ALPHA = 4
+    """Float,  alpha modifier applied to all plot item fills"""
 
     ERROR_BAR_SIZE = 5
+    """Float,  error bar whisker width in pixels"""
 
     ERROR_BAR_WEIGHT = 6
+    """Float,  error bar whisker weight in pixels"""
 
     DIGITAL_BIT_HEIGHT = 7
+    """Float,  digital channels bit height (at 1) in pixels"""
 
     DIGITAL_BIT_GAP = 8
+    """Float,  digital channels bit padding gap in pixels"""
 
     PLOT_BORDER_SIZE = 9
+    """Float,  thickness of border around plot area"""
 
     MINOR_ALPHA = 10
+    """Float,  alpha multiplier applied to minor axis grid lines"""
 
     MAJOR_TICK_LEN = 11
+    """ImVec2, major tick lengths for X and Y axes"""
 
     MINOR_TICK_LEN = 12
+    """ImVec2, minor tick lengths for X and Y axes"""
 
     MAJOR_TICK_SIZE = 13
+    """ImVec2, line thickness of major ticks"""
 
     MINOR_TICK_SIZE = 14
+    """ImVec2, line thickness of minor ticks"""
 
     MAJOR_GRID_SIZE = 15
+    """ImVec2, line thickness of major grid lines"""
 
     MINOR_GRID_SIZE = 16
+    """ImVec2, line thickness of minor grid lines"""
 
     PLOT_PADDING = 17
+    """
+    ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
+    """
 
     LABEL_PADDING = 18
+    """ImVec2, padding between axes labels, tick labels, and plot edge"""
 
     LEGEND_PADDING = 19
+    """ImVec2, legend padding from plot edges"""
 
     LEGEND_INNER_PADDING = 20
+    """ImVec2, legend inner padding from legend edges"""
 
     LEGEND_SPACING = 21
+    """ImVec2, spacing between legend entries"""
 
     MOUSE_POS_PADDING = 22
+    """ImVec2, padding between plot edge and interior info text"""
 
     ANNOTATION_PADDING = 23
+    """ImVec2, text padding around annotation labels"""
 
     FIT_PADDING = 24
+    """
+    ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)
+    """
 
     PLOT_DEFAULT_SIZE = 25
+    """ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot"""
 
     PLOT_MIN_SIZE = 26
+    """ImVec2, minimum size plot frame can be when shrunk"""
 
     COUNT = 27
 
@@ -572,28 +813,56 @@ class SubplotFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     NO_TITLE = 1
+    """
+    The subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MySubplot")
+    """
 
     NO_LEGEND = 2
+    """
+    The legend will not be displayed (only applicable if `SubplotFlags.SHARE_ITEMS` is enabled)
+    """
 
     NO_MENUS = 4
+    """The user will not be able to open context menus with right-click"""
 
     NO_RESIZE = 8
+    """Resize splitters between subplot cells will be not be provided"""
 
     NO_ALIGN = 16
+    """Subplot edges will not be aligned vertically or horizontally"""
 
     SHARE_ITEMS = 32
+    """
+    Items across all subplots will be shared and rendered into a single legend entry
+    """
 
     LINK_ROWS = 64
+    """
+    Link the y-axis limits of all plots in each row (does not apply to auxiliary axes)
+    """
 
     LINK_COLS = 128
+    """
+    Link the x-axis limits of all plots in each column (does not apply to auxiliary axes)
+    """
 
     LINK_ALL_X = 256
+    """
+    Link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)
+    """
 
     LINK_ALL_Y = 512
+    """
+    Link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)
+    """
 
     COL_MAJOR = 1024
+    """
+    Subplots are added in column major order instead of the default row major order
+    """
 
 class TextFlag(enum.IntFlag):
     __str__ = __repr__
@@ -602,8 +871,10 @@ class TextFlag(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
+    """Default"""
 
     VERTICAL = 1024
+    """Text will be rendered vertically"""
 
 @overload
 def annotation(x: float, y: float, col: tuple[float, float, float, float], pix_offset: tuple[float, float], clamp: bool, round: bool = False) -> None:
