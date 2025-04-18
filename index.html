@@ -275,14 +275,26 @@ div.api-class {
 <li><a href="https://github.com/ocornut/imgui">Dear ImGui</a></li>
 <li><a href="https://github.com/epezent/implot">ImPlot</a></li>
 </ul>
+<p>The Python bindings documentation has been split into several parts:</p>
+<ul>
+<li>Dear ImGui bindings reference – you’re reading it.</li>
+<li><a href="./apiref_implot.html">ImPlot bindings API reference</a></li>
+</ul>
+<p>The project source code is hosted on <a href="https://github.com/nurpax/slimgui">github.com/nurpax/slimgui</a>.</p>
+<p>Slimgui is built against Dear ImGui version 1.91.9.</p>
+<h3 id="binding-considerations">Binding considerations</h3>
 <p>Slimgui has been developed with the following goals in mind:</p>
 <ul>
 <li>Support typing through .pyi files to enable good IDE support (auto-complete, type checking, docstrings)</li>
 <li>Closely match the Dear ImGui API but adapt for Python as necessary. Don’t invent new API concepts.</li>
 </ul>
-<p>The project source code is hosted on <a href="https://github.com/nurpax/slimgui">github.com/nurpax/slimgui</a>.</p>
 <p>The project has been developed using the Python <code>glfw</code> and <code>pyOpenGL</code> packages and includes integration backend for these APIs. It should be possible to develop integrations for other backends, such as SDL or Pygame.</p>
-<p>Slimgui is built against Dear ImGui version 1.91.9.</p>
+<p>The Slimgui API is similar to <a href="https://github.com/pyimgui/pyimgui">pyimgui</a> except somewhat modernized:</p>
+<ul>
+<li>Enums in ImGui are exposed as typed Python enums using <code>enum.IntEnum</code> and <code>enum.IntFlag</code> to make it clear which API functions consume what type of enums.</li>
+<li>Vector types such as <code>ImVec2</code>, <code>ImVec4</code>, and <code>float*</code> arrays are converted to Python tuples such as <code>tuple[float, float]</code> (for <code>ImVec2</code>), <code>tuple[float, float, float, float]</code> (for <code>ImVec4</code>).</li>
+<li>Mutable bool args such as <code>bool* p_open</code> are input as normal <code>bool</code> values and returned as the second element of a 2-tuple. For example <code>bool ImGui::Checkbox(const char* label, bool* v)</code> is translated to <code>def checkbox(label: str, v: bool) -&gt; tuple[bool, bool]</code> that returns a 2-tuple where the first element is the boolean return value of <code>bool ImGui::Checkbox()</code> and the second element is the new value of the checkbox state.</li>
+</ul>
 <h3 id="getting-started">Getting started</h3>
 <p>Slimgui requires Python 3.10 or newer.</p>
 <p>Installation: <code>pip install slimgui</code></p>
@@ -292,13 +304,6 @@ cd slimgui
 pip install glfw pyopengl numpy requests
 python example/app.py</code></pre>
 <p>Browse the example code: <a href="https://github.com/nurpax/slimgui/blob/main/example/">example/</a></p>
-<h3 id="binding-considerations">Binding considerations</h3>
-<p>The Slimgui API is similar to <a href="https://github.com/pyimgui/pyimgui">pyimgui</a> except somewhat modernized:</p>
-<ul>
-<li>Enums in ImGui are exposed as typed Python enums using <code>enum.IntEnum</code> and <code>enum.IntFlag</code> to make it clear which API functions consume what type of enums.</li>
-<li>Vector types such as <code>ImVec2</code>, <code>ImVec4</code>, and <code>float*</code> arrays are converted to Python tuples such as <code>tuple[float, float]</code> (for <code>ImVec2</code>), <code>tuple[float, float, float, float]</code> (for <code>ImVec4</code>).</li>
-<li>Mutable bool args such as <code>bool* p_open</code> are input as normal <code>bool</code> values and returned as the second element of a 2-tuple. For example <code>bool ImGui::Checkbox(const char* label, bool* v)</code> is translated to <code>def checkbox(label: str, v: bool) -&gt; tuple[bool, bool]</code> that returns a 2-tuple where the first element is the boolean return value of <code>bool ImGui::Checkbox()</code> and the second element is the new value of the checkbox state.</li>
-</ul>
 <h2 id="dear-imgui-enums">Dear ImGui Enums</h2>
 <!-- could list enums here like in a forward decl? -->
 <p>A detailed enum and class reference can be found here: <a href="#enum-reference">Enum Reference</a></p>
@@ -309,26 +314,33 @@ python example/app.py</code></pre>
 <h4 id="functions">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>create_context</span>(<span class='arg_name'>shared_font_atlas</span><span class='special'>:</span> <span class='symbol'>FontAtlas</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='symbol'>Context</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>create_context</span>(<span class='arg_name'>shared_font_atlas</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>FontAtlas</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span></code>
 </div>
+<p>Create an ImGui <code>Context</code>.  The newly created context is also set current.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>destroy_context</span>(<span class='arg_name'>arg</span><span class='special'>:</span> <span class='symbol'>Context</span><span class='special'>,</span> /) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>destroy_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
 </div>
-<p>NULL = destroy current context</p>
+<p>Destroy ImGui <code>Context</code>.  <code>None</code> = destroy current context.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_current_context</span>() -> <span class='symbol'>Context</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_current_context</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
 </div>
+<p>Get the current ImGui context.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>set_current_context</span>(<span class='arg_name'>arg</span><span class='special'>:</span> <span class='symbol'>Context</span><span class='special'>,</span> /) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>set_current_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span>) -> <span class='keyword'>None</span></code>
 </div>
+<p>Set the current ImGui context.</p>
 </div>
 <h3 id="main">Main</h3>
 <h4 id="functions-1">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_style</span>() -> <span class='symbol'>Style</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_io</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>IO</span></code>
 </div>
-<p>Access the Style structure (colors, sizes). Always use <code>push_style_color()</code>, <code>push_style_var()</code> to modify style mid-frame!</p>
+<p>Access the ImGui <code>IO</code> structure (mouse/keyboard/gamepad inputs, time, various configuration options/flags).</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_style</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span></code>
+</div>
+<p>Access the <code>Style</code> structure (colors, sizes). Always use <code>push_style_color()</code>, <code>push_style_var()</code> to modify style mid-frame!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>new_frame</span>() -> <span class='keyword'>None</span></code>
 </div>
@@ -395,17 +407,17 @@ python example/app.py</code></pre>
 <h4 id="functions-3">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_dark</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>Style</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_dark</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>New, recommended style (default)</p>
+<p>Write dark mode styles into the destination style.  Set directly to context's style if dst is None.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_light</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>Style</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_light</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Best used with borders and a custom, thicker font</p>
+<p>Write light mode styles into the destination style.  Set directly to context's style if dst is None.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_classic</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>Style</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_classic</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Classic imgui style</p>
+<p>Write classic mode styles into the destination style.  Set directly to context's style if dst is None.</p>
 </div>
 <h3 id="windows">Windows</h3>
 <ul>
@@ -427,7 +439,7 @@ return value will be <code>False</code> if the close button was pressed.
 The intended usage is as follows:</p>
 <pre><code>win_open = True  # open/closed state
 
-visible, tab_open = imgui.begin(..., closable=win_open)
+visible, win_open = imgui.begin(..., closable=win_open)
 if visible:
     # render window contents here..
 imgui.end()</code></pre></div>
@@ -475,6 +487,10 @@ imgui.end()</code></pre></div>
   <code><span class='keyword'>def</span> <span class='func_name'>is_window_hovered</span>(<span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>HoveredFlags</span> = <span class='symbol'>HoveredFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
 </div>
 <p>Is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See <code>HoveredFlags</code> for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry "How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?" for details.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_window_draw_list</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>DrawList</span></code>
+</div>
+<p>Get draw list associated to the current window, to append your own drawing primitives.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_window_pos</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
@@ -1725,6 +1741,14 @@ if visible:
 <h3 id="backgroundforeground-draw-lists">Background/Foreground Draw Lists</h3>
 <h4 id="functions-45">Functions</h4>
 <div class="funclist">
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_background_draw_list</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>DrawList</span></code>
+</div>
+<p>This draw list will be the first rendered one. Useful to quickly draw shapes/text behind dear imgui contents.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_foreground_draw_list</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>DrawList</span></code>
+</div>
+<p>This draw list will be the last rendered one. Useful to quickly draw shapes/text over dear imgui contents.</p>
 </div>
 <h3 id="miscellaneous-utilities">Miscellaneous Utilities</h3>
 <h4 id="functions-46">Functions</h4>
