@@ -12,17 +12,30 @@ The Slimgui package provides modern Python bindings for the following libraries:
  - [Dear ImGui](https://github.com/ocornut/imgui)
  - [ImPlot](https://github.com/epezent/implot)
 
- Slimgui has been developed with the following goals in mind:
+The Python bindings documentation has been split into several parts:
+
+- Dear ImGui bindings reference -- you're reading it.
+- [ImPlot bindings API reference](./apiref_implot.html)
+
+The project source code is hosted on [github.com/nurpax/slimgui](https://github.com/nurpax/slimgui).
+
+Slimgui is built against Dear ImGui version %imguiversion%.
+
+### Binding considerations
+
+Slimgui has been developed with the following goals in mind:
 
 - Support typing through .pyi files to enable good IDE support (auto-complete, type checking, docstrings)
 - Closely match the Dear ImGui API but adapt for Python as necessary. Don't invent new API concepts.
 
-The project source code is hosted on [github.com/nurpax/slimgui](https://github.com/nurpax/slimgui).
-
 The project has been developed using the Python `glfw` and `pyOpenGL` packages and includes integration backend for these APIs.  It should
 be possible to develop integrations for other backends, such as SDL or Pygame.
 
-Slimgui is built against Dear ImGui version %imguiversion%.
+The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) except somewhat modernized:
+
+- Enums in ImGui are exposed as typed Python enums using `enum.IntEnum` and `enum.IntFlag` to make it clear which API functions consume what type of enums.
+- Vector types such as `ImVec2`, `ImVec4`, and `float*` arrays are converted to Python tuples such as `tuple[float, float]` (for `ImVec2`), `tuple[float, float, float, float]` (for `ImVec4`).
+- Mutable bool args such as `bool* p_open` are input as normal `bool` values and returned as the second element of a 2-tuple.  For example `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]` that returns a 2-tuple where the first element is the boolean return value of `bool ImGui::Checkbox()` and the second element is the new value of the checkbox state.
 
 ### Getting started
 
@@ -40,14 +53,6 @@ python example/app.py
 ```
 
 Browse the example code: [example/](https://github.com/nurpax/slimgui/blob/main/example/)
-
-### Binding considerations
-
-The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) except somewhat modernized:
-
-- Enums in ImGui are exposed as typed Python enums using `enum.IntEnum` and `enum.IntFlag` to make it clear which API functions consume what type of enums.
-- Vector types such as `ImVec2`, `ImVec4`, and `float*` arrays are converted to Python tuples such as `tuple[float, float]` (for `ImVec2`), `tuple[float, float, float, float]` (for `ImVec4`).
-- Mutable bool args such as `bool* p_open` are input as normal `bool` values and returned as the second element of a 2-tuple.  For example `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]` that returns a 2-tuple where the first element is the boolean return value of `bool ImGui::Checkbox()` and the second element is the new value of the checkbox state.
 
 ## Dear ImGui Enums
 
@@ -103,7 +108,7 @@ When the `closable` argument is set to `True`, the created window will display a
 ```
 win_open = True  # open/closed state
 
-visible, tab_open = imgui.begin(..., closable=win_open)
+visible, win_open = imgui.begin(..., closable=win_open)
 if visible:
     # render window contents here..
 imgui.end()
