@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8" />
+  <title>slimgui - ImPlot API</title>
+  <meta property="og:title" content="slimgui - ImPlot API">
+  <meta property="og:description" content="Python bindings for Dear ImGui">
+
+<style type='text/css'>
+
+:root {
+    --func-vert-padding: 0.5em;
+}
+
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+.tocstyle nav {
+    display: table;
+    padding: .4em 2em .5em 0;
+    margin-top: 1em;
+    background-color: #f6f8fa;
+    border: 1px solid DarkSlateGray;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 600;
+    margin-bottom: 0.1em;
+    color: DarkSlateGray;
+}
+
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.25em; }
+
+h2 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding-top: 0;
+}
+
+h3 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+h4 {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+}
+
+h2, h3 { border-bottom: 1px solid #ccc; }
+
+p {
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+li {
+    margin-bottom: 0.75em;
+}
+
+.max-width {
+    margin: 1em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 4em;
+    margin-right: 4em;
+    max-width: 1000px;
+}
+
+.pixelated {
+    image-rendering: pixelated;
+}
+
+strong {
+    font-weight: 600;
+}
+
+.title { text-align: center; }
+
+.subtitle {
+    font-size: 1.25em;
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #ccc;
+    color: #444;
+}
+
+.centered { text-align: center; }
+
+.spaced {
+    margin: 2em 0;
+}
+.no-bottom-margin {
+    margin-bottom: 0;
+}
+.top-lined {
+    padding-top: 2em;
+    border-top: 1px solid #000;
+}
+.bottom-lined {
+    padding-bottom: 2em;
+    border-bottom: 1px solid #888;
+}
+
+.permalinked {
+    color: #222;
+    text-decoration: none;
+}
+.permalinked:hover,
+.permalinked:focus {
+    text-decoration: underline;
+}
+.flattr-note {
+    vertical-align: top;
+}
+
+pre {
+  font-family: 'Consolas', monospace, sans-serif;
+  font-size: 10pt;
+  font-weight: normal;
+  background-color: #f0f2f5;
+  border-radius: 3px;
+  padding: 6px;
+  line-height: 1.2;
+  overflow-x:auto;
+  white-space: pre-wrap;
+}
+
+pre > code {
+    padding: 0;
+}
+
+code {
+    margin-left: 1px;
+    margin-right: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 3px;
+
+    font-family: 'Consolas', monospace, sans-serif;
+    font-size: 10pt;
+    font-weight: normal;
+    line-height: 1.3;
+    white-space: pre;
+    color:rgb(133, 18, 0);
+    background-color: #f0f2f5;
+}
+
+/* Styles for API reference */
+div.funclist {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 2em;
+}
+
+div.api { margin-top: 1em; }
+
+div.api-class {
+    margin-left: -2em;
+    margin-top: 1em;
+}
+
+.funclist p {
+    margin-top: 3px;
+    margin-bottom: 0.5em;
+    font-size: 11pt;
+}
+
+.api, pre {
+    color: #000;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+}
+
+.api > code {
+    margin-left: -2em;
+    font-size: 11pt;
+    color: #555;
+}
+
+.api > code span.keyword {
+    color: #444;
+}
+
+.api > code span.func_name {
+    color: #000;
+    font-weight: bold;
+}
+
+.api > code span.arg_name {
+    color: #000;
+}
+
+.api-class div span.class_name {
+    color: #000;
+    font-weight: bold;
+}
+
+.api-class table {
+    border: none;
+    font-size: 10pt;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.5;
+    border-collapse: collapse;
+}
+
+.api-class table tr {
+    border: none;
+    margin-top: 2em;
+}
+
+.api-class table code {
+    font-size: 9pt;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    background-color: transparent;
+}
+
+.api-class table tr td:first-child,
+.api-class table tr th:first-child {
+    width: 250px;
+    max-width: 300px;
+    min-width: 250px;
+}
+
+.api-class table tr:nth-child(even) {
+    background-color: #f0f0f0; /* Light gray for even rows */
+}
+
+.api-class table tr:nth-child(odd) {
+    background-color: #fff; /* White for odd rows */
+}
+
+.api-class table td {
+    margin-left: 0;
+    padding-left: 0;
+    border: none;
+    padding-right: 0.75em;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+</style>
+<link href="https://fonts.googleapis.com/css?family=Montserrat|Segoe+UI" rel="stylesheet">
+</head>
+
+<body class='max-width'>
+
+<h1 id="slimgui---implot-api-reference">slimgui - ImPlot API reference</h1>
+<h3 id="binding-considerations-for-implot">Binding considerations for ImPlot</h3>
+<h2 id="implot-enums">ImPlot Enums</h2>
+<p>A detailed enum and class reference can be found here: <a href="#enum-reference">Enum Reference</a></p>
+<h2 id="todo">TODO</h2>
+<div class="funclist">
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>create_context</span>() -> <span class='symbol'>slimgui</span>.<span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span></code>
+</div>
+<p>Create an ImPlot context.  Call this after <code>imgui.create_context()</code>.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>destroy_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>slimgui</span>.<span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
+</div>
+<p>Destroys an ImPlot context. Call this before <code>imgui.destroy_context()</code>. <code>None</code> = destroy current context.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_current_context</span>() -> <span class='symbol'>slimgui</span>.<span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
+</div>
+<p>Returns the current ImPlot context. <code>None</code> if no context has ben set.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_current_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>slimgui</span>.<span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span>) -> <span class='keyword'>None</span></code>
+</div>
+<p>Sets the current ImPlot context.</p>
+</div>
+</body>
+
+</html>
