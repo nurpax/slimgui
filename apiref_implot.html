@@ -317,18 +317,44 @@ be called! You are encouraged to use the following convention:<br><pre>if implot
 </div>
 <p>Only call <code>implot.end_plot()</code> if <code>implot.begin_plot()</code> returns <code>True</code>! Typically called at the end of an if statement conditioned on <code>implot.begin_plot()</code>. See example above.</p>
 </div>
+<h2 id="subplots">Subplots</h2>
+<p><code>implot.begin_subplots()</code> starts a subdivided plotting context. If the function returns <code>True</code>, <code>implot.end_subplots()</code> MUST be called! Call <code>implot.begin_plot()</code>/<code>end_plot()</code> at most <code>[rows*cols]</code> times in between the begining and end of the subplot context. Plots are added in row major order (or use <code>SubplotFlags.COL_MAJOR</code> if you want column major).</p>
+<p>Example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> implot.begin_subplots(<span class="st">&quot;My Subplot&quot;</span>, <span class="dv">2</span>, <span class="dv">3</span>, (<span class="dv">800</span>, <span class="dv">400</span>)):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> implot.begin_plot(...):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>            implot.plot_line(...)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            ...</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            implot.end_plot()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    implot.end_subplots()</span></code></pre></div>
+<p>Produces:</p>
+<pre><code>  [0] | [1] | [2]
+  ----|-----|----
+  [3] | [4] | [5]</code></pre>
+<p>Important notes:</p>
+<ul>
+<li><code>title_id</code> must be unique to the current ImGui ID scope. If you need to avoid ID collisions or don’t want to display a title in the plot, use double hashes (e.g. <code>"MySubplot##HiddenIdText"</code> or <code>"##NoTitle"</code>).</li>
+<li><code>rows</code> and <code>cols</code> must be greater than 0.</li>
+<li><code>size</code> is the size of the entire grid of subplots, not the individual plots</li>
+<li><code>row_ratios</code> and <code>col_ratios</code> must have at exactly <code>rows</code> and <code>cols</code> elements, respectively, or an exception is raised. These are the sizes of the rows and columns expressed in ratios. If the user adjusts the dimensions, the arrays are updated with new ratios.</li>
+<li>The <code>row/col_ratios</code> arrays must be created with <code>dtype=np.float32</code>, e.g. <code>np.array([0.3, 0.7], dtype=np.float32)</code>.</li>
+</ul>
+<p>Important notes regarding <code>implot.begin_plot()</code> from inside of <code>implot.begin_subplots()</code>:</p>
+<ul>
+<li>The <code>title_id</code> parameter of <code>implot.begin_plot()</code> (see above) does NOT have to be unique when called inside of a subplot context. Subplot IDs are hashed for your convenience so you don’t have call <code>imgui.push_id()</code> or generate unique title strings. Simply pass an empty string to <code>implot.begin_plot()</code> unless you want to title each subplot.</li>
+<li>The <code>size</code> parameter of <code>implot.begin_plot()</code> (see above) is ignored when inside of a subplot context. The actual size of the subplot will be based on the <code>size</code> value you pass to <code>implot.begin_subplots()</code> and <code>row_ratios</code>/<code>col_ratios</code> if provided.</li>
+</ul>
 <h2 id="setup">Setup</h2>
-<h2 id="setup-1">Setup</h2>
 <p>The following API allows you to set up and customize various aspects of the current plot. The functions should be called immediately after <code>begin_plot()</code> and before any other API calls. Typical usage is as follows:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> implot.begin_plot(...):                     <span class="co"># 1) begin a new plot</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    implot.setup_axis(im_axis_x1, <span class="st">&quot;My X-Axis&quot;</span>) <span class="co"># 2) make setup calls</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    implot.setup_axis(im_axis_y1, <span class="st">&quot;My Y-Axis&quot;</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    implot.setup_legend(im_plot_location_north)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    ...</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    implot.setup_finish()                      <span class="co"># 3) [optional] explicitly finish setup</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    implot.plot_line(...)                      <span class="co"># 4) plot items</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ...</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    implot.end_plot()                          <span class="co"># 5) end the plot</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> implot.begin_plot(...):                     <span class="co"># 1) begin a new plot</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    implot.setup_axis(im_axis_x1, <span class="st">&quot;My X-Axis&quot;</span>) <span class="co"># 2) make setup calls</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    implot.setup_axis(im_axis_y1, <span class="st">&quot;My Y-Axis&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    implot.setup_legend(im_plot_location_north)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    implot.setup_finish()                      <span class="co"># 3) [optional] explicitly finish setup</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    implot.plot_line(...)                      <span class="co"># 4) plot items</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    implot.end_plot()                          <span class="co"># 5) end the plot</span></span></code></pre></div>
 <p><strong>Important Notes</strong>:</p>
 <ul>
 <li>Always call setup code at the top of your <code>begin_plot()</code> conditional statement.</li>
@@ -391,11 +417,11 @@ Do <strong>NOT</strong> call setup code after you begin plotting or after you ma
 </div>
 <h2 id="setnext">SetNext</h2>
 <p>Though you should default to the <code>setup()</code> API above, there are some scenarios where (re)configuring a plot or axis before <code>begin_plot()</code> is needed (e.g., if using a preceding button or slider widget to change the plot limits). In this case, you can use the <code>set_next_*()</code> API below. While this is not as feature-rich as the <code>setup()</code> API, most common needs are provided. These functions can be called anywhere except inside of <code>begin_plot</code>/<code>end_plot</code>. For example:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> imgui.button(<span class="st">&quot;Center Plot&quot;</span>):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    implot.set_next_axes_limits(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> implot.begin_plot(...):</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    ...</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    implot.end_plot()</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> imgui.button(<span class="st">&quot;Center Plot&quot;</span>):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    implot.set_next_axes_limits(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> implot.begin_plot(...):</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    implot.end_plot()</span></code></pre></div>
 <p><strong>Important Notes</strong>:</p>
 <ul>
 <li>You must still enable non-default axes with <code>setup_axis</code> for these functions to work properly.</li>
