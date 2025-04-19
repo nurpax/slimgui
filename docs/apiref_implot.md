@@ -32,7 +32,57 @@ A detailed enum and class reference can be found here: [Enum Reference](#enum-re
 
 <div class="raw-html-insert" data-apirefs="begin_plot, end_plot"></div>
 
-## Setup
+## Subplots
+
+`implot.begin_subplots()` starts a subdivided plotting context.  If the function returns `True`,
+`implot.end_subplots()` MUST be called! Call `implot.begin_plot()`/`end_plot()` at most `[rows*cols]`
+times in between the begining and end of the subplot context.  Plots are
+added in row major order (or use `SubplotFlags.COL_MAJOR` if you want column major).
+
+Example:
+
+```python
+if implot.begin_subplots("My Subplot", 2, 3, (800, 400)):
+    for i in range(6):
+        if implot.begin_plot(...):
+            implot.plot_line(...)
+            ...
+            implot.end_plot()
+    implot.end_subplots()
+```
+
+Produces:
+
+```
+  [0] | [1] | [2]
+  ----|-----|----
+  [3] | [4] | [5]
+```
+
+Important notes:
+
+- `title_id` must be unique to the current ImGui ID scope. If you need to avoid ID
+  collisions or don't want to display a title in the plot, use double hashes
+  (e.g. `"MySubplot##HiddenIdText"` or `"##NoTitle"`).
+- `rows` and `cols` must be greater than 0.
+- `size` is the size of the entire grid of subplots, not the individual plots
+- `row_ratios` and `col_ratios` must have at exactly `rows` and `cols` elements,
+  respectively, or an exception is raised.  These are the sizes of the rows and
+  columns expressed in ratios.  If the user adjusts the dimensions, the arrays are
+  updated with new ratios.
+- The `row/col_ratios` arrays must be created with `dtype=np.float32`, e.g.
+  `np.array([0.3, 0.7], dtype=np.float32)`.
+
+Important notes regarding `implot.begin_plot()` from inside of `implot.begin_subplots()`:
+
+- The `title_id` parameter of `implot.begin_plot()` (see above) does NOT have to be
+  unique when called inside of a subplot context. Subplot IDs are hashed
+  for your convenience so you don't have call `imgui.push_id()` or generate unique title
+  strings. Simply pass an empty string to `implot.begin_plot()` unless you want to title
+  each subplot.
+- The `size` parameter of `implot.begin_plot()` (see above) is ignored when inside of a
+  subplot context. The actual size of the subplot will be based on the
+  `size` value you pass to `implot.begin_subplots()` and `row_ratios`/`col_ratios` if provided.
 
 ## Setup
 

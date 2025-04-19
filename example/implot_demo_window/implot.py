@@ -1,5 +1,7 @@
 import time
 import numpy as np
+from numpy.typing import NDArray
+
 from slimgui import imgui
 from slimgui import implot
 
@@ -127,6 +129,9 @@ def show_demo_window(show_window: bool):
     if imgui.collapsing_header('Annotations')[0]:
         _annotations()
 
+    if imgui.collapsing_header('Subplots')[0]:
+        _subplots()
+
     if imgui.collapsing_header('Built-in windows')[0]:
         imgui.text('Style selector')
         implot.show_style_selector("Style selector")
@@ -143,6 +148,7 @@ def show_demo_window(show_window: bool):
 
     imgui.end()
     return show_window
+
 
 def _error_bars():
     xs = np.array([1, 2, 3, 4, 5], dtype=np.float32)
@@ -170,6 +176,7 @@ def _error_bars():
         implot.plot_scatter("Scatter", xs, lin2)
         implot.end_plot()
 
+
 _style_idx = 0
 def _styles():
     global _style_idx
@@ -189,6 +196,7 @@ def _styles():
                     implot.style_colors_dark(style)
                 case 3:
                     implot.style_colors_light(style)
+
 
 def _heatmaps():
     values1 = np.array([
@@ -230,6 +238,7 @@ def _heatmaps():
 
     implot.pop_colormap()
 
+
 _clamp = False
 def _annotations():
     global _clamp
@@ -261,3 +270,44 @@ def _annotations():
 
         # ImPlot::EndPlot();
         implot.end_plot()
+
+
+_enable_ratios = False
+_row_ratios: NDArray[np.float32] = np.array([0.3, 0.7], dtype=np.float32)
+_col_ratios: NDArray[np.float32] = np.ones(3, dtype=np.float32) / 3.0
+
+def _subplots():
+    global _enable_ratios, _col_ratios, _row_ratios
+    # List of 4-float tuple colors
+    colors = [
+        (1, 0, 0, 1), (0, 1, 0, 1), (0, 0, 1, 1), (1, 1, 0, 1), (1, 0.5, 0, 1), (0.5, 0, 0.5, 1), (0.5, 0.5, 0.5, 1), (0.2, 0.2, 0.2, 1)
+    ]
+    def _lineplot(ij, idx):
+        if implot.begin_plot(f"Line ({ij})##{idx}", flags=PlotFlags.NO_LEGEND):
+            implot.push_style_color(implot.Col.LINE, (colors[idx]))
+            implot.push_style_var(implot.StyleVar.LINE_WEIGHT, 3.0)
+            data_x = np.linspace(0, 3*np.pi, 200)
+            data_y = np.sin(data_x)
+            implot.plot_line("the wave", data_x, data_y) # striding should work
+            implot.pop_style_var()
+            implot.pop_style_color()
+            implot.end_plot()
+
+    cols = 3
+    rows = 2
+    _, _enable_ratios = imgui.checkbox("Enable row/column ratios", _enable_ratios)
+    if _enable_ratios:
+        r = _row_ratios
+        c = _col_ratios
+    else:
+        r = None
+        c = None
+
+    # If the user adjusts row/column sizing in the subplot and row_ratios/col_ratios are specified,
+    # the new values will be written to the numpy arrays.
+    if implot.begin_subplots("Subplots", rows, cols, (-1, 500), row_ratios=r, col_ratios=c):
+        for i in range(rows):
+            for j in range(cols):
+                idx = i * cols + j
+                _lineplot(f'{i+1},{j+1}', idx)
+        implot.end_subplots()

@@ -946,6 +946,11 @@ def begin_plot(title_id: str, size: tuple[float, float] = (-1,0), flags: PlotFla
       size of plots (i.e. when `(0,0)`) can be modified in your `implot.Style`.
     """
 
+def begin_subplots(title_id: str, rows: int, cols: int, size: tuple[float, float], flags: SubplotFlags = SubplotFlags.NONE, row_ratios: Annotated[ArrayLike, dict(dtype='float32', shape=(None), order='C', device='cpu')] | None = None, col_ratios: Annotated[ArrayLike, dict(dtype='float32', shape=(None), order='C', device='cpu')] | None = None) -> bool:
+    """
+    See https://nurpax.github.io/slimgui/apiref_implot.html#subplots for details.
+    """
+
 def bust_color_cache(plot_title_id: str | None = None) -> None:
     """
     When items in a plot sample their color from a colormap, the color is cached and does not change
@@ -999,6 +1004,8 @@ def end_plot() -> None:
     """
     Only call `implot.end_plot()` if `implot.begin_plot()` returns `True`! Typically called at the end of an if statement conditioned on `implot.begin_plot()`. See example above.
     """
+
+def end_subplots() -> None: ...
 
 def get_colormap_color(idx: int, cmap: Colormap | int = AUTO) -> tuple[float, float, float, float]:
     """

@@ -1,3 +1,6 @@
+'''
+See https://nurpax.github.io/slimgui/ for documentation.
+'''
 
 from typing import cast, Any
 from ..slimgui_ext import imgui as imgui_ext

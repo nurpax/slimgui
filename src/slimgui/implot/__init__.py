@@ -1,3 +1,8 @@
+'''
+See https://nurpax.github.io/slimgui/apiref_implot.html for ImPlot specific docs.  
+
+See https://nurpax.github.io/slimgui for Slimgui docs.
+'''
 from ..slimgui_ext import imgui
 from ..slimgui_ext import implot as implot
 from ..slimgui_ext.implot import *

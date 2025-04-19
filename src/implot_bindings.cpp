@@ -19,7 +19,7 @@
 namespace nb = nanobind;
 using namespace nb::literals;
 
-typedef nb::ndarray<const float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d_f32;
+typedef nb::ndarray<float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d_f32_rw;
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
 typedef nb::ndarray<const double, nb::ndim<2>, nb::device::cpu, nb::c_contig> ndarray_2d;
 
@@ -103,26 +103,26 @@ void implot_bindings(nb::module_& m) {
     "Sets an axis' ticks and optionally the labels. To keep the default ticks, set `keep_default=True`.");
 
 
-    // TODO how to model row/col ratio return?  BeginSubplots writes to the source arrays.
-    // // Subplots
-    // m.def("begin_subplots", [](const char* title_id, int rows, int cols, ImVec2 size, ImPlotSubplotFlags_ flags, std::optional<ndarray_1d_f32>& row_ratios, std::optional<ndarray_1d_f32>& col_ratios) {
-    //     const float* row_ratios_ptr = nullptr;
-    //     const float* col_ratios_ptr = nullptr;
-    //     if (row_ratios) {
-    //         if (row_ratios->shape(0) != rows) {
-    //             throw std::length_error("`row_ratios` must be same the length as `rows`.");
-    //         }
-    //         row_ratios_ptr = (const float*)row_ratios->data();
-    //     }
-    //     if (col_ratios) {
-    //         if (col_ratios->shape(0) != cols) {
-    //             throw std::length_error("`col_ratios` must be same the length as `cols`.");
-    //         }
-    //         col_ratios_ptr = (const float*)col_ratios->data();
-    //     }
-    //     return ImPlot::BeginSubplots(title_id, rows, cols, size, flags, row_ratios_ptr, col_ratios_ptr);
-    // }, "title_id"_a, "rows"_a, "cols"_a, "size"_a, "flags"_a.sig("SubplotFlags.NONE") = ImPlotSubplotFlags_None);
-    // m.def("end_subplots", &ImPlot::EndSubplots);
+    // Subplots
+    m.def("begin_subplots", [](const char* title_id, int rows, int cols, ImVec2 size, ImPlotSubplotFlags_ flags, std::optional<ndarray_1d_f32_rw>& row_ratios, std::optional<ndarray_1d_f32_rw>& col_ratios) {
+        float* row_ratios_ptr = nullptr;
+        float* col_ratios_ptr = nullptr;
+        if (row_ratios) {
+            if (row_ratios->shape(0) != rows) {
+                throw std::length_error("`row_ratios` must be same the length as `rows`.");
+            }
+            row_ratios_ptr = row_ratios->data();
+        }
+        if (col_ratios) {
+            if (col_ratios->shape(0) != cols) {
+                throw std::length_error("`col_ratios` must be same the length as `cols`.");
+            }
+            col_ratios_ptr = col_ratios->data();
+        }
+        return ImPlot::BeginSubplots(title_id, rows, cols, size, flags, row_ratios_ptr, col_ratios_ptr);
+    }, "title_id"_a, "rows"_a, "cols"_a, "size"_a, "flags"_a.sig("SubplotFlags.NONE") = ImPlotSubplotFlags_None, "row_ratios"_a = nb::none(), "col_ratios"_a = nb::none(),
+    "See https://nurpax.github.io/slimgui/apiref_implot.html#subplots for details.");
+    m.def("end_subplots", &ImPlot::EndSubplots);
 
     // PlotLine functions
     const char* line_docstring = "Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.";
