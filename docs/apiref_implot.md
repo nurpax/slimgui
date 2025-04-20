@@ -152,7 +152,12 @@ x and y axes, which can be changed with `set_axis()`/`set_axes()`.
 NB: All types are converted to double before plotting. You may lose information
 if you try plotting extremely large 64-bit integral types. Proceed with caution!
 
-<div class="raw-html-insert" data-apirefs="plot_line,plot_scatter,plot_stairs,plot_shaded,plot_bars,plot_bar_groups,plot_error_bars,plot_pie_chart,plot_heatmap,plot_histogram,plot_digital,plot_image,plot_text,plot_dummy"></div>
+<div class="raw-html-insert" data-apirefs="plot_line,plot_scatter,plot_stairs,plot_shaded,plot_bars,plot_bar_groups,plot_error_bars,plot_pie_chart,plot_heatmap,plot_digital,plot_image,plot_text,plot_dummy"></div>
+
+<div class="raw-html-insert" data-apirefs="plot_histogram,plot_histogram2d">
+
+The `range` parameter in `plot_histogram2d` is typed as a pair of float 2-tuples.  The first element is the range `(min,max)` for `xs`, the second for `ys`.
+</div>
 
 ### Plot Tools
 

@@ -132,6 +132,9 @@ def show_demo_window(show_window: bool):
     if imgui.collapsing_header('Subplots')[0]:
         _subplots()
 
+    if imgui.collapsing_header('Histogram2d')[0]:
+        _histogram2d()
+
     if imgui.collapsing_header('Built-in windows')[0]:
         imgui.text('Style selector')
         implot.show_style_selector("Style selector")
@@ -311,3 +314,51 @@ def _subplots():
                 idx = i * cols + j
                 _lineplot(f'{i+1},{j+1}', idx)
         implot.end_subplots()
+
+
+_count = 50000
+_xybins = (100, 100)
+_hist_flags = 0
+_dist1 = None
+_dist2 = None
+
+def _histogram2d():
+    global _count, _xybins, _hist_flags, _dist1, _dist2
+
+    _, _count = imgui.slider_int("Count", _count, 100, 100000)
+    _, _xybins = imgui.slider_int2("Bins", _xybins, 1, 500)
+    imgui.same_line()
+    _, _hist_flags = imgui.checkbox_flags("Density", _hist_flags, int(implot.HistogramFlags.DENSITY))
+
+    # Generate random data for two normal distributions
+    recompute = _dist1 is None or _dist2 is None
+    recompute |= _dist1 is not None and _dist1.shape[0] != _count
+    if recompute:
+        _dist1 = np.random.normal(1, 2, _count)
+        _dist2 = np.random.normal(1, 1, _count)
+
+    implot.push_colormap("Hot")
+
+    max_count = 0
+    if implot.begin_plot("##Hist2D", size=(imgui.get_content_region_avail()[0] - 100 - imgui.get_style().item_spacing[0], 0)):
+        flags = implot.AxisFlags.AUTO_FIT | implot.AxisFlags.FOREGROUND
+        implot.setup_axes(None, None, flags, flags)
+        implot.setup_axes_limits(-6, 6, -6, 6)
+
+        assert _dist1 is not None and _dist2 is not None
+        max_count = implot.plot_histogram2d(
+            "Hist2D",
+            _dist1,
+            _dist2,
+            _xybins[0],
+            _xybins[1],
+            range=((-6, 6), (-6, 6)),
+            flags=implot.HistogramFlags(_hist_flags)
+        )
+        implot.end_plot()
+
+    imgui.same_line()
+    implot.colormap_scale(
+        "Density" if _hist_flags & implot.HistogramFlags.DENSITY else "Count", 0, max_count, size=(100, 0)
+    )
+    implot.pop_colormap()

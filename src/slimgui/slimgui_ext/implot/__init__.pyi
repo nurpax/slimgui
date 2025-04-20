@@ -1143,6 +1143,16 @@ def plot_heatmap(label_id: str, values: Annotated[ArrayLike, dict(dtype='float64
     Plots a 2D heatmap chart. `values` is expected to have shape (rows, cols). Leave `scale_min` and `scale_max` both at 0 for automatic color scaling, or set them to a predefined range. `label_fmt` can be set to `None` for no labels.
     """
 
+def plot_histogram(label_id: str, values: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], bins: int | Bin = Bin.STURGES, bar_scale: float = 1.0, range: tuple[float, float] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
+    """
+    Plots a horizontal histogram. `bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `values` will be used as the range.  Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
+    """
+
+def plot_histogram2d(label_id: str, xs: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], ys: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], x_bins: int | Bin = Bin.STURGES, y_bins: int | Bin = Bin.STURGES, range: tuple[tuple[float, float], tuple[float, float]] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
+    """
+    Plots two dimensional, bivariate histogram as a heatmap. `x_bins` and `y_bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `xs` an `ys` will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
+    """
+
 def plot_image(label_id: str, user_texture_id: int, bounds_min: tuple[float, float], bounds_max: tuple[float, float], uv0: tuple[float, float] = (0,0), uv1: tuple[float, float] = (1,1), tint_col: tuple[float, float, float, float] = (1,1,1,1), flags: ImageFlag = ImageFlag.NONE) -> None:
     """
     Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot coordinates (y-up) and `uv0`/`uv1` are in texture coordinates (y-down).

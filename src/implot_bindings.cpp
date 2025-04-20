@@ -226,14 +226,33 @@ void implot_bindings(nb::module_& m) {
     heatmap_docstring);
 
 
-    // TODO range typecaster
-    // // Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.
-    // // Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
-    // IMPLOT_TMP double PlotHistogram(const char* label_id, const T* values, int count, int bins=ImPlotBin_Sturges, double bar_scale=1.0, ImPlotRange range=ImPlotRange(), ImPlotHistogramFlags flags=0);
+    const char histogram_docstring[] = "Plots a horizontal histogram. `bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `values` will be used as the range.  Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.";
+    m.def("plot_histogram", [](const char* label_id, const ndarray_1d& values, std::variant<int, ImPlotBin_> bins, double bar_scale, std::optional<std::tuple<double, double>> range, ImPlotHistogramFlags_ flags) {
+        ImPlotRange r = ImPlotRange();
+        if (range) {
+            r.Min = std::get<0>(*range);
+            r.Max = std::get<1>(*range);
+        }
+        return ImPlot::PlotHistogram(label_id, values.data(), values.shape(0), variant_to_int(bins), bar_scale, r, flags);
+    }, "label_id"_a, "values"_a, "bins"_a = ImPlotBin_Sturges, "bar_scale"_a = 1.0, "range"_a.none() = nb::none(), "flags"_a.sig("HistogramFlags.NONE") = ImPlotHistogramFlags_None, histogram_docstring);
 
-    // // Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of
-    // // #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
-    // IMPLOT_TMP double PlotHistogram2D(const char* label_id, const T* xs, const T* ys, int count, int x_bins=ImPlotBin_Sturges, int y_bins=ImPlotBin_Sturges, ImPlotRect range=ImPlotRect(), ImPlotHistogramFlags flags=0);
+    const char histogram2d_docstring[] = "Plots two dimensional, bivariate histogram as a heatmap. `x_bins` and `y_bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `xs` an `ys` will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.";
+    m.def("plot_histogram2d", [](const char* label_id, const ndarray_1d& xs, const ndarray_1d& ys, std::variant<int, ImPlotBin_> x_bins, std::variant<int, ImPlotBin_> y_bins, std::optional<std::tuple<std::tuple<double, double>, std::tuple<double, double>>> range, ImPlotHistogramFlags_ flags) {
+        int count = xs.shape(0);
+        if (count != ys.shape(0)) {
+            throw std::length_error("`xs` and `ys` must be the same length");
+        }
+        ImPlotRect ranges = ImPlotRect();
+        if (range) {
+            auto rx = std::get<0>(*range);
+            auto ry = std::get<1>(*range);
+            ranges.X.Min = std::get<0>(rx);
+            ranges.X.Max = std::get<1>(rx);
+            ranges.Y.Min = std::get<0>(ry);
+            ranges.Y.Max = std::get<1>(ry);
+        }
+        return ImPlot::PlotHistogram2D(label_id, xs.data(), ys.data(), count, variant_to_int(x_bins), variant_to_int(y_bins), ranges, flags);
+    }, "label_id"_a, "xs"_a, "ys"_a, "x_bins"_a = ImPlotBin_Sturges, "y_bins"_a = ImPlotBin_Sturges, "range"_a.none() = nb::none(), "flags"_a.sig("HistogramFlags.NONE") = ImPlotHistogramFlags_None, histogram2d_docstring);
 
     // Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
     const char plot_digital_docstring[] = "Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.";
