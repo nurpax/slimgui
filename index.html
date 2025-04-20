@@ -282,7 +282,7 @@ div.api-class {
 </ul>
 <p>The project source code is hosted on <a href="https://github.com/nurpax/slimgui">github.com/nurpax/slimgui</a>.</p>
 <p>Slimgui is built against Dear ImGui version 1.91.9.</p>
-<h3 id="binding-considerations">Binding considerations</h3>
+<h2 id="binding-considerations">Binding considerations</h2>
 <p>Slimgui has been developed with the following goals in mind:</p>
 <ul>
 <li>Support typing through .pyi files to enable good IDE support (auto-complete, type checking, docstrings)</li>
@@ -295,7 +295,7 @@ div.api-class {
 <li>Vector types such as <code>ImVec2</code>, <code>ImVec4</code>, and <code>float*</code> arrays are converted to Python tuples such as <code>tuple[float, float]</code> (for <code>ImVec2</code>), <code>tuple[float, float, float, float]</code> (for <code>ImVec4</code>).</li>
 <li>Mutable bool args such as <code>bool* p_open</code> are input as normal <code>bool</code> values and returned as the second element of a 2-tuple. For example <code>bool ImGui::Checkbox(const char* label, bool* v)</code> is translated to <code>def checkbox(label: str, v: bool) -&gt; tuple[bool, bool]</code> that returns a 2-tuple where the first element is the boolean return value of <code>bool ImGui::Checkbox()</code> and the second element is the new value of the checkbox state.</li>
 </ul>
-<h3 id="getting-started">Getting started</h3>
+<h2 id="getting-started">Getting started</h2>
 <p>Slimgui requires Python 3.10 or newer.</p>
 <p>Installation: <code>pip install slimgui</code></p>
 <p>To run the example, clone the repo, install dependencies and run:</p>
