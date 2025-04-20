@@ -5,6 +5,20 @@ subtitle: 'Python bindings for Dear ImGui'
 
 # slimgui - ImPlot API reference
 
+## Overview
+
+The Slimgui package provides modern Python bindings for the following libraries:
+
+ - [Dear ImGui](https://github.com/ocornut/imgui)
+ - [ImPlot](https://github.com/epezent/implot)
+
+The Python bindings documentation has been split into several parts:
+
+- [Dear ImGui bindings reference](./index.html)
+- ImPlot bindings API reference -- you're reading it.
+
+The project source code is hosted on [github.com/nurpax/slimgui](https://github.com/nurpax/slimgui).
+
 ## Module naming
 
 The below reference assumes the Python bindings are imported as:
@@ -24,18 +38,20 @@ For example, a symbol like `slimgui_ext.imgui.MouseButton` will be written as `i
 
 A detailed enum and class reference can be found here: [Enum Reference](#enum-reference)
 
-## Contexts
+## ImPlot API functions
+
+### Contexts
 
 <div class="raw-html-insert" data-apirefs="create_context, destroy_context, get_current_context, set_current_context"></div>
 
-## Begin/End Plot
+### Begin/End Plot
 
 <div class="raw-html-insert" data-apirefs="begin_plot, end_plot"></div>
 
-## Subplots
+### Subplots
 
-`implot.begin_subplots()` starts a subdivided plotting context.  If the function returns `True`,
-`implot.end_subplots()` MUST be called! Call `implot.begin_plot()`/`end_plot()` at most `[rows*cols]`
+`begin_subplots()` starts a subdivided plotting context.  If the function returns `True`,
+`end_subplots()` MUST be called! Call `begin_plot()`/`end_plot()` at most `[rows*cols]`
 times in between the begining and end of the subplot context.  Plots are
 added in row major order (or use `SubplotFlags.COL_MAJOR` if you want column major).
 
@@ -73,18 +89,18 @@ Important notes:
 - The `row/col_ratios` arrays must be created with `dtype=np.float32`, e.g.
   `np.array([0.3, 0.7], dtype=np.float32)`.
 
-Important notes regarding `implot.begin_plot()` from inside of `implot.begin_subplots()`:
+Important notes regarding `begin_plot()` from inside of `begin_subplots()`:
 
-- The `title_id` parameter of `implot.begin_plot()` (see above) does NOT have to be
+- The `title_id` parameter of `begin_plot()` (see above) does NOT have to be
   unique when called inside of a subplot context. Subplot IDs are hashed
   for your convenience so you don't have call `imgui.push_id()` or generate unique title
-  strings. Simply pass an empty string to `implot.begin_plot()` unless you want to title
+  strings. Simply pass an empty string to `begin_plot()` unless you want to title
   each subplot.
-- The `size` parameter of `implot.begin_plot()` (see above) is ignored when inside of a
+- The `size` parameter of `begin_plot()` (see above) is ignored when inside of a
   subplot context. The actual size of the subplot will be based on the
-  `size` value you pass to `implot.begin_subplots()` and `row_ratios`/`col_ratios` if provided.
+  `size` value you pass to `begin_subplots()` and `row_ratios`/`col_ratios` if provided.
 
-## Setup
+### Setup
 
 The following API allows you to set up and customize various aspects of the current plot. The functions should be called immediately after `begin_plot()` and before any other API calls. Typical usage is as follows:
 
@@ -109,7 +125,7 @@ if implot.begin_plot(...):                     # 1) begin a new plot
 
 <div class="raw-html-insert" data-apirefs="setup_axis,setup_axis_limits,setup_axis_links,setup_axis_format,setup_axis_ticks,setup_axis_scale,setup_axis_limits_constraints,setup_axis_zoom_constraints,setup_axes,setup_axes_limits,setup_legend,setup_mouse_text,setup_finish"></div>
 
-## SetNext
+### SetNext
 
 Though you should default to the `setup()` API above, there are some scenarios where (re)configuring a plot or axis before `begin_plot()` is needed (e.g., if using a preceding button or slider widget to change the plot limits). In this case, you can use the `set_next_*()` API below. While this is not as feature-rich as the `setup()` API, most common needs are provided. These functions can be called anywhere except inside of `begin_plot`/`end_plot`. For example:
 
@@ -127,7 +143,7 @@ if implot.begin_plot(...):
 
 <div class="raw-html-insert" data-apirefs="set_next_axis_limits,set_next_axis_links,set_next_axis_to_fit,set_next_axes_limits,set_next_axes_to_fit"></div>
 
-## Plot Items
+### Plot Items
 
 The main plotting API is provied below. Call these functions between
 Begin/EndPlot and after any Setup API calls. Each plots data on the current
@@ -138,7 +154,7 @@ if you try plotting extremely large 64-bit integral types. Proceed with caution!
 
 <div class="raw-html-insert" data-apirefs="plot_line,plot_scatter,plot_stairs,plot_shaded,plot_bars,plot_bar_groups,plot_error_bars,plot_pie_chart,plot_heatmap,plot_histogram,plot_digital,plot_image,plot_text,plot_dummy"></div>
 
-## Plot Tools
+### Plot Tools
 
 The following can be used to render interactive elements and/or annotations.
 Like the item plotting functions above, they apply to the current x and y
@@ -148,7 +164,7 @@ user interactions can be retrieved through the optional output parameters.
 
 <div class="raw-html-insert" data-apirefs="drag_point,drag_line_x,drag_line_y,drag_rect,annotation,tag_x,tag_y"></div>
 
-## Plot Utils
+### Plot Utils
 
 <div class="raw-html-insert" data-apirefs="set_axis,set_axes,pixels_to_plot,plot_to_pixels,get_plot_pos,get_plot_size,get_plot_mouse_pos,get_plot_limits,is_plot_hovered,is_axis_hovered,is_subplots_hovered,is_plot_selected,get_plot_selection,cancel_plot_selection,hide_next_item"></div>
 
@@ -159,11 +175,11 @@ level control of plot alignment.
 
 <div class="raw-html-insert" data-apirefs="begin_aligned_plots,end_aligned_plots"></div>
 
-## Legend Utils
+### Legend Utils
 
 <div class="raw-html-insert" data-apirefs="begin_legend_popup,end_legend_popup,is_legend_entry_hovered"></div>
 
-## Drag and Drop
+### Drag and Drop
 
 <div class="raw-html-insert" data-apirefs="begin_drag_drop_target_plot,begin_drag_drop_target_axis,begin_drag_drop_target_legend,end_drag_drop_target"></div>
 
@@ -172,7 +188,7 @@ You can change the modifier if desired. If `imgui.Key.MOD_NONE` is provided, the
 
 <div class="raw-html-insert" data-apirefs="begin_drag_drop_source_plot,begin_drag_drop_source_axis,begin_drag_drop_source_item,end_drag_drop_source"></div>
 
-## Styling
+### Styling
 
 Styling colors in ImPlot works similarly to styling colors in ImGui, but
 with one important difference. Like ImGui, all style colors are stored in an
@@ -218,7 +234,7 @@ values in your `implot.Style` or from Colormap data.
 
 <div class="raw-html-insert" data-apirefs="set_next_line_style,set_next_fill_style,set_next_marker_style,set_next_error_bar_style,get_last_item_color,get_style_color_name,get_marker_name"></div>
 
-## Colormaps
+### Colormaps
 
 Item styling is based on colormaps when the relevant `implot.Col.*` is set to
 `implot.AUTO_COL` (default). Several built-in colormaps are available. You can
@@ -238,15 +254,15 @@ Pass an explicit colormap index (built-in or user-added) to specify otherwise.
 
 <div class="raw-html-insert" data-apirefs="get_colormap_size,get_colormap_color,sample_colormap,colormap_scale,colormap_slider,colormap_button,bust_color_cache"></div>
 
-## Input Mapping
+### Input Mapping
 
 <div class="raw-html-insert" data-apirefs="get_input_map,map_input_default,map_input_reverse"></div>
 
-## Miscellaneous
+### Miscellaneous
 
 <div class="raw-html-insert" data-apirefs="item_icon,colormap_icon,get_plot_draw_list,push_plot_clip_rect,pop_plot_clip_rect,show_style_selector,show_colormap_selector,show_input_map_selector,show_style_editor,show_user_guide,show_metrics_window"></div>
 
-## Demo
+### Demo
 
 <div class="raw-html-insert" data-apirefs="show_demo_window"></div>
 

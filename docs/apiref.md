@@ -21,7 +21,7 @@ The project source code is hosted on [github.com/nurpax/slimgui](https://github.
 
 Slimgui is built against Dear ImGui version %imguiversion%.
 
-### Binding considerations
+## Binding considerations
 
 Slimgui has been developed with the following goals in mind:
 
@@ -37,7 +37,7 @@ The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) exce
 - Vector types such as `ImVec2`, `ImVec4`, and `float*` arrays are converted to Python tuples such as `tuple[float, float]` (for `ImVec2`), `tuple[float, float, float, float]` (for `ImVec4`).
 - Mutable bool args such as `bool* p_open` are input as normal `bool` values and returned as the second element of a 2-tuple.  For example `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]` that returns a 2-tuple where the first element is the boolean return value of `bool ImGui::Checkbox()` and the second element is the new value of the checkbox state.
 
-### Getting started
+## Getting started
 
 Slimgui requires Python 3.10 or newer.
 
