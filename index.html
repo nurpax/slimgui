@@ -1597,6 +1597,43 @@ if visible:
 </div>
 <p>Only call <code>end_tab_item()</code> if <code>begin_tab_item()</code> returns true!</p>
 </div>
+<h3 id="drag-and-drop">Drag and Drop</h3>
+<ul>
+<li>On source items, call <code>begin_drag_drop_source()</code>, if it returns true also call <code>set_drag_drop_payload()</code> + <code>end_drag_drop_source()</code>.</li>
+<li>On target candidates, call <code>begin_drag_drop_target()</code>, if it returns true also call <code>accept_drag_drop_payload()</code> + <code>end_drag_drop_target()</code>.</li>
+<li>If you stop calling <code>begin_drag_drop_source()</code> the payload is preserved however it won’t have a preview tooltip (we currently display a fallback “…” tooltip, see <a href="https://github.com/ocornut/imgui/issues/1725">#1725</a>).</li>
+<li>An item can be both drag source and drop target.</li>
+</ul>
+<div class="funclist">
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_source</span>(<span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>DragDropFlags</span> = <span class='symbol'>DragDropFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
+</div>
+<p>Call after submitting an item which may be dragged. when this return true, you can call <code>set_drag_drop_payload()</code> + <code>end_drag_drop_source()</code></p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_drag_drop_payload</span>(<span class='arg_name'>type</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>data</span><span class='special'>:</span> <span class='symbol'>bytes</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
+</div>
+<p>Type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return true when payload has been accepted.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>end_drag_drop_source</span>() -> <span class='keyword'>None</span></code>
+</div>
+<p>Only call <code>end_drag_drop_source()</code> if <code>begin_drag_drop_source()</code> returns true!</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_target</span>() -> <span class='symbol'>bool</span></code>
+</div>
+<p>Call after submitting an item that may receive a payload. If this returns true, you can call <code>accept_drag_drop_payload()</code> + <code>end_drag_drop_target()</code></p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>accept_drag_drop_payload</span>(<span class='arg_name'>type</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span> = <span class='symbol'>0</span>) -> <span class='symbol'>imgui</span>.<span class='symbol'>Payload</span> | <span class='keyword'>None</span></code>
+</div>
+<p>Accept contents of a given type. If <code>DragDropFlags.ACCEPT_BEFORE_DELIVERY</code> is set you can peek into the payload before the mouse button is released.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>end_drag_drop_target</span>() -> <span class='keyword'>None</span></code>
+</div>
+<p>Only call <code>end_drag_drop_target()</code> if <code>begin_drag_drop_target()</code> returns true!</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_drag_drop_payload</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>Payload</span> | <span class='keyword'>None</span></code>
+</div>
+<p>Peek directly into the current payload from anywhere. Returns <code>None</code> when drag and drop is finished or inactive. Use <code>Payload.is_data_type()</code> to test for the payload type.</p>
+</div>
 <h3 id="disabling-beta-api">Disabling [BETA API]</h3>
 <ul>
 <li>Disable all user interactions and dim items visuals (applying <code>Style.disabled_alpha</code> over current colors).</li>
