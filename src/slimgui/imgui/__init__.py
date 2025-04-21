@@ -117,3 +117,15 @@ def style_colors_classic(dst: imgui_ext.Style | None = None) -> None:
     if dst is None:
         dst = get_style()
     imgui_ext.style_colors_classic_internal(dst)
+
+def accept_drag_drop_payload(type: str, flags: DragDropFlags = DragDropFlags.NONE) -> Payload | None:
+    '''Accept contents of a given type. If `DragDropFlags.ACCEPT_BEFORE_DELIVERY` is set you can peek into the payload before the mouse button is released.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.accept_drag_drop_payload_internal(type, flags)
+
+def get_drag_drop_payload() -> Payload | None:
+    '''Peek directly into the current payload from anywhere. Returns `None` when drag and drop is finished or inactive. Use `Payload.is_data_type()` to test for the payload type.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_drag_drop_payload_internal()

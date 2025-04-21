@@ -113,6 +113,9 @@ NB_MODULE(slimgui_ext, top) {
     m.attr("COL32_BLACK") = IM_COL32_BLACK;
     m.attr("COL32_BLACK_TRANS") = IM_COL32_BLACK_TRANS;
 
+    m.attr("PAYLOAD_TYPE_COLOR_3F") = IMGUI_PAYLOAD_TYPE_COLOR_3F;
+    m.attr("PAYLOAD_TYPE_COLOR_4F") = IMGUI_PAYLOAD_TYPE_COLOR_4F;
+
     nb::class_<ImFont>(m, "Font");
     nb::class_<ImFontConfig>(m, "FontConfig") // exposes only safe fields, e.g., no FontData, FontDataOwnedByAtlas, etc.
         .def(nb::init<>())
@@ -406,6 +409,14 @@ NB_MODULE(slimgui_ext, top) {
             return nb::make_iterator(nb::type<ImDrawData>(), "iterator", drawData.CmdLists.begin(), drawData.CmdLists.end());
         }, nb::keep_alive<0, 1>());
 
+     nb::class_<ImGuiPayload>(m, "Payload", "Data payload for Drag and Drop operations: `accept_drag_drop_payload()`, `get_drag_drop_payload()`")
+        .def("is_data_type", &ImGuiPayload::IsDataType)
+        .def("is_preview", &ImGuiPayload::IsPreview)
+        .def("is_delivery", &ImGuiPayload::IsDelivery)
+        .def("data", [](ImGuiPayload& self) {
+            return nb::bytes(self.Data, self.DataSize);
+        });
+
 #include "imgui_enums.inl"
     // "Internal" object getters that receive a context pointer.  Such functions
     // don't exist in the public ImGui API, but we provide them so that we
@@ -437,6 +448,23 @@ NB_MODULE(slimgui_ext, top) {
             ImDrawList* drawList = ImGui::GetWindowDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
+        }, nb::rv_policy::reference_internal)
+        .def("accept_drag_drop_payload_internal", [](ImGuiContext* ctx, const char* type, ImGuiDragDropFlags_ flags) -> std::optional<const ImGuiPayload*> {
+            ImGuiContext* prev = ImGui::GetCurrentContext();
+            ImGui::SetCurrentContext(ctx);
+            const ImGuiPayload* ret = ImGui::AcceptDragDropPayload(type, flags);
+            ImGui::SetCurrentContext(prev);
+            return ret;
+        }, "type"_a, "flags"_a.sig("DragDropFlags.NONE") = ImGuiDragDropFlags_None, nb::rv_policy::reference_internal)
+        .def("get_drag_drop_payload_internal", [](ImGuiContext* ctx) -> std::optional<const ImGuiPayload*> {
+            ImGuiContext* prev = ImGui::GetCurrentContext();
+            ImGui::SetCurrentContext(ctx);
+            const ImGuiPayload* ret = ImGui::GetDragDropPayload();
+            ImGui::SetCurrentContext(prev);
+            if (ret) {
+                return ret;
+            }
+            return std::nullopt;
         }, nb::rv_policy::reference_internal);
 
     m.def("create_context_internal", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
@@ -1079,13 +1107,14 @@ NB_MODULE(slimgui_ext, top) {
     m.def("log_text", [](const char* text) { ImGui::LogText("%s", text); }, "text"_a);
 
     // Drag and Drop
+    // Note: Accept* and Get* are members of Context.
     m.def("begin_drag_drop_source", [](ImGuiDragDropFlags_ flags) { return ImGui::BeginDragDropSource(flags); }, "flags"_a.sig("DragDropFlags.NONE") = ImGuiDragDropFlags_None);
-    // IMGUI_API bool          SetDragDropPayload(const char* type, const void* data, size_t sz, ImGuiCond cond = 0);  // type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return true when payload has been accepted.
+    m.def("set_drag_drop_payload", [](const char* type, nb::bytes data, ImGuiCond_ cond) {
+        return ImGui::SetDragDropPayload(type, data.data(), data.size(), cond);
+    }, "type"_a, "data"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("end_drag_drop_source", &ImGui::EndDragDropSource);
     m.def("begin_drag_drop_target", &ImGui::BeginDragDropTarget);
-    // IMGUI_API const ImGuiPayload*   AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags = 0);          // accept contents of a given type. If ImGuiDragDropFlags_AcceptBeforeDelivery is set you can peek into the payload before the mouse button is released.
     m.def("end_drag_drop_target", &ImGui::EndDragDropTarget);
-    // IMGUI_API const ImGuiPayload*   GetDragDropPayload();                                                           // peek directly into the current payload from anywhere. returns NULL when drag and drop is finished or inactive. use ImGuiPayload::IsDataType() to test for the payload type.
 
     // Disabling [BETA API]
     m.def("begin_disabled", &ImGui::BeginDisabled, "disabled"_a = true);

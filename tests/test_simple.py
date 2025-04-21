@@ -121,3 +121,13 @@ def test_draw_list(frame_scope):
     assert vert.shape[1] == 2
     dl.add_concave_poly_filled(vert, color) # should work
     dl.add_concave_poly_filled(vert.astype(np.int32), color) # should work too, autocast to float
+
+def test_drag_drop(frame_scope):
+    imgui.dummy((10,10))
+    pl = imgui.get_drag_drop_payload()
+    assert pl is None
+    r = imgui.begin_drag_drop_target()
+    assert not r # should return False because there's no previous draggable item
+
+    if imgui.begin_drag_drop_source():
+        imgui.end_drag_drop_source()

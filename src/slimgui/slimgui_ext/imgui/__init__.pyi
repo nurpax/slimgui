@@ -479,6 +479,10 @@ class Context:
 
     def get_window_draw_list_internal(self) -> DrawList: ...
 
+    def accept_drag_drop_payload_internal(self, type: str, flags: DragDropFlags = DragDropFlags.NONE) -> Payload | None: ...
+
+    def get_drag_drop_payload_internal(self) -> Payload | None: ...
+
 class Dir(enum.IntEnum):
     NONE = -1
 
@@ -1643,6 +1647,23 @@ class MouseCursor(enum.IntEnum):
     """
 
     COUNT = 11
+
+PAYLOAD_TYPE_COLOR_3F: str = '_COL3F'
+
+PAYLOAD_TYPE_COLOR_4F: str = '_COL4F'
+
+class Payload:
+    """
+    Data payload for Drag and Drop operations: `accept_drag_drop_payload()`, `get_drag_drop_payload()`
+    """
+
+    def is_data_type(self, arg: str, /) -> bool: ...
+
+    def is_preview(self) -> bool: ...
+
+    def is_delivery(self) -> bool: ...
+
+    def data(self) -> bytes: ...
 
 class PopupFlags(enum.IntFlag):
     __str__ = __repr__
@@ -3802,6 +3823,11 @@ def set_cursor_pos_y(local_y: float) -> None:
 
 def set_cursor_screen_pos(pos: tuple[float, float]) -> None:
     """Cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND."""
+    ...
+
+
+def set_drag_drop_payload(type: str, data: bytes, cond: Cond = Cond.NONE) -> bool:
+    """Type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return true when payload has been accepted."""
     ...
 
 

@@ -1,6 +1,8 @@
 
+import pickle
+from typing import Literal
 from slimgui import imgui
-
+from .utils import help_marker
 refcol = (0.1, 0.2, 0.4, 1)
 editing_col = (0.5, 0.5, 0.5, 1)
 col3 = (0.1, 0.5, 0.5)
@@ -11,6 +13,8 @@ style_mode = 0
 
 def show():
     global editing_col, col3, enable_clip_rect
+
+    _drag_and_drop()
 
     expanded, _ = imgui.collapsing_header("Widgets 2")
     if not expanded:
@@ -56,3 +60,77 @@ def _show_dark_light_select():
             imgui.style_colors_classic()
         else:
             assert False, "style_mode out of range"
+
+_col1 = (1, 0, 0.2 )
+_col2 = (0.4, 0.7, 0.0, 0.5)
+
+def _drag_and_drop():
+    global _col1, _col2
+    if not imgui.collapsing_header("Drag and Drop")[0]:
+        return
+
+    if imgui.tree_node("Drag and drop in standard widgets"):
+        help_marker("You can drag from the color squares.")
+        _, _col1 = imgui.color_edit3("color 1", _col1)
+        _, _col2 = imgui.color_edit4("color 2", _col2)
+        imgui.tree_pop()
+
+    _drag_and_drop_copy_swap_items()
+
+# Define modes
+_mode: Literal['copy', 'move', 'swap'] = 'copy'
+_names = [
+    "Bobby", "Beatrice", "Betty",
+    "Brianna", "Barry", "Bernard",
+    "Bibi", "Blaine", "Bryn"
+]
+def _drag_and_drop_copy_swap_items():
+    global _mode, _names
+
+    if not imgui.tree_node("Drag and drop to copy/swap items"):
+        return
+
+    # Radio buttons for mode selection
+    if imgui.radio_button("Copy", _mode == 'copy'):
+        _mode = 'copy'
+    imgui.same_line()
+    if imgui.radio_button("Move", _mode == 'move'):
+        _mode = 'move'
+    imgui.same_line()
+    if imgui.radio_button("Swap", _mode == 'swap'):
+        _mode = 'swap'
+
+    # Render buttons and handle drag-and-drop
+    for n in range(len(_names)):
+        imgui.push_id(n)
+        if (n % 3) != 0:
+            imgui.same_line()
+
+        imgui.button(_names[n], size=(60, 60))
+
+        # Drag source
+        if imgui.begin_drag_drop_source():
+            data = pickle.dumps(n) # encode arbitrary drag'n'drop payload to Python 'bytes'
+            imgui.set_drag_drop_payload("DND_DEMO_CELL", data)
+            if _mode == 'copy':
+                imgui.text(f"Copy {_names[n]}")
+            elif _mode == 'move':
+                imgui.text(f"Move {_names[n]}")
+            elif _mode == 'swap':
+                imgui.text(f"Swap {_names[n]}")
+            imgui.end_drag_drop_source()
+
+        # Drag target
+        if imgui.begin_drag_drop_target():
+            if (payload := imgui.accept_drag_drop_payload("DND_DEMO_CELL")) is not None:
+                payload_n = pickle.loads(payload.data())
+                if _mode == 'copy':
+                    _names[n] = _names[payload_n]
+                elif _mode == 'move':
+                    _names[n] = _names[payload_n]
+                    _names[payload_n] = ""
+                elif _mode == 'swap':
+                    _names[n], _names[payload_n] = _names[payload_n], _names[n]
+            imgui.end_drag_drop_target()
+        imgui.pop_id()
+    imgui.tree_pop()
