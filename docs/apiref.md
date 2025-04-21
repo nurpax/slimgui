@@ -490,6 +490,15 @@ if visible:
 </div>
 <div class="raw-html-insert" data-apirefs="end_tab_item"></div>
 
+### Drag and Drop
+
+- On source items, call `begin_drag_drop_source()`, if it returns true also call `set_drag_drop_payload()` + `end_drag_drop_source()`.
+- On target candidates, call `begin_drag_drop_target()`, if it returns true also call `accept_drag_drop_payload()` + `end_drag_drop_target()`.
+- If you stop calling `begin_drag_drop_source()` the payload is preserved however it won't have a preview tooltip (we currently display a fallback "..." tooltip, see [#1725](https://github.com/ocornut/imgui/issues/1725)).
+- An item can be both drag source and drop target.
+
+<div class="raw-html-insert" data-apirefs="begin_drag_drop_source,set_drag_drop_payload,end_drag_drop_source,begin_drag_drop_target,accept_drag_drop_payload,end_drag_drop_target,get_drag_drop_payload"></div>
+
 ### Disabling [BETA API]
 
 - Disable all user interactions and dim items visuals (applying `Style.disabled_alpha` over current colors).
