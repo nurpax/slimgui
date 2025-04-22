@@ -72,8 +72,15 @@ function div (el)
     for func in string.gmatch(funcrefs, '([^,]+)') do
         name = func:match("^%s*(.-)%s*$") -- strip ws
         if func_dict[name] then
+            -- Read python function def line from json.  This contains
+            -- both syntax highlighted def line and the docstring in markdown format.
             for _, code in ipairs(func_dict[name]) do
-                out_html = out_html .. code
+                entry = pandoc.json.decode(code)
+                out_html = out_html .. entry['def_line_html']
+                if entry['docstring'] ~= nil then
+                    local md = pandoc.read(entry['docstring'], "markdown-smart")
+                    out_html = out_html .. pandoc.write(md, "html") .. "\n"
+                end
             end
         elseif class_dict[name] then
             out_html = out_html .. class_dict[name]

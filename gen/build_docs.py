@@ -1,6 +1,7 @@
 
 import argparse
 import inspect
+import json
 import os
 import re
 import subprocess
@@ -108,13 +109,12 @@ def pyi_to_html_lookup(file_path, outf):
             docstring = ast.get_docstring(node)
             outf.write(f'$$func={node.name}\n')
             source_line = source_line.rstrip(": ...")
-
-            outf.write('<div class="api">\n')
-            outf.write(f'  <code>{_highlight_def_line(source_line)}</code>\n')
-            outf.write('</div>\n')
-            if docstring:
-                outf.write(f'<p>{_expand_code_blocks_to_html(docstring)}</p>\n')
-
+            entry = {
+                'def_line_html': f'<div class="api">\n  <code>{_highlight_def_line(source_line)}</code>\n</div>\n',
+            }
+            if docstring is not None and docstring != '':
+                entry['docstring'] = docstring
+            outf.write(f'{json.dumps(entry)}\n')
             outf.write('$$end\n')
         elif isinstance(node, ast.ClassDef):
             if not any(ty in source_line for ty in ['(enum.IntEnum)', '(enum.IntFlag)']):
@@ -153,13 +153,6 @@ def pyi_to_html_lookup(file_path, outf):
             outf.write('</div>\n')
             outf.write('$$end\n')
 
-def _format_annotation(ann):
-    if ann is inspect.Signature.empty:
-        return None
-    if hasattr(ann, '__module__') and hasattr(ann, '__qualname__'):
-        return f"{ann.__module__}.{ann.__qualname__}"
-    return str(ann)
-
 def module_to_html_lookup(module, outf):
     m =  importlib.import_module(module)
     for name in dir(m):
@@ -173,13 +166,13 @@ def module_to_html_lookup(module, outf):
             sig = inspect.signature(func)
             sig = inspect.signature(func)
             func_def = f'def {func.__name__}{sig}'
-
-            outf.write('<div class="api">\n')
-            outf.write(f'  <code>{_highlight_def_line(func_def)}</code>\n')
-            outf.write('</div>\n')
-            docs = inspect.getdoc(obj)
-            if docs:
-                outf.write(f'<p>{_expand_code_blocks_to_html(docs)}</p>\n')
+            entry = {
+                'def_line_html': f'<div class="api">\n  <code>{_highlight_def_line(func_def)}</code>\n</div>\n',
+            }
+            docstring = inspect.getdoc(func)
+            if docstring is not None and docstring != '':
+                entry['docstring'] = docstring
+            outf.write(f'{json.dumps(entry)}\n')
             outf.write('$$end\n')
 
 def main():
@@ -220,6 +213,7 @@ def main():
             args.input_file, "-o", args.output,
             '--template', f'{docs_basedir}/template.html',
             '--standalone', '--wrap=none',
+            '-f', 'markdown-smart',
             '--lua-filter', lua_filter,
             '--metadata', f'api_html={api_html}',
             '--metadata', f'imgui_version={args.imgui_version}',
