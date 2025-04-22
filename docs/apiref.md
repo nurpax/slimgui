@@ -324,7 +324,7 @@ Tip: the `color_edit_*` functions have a little color square that can be left-cl
 
 ### Widgets: Data Plotting
 
-Consider using ImPlot (https://github.com/epezent/implot) which is much better!  Slimgui includes ImPlot bindings, which can be imported with `from slimgui import implot`.
+Consider using [ImPlot](https://github.com/epezent/implot) which is much better!  Slimgui includes ImPlot bindings, see [Slimgui ImPlot API reference](./apiref_implot.html) for details.
 
 #### Functions
 <div class="raw-html-insert" data-apirefs="plot_lines, plot_histogram"></div>
