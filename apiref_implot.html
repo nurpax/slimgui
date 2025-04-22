@@ -278,7 +278,7 @@ div.api-class {
 <p>The Python bindings documentation has been split into several parts:</p>
 <ul>
 <li><a href="./index.html">Dear ImGui bindings reference</a></li>
-<li>ImPlot bindings API reference – you’re reading it.</li>
+<li>ImPlot bindings API reference -- you're reading it.</li>
 </ul>
 <p>The project source code is hosted on <a href="https://github.com/nurpax/slimgui">github.com/nurpax/slimgui</a>.</p>
 <h2 id="module-naming">Module naming</h2>
@@ -298,15 +298,19 @@ from slimgui import implot</code></pre>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>create_context</span>() -> <span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span></code>
 </div>
-<p>Create an ImPlot context.  Call this after <code>imgui.create_context()</code>.</p>
+<p>Create an ImPlot context. Call this after
+<code>imgui.create_context()</code>.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>destroy_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
 </div>
-<p>Destroys an ImPlot context. Call this before <code>imgui.destroy_context()</code>. <code>None</code> = destroy current context.</p>
+<p>Destroys an ImPlot context. Call this before
+<code>imgui.destroy_context()</code>. <code>None</code> = destroy
+current context.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_current_context</span>() -> <span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
 </div>
-<p>Returns the current ImPlot context. <code>None</code> if no context has ben set.</p>
+<p>Returns the current ImPlot context. <code>None</code> if no context
+has ben set.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_current_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>implot</span>.<span class='symbol'>WrappedContext</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -317,18 +321,32 @@ from slimgui import implot</code></pre>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_plot</span>(<span class='arg_name'>title_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (-<span class='symbol'>1</span><span class='special'>,</span><span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>PlotFlags</span> = <span class='symbol'>PlotFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
 </div>
-<p>Starts a 2D plotting context. If this function returns <code>True</code>, <code>implot.end_plot()</code> MUST
-be called! You are encouraged to use the following convention:<br><pre>if implot.begin_plot(...):
+<p>Starts a 2D plotting context. If this function returns
+<code>True</code>, <code>implot.end_plot()</code> MUST be called! You
+are encouraged to use the following convention:</p>
+<pre><code>if implot.begin_plot(...):
     implot.plot_line(...)
     ...
-    implot.end_plot()</pre><br>Important notes:<br>- <code>title_id</code> must be unique to the current ImGui ID scope. If you need to avoid ID
-  collisions or don't want to display a title in the plot, use double hashes
-  (e.g. <code>"MyPlot##HiddenIdText"</code> or <code>"##NoTitle"</code>).<br>- <code>size</code> is the **frame** size of the plot widget, not the plot area. The default
-  size of plots (i.e. when <code>(0,0)</code>) can be modified in your <code>implot.Style</code>.</p>
+    implot.end_plot()</code></pre>
+<p>Important notes:</p>
+<ul>
+<li><p><code>title_id</code> must be unique to the current ImGui ID
+scope. If you need to avoid ID collisions or don't want to display a
+title in the plot, use double hashes (e.g.
+<code>"MyPlot##HiddenIdText"</code> or
+<code>"##NoTitle"</code>).</p></li>
+<li><p><code>size</code> is the <strong>frame</strong> size of the plot
+widget, not the plot area. The default size of plots (i.e. when
+<code>(0,0)</code>) can be modified in your
+<code>implot.Style</code>.</p></li>
+</ul>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_plot</span>() -> <span class='keyword'>None</span></code>
 </div>
-<p>Only call <code>implot.end_plot()</code> if <code>implot.begin_plot()</code> returns <code>True</code>! Typically called at the end of an if statement conditioned on <code>implot.begin_plot()</code>. See example above.</p>
+<p>Only call <code>implot.end_plot()</code> if
+<code>implot.begin_plot()</code> returns <code>True</code>! Typically
+called at the end of an if statement conditioned on
+<code>implot.begin_plot()</code>. See example above.</p>
 </div>
 <h3 id="subplots">Subplots</h3>
 <p><code>begin_subplots()</code> starts a subdivided plotting context. If the function returns <code>True</code>, <code>end_subplots()</code> MUST be called! Call <code>begin_plot()</code>/<code>end_plot()</code> at most <code>[rows*cols]</code> times in between the begining and end of the subplot context. Plots are added in row major order (or use <code>SubplotFlags.COL_MAJOR</code> if you want column major).</p>
@@ -346,7 +364,7 @@ be called! You are encouraged to use the following convention:<br><pre>if implot
   [3] | [4] | [5]</code></pre>
 <p>Important notes:</p>
 <ul>
-<li><code>title_id</code> must be unique to the current ImGui ID scope. If you need to avoid ID collisions or don’t want to display a title in the plot, use double hashes (e.g. <code>"MySubplot##HiddenIdText"</code> or <code>"##NoTitle"</code>).</li>
+<li><code>title_id</code> must be unique to the current ImGui ID scope. If you need to avoid ID collisions or don't want to display a title in the plot, use double hashes (e.g. <code>"MySubplot##HiddenIdText"</code> or <code>"##NoTitle"</code>).</li>
 <li><code>rows</code> and <code>cols</code> must be greater than 0.</li>
 <li><code>size</code> is the size of the entire grid of subplots, not the individual plots</li>
 <li><code>row_ratios</code> and <code>col_ratios</code> must have at exactly <code>rows</code> and <code>cols</code> elements, respectively, or an exception is raised. These are the sizes of the rows and columns expressed in ratios. If the user adjusts the dimensions, the arrays are updated with new ratios.</li>
@@ -354,7 +372,7 @@ be called! You are encouraged to use the following convention:<br><pre>if implot
 </ul>
 <p>Important notes regarding <code>begin_plot()</code> from inside of <code>begin_subplots()</code>:</p>
 <ul>
-<li>The <code>title_id</code> parameter of <code>begin_plot()</code> (see above) does NOT have to be unique when called inside of a subplot context. Subplot IDs are hashed for your convenience so you don’t have call <code>imgui.push_id()</code> or generate unique title strings. Simply pass an empty string to <code>begin_plot()</code> unless you want to title each subplot.</li>
+<li>The <code>title_id</code> parameter of <code>begin_plot()</code> (see above) does NOT have to be unique when called inside of a subplot context. Subplot IDs are hashed for your convenience so you don't have call <code>imgui.push_id()</code> or generate unique title strings. Simply pass an empty string to <code>begin_plot()</code> unless you want to title each subplot.</li>
 <li>The <code>size</code> parameter of <code>begin_plot()</code> (see above) is ignored when inside of a subplot context. The actual size of the subplot will be based on the <code>size</code> value you pass to <code>begin_subplots()</code> and <code>row_ratios</code>/<code>col_ratios</code> if provided.</li>
 </ul>
 <h3 id="setup">Setup</h3>
@@ -379,19 +397,25 @@ Do <strong>NOT</strong> call setup code after you begin plotting or after you ma
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_axis</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span><span class='special'>,</span> <span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>AxisFlags</span> = <span class='symbol'>AxisFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Enables an axis or sets the label and/or flags for an existing axis. Leave <code>label=None</code> for no label.</p>
+<p>Enables an axis or sets the label and/or flags for an existing axis.
+Leave <code>label=None</code> for no label.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_axis_limits</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>ONCE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets an axis range limits. If <code>Cond.ALWAYS</code> is used, the axes limits will be locked. Inversion with <code>v_min > v_max</code> is not supported; use <code>implot.setup_axis_limits</code> instead.</p>
+<p>Sets an axis range limits. If <code>Cond.ALWAYS</code> is used, the
+axes limits will be locked. Inversion with <code>v_min &gt; v_max</code>
+is not supported; use <code>implot.setup_axis_limits</code> instead.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_axis_format</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span><span class='special'>,</span> <span class='arg_name'>fmt</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets the format of numeric axis labels via formater specifier (default="%g"). Formated values will be double (i.e. use %f).  Note that the format string is specified in C printf syntax!</p>
+<p>Sets the format of numeric axis labels via formater specifier
+(default="%g"). Formated values will be double (i.e. use %f). Note that
+the format string is specified in C printf syntax!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_axis_ticks</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>labels</span><span class='special'>:</span> <span class='symbol'>Sequence</span><span class='special'>[</span><span class='symbol'>str</span><span class='special'>]</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>keep_default</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets an axis' ticks and optionally the labels. To keep the default ticks, set <code>keep_default=True</code>.</p>
+<p>Sets an axis' ticks and optionally the labels. To keep the default
+ticks, set <code>keep_default=True</code>.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_axis_ticks</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>n_ticks</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>labels</span><span class='special'>:</span> <span class='symbol'>Sequence</span><span class='special'>[</span><span class='symbol'>str</span><span class='special'>]</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>keep_default</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -410,23 +434,33 @@ Do <strong>NOT</strong> call setup code after you begin plotting or after you ma
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_axes</span>(<span class='arg_name'>x_label</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>y_label</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>x_flags</span><span class='special'>:</span> <span class='symbol'>AxisFlags</span> = <span class='symbol'>AxisFlags</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>y_flags</span><span class='special'>:</span> <span class='symbol'>AxisFlags</span> = <span class='symbol'>AxisFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets the label and/or flags for primary X and Y axes (shorthand for two calls to <code>implot.setup_Axis()</code>).</p>
+<p>Sets the label and/or flags for primary X and Y axes (shorthand for
+two calls to <code>implot.setup_Axis()</code>).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_axes_limits</span>(<span class='arg_name'>x_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>x_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>ONCE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets the primary X and Y axes range limits. If <code>Cond.ALWAYS</code> is used, the axes limits will be locked (shorthand for two calls to <code>implot.setup_axis_limits()</code>).</p>
+<p>Sets the primary X and Y axes range limits. If
+<code>Cond.ALWAYS</code> is used, the axes limits will be locked
+(shorthand for two calls to
+<code>implot.setup_axis_limits()</code>).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_legend</span>(<span class='arg_name'>location</span><span class='special'>:</span> <span class='symbol'>Location</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>LegendFlags</span> = <span class='symbol'>LegendFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets up the plot legend. This can also be called immediately after <code>implot.begin_subplots()</code> when using <code>SubplotFlags.SHARE_ITEMS</code>.</p>
+<p>Sets up the plot legend. This can also be called immediately after
+<code>implot.begin_subplots()</code> when using
+<code>SubplotFlags.SHARE_ITEMS</code>.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_mouse_text</span>(<span class='arg_name'>location</span><span class='special'>:</span> <span class='symbol'>Location</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>MouseTextFlags</span> = <span class='symbol'>MouseTextFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Set the location of the current plot's mouse position text (default = South|East).</p>
+<p>Set the location of the current plot's mouse position text (default =
+South|East).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>setup_finish</span>() -> <span class='keyword'>None</span></code>
 </div>
-<p>Explicitly finalize plot setup. Once you call this, you cannot make anymore Setup calls for the current plot!<br>Note that calling this function is OPTIONAL; it will be called by the first subsequent setup-locking API call.</p>
+<p>Explicitly finalize plot setup. Once you call this, you cannot make
+anymore Setup calls for the current plot!</p>
+<p>Note that calling this function is OPTIONAL; it will be called by the
+first subsequent setup-locking API call.</p>
 </div>
 <h3 id="setnext">SetNext</h3>
 <p>Though you should default to the <code>setup()</code> API above, there are some scenarios where (re)configuring a plot or axis before <code>begin_plot()</code> is needed (e.g., if using a preceding button or slider widget to change the plot limits). In this case, you can use the <code>set_next_*()</code> API below. While this is not as feature-rich as the <code>setup()</code> API, most common needs are provided. These functions can be called anywhere except inside of <code>begin_plot</code>/<code>end_plot</code>. For example:</p>
@@ -443,7 +477,8 @@ Do <strong>NOT</strong> call setup code after you begin plotting or after you ma
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_axis_limits</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>ONCE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.</p>
+<p>Sets an upcoming axis range limits. If ImPlotCond_Always is used, the
+axes limits will be locked.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_axis_to_fit</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -451,7 +486,10 @@ Do <strong>NOT</strong> call setup code after you begin plotting or after you ma
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_axes_limits</span>(<span class='arg_name'>x_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>x_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>ONCE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Sets the upcoming primary X and Y axes range limits. If <code>Cond.ALWAYS</code> is used, the axes limits will be locked (shorthand for two calls to <code>implot.setup_axis_limits()</code>).</p>
+<p>Sets the upcoming primary X and Y axes range limits. If
+<code>Cond.ALWAYS</code> is used, the axes limits will be locked
+(shorthand for two calls to
+<code>implot.setup_axis_limits()</code>).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_axes_to_fit</span>() -> <span class='keyword'>None</span></code>
 </div>
@@ -464,29 +502,39 @@ Do <strong>NOT</strong> call setup code after you begin plotting or after you ma
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_line</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>xscale</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>xstart</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>LineFlags</span> = <span class='symbol'>LineFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at <code>xstart</code> and spaced by <code>xscale</code>. The y values are taken from the <code>values</code> array.</p>
+<p>Plots a standard 2D line plot. The x values are spaced evenly along
+the x axis, starting at <code>xstart</code> and spaced by
+<code>xscale</code>. The y values are taken from the <code>values</code>
+array.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_line</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>LineFlags</span> = <span class='symbol'>LineFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a standard 2D line plot. The x values are taken from the <code>xs</code> array, and the y values are taken from the <code>ys</code> array.</p>
+<p>Plots a standard 2D line plot. The x values are taken from the
+<code>xs</code> array, and the y values are taken from the
+<code>ys</code> array.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_scatter</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>xscale</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>xstart</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ScatterFlags</span> = <span class='symbol'>ScatterFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a standard 2D scatter plot. Default marker is <code>Marker.CIRCLE</code>.</p>
+<p>Plots a standard 2D scatter plot. Default marker is
+<code>Marker.CIRCLE</code>.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_scatter</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ScatterFlags</span> = <span class='symbol'>ScatterFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_stairs</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>xscale</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>xstart</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>StairsFlags</span> = <span class='symbol'>StairsFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval <code>[x[i], x[i+1])</code> has the value <code>y[i]</code></p>
+<p>Plots a stairstep graph. The y value is continued constantly to the
+right from every x position, i.e. the interval
+<code>[x[i], x[i+1])</code> has the value <code>y[i]</code></p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_stairs</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>StairsFlags</span> = <span class='symbol'>StairsFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_shaded</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>yref</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>xscale</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>xstart</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ShadedFlags</span> = <span class='symbol'>ShadedFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set <code>yref</code> to +/-INFINITY for infinite fill extents.</p>
+<p>Plots a shaded (filled) region between two lines, or a line and a
+horizontal reference. Set <code>yref</code> to +/-INFINITY for infinite
+fill extents.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_shaded</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>yref</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ShadedFlags</span> = <span class='symbol'>ShadedFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -496,51 +544,77 @@ Do <strong>NOT</strong> call setup code after you begin plotting or after you ma
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_bars</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>bar_size</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>67</span><span class='special'>,</span> <span class='arg_name'>shift</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>BarsFlags</span> = <span class='symbol'>BarFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a bar graph. Vertical by default. <code>bar_size</code> and <code>shift</code> are in plot units.</p>
+<p>Plots a bar graph. Vertical by default. <code>bar_size</code> and
+<code>shift</code> are in plot units.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_bars</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>bar_size</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>BarsFlags</span> = <span class='symbol'>BarFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_bar_groups</span>(<span class='arg_name'>label_ids</span><span class='special'>:</span> <span class='symbol'>Sequence</span><span class='special'>[</span><span class='symbol'>str</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span><span class='special'>,</span> <span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>group_size</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>67</span><span class='special'>,</span> <span class='arg_name'>shift</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>BarGroupsFlags</span> = <span class='symbol'>BarGroupsFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a group of bars. <code>values</code> is a matrix with a shape <code>(item_count, group_count)</code>. <code>label_ids</code> should have <code>item_count</code> elements.</p>
+<p>Plots a group of bars. <code>values</code> is a matrix with a shape
+<code>(item_count, group_count)</code>. <code>label_ids</code> should
+have <code>item_count</code> elements.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_error_bars</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>err</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ErrorBarsFlags</span> = <span class='symbol'>ErrorBarsFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.</p>
+<p>Plots vertical error bar. The label_id should be the same as the
+label_id of the associated line or bar plot.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_error_bars</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>neg</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ErrorBarsFlags</span> = <span class='symbol'>ErrorBarsFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_heatmap</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span><span class='special'>,</span> <span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>scale_min</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>scale_max</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>label_fmt</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='string'>'%.1f'</span><span class='special'>,</span> <span class='arg_name'>bounds_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>bounds_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>HeatmapFlags</span> = <span class='symbol'>HeatmapFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a 2D heatmap chart. <code>values</code> is expected to have shape (rows, cols). Leave <code>scale_min</code> and <code>scale_max</code> both at 0 for automatic color scaling, or set them to a predefined range. <code>label_fmt</code> can be set to <code>None</code> for no labels.</p>
+<p>Plots a 2D heatmap chart. <code>values</code> is expected to have
+shape (rows, cols). Leave <code>scale_min</code> and
+<code>scale_max</code> both at 0 for automatic color scaling, or set
+them to a predefined range. <code>label_fmt</code> can be set to
+<code>None</code> for no labels.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_digital</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>DigitalFlags</span> = <span class='symbol'>DigitalFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.</p>
+<p>Plots digital data. Digital plots do not respond to y drag or zoom,
+and are always referenced to the bottom of the plot.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_image</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>user_texture_id</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>bounds_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>bounds_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span><span class='special'>,</span><span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span><span class='special'>,</span><span class='symbol'>1</span>)<span class='special'>,</span> <span class='arg_name'>tint_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span><span class='special'>,</span><span class='symbol'>1</span><span class='special'>,</span><span class='symbol'>1</span><span class='special'>,</span><span class='symbol'>1</span>)<span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ImageFlag</span> = <span class='symbol'>ImageFlag</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots an axis-aligned image. <code>bounds_min</code>/<code>bounds_max</code> are in plot coordinates (y-up) and <code>uv0</code>/<code>uv1</code> are in texture coordinates (y-down).</p>
+<p>Plots an axis-aligned image.
+<code>bounds_min</code>/<code>bounds_max</code> are in plot coordinates
+(y-up) and <code>uv0</code>/<code>uv1</code> are in texture coordinates
+(y-down).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_text</span>(<span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>x</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>pix_offset</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span><span class='special'>,</span><span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>TextFlag</span> = <span class='symbol'>TextFlag</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with <code>implot.push_style_color(Col.INLAY_TEXT, ...)</code>.</p>
+<p>Plots a centered text label at point x,y with an optional pixel
+offset. Text color can be changed with
+<code>implot.push_style_color(Col.INLAY_TEXT, ...)</code>.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_dummy</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>DummyFlag</span> = <span class='symbol'>DummyFlag</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Plots a dummy item (i.e. adds a legend entry colored by <code>Col.LINE</code>).</p>
+<p>Plots a dummy item (i.e. adds a legend entry colored by
+<code>Col.LINE</code>).</p>
 </div>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_histogram</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>bins</span><span class='special'>:</span> <span class='symbol'>int</span> | <span class='symbol'>Bin</span> = <span class='symbol'>Bin</span>.<span class='symbol'>STURGES</span><span class='special'>,</span> <span class='arg_name'>bar_scale</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>range</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>HistogramFlags</span> = <span class='symbol'>HistogramFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>float</span></code>
 </div>
-<p>Plots a horizontal histogram. <code>bins</code> can be a positive integer or a method specified with the <code>implot.Bin</code> enum. If <code>range</code> is left unspecified, the min/max of <code>values</code> will be used as the range.  Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.</p>
+<p>Plots a horizontal histogram. <code>bins</code> can be a positive
+integer or a method specified with the <code>implot.Bin</code> enum. If
+<code>range</code> is left unspecified, the min/max of
+<code>values</code> will be used as the range. Otherwise, outlier values
+outside of the range are not binned. The largest bin count or density is
+returned.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_histogram2d</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>xs</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>ys</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float64'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>order</span>=<span class='string'>'C'</span><span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>x_bins</span><span class='special'>:</span> <span class='symbol'>int</span> | <span class='symbol'>Bin</span> = <span class='symbol'>Bin</span>.<span class='symbol'>STURGES</span><span class='special'>,</span> <span class='arg_name'>y_bins</span><span class='special'>:</span> <span class='symbol'>int</span> | <span class='symbol'>Bin</span> = <span class='symbol'>Bin</span>.<span class='symbol'>STURGES</span><span class='special'>,</span> <span class='arg_name'>range</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>]</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>HistogramFlags</span> = <span class='symbol'>HistogramFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>float</span></code>
 </div>
-<p>Plots two dimensional, bivariate histogram as a heatmap. <code>x_bins</code> and <code>y_bins</code> can be a positive integer or a method specified with the <code>implot.Bin</code> enum. If <code>range</code> is left unspecified, the min/max of <code>xs</code> an <code>ys</code> will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.</p>
+<p>Plots two dimensional, bivariate histogram as a heatmap.
+<code>x_bins</code> and <code>y_bins</code> can be a positive integer or
+a method specified with the <code>implot.Bin</code> enum. If
+<code>range</code> is left unspecified, the min/max of <code>xs</code>
+an <code>ys</code> will be used as the ranges. Otherwise, outlier values
+outside of range are not binned. The largest bin count or density is
+returned.</p>
 <p>The <code>range</code> parameter in <code>plot_histogram2d</code> is
 typed as a pair of float 2-tuples. The first element is the range
 <code>(min,max)</code> for <code>xs</code>, the second for
@@ -551,7 +625,9 @@ typed as a pair of float 2-tuples. The first element is the range
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>annotation</span>(<span class='arg_name'>x</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>pix_offset</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>clamp</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>round</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.</p>
+<p>Shows an annotation callout at a chosen point. Clamping keeps
+annotations in the plot area. Annotations are always rendered on
+top.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>annotation</span>(<span class='arg_name'>x</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>pix_offset</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>clamp</span><span class='special'>:</span> <span class='symbol'>bool</span><span class='special'>,</span> <span class='arg_name'>text</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -583,14 +659,16 @@ typed as a pair of float 2-tuples. The first element is the range
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pixels_to_plot</span>(<span class='arg_name'>pix</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>x_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span><span class='special'>,</span> <span class='arg_name'>y_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
-<p>Convert pixels to a position in the current plot's coordinate system. Passing <code>implot.AUTO</code> uses the current axes.</p>
+<p>Convert pixels to a position in the current plot's coordinate system.
+Passing <code>implot.AUTO</code> uses the current axes.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pixels_to_plot</span>(<span class='arg_name'>x</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>x_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span><span class='special'>,</span> <span class='arg_name'>y_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_to_pixels</span>(<span class='arg_name'>plt</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>x_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span><span class='special'>,</span> <span class='arg_name'>y_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
-<p>Convert a position in the current plot's coordinate system to pixels. Passing <code>implot.AUTO</code> uses the current axes.</p>
+<p>Convert a position in the current plot's coordinate system to pixels.
+Passing <code>implot.AUTO</code> uses the current axes.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>plot_to_pixels</span>(<span class='arg_name'>x</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>y</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>x_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span><span class='special'>,</span> <span class='arg_name'>y_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
@@ -605,23 +683,28 @@ typed as a pair of float 2-tuples. The first element is the range
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_plot_mouse_pos</span>(<span class='arg_name'>x_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span><span class='special'>,</span> <span class='arg_name'>y_axis</span><span class='special'>:</span> <span class='symbol'>Axis</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
-<p>Returns the mouse position in x,y coordinates of the current plot. Passing <code>implot.AUTO</code> uses the current axes.</p>
+<p>Returns the mouse position in x,y coordinates of the current plot.
+Passing <code>implot.AUTO</code> uses the current axes.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_plot_hovered</span>() -> <span class='symbol'>bool</span></code>
 </div>
-<p>Returns <code>True</code> if the plot area in the current plot is hovered.</p>
+<p>Returns <code>True</code> if the plot area in the current plot is
+hovered.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_axis_hovered</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span>) -> <span class='symbol'>bool</span></code>
 </div>
-<p>Returns <code>True</code> if the axis label area in the current plot is hovered.</p>
+<p>Returns <code>True</code> if the axis label area in the current plot
+is hovered.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_subplots_hovered</span>() -> <span class='symbol'>bool</span></code>
 </div>
-<p>Returns <code>True</code> if the bounding frame of a subplot is hovered.</p>
+<p>Returns <code>True</code> if the bounding frame of a subplot is
+hovered.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_plot_selected</span>() -> <span class='symbol'>bool</span></code>
 </div>
-<p>Returns <code>True</code> if the current plot is being box selected.</p>
+<p>Returns <code>True</code> if the current plot is being box
+selected.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>cancel_plot_selection</span>() -> <span class='keyword'>None</span></code>
 </div>
@@ -629,19 +712,25 @@ typed as a pair of float 2-tuples. The first element is the range
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>hide_next_item</span>(<span class='arg_name'>hidden</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>True</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>ONCE</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Hides or shows the next plot item (i.e. as if it were toggled from the legend).<br>Use <code>Cond.ALWAYS</code> if you need to forcefully set this every frame.</p>
+<p>Hides or shows the next plot item (i.e. as if it were toggled from
+the legend).</p>
+<p>Use <code>Cond.ALWAYS</code> if you need to forcefully set this every
+frame.</p>
 </div>
 <p>Use the following around calls to <code>begin_plot()</code>/<code>end_plot()</code> to align l/r/t/b padding. Consider using <code>begin_subplots()</code>/<code>end_subplots()</code> first. They are more feature rich and accomplish the same behaviour by default. The functions below offer lower level control of plot alignment.</p>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_aligned_plots</span>(<span class='arg_name'>group_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>vertical</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>True</span>) -> <span class='symbol'>bool</span></code>
 </div>
-<p>Align axis padding over multiple plots in a single row or column. <code>group_id</code> must
-be unique. If this function returns <code>True</code>, <code>implot.end_aligned_plots()</code> must be called.</p>
+<p>Align axis padding over multiple plots in a single row or column.
+<code>group_id</code> must be unique. If this function returns
+<code>True</code>, <code>implot.end_aligned_plots()</code> must be
+called.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_aligned_plots</span>() -> <span class='keyword'>None</span></code>
 </div>
-<p>Only call <code>implot.end_aligned_plots()</code> if <code>implot.begin_aligned_plots()</code> returns <code>True</code>!</p>
+<p>Only call <code>implot.end_aligned_plots()</code> if
+<code>implot.begin_aligned_plots()</code> returns <code>True</code>!</p>
 </div>
 <h3 id="legend-utils">Legend Utils</h3>
 <div class="funclist">
@@ -663,50 +752,61 @@ be unique. If this function returns <code>True</code>, <code>implot.end_aligned_
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_target_plot</span>() -> <span class='symbol'>bool</span></code>
 </div>
-<p>Turns the current plot's plotting area into a drag and drop target. Don't forget to call <code>implot.end_drag_drop_target()</code>!</p>
+<p>Turns the current plot's plotting area into a drag and drop target.
+Don't forget to call <code>implot.end_drag_drop_target()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_target_axis</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span>) -> <span class='symbol'>bool</span></code>
 </div>
-<p>Turns the current plot's X-axis into a drag and drop target. Don't forget to call <code>implot.end_drag_drop_target()</code>!</p>
+<p>Turns the current plot's X-axis into a drag and drop target. Don't
+forget to call <code>implot.end_drag_drop_target()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_target_legend</span>() -> <span class='symbol'>bool</span></code>
 </div>
-<p>Turns the current plot's legend into a drag and drop target. Don't forget to call <code>implot.end_drag_drop_target()</code>!</p>
+<p>Turns the current plot's legend into a drag and drop target. Don't
+forget to call <code>implot.end_drag_drop_target()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_drag_drop_target</span>() -> <span class='keyword'>None</span></code>
 </div>
-<p>Ends a drag and drop target (currently just an alias for <code>imgui.end_drag_drop_target()</code>).</p>
+<p>Ends a drag and drop target (currently just an alias for
+<code>imgui.end_drag_drop_target()</code>).</p>
 </div>
 <p>NB: By default, plot and axes drag and drop <em>sources</em> require holding the Ctrl modifier to initiate the drag. You can change the modifier if desired. If <code>imgui.Key.MOD_NONE</code> is provided, the axes will be locked from panning.</p>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_source_plot</span>(<span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span> = <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
 </div>
-<p>Turns the current plot's plotting area into a drag and drop source. You must hold Ctrl. Don't forget to call <code>implot.end_drag_drop_source()</code>!</p>
+<p>Turns the current plot's plotting area into a drag and drop source.
+You must hold Ctrl. Don't forget to call
+<code>implot.end_drag_drop_source()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_source_axis</span>(<span class='arg_name'>axis</span><span class='special'>:</span> <span class='symbol'>Axis</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span> = <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
 </div>
-<p>Turns the current plot's X-axis into a drag and drop source. You must hold Ctrl. Don't forget to call <code>implot.end_drag_drop_source()</code>!</p>
+<p>Turns the current plot's X-axis into a drag and drop source. You must
+hold Ctrl. Don't forget to call
+<code>implot.end_drag_drop_source()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_drag_drop_source_item</span>(<span class='arg_name'>label_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span> = <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
 </div>
-<p>Turns an item in the current plot's legend into drag and drop source. Don't forget to call <code>implot.end_drag_drop_source()</code>!</p>
+<p>Turns an item in the current plot's legend into drag and drop source.
+Don't forget to call <code>implot.end_drag_drop_source()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_drag_drop_source</span>() -> <span class='keyword'>None</span></code>
 </div>
-<p>Ends a drag and drop source (currently just an alias for <code>imgui.end_drag_drop_source()</code>).</p>
+<p>Ends a drag and drop source (currently just an alias for
+<code>imgui.end_drag_drop_source()</code>).</p>
 </div>
 <h3 id="styling">Styling</h3>
 <p>Styling colors in ImPlot works similarly to styling colors in ImGui, but with one important difference. Like ImGui, all style colors are stored in an indexable array in ImPlotStyle. You can permanently modify these values through GetStyle().Colors, or temporarily modify them with Push/Pop functions below. However, by default all style colors in ImPlot default to a special color IMPLOT_AUTO_COL. The behavior of this color depends upon the style color to which it as applied:</p>
 <ol type="1">
-<li><p>For style colors associated with plot items (e.g. <code>Col.LINE</code>), <code>implot.AUTO_COL</code> tells ImPlot to color the item with the next unused color in the current colormap. Thus, every item will have a different color up to the number of colors in the colormap, at which point the colormap will roll over. For most use cases, you should not need to set these style colors to anything but <code>implot.AUTO_COL</code>; you are probably better off changing the current colormap. However, if you need to explicitly color a particular item you may either Push/Pop the style color around the item in question, or use the <code>set_next_*_style()</code> API below. If you permanently set one of these style colors to a specific color, or forget to call Pop, then all subsequent items will be styled with the color you set.</p></li>
-<li><p>For style colors associated with plot styling (e.g. <code>Col.PLOT_BG</code>), <code>implot.AUTO_COL</code> tells ImPlot to set that color from color data in your <code>imgui.Style</code>. The <code>imgui.Col</code> that these style colors default to are detailed above, and in general have been mapped to produce plots visually consistent with your current ImGui style. Of course, you are free to manually set these colors to whatever you like, and further can Push/Pop them around individual plots for plot-specific styling (e.g. coloring axes).</p></li>
+<li><p>For style colors associated with plot items (e.g. <code>Col.LINE</code>), <code>implot.AUTO_COL</code> tells ImPlot to color the item with the next unused color in the current colormap. Thus, every item will have a different color up to the number of colors in the colormap, at which point the colormap will roll over. For most use cases, you should not need to set these style colors to anything but <code>implot.AUTO_COL</code>; you are probably better off changing the current colormap. However, if you need to explicitly color a particular item you may either Push/Pop the style color around the item in question, or use the <code>set_next_*_style()</code> API below. If you permanently set one of these style colors to a specific color, or forget to call Pop, then all subsequent items will be styled with the color you set.</p></li>
+<li><p>For style colors associated with plot styling (e.g. <code>Col.PLOT_BG</code>), <code>implot.AUTO_COL</code> tells ImPlot to set that color from color data in your <code>imgui.Style</code>. The <code>imgui.Col</code> that these style colors default to are detailed above, and in general have been mapped to produce plots visually consistent with your current ImGui style. Of course, you are free to manually set these colors to whatever you like, and further can Push/Pop them around individual plots for plot-specific styling (e.g. coloring axes).</p></li>
 </ol>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_style</span>() -> <span class='symbol'>implot</span>.<span class='symbol'>Style</span></code>
 </div>
-<p>Provides access to plot style structure for permanant modifications to colors, sizes, etc.</p>
+<p>Provides access to plot style structure for permanant modifications
+to colors, sizes, etc.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>style_colors_auto</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -729,32 +829,38 @@ be unique. If this function returns <code>True</code>, <code>implot.end_aligned_
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_style_color</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>Col</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Temporarily modify a style color. Don't forget to call <code>implot.pop_style_color()</code>!</p>
+<p>Temporarily modify a style color. Don't forget to call
+<code>implot.pop_style_color()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_style_color</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>Col</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_style_color</span>(<span class='arg_name'>count</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Undo temporary style color modification(s). Undo multiple pushes at once by increasing count.</p>
+<p>Undo temporary style color modification(s). Undo multiple pushes at
+once by increasing count.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_style_var</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Temporarily modify a style variable of float type. Don't forget to call <code>implot.pop_style_var()</code>!</p>
+<p>Temporarily modify a style variable of float type. Don't forget to
+call <code>implot.pop_style_var()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_style_var</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Temporarily modify a style variable of int type. Don't forget to call <code>implot.pop_style_var()</code>!</p>
+<p>Temporarily modify a style variable of int type. Don't forget to call
+<code>implot.pop_style_var()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_style_var</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>StyleVar</span><span class='special'>,</span> <span class='arg_name'>val</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Temporarily modify a style variable of float 2-tuple. Don't forget to call <code>implot.pop_style_var()</code>!</p>
+<p>Temporarily modify a style variable of float 2-tuple. Don't forget to
+call <code>implot.pop_style_var()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_style_var</span>(<span class='arg_name'>count</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count.</p>
+<p>Undo temporary style variable modification(s). Undo multiple pushes
+at once by increasing count.</p>
 </div>
-<p>The following can be used to modify the style of the next plot item ONLY. They do NOT require calls to <code>pop_style_*</code>. Leave style attributes you don’t want modified to <code>implot.AUTO</code> or <code>implot.AUTO_COL</code>. Automatic styles will be deduced from the current values in your <code>implot.Style</code> or from Colormap data.</p>
+<p>The following can be used to modify the style of the next plot item ONLY. They do NOT require calls to <code>pop_style_*</code>. Leave style attributes you don't want modified to <code>implot.AUTO</code> or <code>implot.AUTO_COL</code>. Automatic styles will be deduced from the current values in your <code>implot.Style</code> or from Colormap data.</p>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_line_style</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = <span class='symbol'>AUTO_COL</span><span class='special'>,</span> <span class='arg_name'>weight</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>AUTO</span>) -> <span class='keyword'>None</span></code>
@@ -797,31 +903,44 @@ be unique. If this function returns <code>True</code>, <code>implot.end_aligned_
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_colormap_count</span>() -> <span class='symbol'>int</span></code>
 </div>
-<p>Returns the number of available colormaps (i.e. the built-in + user-added count).</p>
+<p>Returns the number of available colormaps (i.e. the built-in +
+user-added count).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_colormap_name</span>(<span class='arg_name'>cmap</span><span class='special'>:</span> <span class='symbol'>Colormap</span>) -> <span class='symbol'>str</span></code>
 </div>
-<p>Returns a string name for a colormap given an index. Returns <code>None</code> if index is invalid.</p>
+<p>Returns a string name for a colormap given an index. Returns
+<code>None</code> if index is invalid.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_colormap_index</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='symbol'>int</span></code>
 </div>
-<p>Returns an index number for a colormap given a valid string name. Returns -1 if name is invalid.</p>
+<p>Returns an index number for a colormap given a valid string name.
+Returns -1 if name is invalid.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_colormap</span>(<span class='arg_name'>cmap</span><span class='special'>:</span> <span class='symbol'>Colormap</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Temporarily switch to one of the built-in (i.e. ImPlotColormap_XXX) or user-added colormaps (i.e. a return value of <code>implot.add_colormap()</code>). Don't forget to call <code>implot.pop_colormap()</code>!</p>
+<p>Temporarily switch to one of the built-in (i.e. ImPlotColormap_XXX)
+or user-added colormaps (i.e. a return value of
+<code>implot.add_colormap()</code>). Don't forget to call
+<code>implot.pop_colormap()</code>!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_colormap</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Push a colormap by string name. Use built-in names such as "Default", "Deep", "Jet", etc. or a string you provided to <code>implot.add_colormap(). Don't forget to call </code>implot.pop_colormap()`!</p>
+<p>Push a colormap by string name. Use built-in names such as "Default",
+"Deep", "Jet", etc. or a string you provided to
+<code>implot.add_colormap(). Don't forget to call</code>implot.pop_colormap()`!</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_colormap</span>(<span class='arg_name'>count</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Undo temporary colormap modification(s). Undo multiple pushes at once by increasing count.</p>
+<p>Undo temporary colormap modification(s). Undo multiple pushes at once
+by increasing count.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>next_colormap_color</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
-<p>Returns the next color from the current colormap and advances the colormap for the current plot.<br>Can also be used with no return value to skip colors if desired. You need to call this between <code>implot.begin_plot()</code>/<code>implot.end_plot()</code>!</p>
+<p>Returns the next color from the current colormap and advances the
+colormap for the current plot.</p>
+<p>Can also be used with no return value to skip colors if desired. You
+need to call this between
+<code>implot.begin_plot()</code>/<code>implot.end_plot()</code>!</p>
 </div>
 <p>Colormap utils. If cmap = <code>implot.AUTO_COL</code> (default), the current colormap is assumed. Pass an explicit colormap index (built-in or user-added) to specify otherwise.</p>
 <div class="funclist">
@@ -832,7 +951,8 @@ be unique. If this function returns <code>True</code>, <code>implot.end_aligned_
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_colormap_color</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>cmap</span><span class='special'>:</span> <span class='symbol'>Colormap</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
-<p>Returns a color from a colormap given an index >= 0 (modulo will be performed).</p>
+<p>Returns a color from a colormap given an index &gt;= 0 (modulo will
+be performed).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>sample_colormap</span>(<span class='arg_name'>t</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>cmap</span><span class='special'>:</span> <span class='symbol'>Colormap</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
@@ -840,7 +960,10 @@ be unique. If this function returns <code>True</code>, <code>implot.end_aligned_
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>colormap_scale</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>scale_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>scale_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span><span class='special'>,</span><span class='symbol'>0</span>)<span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat</span><span class='special'>:</span> <span class='symbol'>str</span> = <span class='string'>'%g'</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>ColormapScaleFlags</span> = <span class='symbol'>ColormapScaleFlags</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>cmap</span><span class='special'>:</span> <span class='symbol'>Colormap</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. "##NoLabel"). If <code>scale_min > scale_max</code>, the scale to color mapping will be reversed.</p>
+<p>Shows a vertical color scale with linear spaced ticks using the
+specified color map. Use double hashes to hide label (e.g. "##NoLabel").
+If <code>scale_min &gt; scale_max</code>, the scale to color mapping
+will be reversed.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>colormap_button</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span><span class='special'>,</span><span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>cmap</span><span class='special'>:</span> <span class='symbol'>Colormap</span> | <span class='symbol'>int</span> = <span class='symbol'>AUTO</span>) -> <span class='symbol'>bool</span></code>
 </div>
@@ -848,54 +971,67 @@ be unique. If this function returns <code>True</code>, <code>implot.end_aligned_
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>bust_color_cache</span>(<span class='arg_name'>plot_title_id</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>When items in a plot sample their color from a colormap, the color is cached and does not change
-unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,
-item colors will NOT update. If you need item colors to resample the new colormap, then use this
-function to bust the cached colors. If #plot_title_id is nullptr, then every item in EVERY existing plot
-will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the
-latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever
-need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).</p>
+<p>When items in a plot sample their color from a colormap, the color is
+cached and does not change unless explicitly overriden. Therefore, if
+you change the colormap after the item has already been plotted, item
+colors will NOT update. If you need item colors to resample the new
+colormap, then use this function to bust the cached colors. If
+#plot_title_id is nullptr, then every item in EVERY existing plot will
+be cache busted. Otherwise only the plot specified by #plot_title_id
+will be busted. For the latter, this function must be called in the same
+ImGui ID scope that the plot is in. You should rarely if ever need this
+function, but it is available for applications that require runtime
+colormap swaps (e.g. Heatmaps demo).</p>
 </div>
 <h3 id="input-mapping">Input Mapping</h3>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_input_map</span>() -> <span class='symbol'>implot</span>.<span class='symbol'>InputMap</span></code>
 </div>
-<p>Provides access to input mapping structure for permanant modifications to controls for pan, select, etc.</p>
+<p>Provides access to input mapping structure for permanant
+modifications to controls for pan, select, etc.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>map_input_default</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>InputMap</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.</p>
+<p>Default input mapping: pan = LMB drag, box select = RMB drag, fit =
+LMB double click, context menu = RMB click, zoom = scroll.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>map_input_reverse</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>InputMap</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.</p>
+<p>Reverse input mapping: pan = RMB drag, box select = LMB drag, fit =
+LMB double click, context menu = RMB click, zoom = scroll.</p>
 </div>
 <h3 id="miscellaneous">Miscellaneous</h3>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>item_icon</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Render icons similar to those that appear in legends (nifty for data lists).</p>
+<p>Render icons similar to those that appear in legends (nifty for data
+lists).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>item_icon</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>colormap_icon</span>(<span class='arg_name'>cmap</span><span class='special'>:</span> <span class='symbol'>Colormap</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Render icons similar to those that appear in legends (nifty for data lists).</p>
+<p>Render icons similar to those that appear in legends (nifty for data
+lists).</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_plot_draw_list</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>DrawList</span></code>
 </div>
-<p>Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot.</p>
+<p>Get the plot draw list for custom rendering to the current plot area.
+Call between Begin/EndPlot.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>push_plot_clip_rect</span>(<span class='arg_name'>expand</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Push clip rect for rendering to current plot area. The rect can be expanded or contracted by #expand pixels. Call between <code>implot.begin_plot()</code>/<code>implot.end_plot()</code>.</p>
+<p>Push clip rect for rendering to current plot area. The rect can be
+expanded or contracted by #expand pixels. Call between
+<code>implot.begin_plot()</code>/<code>implot.end_plot()</code>.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_plot_clip_rect</span>() -> <span class='keyword'>None</span></code>
 </div>
-<p>Pop plot clip rect. Call between <code>implot.begin_plot()</code>/<code>implot.end_plot()</code>.</p>
+<p>Pop plot clip rect. Call between
+<code>implot.begin_plot()</code>/<code>implot.end_plot()</code>.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>show_style_selector</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='symbol'>bool</span></code>
 </div>
