@@ -4183,6 +4183,11 @@ def table_get_column_name(column_n: int = -1) -> str:
     ...
 
 
+def table_get_hovered_column() -> int:
+    """Return hovered column. return -1 when table is not hovered. return columns_count if the unused space at the right of visible columns is hovered. Can also use (`table_get_column_flags()` & `TableColumnFlags.IS_HOVERED`) instead."""
+    ...
+
+
 def table_get_row_index() -> int:
     """Return current row index."""
     ...

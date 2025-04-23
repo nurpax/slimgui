@@ -1070,6 +1070,7 @@ NB_MODULE(slimgui_ext, top) {
     m.def("table_get_column_name", [](int column_n) { return nb::str(ImGui::TableGetColumnName(column_n)); }, "column_n"_a = -1);
     m.def("table_get_column_flags", [](int column_n) { return (ImGuiTableColumnFlags_)ImGui::TableGetColumnFlags(column_n); }, "column_n"_a = -1);
     m.def("table_set_column_enabled", &ImGui::TableSetColumnEnabled, "column_n"_a, "v"_a);
+    m.def("table_get_hovered_column", &ImGui::TableGetHoveredColumn);
     m.def("table_set_bg_color", [](ImGuiTableBgTarget_ target, const ImVec4& col, int column_n) {
         ImGui::TableSetBgColor(target, ImGui::ColorConvertFloat4ToU32(col), column_n);
     }, "target"_a, "color"_a, "column_n"_a = -1);
