@@ -2877,10 +2877,25 @@ def begin_popup(str_id: str, flags: WindowFlags = WindowFlags.NONE) -> bool:
     ...
 
 
+def begin_popup_context_item(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> bool:
+    """Open+begin popup when clicked on last item. Use str_id==NULL to associate the popup to previous item. If you want to use that on a non-interactive item such as `text()` you need to pass in an explicit ID here. read comments in .cpp!"""
+    ...
+
+
+def begin_popup_context_void(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> bool:
+    """Open+begin popup when clicked in void (where there are no windows)."""
+    ...
+
+
 def begin_popup_context_window(str_id: str | None = None, flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT) -> bool:
     """Open+begin popup when clicked on current window."""
     ...
 
+
+def begin_popup_modal(str_id: str, closable: bool = False, flags: WindowFlags = WindowFlags.NONE) -> tuple[bool, bool]:
+    """
+    Returns a tuple of bools.  If the first returned bool is `True`, the modal is open and you can start outputting to it.
+    """
 
 def begin_tab_bar(str_id: str, flags: TabBarFlags = TabBarFlags.NONE) -> bool:
     """Create and append into a TabBar"""
@@ -3117,6 +3132,22 @@ def end_tooltip() -> None:
     ...
 
 
+@overload
+def get_color_u32(idx: Col, alpha_mul: float = 1.0) -> int:
+    """Retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList"""
+    ...
+
+
+@overload
+def get_color_u32(col: tuple[float, float, float, float]) -> int:
+    ...
+
+
+@overload
+def get_color_u32(col: int, alpha_mul: float = 1.0) -> int:
+    ...
+
+
 def get_column_index() -> int:
     """Get current column index"""
     ...
@@ -3197,6 +3228,17 @@ def get_frame_height() -> float:
 
 def get_frame_height_with_spacing() -> float:
     """~ FontSize + style.FramePadding.y * 2 + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of framed widgets)"""
+    ...
+
+
+@overload
+def get_id(str_id: str) -> None:
+    """Calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself"""
+    ...
+
+
+@overload
+def get_id(int_id: int) -> None:
     ...
 
 

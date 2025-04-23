@@ -54,9 +54,13 @@ def main():
             line = line.rstrip()
 
             if (m := re.match(r"^def (\w+)\(", line)) is not None:
+                has_doc_string = not line.endswith(': ...')
                 line = re.sub(r': ...$', ':', line)
-
                 out_lines.append(line)
+                if has_doc_string:
+                    # The pyi def already has a docstring so don't try to insert
+                    # another one.
+                    continue
                 func_name = m.group(1)
                 func_overload_count[func_name] += 1
                 if func_overload_count[func_name] <= 1 and (comment := syms.get(func_name)) is not None:

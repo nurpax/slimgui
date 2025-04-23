@@ -521,7 +521,7 @@ NB_MODULE(slimgui_ext, top) {
     m.def("begin", [](const char* name, bool closable, ImGuiWindowFlags_ flags) {
         bool open = true;
         bool visible = ImGui::Begin(name, closable ? &open : NULL, flags);
-        return std::pair<bool, bool>(visible, open);
+        return std::pair(visible, open);
     }, "name"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
     m.def("end", &ImGui::End);
 
@@ -622,18 +622,16 @@ NB_MODULE(slimgui_ext, top) {
     // IMGUI_API ImFont*       GetFont();                                                      // get current font
     m.def("get_font_size", &ImGui::GetFontSize);
     m.def("get_font_tex_uv_white_pixel", &ImGui::GetFontTexUvWhitePixel);
-    // IMGUI_API ImU32         GetColorU32(ImGuiCol idx, float alpha_mul = 1.0f);              // retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList
-    // IMGUI_API ImU32         GetColorU32(const ImVec4& col);                                 // retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList
-    // IMGUI_API ImU32         GetColorU32(ImU32 col, float alpha_mul = 1.0f);                 // retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList
+    m.def("get_color_u32", [](ImGuiCol_ idx, float alpha_mul) { return ImGui::GetColorU32(idx, alpha_mul);}, "idx"_a, "alpha_mul"_a = 1.0f);
+    m.def("get_color_u32", [](ImVec4 col)                     { return ImGui::GetColorU32(col);}, "col"_a);
+    m.def("get_color_u32", [](ImU32 col, float alpha_mul)     { return ImGui::GetColorU32(col, alpha_mul);}, "col"_a, "alpha_mul"_a = 1.0f);
     m.def("get_style_color_vec4", [](ImGuiCol_ idx) { return ImGui::GetStyleColorVec4(idx);}, "col"_a);
-
 
     // ID stack/scopes
     m.def("push_id", [](const char* str_id) {  ImGui::PushID(str_id); }, "str_id"_a);
     m.def("push_id", [](int int_id) {  ImGui::PushID(int_id); }, "int_id"_a);
-    // TODO str_id_begin/end?
-    // TODO ptr_id
-    // GetID
+    m.def("get_id", [](const char* str_id) {  ImGui::GetID(str_id); }, "str_id"_a);
+    m.def("get_id", [](int int_id)         {  ImGui::GetID(int_id); }, "int_id"_a);
     m.def("pop_id", &ImGui::PopID);
 
     // Widgets: Text
@@ -748,7 +746,12 @@ NB_MODULE(slimgui_ext, top) {
     m.def("begin_popup", [](const char *str_id, ImGuiWindowFlags_ flags) {
         return ImGui::BeginPopup(str_id, flags);
     }, "str_id"_a, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
-    // IMGUI_API bool          BeginPopupModal(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0); // return true if the modal is open, and you can start outputting to it.
+    m.def("begin_popup_modal", [](const char *str_id, bool closable, ImGuiWindowFlags_ flags) {
+        bool open = true;
+        bool ret = ImGui::BeginPopupModal(str_id, closable ? &open : nullptr, flags);
+        return std::pair(ret, open);        
+    }, "str_id"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None,
+    "Returns a tuple of bools.  If the first returned bool is `True`, the modal is open and you can start outputting to it.");
     m.def("end_popup", &ImGui::EndPopup);
     m.def("open_popup", [](const char* str_id, ImGuiPopupFlags_ flags) {
         ImGui::OpenPopup(str_id, flags);
@@ -764,11 +767,15 @@ NB_MODULE(slimgui_ext, top) {
     // //  - They are convenient to easily create context menus, hence the name.
     // //  - IMPORTANT: Notice that BeginPopupContextXXX takes ImGuiPopupFlags just like OpenPopup() and unlike BeginPopup(). For full consistency, we may add ImGuiWindowFlags to the BeginPopupContextXXX functions in the future.
     // //  - IMPORTANT: Notice that we exceptionally default their flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter, so if you add other flags remember to re-add the ImGuiPopupFlags_MouseButtonRight.
-    // IMGUI_API bool          BeginPopupContextItem(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);  // open+begin popup when clicked on last item. Use str_id==NULL to associate the popup to previous item. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!
-    m.def("begin_popup_context_window", [](std::optional<std::string> str_id, ImGuiPopupFlags_ flags) {
-        return ImGui::BeginPopupContextWindow(str_id ? str_id.value().c_str() : nullptr, flags);
+    m.def("begin_popup_context_item", [](std::optional<const char*> str_id, ImGuiPopupFlags_ flags) {
+        return ImGui::BeginPopupContextItem(str_id ? str_id.value() : nullptr, flags);
     }, "str_id"_a = nb::none(), "flags"_a.sig("PopupFlags.MOUSE_BUTTON_RIGHT") = ImGuiPopupFlags_MouseButtonRight);
-    // IMGUI_API bool          BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);  // open+begin popup when clicked in void (where there are no windows).
+    m.def("begin_popup_context_window", [](std::optional<const char*> str_id, ImGuiPopupFlags_ flags) {
+        return ImGui::BeginPopupContextWindow(str_id ? str_id.value() : nullptr, flags);
+    }, "str_id"_a = nb::none(), "flags"_a.sig("PopupFlags.MOUSE_BUTTON_RIGHT") = ImGuiPopupFlags_MouseButtonRight);
+    m.def("begin_popup_context_void", [](std::optional<const char*> str_id, ImGuiPopupFlags_ flags) {
+        return ImGui::BeginPopupContextVoid(str_id ? str_id.value() : nullptr, flags);
+    }, "str_id"_a = nb::none(), "flags"_a.sig("PopupFlags.MOUSE_BUTTON_RIGHT") = ImGuiPopupFlags_MouseButtonRight);
     // // Popups: query functions
     // //  - IsPopupOpen(): return true if the popup is open at the current BeginPopup() level of the popup stack.
     // //  - IsPopupOpen() with ImGuiPopupFlags_AnyPopupId: return true if any popup is open at the current BeginPopup() level of the popup stack.
@@ -1089,7 +1096,7 @@ NB_MODULE(slimgui_ext, top) {
     m.def("begin_tab_item", [](const char* label, bool closable, ImGuiTabItemFlags_ flags) {
         bool open = true;
         bool selected = ImGui::BeginTabItem(label, closable ? &open : NULL, flags);
-        return std::pair<bool, bool>(selected, open);
+        return std::pair(selected, open);
     }, "str_id"_a, "closable"_a = false, "flags"_a.sig("TabItemFlags.NONE") = ImGuiTabItemFlags_None);
     m.def("end_tab_item", &ImGui::EndTabItem);
 
