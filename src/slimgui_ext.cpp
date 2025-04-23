@@ -1161,7 +1161,7 @@ NB_MODULE(slimgui_ext, top) {
     m.def("is_any_item_hovered", &ImGui::IsAnyItemHovered);
     m.def("is_any_item_active", &ImGui::IsAnyItemActive);
     m.def("is_any_item_focused", &ImGui::IsAnyItemFocused);
-    // IMGUI_API ImGuiID       GetItemID();                                                        // get ID of last item (~~ often same ImGui::GetID(label) beforehand)
+    m.def("get_item_id", &ImGui::GetItemID, "Get ID of last item (often roughly the same as `get_id(label)` beforehand)");
     m.def("get_item_rect_min", &ImGui::GetItemRectMin);
     m.def("get_item_rect_max", &ImGui::GetItemRectMax);
     m.def("get_item_rect_size", &ImGui::GetItemRectSize);

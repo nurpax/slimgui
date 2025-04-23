@@ -3242,6 +3242,11 @@ def get_id(int_id: int) -> None:
     ...
 
 
+def get_item_id() -> int:
+    """
+    Get ID of last item (often roughly the same as `get_id(label)` beforehand)
+    """
+
 def get_item_rect_max() -> tuple[float, float]:
     """Get lower-right bounding rectangle of the last item (screen space)"""
     ...
