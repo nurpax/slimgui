@@ -3028,6 +3028,10 @@ def drag_float4(label: str, v: tuple[float, float, float, float], v_speed: float
     ...
 
 
+def drag_float_range2(label: str, v_current_min: float, v_current_max: float, v_speed: float = 1.0, v_min: float = 0.0, v_max: float = 0.0, format: str = '%.3f', format_max: str | None = None, flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float, float]:
+    ...
+
+
 def drag_int(label: str, v: int, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]:
     """If v_min >= v_max we have no bound"""
     ...
@@ -3042,6 +3046,10 @@ def drag_int3(label: str, v: tuple[int, int, int], v_speed: float = 1.0, v_min: 
 
 
 def drag_int4(label: str, v: tuple[int, int, int, int], v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, tuple[int, int, int, int]]:
+    ...
+
+
+def drag_int_range2(label: str, v_current_min: int, v_current_max: int, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = '%d', format_max: str | None = None, flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int, int]:
     ...
 
 

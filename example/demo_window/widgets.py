@@ -605,6 +605,8 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
             imgui.end_list_box()
         imgui.tree_pop()
 
+    _ranged_sliders()
+
 #     IMGUI_DEMO_MARKER("Widgets/Selectables");
 #     if (ImGui::TreeNode("Selectables"))
 #     {
@@ -1417,17 +1419,6 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
 #         ImGui::TreePop();
 #     }
 
-#     IMGUI_DEMO_MARKER("Widgets/Range Widgets");
-#     if (ImGui::TreeNode("Range Widgets"))
-#     {
-#         static float begin = 10, end = 90;
-#         static int begin_i = 100, end_i = 1000;
-#         ImGui::DragFloatRange2("range float", &begin, &end, 0.25f, 0.0f, 100.0f, "Min: %.1f %%", "Max: %.1f %%", ImGuiSliderFlags_AlwaysClamp);
-#         ImGui::DragIntRange2("range int", &begin_i, &end_i, 5, 0, 1000, "Min: %d units", "Max: %d units");
-#         ImGui::DragIntRange2("range int (no bounds)", &begin_i, &end_i, 5, 0, 0, "Min: %d units", "Max: %d units");
-#         ImGui::TreePop();
-#     }
-
 #     IMGUI_DEMO_MARKER("Widgets/Data Types");
 #     if (ImGui::TreeNode("Data Types"))
 #     {
@@ -2042,3 +2033,16 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
     if st.widgets_disable_all:
         imgui.end_disabled()
     # end of show_demo_window_widgets()
+
+_ranged_begin = 10
+_ranged_end = 90
+_ranged_begin_i = 100
+_ranged_end_i = 1000
+
+def _ranged_sliders():
+    global _ranged_begin, _ranged_end, _ranged_begin_i, _ranged_end_i
+    if imgui.tree_node("Range Widgets"):
+        _c, _ranged_begin, _ranged_end = imgui.drag_float_range2("range float", _ranged_begin, _ranged_end, 0.25, 0.0, 100.0, "Min: %.1f %%", "Max: %.1f %%", imgui.SliderFlags.ALWAYS_CLAMP)
+        _c, _ranged_begin_i, _ranged_end_i = imgui.drag_int_range2("range int", _ranged_begin_i, _ranged_end_i, 5, 0, 1000, "Min: %d units", "Max: %d units")
+        _c, _ranged_begin_i, _ranged_end_i = imgui.drag_int_range2("range int (no bounds)", _ranged_begin_i, _ranged_end_i, 5, 0, 0, "Min: %d units", "Max: %d units")
+        imgui.tree_pop()

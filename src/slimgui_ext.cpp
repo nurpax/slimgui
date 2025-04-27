@@ -912,6 +912,10 @@ NB_MODULE(slimgui_ext, top) {
         bool changed = ImGui::DragFloat4(label, &v.x, v_speed, v_min, v_max, format, flags);
         return std::pair(changed, v);
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_float_range2", [](const char* label, float v_current_min, float v_current_max, float v_speed, float v_min, float v_max, const char* format, std::optional<const char*> format_max, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::DragFloatRange2(label, &v_current_min, &v_current_max, v_speed, v_min, v_max, format, format_max ? format_max.value() : nullptr, flags);
+        return std::tuple(changed, v_current_min, v_current_max);
+    }, "label"_a, "v_current_min"_a, "v_current_max"_a, "v_speed"_a = 1.0f, "v_min"_a = 0.0f, "v_max"_a = 0.0f, "format"_a = "%.3f", "format_max"_a = nb::none(), "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     m.def("drag_int", [](const char* label, int v, float v_speed, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
         bool changed = ImGui::DragInt(label, &v, v_speed, v_min, v_max, format, flags);
@@ -932,6 +936,10 @@ NB_MODULE(slimgui_ext, top) {
         bool changed = ImGui::DragInt4(label, vals.data(), v_speed, v_min, v_max, format, flags);
         return std::pair(changed, array_to_tuple(vals));
     }, "label"_a, "v"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%d",  "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("drag_int_range2", [](const char* label, int v_current_min, int v_current_max, float v_speed, int v_min, int v_max, const char* format, std::optional<const char*> format_max, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::DragIntRange2(label, &v_current_min, &v_current_max, v_speed, v_min, v_max, format, format_max ? format_max.value() : nullptr, flags);
+        return std::tuple(changed, v_current_min, v_current_max);
+    }, "label"_a, "v_current_min"_a, "v_current_max"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%d", "format_max"_a = nb::none(), "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     // Widgets: Input with Keyboard
     auto input_text_handler = [](const char* label, const char* hint, std::string text, ImGuiInputTextFlags flags, bool multiline, ImVec2 size = ImVec2(0, 0)) {
