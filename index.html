@@ -829,6 +829,18 @@ current scale applied</p>
 <p>Get UV coordinate for a white pixel, useful to draw custom shapes via
 the ImDrawList API</p>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_color_u32</span>(<span class='arg_name'>idx</span><span class='special'>:</span> <span class='symbol'>Col</span><span class='special'>,</span> <span class='arg_name'>alpha_mul</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='symbol'>int</span></code>
+</div>
+<p>Retrieve given style color with style alpha applied and optional
+extra alpha multiplier, packed as a 32-bit value suitable for
+ImDrawList</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_color_u32</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='symbol'>int</span></code>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_color_u32</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>alpha_mul</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='symbol'>int</span></code>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_style_color_vec4</span>(<span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>Col</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
 <p>Retrieve style color as stored in ImGuiStyle structure. use to feed
@@ -996,6 +1008,14 @@ in pixels between 2 consecutive lines of framed widgets)</p>
   <code><span class='keyword'>def</span> <span class='func_name'>pop_id</span>() -> <span class='keyword'>None</span></code>
 </div>
 <p>Pop from the ID stack.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_id</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
+</div>
+<p>Calculate unique ID (hash of whole ID stack + given parameter). e.g.
+if you want to query into ImGuiStorage yourself</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_id</span>(<span class='arg_name'>int_id</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
 </div>
 <h3 id="widgets-text">Widgets: Text</h3>
 <h4 id="functions-15">Functions</h4>
@@ -1147,6 +1167,9 @@ returns true!</p>
   <code><span class='keyword'>def</span> <span class='func_name'>drag_float4</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>v</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>v_speed</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat</span><span class='special'>:</span> <span class='symbol'>str</span> = <span class='string'>'%.3f'</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SliderFlags</span> = <span class='symbol'>SliderFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>]</span></code>
 </div>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>drag_float_range2</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>v_current_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>v_current_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>v_speed</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat</span><span class='special'>:</span> <span class='symbol'>str</span> = <span class='string'>'%.3f'</span><span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat_max</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SliderFlags</span> = <span class='symbol'>SliderFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
+</div>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>drag_int</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>v</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>v_speed</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat</span><span class='special'>:</span> <span class='symbol'>str</span> = <span class='string'>'%d'</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SliderFlags</span> = <span class='symbol'>SliderFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span></code>
 </div>
 <p>If v_min &gt;= v_max we have no bound</p>
@@ -1158,6 +1181,9 @@ returns true!</p>
 </div>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>drag_int4</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>v</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>int</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>v_speed</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat</span><span class='special'>:</span> <span class='symbol'>str</span> = <span class='string'>'%d'</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SliderFlags</span> = <span class='symbol'>SliderFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>int</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span><span class='special'>]</span></code>
+</div>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>drag_int_range2</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>v_current_min</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>v_current_max</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>v_speed</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_min</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>v_max</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat</span><span class='special'>:</span> <span class='symbol'>str</span> = <span class='string'>'%d'</span><span class='special'>,</span> <span class='keyword'>for</span><span class='arg_name'>mat_max</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SliderFlags</span> = <span class='symbol'>SliderFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span></code>
 </div>
 </div>
 <h3 id="widgets-regular-sliders">Widgets: Regular Sliders</h3>
@@ -1494,6 +1520,12 @@ previous call to <code>set_tooltip()</code>.</p>
 <p>Return true if the popup is open, and you can start outputting to
 it.</p>
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>begin_popup_modal</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>closable</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>WindowFlags</span> = <span class='symbol'>WindowFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span><span class='special'>]</span></code>
+</div>
+<p>Returns a tuple of bools. If the first returned bool is
+<code>True</code>, the modal is open and you can start outputting to
+it.</p>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_popup</span>() -> <span class='keyword'>None</span></code>
 </div>
 <p>Only call <code>end_popup()</code> if BeginPopupXXX() returns
@@ -1535,9 +1567,21 @@ popup behaviors)</p>
 <h4 id="functions-32">Functions</h4>
 <div class="funclist">
 <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>begin_popup_context_item</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>PopupFlags</span> = <span class='symbol'>PopupFlags</span>.<span class='symbol'>MOUSE_BUTTON_RIGHT</span>) -> <span class='symbol'>bool</span></code>
+</div>
+<p>Open+begin popup when clicked on last item. Use str_id==NULL to
+associate the popup to previous item. If you want to use that on a
+non-interactive item such as <code>text()</code> you need to pass in an
+explicit ID here. read comments in .cpp!</p>
+<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>begin_popup_context_window</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>PopupFlags</span> = <span class='symbol'>PopupFlags</span>.<span class='symbol'>MOUSE_BUTTON_RIGHT</span>) -> <span class='symbol'>bool</span></code>
 </div>
 <p>Open+begin popup when clicked on current window.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>begin_popup_context_void</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>PopupFlags</span> = <span class='symbol'>PopupFlags</span>.<span class='symbol'>MOUSE_BUTTON_RIGHT</span>) -> <span class='symbol'>bool</span></code>
+</div>
+<p>Open+begin popup when clicked in void (where there are no
+windows).</p>
 </div>
 <h3 id="popups-query-functions">Popups: query functions</h3>
 <ul>
@@ -1675,6 +1719,13 @@ column.</p>
 false to hide the column. User can use the context menu to change this
 themselves (right-click in headers, or right-click in columns body with
 <code>TableFlags.CONTEXT_MENU_IN_BODY</code>)</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>table_get_hovered_column</span>() -> <span class='symbol'>int</span></code>
+</div>
+<p>Return hovered column. return -1 when table is not hovered. return
+columns_count if the unused space at the right of visible columns is
+hovered. Can also use (<code>table_get_column_flags()</code> &amp;
+<code>TableColumnFlags.IS_HOVERED</code>) instead.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_set_bg_color</span>(<span class='arg_name'>target</span><span class='special'>:</span> <span class='symbol'>TableBgTarget</span><span class='special'>,</span> <span class='arg_name'>color</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>column_n</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -1964,6 +2015,11 @@ will return true even when clicking an already selected item).</p>
   <code><span class='keyword'>def</span> <span class='func_name'>is_any_item_focused</span>() -> <span class='symbol'>bool</span></code>
 </div>
 <p>Is any item focused?</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_item_id</span>() -> <span class='symbol'>int</span></code>
+</div>
+<p>Get ID of last item (often roughly the same as
+<code>get_id(label)</code> beforehand)</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_item_rect_min</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
