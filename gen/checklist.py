@@ -24,6 +24,9 @@ _ignored_toplevel_funcs_imgui = {
     "text_disabled_v",          # varargs not relevant in Python
     "text_unformatted",         # varargs not relevant in Python
     "text_wrapped_v",           # varargs not relevant in Python
+    "tree_node_v",              # varargs not relevant in Python
+    "tree_node_ex",             # tree_node has the same functionality
+    "tree_node_ex_v",           # varargs not relevant in Python
     "label_text_v",             # varargs not relevant in Python
     "bullet_text_v",            # varargs not relevant in Python
     "is_any_mouse_down",        # will obsolete

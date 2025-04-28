@@ -606,6 +606,7 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
         imgui.tree_pop()
 
     _ranged_sliders()
+    _vsliders()
 
 #     IMGUI_DEMO_MARKER("Widgets/Selectables");
 #     if (ImGui::TreeNode("Selectables"))
@@ -2034,6 +2035,7 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
         imgui.end_disabled()
     # end of show_demo_window_widgets()
 
+
 _ranged_begin = 10
 _ranged_end = 90
 _ranged_begin_i = 100
@@ -2046,3 +2048,74 @@ def _ranged_sliders():
         _c, _ranged_begin_i, _ranged_end_i = imgui.drag_int_range2("range int", _ranged_begin_i, _ranged_end_i, 5, 0, 1000, "Min: %d units", "Max: %d units")
         _c, _ranged_begin_i, _ranged_end_i = imgui.drag_int_range2("range int (no bounds)", _ranged_begin_i, _ranged_end_i, 5, 0, 0, "Min: %d units", "Max: %d units")
         imgui.tree_pop()
+
+
+_vs_int_value = 0
+_vs_values = [0.0, 0.60, 0.35, 0.9, 0.70, 0.20, 0.0]
+_vs_values2 = [0.20, 0.80, 0.40, 0.25]
+
+def _vsliders():
+    global _vs_int_value
+
+    if not imgui.tree_node("Vertical Sliders"):
+        return
+
+    spacing = 4
+    imgui.push_style_var(imgui.StyleVar.ITEM_SPACING, (spacing, spacing))
+
+    # Integer vertical slider
+    _, _vs_int_value = imgui.vslider_int("##int", (18, 160), _vs_int_value, 0, 5)
+    imgui.same_line()
+
+    # First set of float vertical sliders
+    imgui.push_id("set1")
+    for i, value in enumerate(_vs_values):
+        if i > 0:
+            imgui.same_line()
+        imgui.push_id(i)
+        imgui.push_style_color(imgui.Col.FRAME_BG, imgui.color_convert_hsv_to_rgb((i / 7.0, 0.5, 0.5, 1)))
+        imgui.push_style_color(imgui.Col.FRAME_BG_HOVERED, imgui.color_convert_hsv_to_rgb((i / 7.0, 0.6, 0.5, 1)))
+        imgui.push_style_color(imgui.Col.FRAME_BG_ACTIVE, imgui.color_convert_hsv_to_rgb((i / 7.0, 0.7, 0.5, 1)))
+        imgui.push_style_color(imgui.Col.SLIDER_GRAB, imgui.color_convert_hsv_to_rgb((i / 7.0, 0.9, 0.9, 1)))
+        _, _vs_values[i] = imgui.vslider_float("##v", (18, 160), value, 0.0, 1.0, "")
+        if imgui.is_item_active() or imgui.is_item_hovered():
+            imgui.set_tooltip(f"{_vs_values[i]:.3f}")
+        imgui.pop_style_color(4)
+        imgui.pop_id()
+    imgui.pop_id()
+
+    imgui.same_line()
+
+    # Second set of float vertical sliders (grouped)
+    rows = 3
+    small_slider_size = (18, (160.0 - (rows - 1) * spacing) / rows)
+    imgui.push_id("set2")
+    for nx, value in enumerate(_vs_values2):
+        if nx > 0:
+            imgui.same_line()
+        imgui.begin_group()
+        for ny in range(rows):
+            imgui.push_id(nx * rows + ny)
+            _, _vs_values2[nx] = imgui.vslider_float("##v", small_slider_size, value, 0.0, 1.0, "")
+            if imgui.is_item_active() or imgui.is_item_hovered():
+                imgui.set_tooltip(f"{_vs_values2[nx]:.3f}")
+            imgui.pop_id()
+        imgui.end_group()
+    imgui.pop_id()
+
+    imgui.same_line()
+
+    # Third set of float vertical sliders with larger grab size
+    imgui.push_id("set3")
+    for i, value in enumerate(_vs_values[:4]):
+        if i > 0:
+            imgui.same_line()
+        imgui.push_id(i)
+        imgui.push_style_var(imgui.StyleVar.GRAB_MIN_SIZE, 40)
+        _, _vs_values[i] = imgui.vslider_float("##v", (40, 160), value, 0.0, 1.0, "%.2f\nsec")
+        imgui.pop_style_var()
+        imgui.pop_id()
+    imgui.pop_id()
+
+    imgui.pop_style_var()
+    imgui.tree_pop()

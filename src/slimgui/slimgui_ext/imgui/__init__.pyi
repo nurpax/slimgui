@@ -4300,3 +4300,11 @@ def tree_push(str_id: str) -> None:
 def unindent(indent_w: float = 0.0) -> None:
     """Move content position back to the left, by indent_w, or style.IndentSpacing if indent_w <= 0"""
     ...
+
+
+def vslider_float(label: str, size: tuple[float, float], v: float, v_min: float, v_max: float, format: str = '%.3f', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, float]:
+    ...
+
+
+def vslider_int(label: str, size: tuple[float, float], v: int, v_min: int, v_max: int, format: str = '%d', flags: SliderFlags = SliderFlags.NONE) -> tuple[bool, int]:
+    ...

@@ -887,13 +887,17 @@ NB_MODULE(slimgui_ext, top) {
 
     // IMGUI_API bool          SliderScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          SliderScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          VSliderFloat(const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);
+    m.def("vslider_float", [](const char* label, ImVec2 size, float v, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::VSliderFloat(label, size, &v, v_min, v_max, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "size"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%.3f", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
+    m.def("vslider_int", [](const char* label, ImVec2 size, int v, int v_min, int v_max, const char* format, ImGuiSliderFlags_ flags) {
+        bool changed = ImGui::VSliderInt(label, size, &v, v_min, v_max, format, flags);
+        return std::pair(changed, v);
+    }, "label"_a, "size"_a, "v"_a, "v_min"_a, "v_max"_a, "format"_a = "%d", "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
     // IMGUI_API bool          VSliderScalar(const char* label, const ImVec2& size, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);
 
     // Widgets: Drag Sliders
-    // IMGUI_API bool          DragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", const char* format_max = NULL, ImGuiSliderFlags flags = 0);
-    // IMGUI_API bool          DragIntRange2(const char* label, int* v_current_min, int* v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", const char* format_max = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragScalar(const char* label, ImGuiDataType data_type, void* p_data, float v_speed = 1.0f, const void* p_min = NULL, const void* p_max = NULL, const char* format = NULL, ImGuiSliderFlags flags = 0);
     // IMGUI_API bool          DragScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, float v_speed = 1.0f, const void* p_min = NULL, const void* p_max = NULL, const char* format = NULL, ImGuiSliderFlags flags = 0);
     m.def("drag_float", [](const char* label, float v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags_ flags) {
