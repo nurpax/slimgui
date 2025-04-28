@@ -151,8 +151,8 @@ Important notes:
     ImplotFunc('ImPlot_PushStyleColor_Vec4', 'push_style_color', docstring="Temporarily modify a style color. Don't forget to call `implot.pop_style_color()`!"),
     ImplotFunc('ImPlot_PopStyleColor', 'pop_style_color', docstring="Undo temporary style color modification(s). Undo multiple pushes at once by increasing count."),
 
-    ImplotFunc('ImPlot_PushStyleVar_Float', 'push_style_var', docstring="Temporarily modify a style variable of float type. Don't forget to call `implot.pop_style_var()`!"),
     ImplotFunc('ImPlot_PushStyleVar_Int', 'push_style_var', docstring="Temporarily modify a style variable of int type. Don't forget to call `implot.pop_style_var()`!"),
+    ImplotFunc('ImPlot_PushStyleVar_Float', 'push_style_var', docstring="Temporarily modify a style variable of float type. Don't forget to call `implot.pop_style_var()`!"),
     ImplotFunc('ImPlot_PushStyleVar_Vec2', 'push_style_var',  docstring="Temporarily modify a style variable of float 2-tuple. Don't forget to call `implot.pop_style_var()`!"),
     ImplotFunc('ImPlot_PopStyleVar', 'pop_style_var', docstring="Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count."),
 

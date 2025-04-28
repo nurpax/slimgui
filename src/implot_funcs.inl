@@ -397,15 +397,15 @@ m.def(
     "by increasing count.\n");
 m.def(
     "push_style_var",
-    [](ImPlotStyleVar_ idx, float val) { ImPlot::PushStyleVar(idx, val); },
-    "idx"_a, "val"_a,
-    "Temporarily modify a style variable of float type. Don't forget to call "
-    "`implot.pop_style_var()`!\n");
-m.def(
-    "push_style_var",
     [](ImPlotStyleVar_ idx, int val) { ImPlot::PushStyleVar(idx, val); },
     "idx"_a, "val"_a,
     "Temporarily modify a style variable of int type. Don't forget to call "
+    "`implot.pop_style_var()`!\n");
+m.def(
+    "push_style_var",
+    [](ImPlotStyleVar_ idx, float val) { ImPlot::PushStyleVar(idx, val); },
+    "idx"_a, "val"_a,
+    "Temporarily modify a style variable of float type. Don't forget to call "
     "`implot.pop_style_var()`!\n");
 m.def(
     "push_style_var",

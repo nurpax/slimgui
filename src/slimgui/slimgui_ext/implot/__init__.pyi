@@ -1113,13 +1113,13 @@ def plot_bar_groups(label_ids: Sequence[str], values: Annotated[ArrayLike, dict(
     """
 
 @overload
-def plot_bars(label_id: str, values: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, flags: BarsFlags = BarFlags.NONE) -> None:
+def plot_bars(label_id: str, values: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, flags: BarsFlags = BarsFlags.NONE) -> None:
     """
     Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.
     """
 
 @overload
-def plot_bars(label_id: str, xs: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], ys: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], bar_size: float, flags: BarsFlags = BarFlags.NONE) -> None: ...
+def plot_bars(label_id: str, xs: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], ys: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], bar_size: float, flags: BarsFlags = BarsFlags.NONE) -> None: ...
 
 def plot_digital(label_id: str, xs: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], ys: Annotated[ArrayLike, dict(dtype='float64', shape=(None), order='C', device='cpu', writable=False)], flags: DigitalFlags = DigitalFlags.NONE) -> None:
     """
@@ -1271,15 +1271,15 @@ def push_style_color(idx: Col, col: int) -> None:
 def push_style_color(idx: Col, col: tuple[float, float, float, float]) -> None: ...
 
 @overload
-def push_style_var(idx: StyleVar, val: float) -> None:
-    """
-    Temporarily modify a style variable of float type. Don't forget to call `implot.pop_style_var()`!
-    """
-
-@overload
 def push_style_var(idx: StyleVar, val: int) -> None:
     """
     Temporarily modify a style variable of int type. Don't forget to call `implot.pop_style_var()`!
+    """
+
+@overload
+def push_style_var(idx: StyleVar, val: float) -> None:
+    """
+    Temporarily modify a style variable of float type. Don't forget to call `implot.pop_style_var()`!
     """
 
 @overload

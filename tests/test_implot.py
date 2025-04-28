@@ -69,3 +69,7 @@ def test_random_getter_setters(frame_scope):
 
     assert implot.get_style_color_name(implot.Col.MARKER_OUTLINE) == 'MarkerOutline'
     assert implot.get_marker_name(implot.Marker.DIAMOND) == 'Diamond'
+
+    implot.push_style_var(implot.StyleVar.MARKER_SIZE, 10)
+    implot.push_style_var(implot.StyleVar.MARKER_SIZE, 10.5)
+    implot.pop_style_var(2)
