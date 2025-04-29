@@ -1,6 +1,14 @@
 
 #pragma once
 
+template <typename Enum, typename Int = int>
+int variant_to_int(const std::variant<Enum, Int>& var) {
+    if (auto p = std::get_if<Enum>(&var)) {
+        return static_cast<int>(*p);
+    }
+    return std::get<Int>(var);
+}
+
 struct Vec3 {
     float x, y, z;
     constexpr Vec3() : x(0.0f), y(0.0f), z(0.0f) { }

@@ -16,6 +16,8 @@ def show():
 
     _drag_and_drop()
 
+    _show_shortcut_demo()
+
     expanded, _ = imgui.collapsing_header("Widgets 2")
     if not expanded:
         return
@@ -134,3 +136,36 @@ def _drag_and_drop_copy_swap_items():
             imgui.end_drag_drop_target()
         imgui.pop_id()
     imgui.tree_pop()
+
+
+_shortcut_pressed = 0
+_shortcut_blockpos = 0
+def _show_shortcut_demo():
+    global _shortcut_pressed, _shortcut_blockpos
+    expanded, _ = imgui.collapsing_header("Shortcuts")
+    if not expanded:
+        return
+
+    imgui.text('Use arrow keys UP/DOWN to incr/decr number')
+    if imgui.shortcut(imgui.Key.KEY_UP_ARROW):
+        _shortcut_pressed += 1
+    elif imgui.shortcut(imgui.Key.KEY_DOWN_ARROW):
+        _shortcut_pressed -= 1
+    imgui.text_colored((0.7, 0.6, 0.2, 1), f'Shortcut counter: {_shortcut_pressed}')
+    imgui.text('Use CTRL+LEFT/RIGHT to move the block around'); imgui.same_line()
+    help_marker("CTRL == COMMAND on Mac")
+
+    imgui.set_next_item_shortcut(imgui.Key.KEY_LEFT_ARROW | imgui.Key.MOD_CTRL, flags=imgui.InputFlags.REPEAT)
+    if imgui.button('Move LEFT'):
+        _shortcut_blockpos -= 1
+
+    imgui.same_line()
+
+    imgui.set_next_item_shortcut(imgui.Key.KEY_RIGHT_ARROW | imgui.Key.MOD_CTRL, flags=imgui.InputFlags.REPEAT)
+    if imgui.button('Move RIGHT'):
+        _shortcut_blockpos += 1
+
+    _shortcut_blockpos = max(0, min(_shortcut_blockpos, 14))
+    pos_x, pos_y = imgui.get_cursor_screen_pos()
+    imgui.set_cursor_screen_pos((pos_x + _shortcut_blockpos * 32, pos_y))
+    imgui.color_button('block', (1, 0.3, 0.1, 1), size=(32, 32))

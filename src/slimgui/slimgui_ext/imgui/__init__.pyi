@@ -1128,6 +1128,60 @@ class IO:
     @property
     def mouse_delta(self) -> tuple[float, float]: ...
 
+class InputFlags(enum.IntFlag):
+    __str__ = __repr__
+
+    def __repr__(self, /):
+        """Return repr(self)."""
+
+    NONE = 0
+
+    REPEAT = 1
+    """
+    Enable repeat. Return true on successive repeats. Default for legacy `is_key_pressed()`. NOT Default for legacy `is_mouse_clicked()`. MUST BE == 1.
+    """
+
+    ROUTE_ACTIVE = 1024
+    """Route to active item only."""
+
+    ROUTE_FOCUSED = 2048
+    """
+    Route to windows in the focus stack (DEFAULT). Deep-most focused window takes inputs. Active item takes inputs over deep-most focused window.
+    """
+
+    ROUTE_GLOBAL = 4096
+    """
+    Global route (unless a focused window or active item registered the route).
+    """
+
+    ROUTE_ALWAYS = 8192
+    """Do not register route, poll keys directly."""
+
+    ROUTE_OVER_FOCUSED = 16384
+    """
+    Option: global route: higher priority than focused route (unless active item in focused route).
+    """
+
+    ROUTE_OVER_ACTIVE = 32768
+    """
+    Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. CTRL+A registered by `input_text` will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.
+    """
+
+    ROUTE_UNLESS_BG_FOCUSED = 65536
+    """
+    Option: global route: will not be applied if underlying background/void is focused (== no Dear ImGui windows are focused). Useful for overlay applications.
+    """
+
+    ROUTE_FROM_ROOT_WINDOW = 131072
+    """
+    Option: route evaluated from the point of view of root window rather than current window.
+    """
+
+    TOOLTIP = 262144
+    """
+    Automatically display a tooltip when hovering item [BETA] Unsure of right api (opt-in/opt-out)
+    """
+
 class InputTextFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -3524,7 +3578,7 @@ def is_item_visible() -> bool:
     ...
 
 
-def is_key_chord_pressed(key_chord: Key) -> bool:
+def is_key_chord_pressed(key_chord: Key | int) -> bool:
     """Was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using `shortcut()` function instead."""
     ...
 
@@ -3933,6 +3987,11 @@ def set_next_item_open(is_open: bool, cond: Cond = Cond.NONE) -> None:
     ...
 
 
+def set_next_item_shortcut(key_chord: Key | int, flags: InputFlags = InputFlags.NONE) -> None:
+    """
+    Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.
+    """
+
 def set_next_item_width(item_width: float) -> None:
     """Set width of the _next_ common large \"item+label\" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)"""
     ...
@@ -4061,6 +4120,11 @@ def set_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
 def set_window_size(name: str, size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
     ...
 
+
+def shortcut(key_chord: Key | int, flags: InputFlags = InputFlags.NONE) -> bool:
+    """
+    Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.
+    """
 
 def show_about_window(closable: bool = False) -> bool:
     """Create About window. display Dear ImGui version, credits and build/system information."""

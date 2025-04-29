@@ -217,6 +217,42 @@ nb::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags", nb::is_flag(),
            "Do not consider popup hierarchy (do not treat popup emitter as "
            "parent of popup) (when used with _ChildWindows or _RootWindow)")
     .value("ROOT_AND_CHILD_WINDOWS", ImGuiFocusedFlags_RootAndChildWindows);
+nb::enum_<ImGuiInputFlags_>(m, "InputFlags", nb::is_flag(), nb::is_arithmetic())
+    .value("NONE", ImGuiInputFlags_None)
+    .value("REPEAT", ImGuiInputFlags_Repeat,
+           "Enable repeat. Return true on successive repeats. Default for "
+           "legacy `is_key_pressed()`. NOT Default for legacy "
+           "`is_mouse_clicked()`. MUST BE == 1.")
+    .value("ROUTE_ACTIVE", ImGuiInputFlags_RouteActive,
+           "Route to active item only.")
+    .value("ROUTE_FOCUSED", ImGuiInputFlags_RouteFocused,
+           "Route to windows in the focus stack (DEFAULT). Deep-most focused "
+           "window takes inputs. Active item takes inputs over deep-most "
+           "focused window.")
+    .value("ROUTE_GLOBAL", ImGuiInputFlags_RouteGlobal,
+           "Global route (unless a focused window or active item registered "
+           "the route).")
+    .value("ROUTE_ALWAYS", ImGuiInputFlags_RouteAlways,
+           "Do not register route, poll keys directly.")
+    .value("ROUTE_OVER_FOCUSED", ImGuiInputFlags_RouteOverFocused,
+           "Option: global route: higher priority than focused route (unless "
+           "active item in focused route).")
+    .value("ROUTE_OVER_ACTIVE", ImGuiInputFlags_RouteOverActive,
+           "Option: global route: higher priority than active item. Unlikely "
+           "you need to use that: will interfere with every active items, e.g. "
+           "CTRL+A registered by `input_text` will be overridden by this. May "
+           "not be fully honored as user/internal code is likely to always "
+           "assume they can access keys when active.")
+    .value("ROUTE_UNLESS_BG_FOCUSED", ImGuiInputFlags_RouteUnlessBgFocused,
+           "Option: global route: will not be applied if underlying "
+           "background/void is focused (== no Dear ImGui windows are focused). "
+           "Useful for overlay applications.")
+    .value("ROUTE_FROM_ROOT_WINDOW", ImGuiInputFlags_RouteFromRootWindow,
+           "Option: route evaluated from the point of view of root window "
+           "rather than current window.")
+    .value("TOOLTIP", ImGuiInputFlags_Tooltip,
+           "Automatically display a tooltip when hovering item [BETA] Unsure "
+           "of right api (opt-in/opt-out)");
 nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiWindowFlags_None)

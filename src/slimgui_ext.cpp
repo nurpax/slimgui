@@ -6,6 +6,7 @@
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/optional.h>
+#include <nanobind/stl/variant.h>
 #include <iterator>
 #include <vector>
 #include <array>
@@ -1215,10 +1216,23 @@ NB_MODULE(slimgui_ext, top) {
     m.def("is_key_down", [](ImGuiKey key) { return ImGui::IsKeyDown(key); }, "key"_a);
     m.def("is_key_pressed", [](ImGuiKey key, bool repeat) { return ImGui::IsKeyPressed(key, repeat); }, "key"_a, "repeat"_a = true);
     m.def("is_key_released", [](ImGuiKey key) { return ImGui::IsKeyReleased(key); }, "key"_a);
-    m.def("is_key_chord_pressed", [](ImGuiKey key) { return ImGui::IsKeyChordPressed(key); }, "key_chord"_a);
+    m.def("is_key_chord_pressed", [](std::variant<ImGuiKey, int> key) { return ImGui::IsKeyChordPressed(variant_to_int(key)); }, "key_chord"_a);
     m.def("get_key_pressed_amount", &ImGui::GetKeyPressedAmount, "key"_a, "repeat_delay"_a, "rate"_a);
     m.def("get_key_name", &ImGui::GetKeyName, "key"_a);
     m.def("set_next_frame_want_capture_keyboard", &ImGui::SetNextFrameWantCaptureKeyboard, "want_capture_keyboard"_a);
+
+    // Inputs Utilities: Shortcut Testing & Routing [BETA]
+    // - ImGuiKeyChord = a ImGuiKey + optional ImGuiMod_Alt/ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Super.
+    // NOTE: bindings code models 'ImGuiKeyChord' as `Key | int`.  Not sure what'd be a better way to
+    // model it in python types.
+    m.def("shortcut", [](std::variant<ImGuiKey, int> key_chord, ImGuiInputFlags_ flags) {
+        return ImGui::Shortcut(variant_to_int(key_chord), flags);
+    }, "key_chord"_a, "flags"_a.sig("InputFlags.NONE") = ImGuiInputFlags_None,
+    "Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.");
+    m.def("set_next_item_shortcut", [](std::variant<ImGuiKey, int> key_chord, ImGuiInputFlags_ flags) {
+        return ImGui::SetNextItemShortcut(variant_to_int(key_chord), flags);
+    }, "key_chord"_a, "flags"_a.sig("InputFlags.NONE") = ImGuiInputFlags_None,
+    "Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.");
 
     // Input Utilities: Mouse
     m.def("is_mouse_down", [](ImGuiMouseButton_ button) { return ImGui::IsMouseDown(button); }, "button"_a);

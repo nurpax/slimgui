@@ -571,10 +571,36 @@ if visible:
 #### Functions
 <div class="raw-html-insert" data-apirefs="is_key_down, is_key_pressed, is_key_released, is_key_chord_pressed, get_key_pressed_amount, get_key_name, set_next_frame_want_capture_keyboard"></div>
 
+### Inputs Utilities: Shortcut Testing & Routing [BETA]
+
+A `key_chord` passed to the below shortcut functions is a `Key` value + an optional `Key.MOD_ALT/CTRL_SHIFT_SUPER`.  E.g.,
+
+- `Key.KEY_C`: accepted by functions taking `Key` or `Key | int` (keychord arguments)
+- `Key.MOD_CTRL | Key.KEY_C`: accepted by functions taking `Key | int` keychord arguments
+- It's legal to only combine `KEY_*` values with a `MOD_*` value.
+
+The general idea is that several callers may register interest in a shortcut, and only one owner gets it:
+
+- Parent -> call Shortcut(Ctrl+S)  - when Parent is focused, Parent gets the shortcut
+  - Child1 -> call Shortcut(Ctrl+S) - when Child1 is focused, Child1 gets the shortcut (Child1 overrides Parent shortcuts)
+  - Child2 -> no call - when Child2 is focused, Parent gets the shortcut.
+
+The whole system is order independent, so if Child1 makes its calls before Parent, results will be identical.
+This is an important property as it facilitates working with foreign code or a larger codebase. To understand the difference:
+
+- `is_key_chord_pressed()` compares mods and calls `is_key_pressed()` -> function has no side-effect.
+- `shortcut()` submits a route, routes are resolved, if it currently can be routed it calls `is_key_chord_pressed()` -> function has (desirable) side-effects as it can prevent another call from getting the route.
+
+You can visualize registered routes in the "Metrics/Debugger->Inputs" window.
+
+#### Functions
+<div class="raw-html-insert" data-apirefs="shortcut, set_next_item_shortcut"></div>
+
 ### Inputs Utilities: Mouse
 
 - To refer to a mouse button, you may use named enums in your code, e.g., `MouseButton.LEFT`, `MouseButton.RIGHT`.
 
+#### Functions
 <div class="raw-html-insert" data-apirefs="is_mouse_down, is_mouse_clicked, is_mouse_released, is_mouse_double_clicked, is_mouse_released_with_delay, get_mouse_clicked_count, is_mouse_hovering_rect, is_mouse_pos_valid, get_mouse_pos, get_mouse_pos_on_opening_current_popup, is_mouse_dragging, get_mouse_drag_delta, reset_mouse_drag_delta, get_mouse_cursor, set_mouse_cursor, set_next_frame_want_capture_mouse"></div>
 
 ## Enum Reference

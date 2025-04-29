@@ -23,14 +23,6 @@ typedef nb::ndarray<float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
 typedef nb::ndarray<const double, nb::ndim<2>, nb::device::cpu, nb::c_contig> ndarray_2d;
 
-template <typename Enum, typename Int = int>
-int variant_to_int(const std::variant<Enum, Int>& var) {
-    if (auto p = std::get_if<Enum>(&var)) {
-        return static_cast<int>(*p);
-    }
-    return std::get<Int>(var);
-}
-
 template <typename Func>
 auto with_context(ImPlotContext* ctx, Func&& func) {
     ImPlotContext* prev = ImPlot::GetCurrentContext();
