@@ -2135,7 +2135,7 @@ io.KeyRepeatDelay / KeyRepeatRate</p>
 </div>
 <p>Was key released (went from Down to !Down)?</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>is_key_chord_pressed</span>(<span class='arg_name'>key_chord</span><span class='special'>:</span> <span class='symbol'>Key</span>) -> <span class='symbol'>bool</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>is_key_chord_pressed</span>(<span class='arg_name'>key_chord</span><span class='special'>:</span> <span class='symbol'>Key</span> | <span class='symbol'>int</span>) -> <span class='symbol'>bool</span></code>
 </div>
 <p>Was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl
 | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus
@@ -2156,6 +2156,48 @@ compared.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_frame_want_capture_keyboard</span>(<span class='arg_name'>want_capture_keyboard</span><span class='special'>:</span> <span class='symbol'>bool</span>) -> <span class='keyword'>None</span></code>
 </div>
+</div>
+<h3 id="inputs-utilities-shortcut-testing-routing-beta">Inputs Utilities: Shortcut Testing &amp; Routing [BETA]</h3>
+<p>A <code>key_chord</code> passed to the below shortcut functions is a <code>Key</code> value + an optional <code>Key.MOD_ALT/CTRL_SHIFT_SUPER</code>. E.g.,</p>
+<ul>
+<li><code>Key.KEY_C</code>: accepted by functions taking <code>Key</code> or <code>Key | int</code> (keychord arguments)</li>
+<li><code>Key.MOD_CTRL | Key.KEY_C</code>: accepted by functions taking <code>Key | int</code> keychord arguments</li>
+<li>It's legal to only combine <code>KEY_*</code> values with a <code>MOD_*</code> value.</li>
+</ul>
+<p>The general idea is that several callers may register interest in a shortcut, and only one owner gets it:</p>
+<ul>
+<li>Parent -&gt; call Shortcut(Ctrl+S) - when Parent is focused, Parent gets the shortcut
+<ul>
+<li>Child1 -&gt; call Shortcut(Ctrl+S) - when Child1 is focused, Child1 gets the shortcut (Child1 overrides Parent shortcuts)</li>
+<li>Child2 -&gt; no call - when Child2 is focused, Parent gets the shortcut.</li>
+</ul></li>
+</ul>
+<p>The whole system is order independent, so if Child1 makes its calls before Parent, results will be identical. This is an important property as it facilitates working with foreign code or a larger codebase. To understand the difference:</p>
+<ul>
+<li><code>is_key_chord_pressed()</code> compares mods and calls <code>is_key_pressed()</code> -&gt; function has no side-effect.</li>
+<li><code>shortcut()</code> submits a route, routes are resolved, if it currently can be routed it calls <code>is_key_chord_pressed()</code> -&gt; function has (desirable) side-effects as it can prevent another call from getting the route.</li>
+</ul>
+<p>You can visualize registered routes in the "Metrics/Debugger-&gt;Inputs" window.</p>
+<h4 id="functions-50">Functions</h4>
+<div class="funclist">
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>shortcut</span>(<span class='arg_name'>key_chord</span><span class='special'>:</span> <span class='symbol'>Key</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>InputFlags</span> = <span class='symbol'>InputFlags</span>.<span class='symbol'>NONE</span>) -> <span class='symbol'>bool</span></code>
+</div>
+<p>Python bindings note: The original ImGui type for a ImGuiKeyChord is
+basically ImGuiKey that can be optionally bitwise-OR'd with a modifier
+key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc. In Python, this is modeled as
+a union of <code>Key</code> and int. The int value is the modifier key.
+You can use the <code>|</code> operator to combine them, e.g.
+<code>Key.A | Key.MOD_CTRL</code>.</p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_next_item_shortcut</span>(<span class='arg_name'>key_chord</span><span class='special'>:</span> <span class='symbol'>Key</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>InputFlags</span> = <span class='symbol'>InputFlags</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
+</div>
+<p>Python bindings note: The original ImGui type for a ImGuiKeyChord is
+basically ImGuiKey that can be optionally bitwise-OR'd with a modifier
+key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc. In Python, this is modeled as
+a union of <code>Key</code> and int. The int value is the modifier key.
+You can use the <code>|</code> operator to combine them, e.g.
+<code>Key.A | Key.MOD_CTRL</code>.</p>
 </div>
 <h3 id="inputs-utilities-mouse">Inputs Utilities: Mouse</h3>
 <ul>
