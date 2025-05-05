@@ -3890,8 +3890,8 @@ def selectable(label: str, selected: bool = False, flags: SelectableFlags = Sele
 
     The returned pair contains:
 
-    - `clicked`: a boolean indicating whether the item was clicked.
-    - `selected`: the updated selection state of the item.
+    - first element: a boolean indicating whether the item was clicked.
+    - second element: the updated selection state of the item.
     """
 
 def separator() -> None:

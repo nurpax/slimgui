@@ -821,8 +821,8 @@ NB_MODULE(slimgui_ext, top) {
     "\n"
     "The returned pair contains:\n"
     "\n"
-    "- `clicked`: a boolean indicating whether the item was clicked.\n"
-    "- `selected`: the updated selection state of the item.\n");
+    "- first element: a boolean indicating whether the item was clicked.\n"
+    "- second element: the updated selection state of the item.\n");
 
     // Widgets: List Boxes
     m.def("begin_list_box", &ImGui::BeginListBox, "label"_a, "size"_a = ImVec2(0, 0));
