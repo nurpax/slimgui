@@ -1352,11 +1352,18 @@ state.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>selectable</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>selected</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>SelectableFlags</span> = <span class='symbol'>SelectableFlags</span>.<span class='symbol'>NONE</span><span class='special'>,</span> <span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>bool</span><span class='special'>,</span> <span class='symbol'>bool</span><span class='special'>]</span></code>
 </div>
-<p>"bool selected" carry the selection state (read-only).
-<code>selectable()</code> is clicked is returns true so you can modify
-your selection state. size.x==0.0: use remaining width, size.x&gt;0.0:
-specify width. size.y==0.0: use label height, size.y&gt;0.0: specify
-height</p>
+<p>The <code>selected</code> argument indicates whether the item is
+selected or not.</p>
+<p>When <code>size[0] == 0.0</code> use remaining width. Use
+<code>size[0] &gt; 0.0</code> to specify width. When
+<code>size[1] == 0.0</code> use label height. Use
+<code>size[1] &gt; 0.0</code> to specify height.</p>
+<p>The returned pair contains:</p>
+<ul>
+<li>first element: a boolean indicating whether the item was
+clicked.</li>
+<li>second element: the updated selection state of the item.</li>
+</ul>
 </div>
 <h3 id="multi-selection-system-for-selectable-checkbox-tree_node-functions-beta">Multi-selection system for <code>selectable()</code>, <code>checkbox()</code>, <code>tree_node()</code> functions [BETA]</h3>
 <ul>
@@ -2203,6 +2210,7 @@ You can use the <code>|</code> operator to combine them, e.g.
 <ul>
 <li>To refer to a mouse button, you may use named enums in your code, e.g., <code>MouseButton.LEFT</code>, <code>MouseButton.RIGHT</code>.</li>
 </ul>
+<h4 id="functions-51">Functions</h4>
 <div class="funclist">
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>is_mouse_down</span>(<span class='arg_name'>button</span><span class='special'>:</span> <span class='symbol'>MouseButton</span>) -> <span class='symbol'>bool</span></code>
