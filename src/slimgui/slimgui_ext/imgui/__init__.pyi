@@ -3882,9 +3882,17 @@ def same_line(offset_from_start_x: float = 0.0, spacing: float = -1.0) -> None:
 
 
 def selectable(label: str, selected: bool = False, flags: SelectableFlags = SelectableFlags.NONE, size: tuple[float, float] = (0.0, 0.0)) -> tuple[bool, bool]:
-    """\"bool selected\" carry the selection state (read-only). `selectable()` is clicked is returns true so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height"""
-    ...
+    """
+    The `selected` argument indicates whether the item is selected or not.
 
+    When `size[0] == 0.0` use remaining width.  Use `size[0] > 0.0` to specify width.
+    When `size[1] == 0.0` use label height.  Use `size[1] > 0.0` to specify height.
+
+    The returned pair contains:
+
+    - `clicked`: a boolean indicating whether the item was clicked.
+    - `selected`: the updated selection state of the item.
+    """
 
 def separator() -> None:
     """Separator, generally horizontal. inside a menu bar or in horizontal layout mode, this becomes a vertical separator."""

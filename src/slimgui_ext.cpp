@@ -813,7 +813,16 @@ NB_MODULE(slimgui_ext, top) {
     m.def("selectable", [](const char* label, bool selected, ImGuiSelectableFlags_ flags, const ImVec2& size) {
         bool clicked = ImGui::Selectable(label, &selected, flags, size);
         return std::pair(clicked, selected);
-    }, "label"_a, "selected"_a = false, "flags"_a.sig("SelectableFlags.NONE") = ImGuiSelectableFlags_None, "size"_a = ImVec2(0, 0));
+    }, "label"_a, "selected"_a = false, "flags"_a.sig("SelectableFlags.NONE") = ImGuiSelectableFlags_None, "size"_a = ImVec2(0, 0),
+    "The `selected` argument indicates whether the item is selected or not.\n"
+    "\n"
+    "When `size[0] == 0.0` use remaining width.  Use `size[0] > 0.0` to specify width.\n"
+    "When `size[1] == 0.0` use label height.  Use `size[1] > 0.0` to specify height.\n"
+    "\n"
+    "The returned pair contains:\n"
+    "\n"
+    "- `clicked`: a boolean indicating whether the item was clicked.\n"
+    "- `selected`: the updated selection state of the item.\n");
 
     // Widgets: List Boxes
     m.def("begin_list_box", &ImGui::BeginListBox, "label"_a, "size"_a = ImVec2(0, 0));
