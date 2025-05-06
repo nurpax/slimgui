@@ -6,7 +6,7 @@ import requests
 from slimgui import imgui
 from slimgui.integrations.glfw import GlfwRenderer
 
-def download_cached(url, cache_dir="slimgui_examples") -> str:
+def _download_cached(url, cache_dir="slimgui_examples") -> str:
     os.makedirs(os.path.expanduser(f"~/.cache/{cache_dir}"), exist_ok=True)
     filename = os.path.basename(url)
     cache_path = os.path.expanduser(f"~/.cache/{cache_dir}/{filename}")
@@ -18,7 +18,7 @@ def download_cached(url, cache_dir="slimgui_examples") -> str:
     return cache_path
 
 def _load_font():
-    with open(download_cached('https://github.com/jnmaloney/WebGui/raw/master/data/xkcd-script.ttf'), 'rb') as f:
+    with open(_download_cached('https://github.com/jnmaloney/WebGui/raw/master/data/xkcd-script.ttf'), 'rb') as f:
         font_data = f.read()
         return imgui.get_io().fonts.add_font_from_memory_ttf(font_data, 48)
 
