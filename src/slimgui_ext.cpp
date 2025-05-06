@@ -136,7 +136,7 @@ NB_MODULE(slimgui_ext, top) {
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar);
 
     nb::class_<ImFontAtlas>(m, "FontAtlas")
-        .def("add_font_default", &ImFontAtlas::AddFontDefault, nb::arg("font_cfg").none() = nullptr, nb::rv_policy::reference)
+        .def("add_font_default", &ImFontAtlas::AddFontDefault, nb::arg("font_cfg").none() = nullptr, nb::rv_policy::reference_internal)
         .def("add_font_from_memory_ttf", [](ImFontAtlas* fonts, nb::bytes font_data, float size_pixels, std::optional<ImFontConfig> font_cfg) {
             ImFontConfig cfg;
             if (font_cfg) {
@@ -149,7 +149,7 @@ NB_MODULE(slimgui_ext, top) {
             memcpy(data, font_data.c_str(), font_data.size());
             // TODO glyph_ranges
             return fonts->AddFontFromMemoryTTF(data, font_data.size(), size_pixels, &cfg, nullptr);
-        }, nb::rv_policy::reference, "font_data"_a, "size_pixels"_a, nb::arg("font_cfg").none() = std::nullopt)
+        }, nb::rv_policy::reference_internal, "font_data"_a, "size_pixels"_a, nb::arg("font_cfg").none() = std::nullopt)
         .def("clear_tex_data", &ImFontAtlas::ClearTexData)
         .def("get_tex_data_as_rgba32", [](ImFontAtlas* fonts) {
             int tex_w, tex_h;
