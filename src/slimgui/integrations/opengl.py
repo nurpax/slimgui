@@ -7,7 +7,7 @@ import ctypes
 
 from .base import BaseRenderer
 
-class ProgrammablePipelineRenderer(BaseRenderer):
+class OpenGLRenderer(BaseRenderer):
     """
     ImGui OpenGL renderer using programmable pipeline.
 

@@ -3,9 +3,9 @@ from typing import Any, Callable
 import glfw
 from slimgui import imgui
 
-from .opengl import ProgrammablePipelineRenderer
+from .opengl import OpenGLRenderer
 
-class GlfwRenderer(ProgrammablePipelineRenderer):
+class GlfwRenderer:
     def __init__(
         self,
         window,
@@ -18,8 +18,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         prev_scroll_callback: Callable[[Any, float, float], None] | None = None,
         prev_window_size_callback: Callable[[Any, int, int], None] | None = None,
     ):
-        super().__init__()
-
+        self.renderer = OpenGLRenderer()
         self.window = window
         self.mouse_wheel_multiplier = mouse_wheel_multiplier
 
@@ -49,11 +48,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         # FIXME nurpax
         # self.io.get_clipboard_text_fn = self._get_clipboard_text
         # self.io.set_clipboard_text_fn = self._set_clipboard_text
-
-    def shutdown(self):
-        super().shutdown()
-        self._dealloc_cursors()
-
 
     def _alloc_cursors(self):
         self._cursors[imgui.MouseCursor.ARROW] = glfw.create_standard_cursor(glfw.ARROW_CURSOR)
@@ -182,3 +176,13 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         # Mouse cursor style changes
         self._update_mouse_cursor()
+
+    def shutdown(self):
+        self.renderer.shutdown()
+        self._dealloc_cursors()
+
+    def render(self, draw_data: imgui.DrawData):
+        self.renderer.render(draw_data)
+
+    def refresh_font_texture(self):
+        self.renderer.refresh_font_texture()
