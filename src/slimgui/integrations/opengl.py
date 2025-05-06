@@ -5,11 +5,14 @@ import OpenGL.GL as gl
 from slimgui import imgui
 import ctypes
 
-from .base import BaseOpenGLRenderer
+from .base import BaseRenderer
 
+class ProgrammablePipelineRenderer(BaseRenderer):
+    """
+    ImGui OpenGL renderer using programmable pipeline.
 
-class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
-    """Basic OpenGL integration base class."""
+    Note: most methods assume the current imgui context is set.
+    """
 
     VERTEX_SHADER_SRC = """
     #version 330
@@ -43,7 +46,8 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
     """
 
     def __init__(self):
-        self._shader_handle = None
+        super().__init__()
+        self._shader_handle = 0
         self._vert_handle = None
         self._fragment_handle = None
 
@@ -53,29 +57,29 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         self._attrib_location_uv = None
         self._attrib_location_color = None
 
-        self._vbo_handle = None
-        self._elements_handle = None
-        self._vao_handle = None
+        self._font_texture_id = 0
+        self._vbo_handle = 0
+        self._elements_handle = 0
+        self._vao_handle = 0
         self._create_device_objects()
-        super(ProgrammablePipelineRenderer, self).__init__()
 
     def refresh_font_texture(self):
         # save texture state
         last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
 
-        width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
+        io = imgui.get_io()
+        width, height, pixels = io.fonts.get_tex_data_as_rgba32()
 
-        if self._font_texture is not None:
-            gl.glDeleteTextures([self._font_texture])
+        gl.glDeleteTextures([self._font_texture_id])
+        self._font_texture_id = gl.glGenTextures(1)
 
-        self._font_texture = gl.glGenTextures(1)
-
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture_id)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
         gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
 
-        self.io.fonts.texture_id = self._font_texture
+        io = imgui.get_io()
+        io.fonts.texture_id = self._font_texture_id
         gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
 
     def _create_device_objects(self):
@@ -151,9 +155,9 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindVertexArray(last_vertex_array)
 
-    def render(self, draw_data):
+    def render(self, draw_data: imgui.DrawData):
         # perf: local for faster access
-        io = self.io
+        io = imgui.get_io()
 
         display_width, display_height = io.display_size
         fb_width = int(display_width * io.display_fb_scale[0])
@@ -239,22 +243,20 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer)
 
-    def _invalidate_device_objects(self):
-        if self._vao_handle > -1:
-            gl.glDeleteVertexArrays(1, [self._vao_handle])
-        if self._vbo_handle > -1:
-            gl.glDeleteBuffers(1, [self._vbo_handle])
-        if self._elements_handle > -1:
-            gl.glDeleteBuffers(1, [self._elements_handle])
-        self._vao_handle = self._vbo_handle = self._elements_handle = 0
+    def shutdown(self):
+        gl.glDeleteVertexArrays(1, [self._vao_handle])
+        self._vao_handle = 0
+        gl.glDeleteBuffers(1, [self._vbo_handle])
+        self._vbo_handle = 0
+        gl.glDeleteBuffers(1, [self._elements_handle])
+        self._elements_handle = 0
 
         gl.glDeleteProgram(self._shader_handle)
         self._shader_handle = 0
 
-        if self._font_texture > -1:
-            gl.glDeleteTextures([self._font_texture])
-        self.io.fonts.texture_id = 0
-        self._font_texture = 0
+        gl.glDeleteTextures([self._font_texture_id])
+        self._font_texture_id = 0
+        imgui.get_io().fonts.texture_id = 0
 
 
 def get_common_gl_state():

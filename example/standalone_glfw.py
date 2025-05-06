@@ -83,6 +83,7 @@ def main():
         # Swap buffers.
         glfw.swap_buffers(glfw_window)
 
+    renderer.shutdown()
     imgui.destroy_context(None)
 
 if __name__ == "__main__":

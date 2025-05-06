@@ -18,7 +18,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         prev_scroll_callback: Callable[[Any, float, float], None] | None = None,
         prev_window_size_callback: Callable[[Any, int, int], None] | None = None,
     ):
-        super(GlfwRenderer, self).__init__()
+        super().__init__()
+
         self.window = window
         self.mouse_wheel_multiplier = mouse_wheel_multiplier
 
@@ -37,6 +38,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             glfw.set_char_callback(self.window, self.char_callback)
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
+        self.io = imgui.get_io()
         self.io.display_size = glfw.get_framebuffer_size(self.window)
         self.io.backend_flags |= imgui.BackendFlags.RENDERER_HAS_VTX_OFFSET
         self.io.backend_flags |= imgui.BackendFlags.HAS_MOUSE_CURSORS
@@ -49,8 +51,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         # self.io.set_clipboard_text_fn = self._set_clipboard_text
 
     def shutdown(self):
-        self._dealloc_cursors()
         super().shutdown()
+        self._dealloc_cursors()
 
 
     def _alloc_cursors(self):
@@ -84,12 +86,11 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         glfw.set_clipboard_string(self.window, text)
 
     def _update_mod_keys(self, window):
-        io = imgui.get_io()
         # fmt: off
-        io.add_key_event(imgui.Key.MOD_CTRL, glfw.get_key(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_CONTROL) == glfw.PRESS)
-        io.add_key_event(imgui.Key.MOD_SHIFT, glfw.get_key(window, glfw.KEY_LEFT_SHIFT) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_SHIFT) == glfw.PRESS)
-        io.add_key_event(imgui.Key.MOD_ALT, glfw.get_key(window, glfw.KEY_LEFT_ALT) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_ALT) == glfw.PRESS)
-        io.add_key_event(imgui.Key.MOD_SUPER, glfw.get_key(window, glfw.KEY_LEFT_SUPER) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_SUPER) == glfw.PRESS)
+        self.io.add_key_event(imgui.Key.MOD_CTRL, glfw.get_key(window, glfw.KEY_LEFT_CONTROL) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_CONTROL) == glfw.PRESS)
+        self.io.add_key_event(imgui.Key.MOD_SHIFT, glfw.get_key(window, glfw.KEY_LEFT_SHIFT) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_SHIFT) == glfw.PRESS)
+        self.io.add_key_event(imgui.Key.MOD_ALT, glfw.get_key(window, glfw.KEY_LEFT_ALT) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_ALT) == glfw.PRESS)
+        self.io.add_key_event(imgui.Key.MOD_SUPER, glfw.get_key(window, glfw.KEY_LEFT_SUPER) == glfw.PRESS or glfw.get_key(window, glfw.KEY_RIGHT_SUPER) == glfw.PRESS)
         # fmt: on
 
     def _map_key(self, glfw_key: int) -> imgui.Key | None:
@@ -125,17 +126,15 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             self._prev_key_callback(window, key, scancode, action, mods)
         if action not in [glfw.PRESS, glfw.RELEASE]:
             return
-        io = imgui.get_io()
         self._update_mod_keys(window)
         k = self._map_key(key)
         if k is not None:
-            io.add_key_event(k, action == glfw.PRESS)
+            self.io.add_key_event(k, action == glfw.PRESS)
 
     def char_callback(self, window, char):
         if self._prev_char_callback is not None:
             self._prev_char_callback(window, char)
-        io = imgui.get_io()
-        io.add_input_character(char)
+        self.io.add_input_character(char)
 
     def resize_callback(self, window, width, height):
         if self._prev_window_size_callback is not None:
@@ -168,19 +167,17 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.add_mouse_wheel_event(x_offset, y_offset)
 
     def new_frame(self):
-        io = imgui.get_io()
-
         # See https://github.com/ocornut/imgui/issues/5081
-        io.display_size = glfw.get_framebuffer_size(self.window)
-        io.display_fb_scale = (1, 1)
+        self.io.display_size = glfw.get_framebuffer_size(self.window)
+        self.io.display_fb_scale = (1, 1)
 
         current_time = glfw.get_time()
         if self._gui_time:
             self.io.delta_time = current_time - self._gui_time
         else:
             self.io.delta_time = 1.0 / 60.0
-        if io.delta_time <= 0.0:
-            io.delta_time = 1.0 / 1000.0
+        if self.io.delta_time <= 0.0:
+            self.io.delta_time = 1.0 / 1000.0
         self._gui_time = current_time
 
         # Mouse cursor style changes

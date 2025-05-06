@@ -1,29 +1,20 @@
 
+from abc import ABC, abstractmethod
 from slimgui import imgui
 
-
-class BaseOpenGLRenderer(object):
+class BaseRenderer(ABC):
     def __init__(self):
         if not imgui.get_current_context():
-            raise RuntimeError(
-                "No valid ImGui context. Use imgui.create_context() first and/or " "imgui.set_current_context()."
-            )
-        self._font_texture = None
-        self.io = imgui.get_io()
-        self.io.delta_time = 1.0 / 60.0
-        self.refresh_font_texture()
+            raise RuntimeError("No valid ImGui context. Use imgui.create_context() first and/or " "imgui.set_current_context().")
 
-    def render(self, draw_data):
-        raise NotImplementedError
+    @abstractmethod
+    def render(self, draw_data: imgui.DrawData):
+        pass
 
+    @abstractmethod
     def refresh_font_texture(self):
-        raise NotImplementedError
+        pass
 
-    def _create_device_objects(self):
-        raise NotImplementedError
-
-    def _invalidate_device_objects(self):
-        raise NotImplementedError
-
+    @abstractmethod
     def shutdown(self):
-        self._invalidate_device_objects()
+        pass
