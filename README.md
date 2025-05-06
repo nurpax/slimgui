@@ -6,6 +6,12 @@ Work in progress [Dear ImGui](https://github.com/ocornut/imgui) bindings for Pyt
 
 - [Slimgui documentation](https://nurpax.github.io/slimgui/)
 
+### Examples
+
+- [example/app.py](example/app.py) - a more fully featured example with a more complicated demo window
+- [example/standalone_glfw.py](example/standalone_glfw.py) - standalone glfw example with everything in a single file
+- [example/standalone_pyglet.py](example/standalone_pyglet.py) - standalone pyglet example with everything (incl. pyglet integration) in a single file
+
 ### Background
 
 Motivation:
