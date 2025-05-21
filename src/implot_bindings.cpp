@@ -1,5 +1,6 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
+#include <nanobind/make_iterator.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/tuple.h>
 #include <nanobind/stl/vector.h>
@@ -23,6 +24,11 @@ typedef nb::ndarray<float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
 typedef nb::ndarray<const double, nb::ndim<2>, nb::device::cpu, nb::c_contig> ndarray_2d;
 
+typedef nb::ndarray<bool, nb::shape<>, nb::device::cpu, nb::c_contig> ndarray_scalar_bool_rw;
+typedef nb::ndarray<double, nb::shape<>, nb::device::cpu, nb::c_contig> ndarray_scalar_f64_rw;
+typedef nb::ndarray<double, nb::shape<2>, nb::device::cpu, nb::c_contig> ndarray_vec2_f64_rw;
+typedef nb::ndarray<double, nb::shape<2,2>, nb::device::cpu, nb::c_contig> ndarray_rect_f64_rw;
+
 template <typename Func>
 auto with_context(ImPlotContext* ctx, Func&& func) {
     ImPlotContext* prev = ImPlot::GetCurrentContext();
@@ -38,7 +44,61 @@ void implot_bindings(nb::module_& m) {
     m.attr("AUTO") = -1;
     m.attr("AUTO_COL") = ImVec4(0, 0, 0, -1);
 
-    nb::class_<ImPlotStyle>(m, "Style", "Plot style structure");
+    // ColorsArray is just a way of providing mutable list access to
+    // the Colors array in ImGuiStyle.
+    struct ColorsArray {
+        ImVec4* data;
+        ColorsArray(ImVec4* colors) : data(colors) {}
+    };
+    nb::class_<ColorsArray>(m, "ColorsArray")
+        .def("__getitem__", [](const ColorsArray& self, ImPlotCol_ index) {
+            return self.data[index];
+        })
+        .def("__setitem__", [](ColorsArray& self, ImPlotCol_ index, ImVec4 value) {
+            self.data[index] = value;
+        })
+        .def("__iter__", [](const ColorsArray& self) {
+            // TODO weird why 'slimgui_ext.' is required here.  Some missing setup in this class binding?
+            return nb::make_iterator(nb::type<ImVec4>(), "slimgui_ext.implot.ColorsArrayIterator", self.data, self.data + (size_t)ImPlotCol_COUNT);
+        }, nb::keep_alive<0, 1>())
+        .def("__len__", [](const ColorsArray& self) {
+            return (size_t)ImPlotCol_COUNT;
+        });
+
+    nb::class_<ImPlotStyle>(m, "Style", "Plot style structure")
+        .def_rw("line_weight", &ImPlotStyle::LineWeight)
+        .def_rw("marker", &ImPlotStyle::Marker)
+        .def_rw("marker_size", &ImPlotStyle::MarkerSize)
+        .def_rw("marker_weight", &ImPlotStyle::MarkerWeight)
+        .def_rw("fill_alpha", &ImPlotStyle::FillAlpha)
+        .def_rw("error_bar_size", &ImPlotStyle::ErrorBarSize)
+        .def_rw("error_bar_weight", &ImPlotStyle::ErrorBarWeight)
+        .def_rw("digital_bit_height", &ImPlotStyle::DigitalBitHeight)
+        .def_rw("digital_bit_gap", &ImPlotStyle::DigitalBitGap)
+        .def_rw("plot_border_size", &ImPlotStyle::PlotBorderSize)
+        .def_rw("minor_alpha", &ImPlotStyle::MinorAlpha)
+        .def_rw("major_tick_len", &ImPlotStyle::MajorTickLen)
+        .def_rw("minor_tick_len", &ImPlotStyle::MinorTickLen)
+        .def_rw("major_tick_size", &ImPlotStyle::MajorTickSize)
+        .def_rw("minor_tick_size", &ImPlotStyle::MinorTickSize)
+        .def_rw("major_grid_size", &ImPlotStyle::MajorGridSize)
+        .def_rw("minor_grid_size", &ImPlotStyle::MinorGridSize)
+        .def_rw("plot_padding", &ImPlotStyle::PlotPadding)
+        .def_rw("label_padding", &ImPlotStyle::LabelPadding)
+        .def_rw("legend_padding", &ImPlotStyle::LegendPadding)
+        .def_rw("legend_inner_padding", &ImPlotStyle::LegendInnerPadding)
+        .def_rw("legend_spacing", &ImPlotStyle::LegendSpacing)
+        .def_rw("mouse_pos_padding", &ImPlotStyle::MousePosPadding)
+        .def_rw("annotation_padding", &ImPlotStyle::AnnotationPadding)
+        .def_rw("fit_padding", &ImPlotStyle::FitPadding)
+        .def_rw("plot_default_size", &ImPlotStyle::PlotDefaultSize)
+        .def_rw("plot_min_size", &ImPlotStyle::PlotMinSize)
+        .def_prop_ro("colors", [](ImPlotStyle* style) -> ColorsArray { return ColorsArray(style->Colors); }, nb::rv_policy::reference_internal)
+        .def_rw("colormap", &ImPlotStyle::Colormap)
+        .def_rw("use_local_time", &ImPlotStyle::UseLocalTime)
+        .def_rw("use_iso8601", &ImPlotStyle::UseISO8601)
+        .def_rw("use_24hour_clock", &ImPlotStyle::Use24HourClock);
+
     nb::class_<ImPlotInputMap>(m, "InputMap", "Input mapping structure. Default values listed. See also `implot.map_input_default()`, `implot.map_input_reverse()`.");
 
     nb::class_<ImPlotContext>(m, "Context", "ImPlot context (opaque struct, see implot_internal.h)")
@@ -255,6 +315,54 @@ void implot_bindings(nb::module_& m) {
         }
         ImPlot::PlotDigital(label_id, (const double*)xs.data(), (const double*)ys.data(), count, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("DigitalFlags.NONE") = ImPlotDigitalFlags_None, plot_digital_docstring);
+
+#define NP_ARRAY_ARGS_DOC "The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details."
+    // Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.
+    m.def("drag_point", [](int id, ndarray_vec2_f64_rw& point, ImVec4 col, float size, ImPlotDragToolFlags_ flags, std::optional<ndarray_scalar_bool_rw> out_clicked, std::optional<ndarray_scalar_bool_rw> out_hovered, std::optional<ndarray_scalar_bool_rw> out_held) {
+        bool* clicked = out_clicked ? out_clicked->data() : nullptr;
+        bool* hovered = out_hovered ? out_hovered->data() : nullptr;
+        bool* held = out_held ? out_held->data() : nullptr;
+        double* xy = point.data();
+        return ImPlot::DragPoint(id, xy, xy + 1, col, size, flags, clicked, hovered, held);
+    }, "id"_a, "point"_a, "col"_a, "size"_a = 4.0, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
+    "Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.\n"
+    "Returns `True` if the point was dragged.\n\n"
+    NP_ARRAY_ARGS_DOC);
+
+    m.def("drag_line_x", [](int id, ndarray_scalar_f64_rw& x, ImVec4 col, float thickness, ImPlotDragToolFlags_ flags, std::optional<ndarray_scalar_bool_rw> out_clicked, std::optional<ndarray_scalar_bool_rw> out_hovered, std::optional<ndarray_scalar_bool_rw> out_held) {
+        bool* clicked = out_clicked ? out_clicked->data() : nullptr;
+        bool* hovered = out_hovered ? out_hovered->data() : nullptr;
+        bool* held = out_held ? out_held->data() : nullptr;
+        return ImPlot::DragLineX(id, x.data(), col, thickness, flags, clicked, hovered, held);
+    }, "id"_a, "x"_a, "col"_a, "thickness"_a = 1, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
+    "Shows a draggable vertical guide line at an x-value. The drag position will be written to the `x` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.\n"
+    "Returns `True` if the line was dragged.\n\n"
+    NP_ARRAY_ARGS_DOC);
+
+    m.def("drag_line_y", [](int id, ndarray_scalar_f64_rw& y, ImVec4 col, float thickness, ImPlotDragToolFlags_ flags, std::optional<ndarray_scalar_bool_rw> out_clicked, std::optional<ndarray_scalar_bool_rw> out_hovered, std::optional<ndarray_scalar_bool_rw> out_held) {
+        bool* clicked = out_clicked ? out_clicked->data() : nullptr;
+        bool* hovered = out_hovered ? out_hovered->data() : nullptr;
+        bool* held = out_held ? out_held->data() : nullptr;
+        return ImPlot::DragLineY(id, y.data(), col, thickness, flags, clicked, hovered, held);
+    }, "id"_a, "y"_a, "col"_a, "thickness"_a = 1, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
+    "Shows a draggable horizontal guide line at a y-value. The drag position will be written to the `y` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the line is clicked, hovered, or held, respectively.\n"
+    "Returns `True` if the line was dragged.\n\n"
+    NP_ARRAY_ARGS_DOC);
+
+    m.def("drag_rect", [](int id, ndarray_rect_f64_rw& rect, ImVec4 col, ImPlotDragToolFlags_ flags, std::optional<ndarray_scalar_bool_rw> out_clicked, std::optional<ndarray_scalar_bool_rw> out_hovered, std::optional<ndarray_scalar_bool_rw> out_held) {
+        bool* clicked = out_clicked ? out_clicked->data() : nullptr;
+        bool* hovered = out_hovered ? out_hovered->data() : nullptr;
+        bool* held = out_held ? out_held->data() : nullptr;
+        double* r = rect.data();
+        return ImPlot::DragRect(id, r, r + 1, r + 2, r + 3, col, flags, clicked, hovered, held);
+    }, "id"_a, "rect"_a, "col"_a, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
+    "Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.\n"
+    "Returns `True` if the point was dragged.\n\n"
+    NP_ARRAY_ARGS_DOC);
 
     // Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.
     const char annotation_docstring[] = "Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.";

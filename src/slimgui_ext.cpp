@@ -186,7 +186,7 @@ NB_MODULE(slimgui_ext, top) {
         })
         .def("__iter__", [](const ColorsArray& self) {
             // TODO weird why 'slimgui_ext.' is required here.  Some missing setup in this class binding?
-            return nb::make_iterator(nb::type<ImVec4>(), "slimgui_ext.ColorsArrayIterator", self.data, self.data + (size_t)ImGuiCol_COUNT);
+            return nb::make_iterator(nb::type<ImVec4>(), "slimgui_ext.imgui.ColorsArrayIterator", self.data, self.data + (size_t)ImGuiCol_COUNT);
         }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ColorsArray& self) {
             return (size_t)ImGuiCol_COUNT;

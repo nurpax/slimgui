@@ -149,6 +149,15 @@ def show_demo_window(show_window: bool):
         imgui.text('User guide follows ->')
         implot.show_user_guide()
 
+    if imgui.collapsing_header('Drag Points')[0]:
+        _drag_points()
+
+    if imgui.collapsing_header('Drag Lines')[0]:
+        _drag_lines()
+
+    if imgui.collapsing_header('Drag Rects')[0]:
+        _drag_rects()
+
     imgui.end()
     return show_window
 
@@ -362,3 +371,183 @@ def _histogram2d():
         "Density" if _hist_flags & implot.HistogramFlags.DENSITY else "Count", 0, max_count, size=(100, 0)
     )
     implot.pop_colormap()
+
+
+# Persistent state for _drag_points
+_drag_points_state = {
+    "flags": 0,
+    "P": np.array([[0.05, 0.05], [0.2, 0.4], [0.8, 0.6], [0.95, 0.95]], dtype=np.float64),
+    "clicked": [np.array(False, dtype=np.bool_) for _ in range(4)],
+    "hovered": [np.array(False, dtype=np.bool_) for _ in range(4)],
+    "held": [np.array(False, dtype=np.bool_) for _ in range(4)],
+}
+
+def _drag_points():
+    state = _drag_points_state
+
+    # UI for flags
+    flags = state["flags"]
+    _, flags = imgui.checkbox_flags("NoCursors", flags, int(implot.DragToolFlags.NO_CURSORS))
+    imgui.same_line()
+    _, flags = imgui.checkbox_flags("NoFit", flags, int(implot.DragToolFlags.NO_FIT))
+    imgui.same_line()
+    _, flags = imgui.checkbox_flags("NoInput", flags, int(implot.DragToolFlags.NO_INPUTS))
+    state["flags"] = flags
+
+    ax_flags = implot.AxisFlags.NO_TICK_LABELS | implot.AxisFlags.NO_TICK_MARKS
+
+    P = state["P"]
+    hovered = state["hovered"]
+    held = state["held"]
+
+    if implot.begin_plot("##Bezier", size=(-1, 0), flags=implot.PlotFlags.CANVAS_ONLY):
+        implot.setup_axes(None, None, ax_flags, ax_flags)
+        implot.setup_axes_limits(0, 1, 0, 1)
+        colors = [
+            (0, 0.9, 0, 1),
+            (1, 0.5, 1, 1),
+            (0, 0.5, 1, 1),
+            (0, 0.9, 0, 1),
+        ]
+        for i in range(4):
+            implot.drag_point(
+                i, P[i], col=colors[i], size=4, flags=implot.DragToolFlags(flags),
+                out_hovered=state["hovered"][i],
+                out_held=state["held"][i]
+            )
+
+        # Compute Bezier curve
+        B = np.zeros((100, 2), dtype=np.float64)
+        for i in range(100):
+            t = i / 99.0
+            u = 1 - t
+            w1 = u * u * u
+            w2 = 3 * u * u * t
+            w3 = 3 * u * t * t
+            w4 = t * t * t
+            B[i, 0] = w1 * P[0, 0] + w2 * P[1, 0] + w3 * P[2, 0] + w4 * P[3, 0]
+            B[i, 1] = w1 * P[0, 1] + w2 * P[1, 1] + w3 * P[2, 1] + w4 * P[3, 1]
+
+        implot.set_next_line_style((1, 0.5, 1, 1), 2.0 if hovered[1] or held[1] else 1.0)
+        implot.plot_line("##h1", P[:2, 0], P[:2, 1])
+        implot.set_next_line_style((0, 0.5, 1, 1), 2.0 if hovered[2] or held[2] else 1.0)
+        implot.plot_line("##h2", P[2:, 0], P[2:, 1])
+        implot.set_next_line_style((0, 0.9, 0, 1), 3.0 if hovered[0] or held[0] or hovered[3] or held[3] else 2.0)
+        implot.plot_line("##bez", B[:, 0], B[:, 1])
+        implot.end_plot()
+
+
+# Persistent state for _drag_lines
+_drag_lines_state = {
+    "x1": np.array(0.2, dtype=np.float64),
+    "x2": np.array(0.8, dtype=np.float64),
+    "y1": np.array(0.25, dtype=np.float64),
+    "y2": np.array(0.75, dtype=np.float64),
+    "f": np.array(0.1, dtype=np.float64),
+    "flags": 0,
+    "clicked": np.array(False, dtype=np.bool_),
+    "hovered": np.array(False, dtype=np.bool_),
+    "held": np.array(False, dtype=np.bool_),
+}
+
+def _drag_lines():
+    import numpy as np
+    state = _drag_lines_state
+
+    # UI for flags
+    _, flags = imgui.checkbox_flags("NoCursors", state["flags"], int(implot.DragToolFlags.NO_CURSORS))
+    imgui.same_line()
+    _, flags = imgui.checkbox_flags("NoFit", flags, int(implot.DragToolFlags.NO_FIT))
+    imgui.same_line()
+    _, flags = imgui.checkbox_flags("NoInput", flags, int(implot.DragToolFlags.NO_INPUTS))
+    state["flags"] = flags
+
+    if implot.begin_plot("##lines", size=(-1, 0)):
+        implot.setup_axes_limits(0, 1, 0, 1)
+
+        # Drag lines
+        white = (1, 1, 1, 1)
+        implot.drag_line_x(0, state["x1"], white, 1, implot.DragToolFlags(flags))
+        implot.drag_line_x(1, state["x2"], white, 1, implot.DragToolFlags(flags))
+        implot.drag_line_y(2, state["y1"], white, 1, implot.DragToolFlags(flags))
+        implot.drag_line_y(3, state["y2"], white, 1, implot.DragToolFlags(flags))
+
+        # Generate data points
+        xs = np.zeros(1000, dtype=np.float64)
+        ys = np.zeros(1000, dtype=np.float64)
+        for i in range(1000):
+            xs[i] = (state["x2"][...] + state["x1"][...])/2 + abs(state["x2"][...] - state["x1"][...])*(i/1000.0 - 0.5)
+            ys[i] = (state["y1"][...] + state["y2"][...])/2 + abs(state["y2"][...] - state["y1"][...])/2 * np.sin(state["f"][...] * i/10)
+
+        # Frequency control line
+        implot.drag_line_y(120482, state["f"], (1, 0.5, 1, 1), 1, implot.DragToolFlags(flags),
+                          out_clicked=state["clicked"],
+                          out_hovered=state["hovered"],
+                          out_held=state["held"])
+
+        # Plot the interactive data
+        implot.set_next_line_style(implot.AUTO_COL, 2.0 if state["hovered"][...] or state["held"][...] else 1.0)
+        implot.plot_line("Interactive Data", xs, ys)
+        implot.end_plot()
+
+    imgui.text(f"x1: {state['x1']:.3f}, x2: {state['x2']:.3f}, y1: {state['y1']:.3f}, y2: {state['y2']:.3f}, f: {state['f']:.3f}")
+
+
+# Persistent state for _drag_rects
+_drag_rects_state = {
+    "rect": np.array([[0.0025, 0], [0.0045, 0.5]], dtype=np.float64),  # [[x0, y0], [x1, y1]]
+    "flags": 0,
+    "clicked": np.array(False, dtype=np.bool_),
+    "hovered": np.array(False, dtype=np.bool_),
+    "held": np.array(False, dtype=np.bool_),
+}
+
+def _drag_rects():
+    state = _drag_rects_state
+
+    # UI for flags
+    _, flags = imgui.checkbox_flags("NoCursors", state["flags"], int(implot.DragToolFlags.NO_CURSORS))
+    imgui.same_line()
+    _, flags = imgui.checkbox_flags("NoFit", flags, int(implot.DragToolFlags.NO_FIT))
+    imgui.same_line()
+    _, flags = imgui.checkbox_flags("NoInput", flags, int(implot.DragToolFlags.NO_INPUTS))
+    state["flags"] = flags
+
+    # Generate signal data
+    sampling_freq = 44100
+    freq = 500
+    t = np.arange(512) / sampling_freq
+    arg = 2 * np.pi * freq * t
+    y_data1 = np.sin(arg)
+    y_data2 = y_data1 * -0.6 + np.sin(2 * arg) * 0.4
+    y_data3 = y_data2 * -0.6 + np.sin(3 * arg) * 0.4
+
+    if implot.begin_plot("##Main", size=(-1, 150)):
+        implot.setup_axes(None, None, implot.AxisFlags.NO_TICK_LABELS, implot.AxisFlags.NO_TICK_LABELS)
+        implot.setup_axes_limits(0, 0.01, -1, 1)
+        implot.plot_line("Signal 1", t, y_data1)
+        implot.plot_line("Signal 2", t, y_data2)
+        implot.plot_line("Signal 3", t, y_data3)
+        implot.drag_rect(
+            0,
+            state["rect"],
+            (1, 0, 1, 1),
+            implot.DragToolFlags(flags),
+            out_clicked=state["clicked"],
+            out_hovered=state["hovered"],
+            out_held=state["held"]
+        )
+        implot.end_plot()
+
+    # Set background color based on state
+    bg_col = (0.5, 0, 0.5, 1) if state["held"] else ((0.25, 0, 0.25, 1) if state["hovered"] else implot.get_style().colors[implot.Col.PLOT_BG])
+    implot.push_style_color(implot.Col.PLOT_BG, bg_col)
+    if implot.begin_plot("##rect", size=(-1, 150), flags=implot.PlotFlags.CANVAS_ONLY):
+        implot.setup_axes(None, None, implot.AxisFlags.NO_DECORATIONS, implot.AxisFlags.NO_DECORATIONS)
+        implot.setup_axes_limits(state["rect"][0, 0], state["rect"][1, 0], state["rect"][0, 1], state["rect"][1, 1], implot.Cond.ALWAYS)
+        implot.plot_line("Signal 1", t, y_data1)
+        implot.plot_line("Signal 2", t, y_data2)
+        implot.plot_line("Signal 3", t, y_data3)
+        implot.end_plot()
+    implot.pop_style_color()
+    imgui.text(f"Rect is {'not ' if not state['clicked'] else ''}clicked, {'not ' if not state['hovered'] else ''}hovered, {'not ' if not state['held'] else ''}held")

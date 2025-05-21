@@ -100,6 +100,8 @@ Important notes regarding `begin_plot()` from inside of `begin_subplots()`:
   subplot context. The actual size of the subplot will be based on the
   `size` value you pass to `begin_subplots()` and `row_ratios`/`col_ratios` if provided.
 
+<div class="raw-html-insert" data-apirefs="begin_subplots, end_subplots"></div>
+
 ### Setup
 
 The following API allows you to set up and customize various aspects of the current plot. The functions should be called immediately after `begin_plot()` and before any other API calls. Typical usage is as follows:
@@ -166,6 +168,8 @@ Like the item plotting functions above, they apply to the current x and y
 axes, which can be changed with `set_axis()`/`set_axes()`. These functions return `True`
 when user interaction causes the provided coordinates to change. Additional
 user interactions can be retrieved through the optional output parameters.
+
+Functions such as `drag_point`, `drag_line_x/y` and `drag_rect` use `np.array`s to pass in a mutable reference to float and bool values.  Search for `drag_line_x` in [example/implot_demo_window/implot.py](https://github.com/nurpax/slimgui/blob/main/example/implot_demo_window/implot.py) to find examples on how to do this.
 
 <div class="raw-html-insert" data-apirefs="drag_point,drag_line_x,drag_line_y,drag_rect,annotation,tag_x,tag_y"></div>
 

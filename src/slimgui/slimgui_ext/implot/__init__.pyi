@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 import enum
 from typing import Annotated, overload
 
@@ -283,6 +283,15 @@ class ColormapScaleFlags(enum.IntFlag):
     """
     Invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
     """
+
+class ColorsArray:
+    def __getitem__(self, arg: Col, /) -> tuple[float, float, float, float]: ...
+
+    def __setitem__(self, arg0: Col, arg1: tuple[float, float, float, float], /) -> None: ...
+
+    def __iter__(self) -> Iterator[tuple[float, float, float, float]]: ...
+
+    def __len__(self) -> int: ...
 
 class Cond(enum.IntEnum):
     NONE = 0
@@ -718,6 +727,195 @@ class StemsFlags(enum.IntFlag):
 class Style:
     """Plot style structure"""
 
+    @property
+    def line_weight(self) -> float: ...
+
+    @line_weight.setter
+    def line_weight(self, arg: float, /) -> None: ...
+
+    @property
+    def marker(self) -> int: ...
+
+    @marker.setter
+    def marker(self, arg: int, /) -> None: ...
+
+    @property
+    def marker_size(self) -> float: ...
+
+    @marker_size.setter
+    def marker_size(self, arg: float, /) -> None: ...
+
+    @property
+    def marker_weight(self) -> float: ...
+
+    @marker_weight.setter
+    def marker_weight(self, arg: float, /) -> None: ...
+
+    @property
+    def fill_alpha(self) -> float: ...
+
+    @fill_alpha.setter
+    def fill_alpha(self, arg: float, /) -> None: ...
+
+    @property
+    def error_bar_size(self) -> float: ...
+
+    @error_bar_size.setter
+    def error_bar_size(self, arg: float, /) -> None: ...
+
+    @property
+    def error_bar_weight(self) -> float: ...
+
+    @error_bar_weight.setter
+    def error_bar_weight(self, arg: float, /) -> None: ...
+
+    @property
+    def digital_bit_height(self) -> float: ...
+
+    @digital_bit_height.setter
+    def digital_bit_height(self, arg: float, /) -> None: ...
+
+    @property
+    def digital_bit_gap(self) -> float: ...
+
+    @digital_bit_gap.setter
+    def digital_bit_gap(self, arg: float, /) -> None: ...
+
+    @property
+    def plot_border_size(self) -> float: ...
+
+    @plot_border_size.setter
+    def plot_border_size(self, arg: float, /) -> None: ...
+
+    @property
+    def minor_alpha(self) -> float: ...
+
+    @minor_alpha.setter
+    def minor_alpha(self, arg: float, /) -> None: ...
+
+    @property
+    def major_tick_len(self) -> tuple[float, float]: ...
+
+    @major_tick_len.setter
+    def major_tick_len(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def minor_tick_len(self) -> tuple[float, float]: ...
+
+    @minor_tick_len.setter
+    def minor_tick_len(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def major_tick_size(self) -> tuple[float, float]: ...
+
+    @major_tick_size.setter
+    def major_tick_size(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def minor_tick_size(self) -> tuple[float, float]: ...
+
+    @minor_tick_size.setter
+    def minor_tick_size(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def major_grid_size(self) -> tuple[float, float]: ...
+
+    @major_grid_size.setter
+    def major_grid_size(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def minor_grid_size(self) -> tuple[float, float]: ...
+
+    @minor_grid_size.setter
+    def minor_grid_size(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def plot_padding(self) -> tuple[float, float]: ...
+
+    @plot_padding.setter
+    def plot_padding(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def label_padding(self) -> tuple[float, float]: ...
+
+    @label_padding.setter
+    def label_padding(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def legend_padding(self) -> tuple[float, float]: ...
+
+    @legend_padding.setter
+    def legend_padding(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def legend_inner_padding(self) -> tuple[float, float]: ...
+
+    @legend_inner_padding.setter
+    def legend_inner_padding(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def legend_spacing(self) -> tuple[float, float]: ...
+
+    @legend_spacing.setter
+    def legend_spacing(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def mouse_pos_padding(self) -> tuple[float, float]: ...
+
+    @mouse_pos_padding.setter
+    def mouse_pos_padding(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def annotation_padding(self) -> tuple[float, float]: ...
+
+    @annotation_padding.setter
+    def annotation_padding(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def fit_padding(self) -> tuple[float, float]: ...
+
+    @fit_padding.setter
+    def fit_padding(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def plot_default_size(self) -> tuple[float, float]: ...
+
+    @plot_default_size.setter
+    def plot_default_size(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def plot_min_size(self) -> tuple[float, float]: ...
+
+    @plot_min_size.setter
+    def plot_min_size(self, arg: tuple[float, float], /) -> None: ...
+
+    @property
+    def colors(self) -> ColorsArray: ...
+
+    @property
+    def colormap(self) -> int: ...
+
+    @colormap.setter
+    def colormap(self, arg: int, /) -> None: ...
+
+    @property
+    def use_local_time(self) -> bool: ...
+
+    @use_local_time.setter
+    def use_local_time(self, arg: bool, /) -> None: ...
+
+    @property
+    def use_iso8601(self) -> bool: ...
+
+    @use_iso8601.setter
+    def use_iso8601(self, arg: bool, /) -> None: ...
+
+    @property
+    def use_24hour_clock(self) -> bool: ...
+
+    @use_24hour_clock.setter
+    def use_24hour_clock(self, arg: bool, /) -> None: ...
+
 class StyleVar(enum.IntEnum):
     LINE_WEIGHT = 0
     """Float,  plot item line weight in pixels"""
@@ -981,6 +1179,42 @@ def colormap_scale(label: str, scale_min: float, scale_max: float, size: tuple[f
 def create_context_internal() -> Context: ...
 
 def destroy_context_internal(arg: Context, /) -> None: ...
+
+def drag_line_x(id: int, x: Annotated[ArrayLike, dict(dtype='float64', shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
+    """
+    Shows a draggable vertical guide line at an x-value. The drag position will be written to the `x` array. Color `col` defaults to `imgui.Col.TEXT`.
+    `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
+    Returns `True` if the line was dragged.
+
+    The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
+    """
+
+def drag_line_y(id: int, y: Annotated[ArrayLike, dict(dtype='float64', shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
+    """
+    Shows a draggable horizontal guide line at a y-value. The drag position will be written to the `y` array. Color `col` defaults to `imgui.Col.TEXT`.
+    `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the line is clicked, hovered, or held, respectively.
+    Returns `True` if the line was dragged.
+
+    The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
+    """
+
+def drag_point(id: int, point: Annotated[ArrayLike, dict(dtype='float64', shape=(2), order='C', device='cpu')], col: tuple[float, float, float, float], size: float = 4.0, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
+    """
+    Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.
+    `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
+    Returns `True` if the point was dragged.
+
+    The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
+    """
+
+def drag_rect(id: int, rect: Annotated[ArrayLike, dict(dtype='float64', shape=(2, 2), order='C', device='cpu')], col: tuple[float, float, float, float], flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
+    """
+    Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.
+    `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
+    Returns `True` if the point was dragged.
+
+    The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
+    """
 
 def end_aligned_plots() -> None:
     """
