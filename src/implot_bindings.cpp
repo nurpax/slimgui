@@ -325,7 +325,7 @@ void implot_bindings(nb::module_& m) {
         double* xy = point.data();
         return ImPlot::DragPoint(id, xy, xy + 1, col, size, flags, clicked, hovered, held);
     }, "id"_a, "point"_a, "col"_a, "size"_a = 4.0, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
-    "Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "Shows a draggable point at `point`.  The updated drag position will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.\n"
     "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.\n"
     "Returns `True` if the point was dragged.\n\n"
     NP_ARRAY_ARGS_DOC);
@@ -336,7 +336,7 @@ void implot_bindings(nb::module_& m) {
         bool* held = out_held ? out_held->data() : nullptr;
         return ImPlot::DragLineX(id, x.data(), col, thickness, flags, clicked, hovered, held);
     }, "id"_a, "x"_a, "col"_a, "thickness"_a = 1, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
-    "Shows a draggable vertical guide line at an x-value. The drag position will be written to the `x` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "Shows a draggable vertical guide line at an x-value. The updated drag position will be written to the `x` array.  Color `col` defaults to `imgui.Col.TEXT`.\n"
     "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.\n"
     "Returns `True` if the line was dragged.\n\n"
     NP_ARRAY_ARGS_DOC);
@@ -347,7 +347,7 @@ void implot_bindings(nb::module_& m) {
         bool* held = out_held ? out_held->data() : nullptr;
         return ImPlot::DragLineY(id, y.data(), col, thickness, flags, clicked, hovered, held);
     }, "id"_a, "y"_a, "col"_a, "thickness"_a = 1, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
-    "Shows a draggable horizontal guide line at a y-value. The drag position will be written to the `y` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "Shows a draggable horizontal guide line at a y-value. The updated drag position will be written to the `y` array.  Color `col` defaults to `imgui.Col.TEXT`.\n"
     "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the line is clicked, hovered, or held, respectively.\n"
     "Returns `True` if the line was dragged.\n\n"
     NP_ARRAY_ARGS_DOC);
@@ -359,9 +359,9 @@ void implot_bindings(nb::module_& m) {
         double* r = rect.data();
         return ImPlot::DragRect(id, r, r + 1, r + 2, r + 3, col, flags, clicked, hovered, held);
     }, "id"_a, "rect"_a, "col"_a, "flags"_a.sig("DragToolFlags.NONE") = ImPlotDragToolFlags_None, "out_clicked"_a = nb::none(), "out_hovered"_a = nb::none(), "out_held"_a = nb::none(),
-    "Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.\n"
+    "Shows a draggable rectangle at `[[x0, y0], [x1, y1]` coordinates, loaded from `rect`.  The updated drag rectangle will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.\n"
     "`out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.\n"
-    "Returns `True` if the point was dragged.\n\n"
+    "Returns `True` if the rectangle was dragged.\n\n"
     NP_ARRAY_ARGS_DOC);
 
     // Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.

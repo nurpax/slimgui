@@ -169,7 +169,11 @@ axes, which can be changed with `set_axis()`/`set_axes()`. These functions retur
 when user interaction causes the provided coordinates to change. Additional
 user interactions can be retrieved through the optional output parameters.
 
-Functions such as `drag_point`, `drag_line_x/y` and `drag_rect` use `np.array`s to pass in a mutable reference to float and bool values.  Search for `drag_line_x` in [example/implot_demo_window/implot.py](https://github.com/nurpax/slimgui/blob/main/example/implot_demo_window/implot.py) to find examples on how to do this.
+Functions such as `drag_point`, `drag_line_x/y` and `drag_rect` use `np.array`s to pass in a mutable reference to float and bool values.
+
+Be careful to use the right `dtype` for the input `np.arrays`: use `dtype=np.float64` for floats and `dtype=np.bool_` for bools.
+For example, to specify a point for `drag_point`, you could create the array like so: `np.array([x, y], dtype=np.float64)`.
+Search for `drag_line_x` in [example/implot_demo_window/implot.py](https://github.com/nurpax/slimgui/blob/main/example/implot_demo_window/implot.py) for more examples.
 
 <div class="raw-html-insert" data-apirefs="drag_point,drag_line_x,drag_line_y,drag_rect,annotation,tag_x,tag_y"></div>
 

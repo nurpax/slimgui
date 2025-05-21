@@ -1182,7 +1182,7 @@ def destroy_context_internal(arg: Context, /) -> None: ...
 
 def drag_line_x(id: int, x: Annotated[ArrayLike, dict(dtype='float64', shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
-    Shows a draggable vertical guide line at an x-value. The drag position will be written to the `x` array. Color `col` defaults to `imgui.Col.TEXT`.
+    Shows a draggable vertical guide line at an x-value. The updated drag position will be written to the `x` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
     Returns `True` if the line was dragged.
 
@@ -1191,7 +1191,7 @@ def drag_line_x(id: int, x: Annotated[ArrayLike, dict(dtype='float64', shape=(),
 
 def drag_line_y(id: int, y: Annotated[ArrayLike, dict(dtype='float64', shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
-    Shows a draggable horizontal guide line at a y-value. The drag position will be written to the `y` array. Color `col` defaults to `imgui.Col.TEXT`.
+    Shows a draggable horizontal guide line at a y-value. The updated drag position will be written to the `y` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the line is clicked, hovered, or held, respectively.
     Returns `True` if the line was dragged.
 
@@ -1200,7 +1200,7 @@ def drag_line_y(id: int, y: Annotated[ArrayLike, dict(dtype='float64', shape=(),
 
 def drag_point(id: int, point: Annotated[ArrayLike, dict(dtype='float64', shape=(2), order='C', device='cpu')], col: tuple[float, float, float, float], size: float = 4.0, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
-    Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.
+    Shows a draggable point at `point`.  The updated drag position will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
     Returns `True` if the point was dragged.
 
@@ -1209,9 +1209,9 @@ def drag_point(id: int, point: Annotated[ArrayLike, dict(dtype='float64', shape=
 
 def drag_rect(id: int, rect: Annotated[ArrayLike, dict(dtype='float64', shape=(2, 2), order='C', device='cpu')], col: tuple[float, float, float, float], flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[ArrayLike, dict(dtype='bool', shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
-    Shows a draggable point at `point`.  The drag position will be written to the `point` array. Color `col` defaults to `imgui.Col.TEXT`.
+    Shows a draggable rectangle at `[[x0, y0], [x1, y1]` coordinates, loaded from `rect`.  The updated drag rectangle will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
-    Returns `True` if the point was dragged.
+    Returns `True` if the rectangle was dragged.
 
     The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
     """
