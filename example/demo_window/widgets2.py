@@ -1,4 +1,3 @@
-
 import pickle
 from typing import Literal
 from slimgui import imgui
@@ -17,6 +16,8 @@ def show():
     _drag_and_drop()
 
     _show_shortcut_demo()
+
+    _show_input_state_demo()
 
     expanded, _ = imgui.collapsing_header("Widgets 2")
     if not expanded:
@@ -169,3 +170,21 @@ def _show_shortcut_demo():
     pos_x, pos_y = imgui.get_cursor_screen_pos()
     imgui.set_cursor_screen_pos((pos_x + _shortcut_blockpos * 32, pos_y))
     imgui.color_button('block', (1, 0.3, 0.1, 1), size=(32, 32))
+
+
+def _show_input_state_demo():
+    expanded, _ = imgui.collapsing_header("Mouse & Keyboard State APIs")
+    if not expanded:
+        return
+
+    io = imgui.get_io()
+    imgui.text(f"mouse_pos: {io.mouse_pos}")
+    imgui.text(f"mouse_down: {io.mouse_down}")
+    imgui.text(f"mouse_wheel: {io.mouse_wheel}")
+    imgui.text(f"mouse_wheel_h: {io.mouse_wheel_h}")
+    imgui.text(f"mouse_source: {io.mouse_source}")
+    imgui.text(f"key_ctrl: {io.key_ctrl}")
+    imgui.text(f"key_shift: {io.key_shift}")
+    imgui.text(f"key_alt: {io.key_alt}")
+    imgui.text(f"key_super: {io.key_super}")
+

@@ -38,6 +38,7 @@ enum_list_imgui = [
     ("ImGuiDir", "Dir"),
     ("ImGuiStyleVar_", "StyleVar"),
     ("ImGuiTableBgTarget_", "TableBgTarget"),
+    ("ImGuiMouseSource", "MouseSource"),
 ]
 
 enum_list_implot = [

@@ -1136,6 +1136,17 @@ nb::enum_<ImGuiTableBgTarget_>(m, "TableBgTarget", nb::is_arithmetic())
            "Set row background color 1 (generally used for selection marking)")
     .value("CELL_BG", ImGuiTableBgTarget_CellBg,
            "Set cell background color (top-most color)");
+nb::enum_<ImGuiMouseSource>(m, "MouseSource", nb::is_arithmetic())
+    .value("MOUSE", ImGuiMouseSource_Mouse,
+           "Input is coming from an actual mouse.")
+    .value("TOUCH_SCREEN", ImGuiMouseSource_TouchScreen,
+           "Input is coming from a touch screen (no hovering prior to initial "
+           "press, less precise initial press aiming, dual-axis wheeling "
+           "possible).")
+    .value("PEN", ImGuiMouseSource_Pen,
+           "Input is coming from a pressure/magnetic pen (often used in "
+           "conjunction with high-sampling rates).")
+    .value("COUNT", ImGuiMouseSource_COUNT);
 nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())
     .value("KEY_NONE", ImGuiKey_None)
     .value("KEY_NAMED_KEY_BEGIN", ImGuiKey_NamedKey_BEGIN)

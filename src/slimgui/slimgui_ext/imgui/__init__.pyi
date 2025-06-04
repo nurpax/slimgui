@@ -1128,6 +1128,33 @@ class IO:
     @property
     def mouse_delta(self) -> tuple[float, float]: ...
 
+    @property
+    def mouse_pos(self) -> tuple[float, float]: ...
+
+    @property
+    def mouse_down(self) -> list[bool]: ...
+
+    @property
+    def mouse_wheel(self) -> float: ...
+
+    @property
+    def mouse_wheel_h(self) -> float: ...
+
+    @property
+    def mouse_source(self) -> MouseSource: ...
+
+    @property
+    def key_ctrl(self) -> bool: ...
+
+    @property
+    def key_shift(self) -> bool: ...
+
+    @property
+    def key_alt(self) -> bool: ...
+
+    @property
+    def key_super(self) -> bool: ...
+
 class InputFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -1701,6 +1728,22 @@ class MouseCursor(enum.IntEnum):
     """
 
     COUNT = 11
+
+class MouseSource(enum.IntEnum):
+    MOUSE = 0
+    """Input is coming from an actual mouse."""
+
+    TOUCH_SCREEN = 1
+    """
+    Input is coming from a touch screen (no hovering prior to initial press, less precise initial press aiming, dual-axis wheeling possible).
+    """
+
+    PEN = 2
+    """
+    Input is coming from a pressure/magnetic pen (often used in conjunction with high-sampling rates).
+    """
+
+    COUNT = 3
 
 PAYLOAD_TYPE_COLOR_3F: str = '_COL3F'
 

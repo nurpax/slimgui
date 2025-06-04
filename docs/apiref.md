@@ -605,4 +605,4 @@ You can visualize registered routes in the "Metrics/Debugger->Inputs" window.
 
 ## Enum Reference
 
-<div class="raw-html-insert" data-apirefs="BackendFlags,ButtonFlags,ChildFlags,Col,ColorEditFlags,ComboFlags,Cond,ConfigFlags,Dir,DragDropFlags,DrawFlags,FocusedFlags,HoveredFlags,InputTextFlags,Key,MouseButton,MouseCursor,PopupFlags,SelectableFlags,SliderFlags,StyleVar,TabBarFlags,TabItemFlags,TableBgTarget,TableColumnFlags,TableFlags,TableRowFlags,TreeNodeFlags,WindowFlags"></div>
+<div class="raw-html-insert" data-apirefs="BackendFlags,ButtonFlags,ChildFlags,Col,ColorEditFlags,ComboFlags,Cond,ConfigFlags,Dir,DragDropFlags,DrawFlags,FocusedFlags,HoveredFlags,InputTextFlags,Key,MouseButton,MouseCursor,MouseSource,PopupFlags,SelectableFlags,SliderFlags,StyleVar,TabBarFlags,TabItemFlags,TableBgTarget,TableColumnFlags,TableFlags,TableRowFlags,TreeNodeFlags,WindowFlags"></div>

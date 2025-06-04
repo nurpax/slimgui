@@ -1,6 +1,7 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/make_iterator.h>
 #include <nanobind/ndarray.h>
+#include <nanobind/stl/array.h>
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/tuple.h>
 #include <nanobind/stl/vector.h>
@@ -314,7 +315,25 @@ NB_MODULE(slimgui_ext, top) {
         .def_ro("metrics_render_indices", &ImGuiIO::MetricsRenderIndices)
         .def_ro("metrics_render_windows", &ImGuiIO::MetricsRenderWindows)
         .def_ro("metrics_active_windows", &ImGuiIO::MetricsActiveWindows)
-        .def_ro("mouse_delta", &ImGuiIO::MouseDelta);
+        .def_ro("mouse_delta", &ImGuiIO::MouseDelta)
+        .def_ro("mouse_pos", &ImGuiIO::MousePos)
+        .def_ro("mouse_down", &ImGuiIO::MouseDown)
+        .def_prop_ro("mouse_down", [](const ImGuiIO* io) {
+            std::array<bool, (int)ImGuiMouseSource_COUNT> mouse_down;
+            for (int i = 0; i < (int)ImGuiMouseSource_COUNT; ++i) {
+                mouse_down[i] = io->MouseDown[i];
+            }
+            return mouse_down;
+        })
+        .def_ro("mouse_wheel", &ImGuiIO::MouseWheel)
+        .def_ro("mouse_wheel_h", &ImGuiIO::MouseWheelH)
+        .def_prop_ro("mouse_source", [](const ImGuiIO* io) {
+            return (ImGuiMouseSource)io->MouseSource;
+        })
+        .def_ro("key_ctrl", &ImGuiIO::KeyCtrl)
+        .def_ro("key_shift", &ImGuiIO::KeyShift)
+        .def_ro("key_alt", &ImGuiIO::KeyAlt)
+        .def_ro("key_super", &ImGuiIO::KeySuper);
 
     // TODO all fields
     nb::class_<ImDrawCmd>(m, "DrawCmd")
