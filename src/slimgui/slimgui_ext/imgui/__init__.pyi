@@ -473,6 +473,8 @@ class Context:
 
     def get_style_internal(self) -> Style: ...
 
+    def get_font_internal(self) -> Font: ...
+
     def get_background_draw_list_internal(self) -> DrawList: ...
 
     def get_foreground_draw_list_internal(self) -> DrawList: ...
@@ -3995,6 +3997,9 @@ def set_item_default_focus() -> None:
     """Make last item the default focused item of a newly appearing window."""
     ...
 
+
+def set_item_key_owner(key: Key) -> None:
+    """Set key owner to last item ID if it is hovered or active."""
 
 def set_item_tooltip(text: str) -> None:
     """Set a text-only tooltip if preceding item was hovered. override any previous call to `set_tooltip()`."""

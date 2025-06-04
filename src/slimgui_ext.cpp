@@ -448,6 +448,9 @@ NB_MODULE(slimgui_ext, top) {
         .def("get_style_internal", [](ImGuiContext* ctx) -> ImGuiStyle* {
             return &ctx->Style;
         }, nb::rv_policy::reference_internal)
+        .def("get_font_internal", [](ImGuiContext* ctx) -> ImFont* {
+            return ctx->Font;
+        }, nb::rv_policy::reference_internal)
         .def("get_background_draw_list_internal", [](ImGuiContext* ctx) -> ImDrawList* {
             ImGuiContext* prev = ImGui::GetCurrentContext();
             ImGui::SetCurrentContext(ctx);
@@ -1261,6 +1264,8 @@ NB_MODULE(slimgui_ext, top) {
         return ImGui::SetNextItemShortcut(variant_to_int(key_chord), flags);
     }, "key_chord"_a, "flags"_a.sig("InputFlags.NONE") = ImGuiInputFlags_None,
     "Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.");
+
+    m.def("set_item_key_owner", [](ImGuiKey key) { ImGui::SetItemKeyOwner(key); }, "key"_a, "Set key owner to last item ID if it is hovered or active.");
 
     // Input Utilities: Mouse
     m.def("is_mouse_down", [](ImGuiMouseButton_ button) { return ImGui::IsMouseDown(button); }, "button"_a);

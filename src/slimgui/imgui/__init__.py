@@ -82,6 +82,12 @@ def get_style() -> imgui_ext.Style:
     assert ctx is not None
     return ctx.style
 
+def get_font() -> imgui_ext.Font:
+    '''Get the current font.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_font_internal()
+
 def get_background_draw_list() -> imgui_ext.DrawList:
     '''This draw list will be the first rendered one. Useful to quickly draw shapes/text behind dear imgui contents.'''
     ctx = get_current_context()
