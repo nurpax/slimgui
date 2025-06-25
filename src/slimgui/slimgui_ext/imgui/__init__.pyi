@@ -31,6 +31,17 @@ class BackendFlags(enum.IntFlag):
     Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
     """
 
+    PLATFORM_HAS_VIEWPORTS = 1024
+    """Backend Platform supports multiple viewports."""
+
+    HAS_MOUSE_HOVERED_VIEWPORT = 2048
+    """
+    Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.
+    """
+
+    RENDERER_HAS_VIEWPORTS = 4096
+    """Backend Renderer supports multiple viewports."""
+
 class ButtonFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -209,54 +220,62 @@ class Col(enum.IntEnum):
 
     TAB_DIMMED_SELECTED_OVERLINE = 39
 
-    PLOT_LINES = 40
+    DOCKING_PREVIEW = 40
+    """Preview overlay color when about to docking something"""
 
-    PLOT_LINES_HOVERED = 41
+    DOCKING_EMPTY_BG = 41
+    """
+    Background color for empty node (e.g. CentralNode with no window docked into it)
+    """
 
-    PLOT_HISTOGRAM = 42
+    PLOT_LINES = 42
 
-    PLOT_HISTOGRAM_HOVERED = 43
+    PLOT_LINES_HOVERED = 43
 
-    TABLE_HEADER_BG = 44
+    PLOT_HISTOGRAM = 44
+
+    PLOT_HISTOGRAM_HOVERED = 45
+
+    TABLE_HEADER_BG = 46
     """Table header background"""
 
-    TABLE_BORDER_STRONG = 45
+    TABLE_BORDER_STRONG = 47
     """Table outer and header borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_BORDER_LIGHT = 46
+    TABLE_BORDER_LIGHT = 48
     """Table inner borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_ROW_BG = 47
+    TABLE_ROW_BG = 49
     """Table row background (even rows)"""
 
-    TABLE_ROW_BG_ALT = 48
+    TABLE_ROW_BG_ALT = 50
     """Table row background (odd rows)"""
 
-    TEXT_LINK = 49
+    TEXT_LINK = 51
     """Hyperlink color"""
 
-    TEXT_SELECTED_BG = 50
+    TEXT_SELECTED_BG = 52
 
-    DRAG_DROP_TARGET = 51
+    DRAG_DROP_TARGET = 53
     """Rectangle highlighting a drop target"""
 
-    NAV_CURSOR = 52
+    NAV_CURSOR = 54
     """Color of keyboard/gamepad navigation cursor/rectangle, when visible"""
 
-    NAV_WINDOWING_HIGHLIGHT = 53
+    NAV_WINDOWING_HIGHLIGHT = 55
     """Highlight window when using CTRL+TAB"""
 
-    NAV_WINDOWING_DIM_BG = 54
+    NAV_WINDOWING_DIM_BG = 56
     """
     Darken/colorize entire screen behind the CTRL+TAB window list, when active
     """
 
-    MODAL_WINDOW_DIM_BG = 55
+    MODAL_WINDOW_DIM_BG = 57
     """
     Darken/colorize entire screen behind a modal window, when one is active
     """
 
-    COUNT = 56
+    COUNT = 58
 
 class ColorEditFlags(enum.IntFlag):
     __str__ = __repr__
@@ -460,6 +479,24 @@ class ConfigFlags(enum.IntFlag):
     NO_KEYBOARD = 64
     """
     Instruct dear imgui to disable keyboard inputs and interactions. This is done by ignoring keyboard events and clearing existing states.
+    """
+
+    DOCKING_ENABLE = 128
+    """Docking enable flags."""
+
+    VIEWPORTS_ENABLE = 1024
+    """
+    Viewport enable flags (require both `BackendFlags.PLATFORM_HAS_VIEWPORTS` + `BackendFlags.RENDERER_HAS_VIEWPORTS` set by the respective backends)
+    """
+
+    DPI_ENABLE_SCALE_VIEWPORTS = 16384
+    """
+    [BETA: Don't use] FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.
+    """
+
+    DPI_ENABLE_SCALE_FONTS = 32768
+    """
+    [BETA: Don't use] FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.
     """
 
     IS_SRGB = 1048576
@@ -742,6 +779,11 @@ class FocusedFlags(enum.IntFlag):
     Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)
     """
 
+    DOCK_HIERARCHY = 16
+    """
+    Consider docking hierarchy (treat dockspace host as parent of docked window) (when used with _ChildWindows or _RootWindow)
+    """
+
     ROOT_AND_CHILD_WINDOWS = 3
 
 class Font:
@@ -872,6 +914,11 @@ class HoveredFlags(enum.IntFlag):
     `is_window_hovered()` only: Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with _ChildWindows or _RootWindow)
     """
 
+    DOCK_HIERARCHY = 16
+    """
+    `is_window_hovered()` only: Consider docking hierarchy (treat dockspace host as parent of docked window) (when used with _ChildWindows or _RootWindow)
+    """
+
     ALLOW_WHEN_BLOCKED_BY_POPUP = 32
     """
     Return true even if a popup window is normally blocking access to this item/window
@@ -936,9 +983,9 @@ class HoveredFlags(enum.IntFlag):
     `is_item_hovered()` only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
     """
 
-IMGUI_VERSION: str = '1.91.9'
+IMGUI_VERSION: str = '1.91.9b'
 
-IMGUI_VERSION_NUM: int = 19190
+IMGUI_VERSION_NUM: int = 19191
 
 INDEX_SIZE: int = 2
 
@@ -2304,7 +2351,10 @@ class StyleVar(enum.IntEnum):
     SEPARATOR_TEXT_PADDING = 33
     """ImVec2    SeparatorTextPadding"""
 
-    COUNT = 34
+    DOCKING_SEPARATOR_SIZE = 34
+    """Float     DockingSeparatorSize"""
+
+    COUNT = 35
 
 class TabBarFlags(enum.IntFlag):
     __str__ = __repr__
@@ -2884,11 +2934,17 @@ class WindowFlags(enum.IntFlag):
     Display a dot next to the title. When used in a tab/docking context, tab is selected when clicking the X + closure is not assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.
     """
 
+    NO_DOCKING = 524288
+    """Disable docking of this window"""
+
     NO_NAV = 196608
 
     NO_DECORATION = 43
 
     NO_INPUTS = 197120
+
+    DOCK_NODE_HOST = 8388608
+    """Don't use! For internal use by `begin()`/`new_frame()`"""
 
     CHILD_WINDOW = 16777216
     """Don't use! For internal use by `begin_child()`"""
