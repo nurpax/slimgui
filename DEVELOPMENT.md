@@ -44,7 +44,7 @@ NOTE NOTE! imconfig.h contains slimgui changes!  Review after updating imgui.
 ```
 - git clone --branch 1.91.9bdock --recursive https://github.com/cimgui/cimgui.git
 - the above step already picked the right branch
-- cd generator && ./generator
+- (not needed: cd generator && ./generator)
 - dump the generator/output contents into gen/cimgui
 - update imgui version in pyproject.toml
 ```
