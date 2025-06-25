@@ -42,8 +42,8 @@ git commit ...
 NOTE NOTE! imconfig.h contains slimgui changes!  Review after updating imgui.
 
 ```
-- git clone https://github.com/cimgui/cimgui
-- update the imgui folder in the cimgui checkout with an imgui source release.  Most likely you want to just copy the files from the right version of a slimgui checkout.
+- git clone --branch 1.91.9bdock --recursive https://github.com/cimgui/cimgui.git
+- the above step already picked the right branch
 - cd generator && ./generator
 - dump the generator/output contents into gen/cimgui
 - update imgui version in pyproject.toml
