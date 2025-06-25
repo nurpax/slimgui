@@ -10,8 +10,7 @@ MacOS:
 python3 -m venv .venv
 . .venv/bin/activate
 pip install git+https://github.com/wjakob/nanobind 'scikit-build-core[pyproject]' click glfw pyopengl numpy requests toml
-pip install --no-build-isolation -ve .
-python gen/gen_nb_enums.py > src/imgui_enums.inl
+bash full_build.sh
 ```
 
 ## Docs build with filewatching
