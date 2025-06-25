@@ -22,11 +22,28 @@ npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_d
 
 ## Updating imgui and cimgui metainfo when upgrading imgui
 
+### Obtaining the right version of imgui
+
+Switch to a new git branch.
+
+Docking branch versions are tagged with `<version>-docking`, so navigate to f.ex. https://github.com/ocornut/imgui/releases/tag/v1.91.9b-docking and download it as a zip.
+
+Download the zip, unzip, and then copy the source code as follows:
+
+```
+cd slimgui/src/c
+unzip ../../../imgui-v1.91.9b-docking.zip
+cp -R imgui-1.91.9b-docking/* imgui/
+git commit ...
+```
+
+### Updating
+
 NOTE NOTE! imconfig.h contains slimgui changes!  Review after updating imgui.
 
 ```
 - git clone https://github.com/cimgui/cimgui
-- update the imgui folder in the cimgui checkout with an imgui source release
+- update the imgui folder in the cimgui checkout with an imgui source release.  Most likely you want to just copy the files from the right version of a slimgui checkout.
 - cd generator && ./generator
 - dump the generator/output contents into gen/cimgui
 - update imgui version in pyproject.toml
