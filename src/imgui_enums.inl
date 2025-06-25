@@ -216,6 +216,9 @@ nb::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags", nb::is_flag(),
     .value("NO_POPUP_HIERARCHY", ImGuiFocusedFlags_NoPopupHierarchy,
            "Do not consider popup hierarchy (do not treat popup emitter as "
            "parent of popup) (when used with _ChildWindows or _RootWindow)")
+    .value("DOCK_HIERARCHY", ImGuiFocusedFlags_DockHierarchy,
+           "Consider docking hierarchy (treat dockspace host as parent of "
+           "docked window) (when used with _ChildWindows or _RootWindow)")
     .value("ROOT_AND_CHILD_WINDOWS", ImGuiFocusedFlags_RootAndChildWindows);
 nb::enum_<ImGuiInputFlags_>(m, "InputFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiInputFlags_None)
@@ -308,9 +311,13 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
            "assumed (will wait for user to stop submitting the tab). Otherwise "
            "closure is assumed when pressing the X, so if you keep submitting "
            "the tab may reappear at end of tab bar.")
+    .value("NO_DOCKING", ImGuiWindowFlags_NoDocking,
+           "Disable docking of this window")
     .value("NO_NAV", ImGuiWindowFlags_NoNav)
     .value("NO_DECORATION", ImGuiWindowFlags_NoDecoration)
     .value("NO_INPUTS", ImGuiWindowFlags_NoInputs)
+    .value("DOCK_NODE_HOST", ImGuiWindowFlags_DockNodeHost,
+           "Don't use! For internal use by `begin()`/`new_frame()`")
     .value("CHILD_WINDOW", ImGuiWindowFlags_ChildWindow,
            "Don't use! For internal use by `begin_child()`")
     .value("TOOLTIP", ImGuiWindowFlags_Tooltip,
@@ -768,6 +775,13 @@ nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags", nb::is_flag(),
         "NO_KEYBOARD", ImGuiConfigFlags_NoKeyboard,
         "Instruct dear imgui to disable keyboard inputs and interactions. This "
         "is done by ignoring keyboard events and clearing existing states.")
+    .value("DOCKING_ENABLE", ImGuiConfigFlags_DockingEnable,
+           "Docking enable flags.")
+    .value(
+        "VIEWPORTS_ENABLE", ImGuiConfigFlags_ViewportsEnable,
+        "Viewport enable flags (require both "
+        "`BackendFlags.PLATFORM_HAS_VIEWPORTS` + "
+        "`BackendFlags.RENDERER_HAS_VIEWPORTS` set by the respective backends)")
     .value("IS_SRGB", ImGuiConfigFlags_IsSRGB, "Application is SRGB-aware.")
     .value("IS_TOUCH_SCREEN", ImGuiConfigFlags_IsTouchScreen,
            "Application is using a touch screen instead of a mouse.");
@@ -792,7 +806,18 @@ nb::enum_<ImGuiBackendFlags_>(m, "BackendFlags", nb::is_flag(),
            "create/update/destroy textures. This enables incremental texture "
            "updates and texture reloads. See "
            "https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for "
-           "instructions on how to upgrade your custom backend.");
+           "instructions on how to upgrade your custom backend.")
+    .value("PLATFORM_HAS_VIEWPORTS", ImGuiBackendFlags_PlatformHasViewports,
+           "Backend Platform supports multiple viewports.")
+    .value(
+        "HAS_MOUSE_HOVERED_VIEWPORT", ImGuiBackendFlags_HasMouseHoveredViewport,
+        "Backend Platform supports calling io.AddMouseViewportEvent() with the "
+        "viewport under the mouse. IF POSSIBLE, ignore viewports with the "
+        "ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend "
+        "can do this, SDL backend cannot). If this cannot be done, Dear ImGui "
+        "needs to use a flawed heuristic to find the viewport under.")
+    .value("RENDERER_HAS_VIEWPORTS", ImGuiBackendFlags_RendererHasViewports,
+           "Backend Renderer supports multiple viewports.");
 nb::enum_<ImGuiCond_>(m, "Cond", nb::is_arithmetic())
     .value("NONE", ImGuiCond_None,
            "No condition (always set the variable), same as _Always")
@@ -824,6 +849,10 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
     .value("NO_POPUP_HIERARCHY", ImGuiHoveredFlags_NoPopupHierarchy,
            "`is_window_hovered()` only: Do not consider popup hierarchy (do "
            "not treat popup emitter as parent of popup) (when used with "
+           "_ChildWindows or _RootWindow)")
+    .value("DOCK_HIERARCHY", ImGuiHoveredFlags_DockHierarchy,
+           "`is_window_hovered()` only: Consider docking hierarchy (treat "
+           "dockspace host as parent of docked window) (when used with "
            "_ChildWindows or _RootWindow)")
     .value("ALLOW_WHEN_BLOCKED_BY_POPUP",
            ImGuiHoveredFlags_AllowWhenBlockedByPopup,
@@ -1043,6 +1072,11 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
     .value("TAB_DIMMED_SELECTED", ImGuiCol_TabDimmedSelected,
            "Tab background, when tab-bar is unfocused & tab is selected")
     .value("TAB_DIMMED_SELECTED_OVERLINE", ImGuiCol_TabDimmedSelectedOverline)
+    .value("DOCKING_PREVIEW", ImGuiCol_DockingPreview,
+           "Preview overlay color when about to docking something")
+    .value("DOCKING_EMPTY_BG", ImGuiCol_DockingEmptyBg,
+           "Background color for empty node (e.g. CentralNode with no window "
+           "docked into it)")
     .value("PLOT_LINES", ImGuiCol_PlotLines)
     .value("PLOT_LINES_HOVERED", ImGuiCol_PlotLinesHovered)
     .value("PLOT_HISTOGRAM", ImGuiCol_PlotHistogram)
@@ -1151,6 +1185,8 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
            "ImVec2    SeparatorTextAlign")
     .value("SEPARATOR_TEXT_PADDING", ImGuiStyleVar_SeparatorTextPadding,
            "ImVec2    SeparatorTextPadding")
+    .value("DOCKING_SEPARATOR_SIZE", ImGuiStyleVar_DockingSeparatorSize,
+           "Float     DockingSeparatorSize")
     .value("COUNT", ImGuiStyleVar_COUNT);
 nb::enum_<ImGuiTableBgTarget_>(m, "TableBgTarget", nb::is_arithmetic())
     .value("NONE", ImGuiTableBgTarget_None)
