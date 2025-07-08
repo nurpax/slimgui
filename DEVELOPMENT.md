@@ -13,6 +13,13 @@ pip install git+https://github.com/wjakob/nanobind 'scikit-build-core[pyproject]
 bash full_build.sh
 ```
 
+## How to run tests
+
+```
+# in project root directory:
+pytest
+```
+
 ## Docs build with filewatching
 
 ```
