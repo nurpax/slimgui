@@ -3279,10 +3279,6 @@ def get_content_region_avail() -> tuple[float, float]:
     ...
 
 
-def get_current_context_internal() -> Context:
-    ...
-
-
 def get_cursor_pos() -> tuple[float, float]:
     """[window-local] cursor position in window-local coordinates. This is not your best friend."""
     ...
@@ -3436,10 +3432,6 @@ def get_style_color_name(col: Col) -> str:
 
 def get_style_color_vec4(col: Col) -> tuple[float, float, float, float]:
     """Retrieve style color as stored in ImGuiStyle structure. use to feed back into `push_style_color()`, otherwise use `get_color_u32()` to get style color with style alpha baked in."""
-    ...
-
-
-def get_style_internal() -> Style:
     ...
 
 

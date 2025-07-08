@@ -95,6 +95,20 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
     return 0;
 }
 
+// Used as the type for nanobind instead of binding ImGuiContext directly.  Binding
+// ImGuiContext directly triggers ocornut/imgui#7676
+struct Context {
+    ImGuiContext* ctx;
+    explicit Context(ImGuiContext* c) : ctx(c) {}
+    Context() = delete;
+
+    ImGuiContext* setCurrent() {
+        ImGuiContext* prev = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(this->ctx);
+        return prev;
+    }
+};
+
 NB_MODULE(slimgui_ext, top) {
     nb::module_ m = top.def_submodule("imgui", "Dear ImGui bindings");
 
@@ -441,47 +455,51 @@ NB_MODULE(slimgui_ext, top) {
     // "Internal" object getters that receive a context pointer.  Such functions
     // don't exist in the public ImGui API, but we provide them so that we
     // can correctly model object ownership in Python.
-    nb::class_<ImGuiContext>(m, "Context")
-        .def("get_io_internal", [](ImGuiContext* ctx) -> ImGuiIO* {
-            return &ctx->IO;
+    nb::class_<Context>(m, "Context")
+        .def("get_io_internal", [](Context* ctx) -> ImGuiIO* {
+            auto prev = ctx->setCurrent();
+            ImGuiIO& io = ImGui::GetIO();
+            ImGui::SetCurrentContext(prev);
+            return &io;
         }, nb::rv_policy::reference_internal)
-        .def("get_style_internal", [](ImGuiContext* ctx) -> ImGuiStyle* {
-            return &ctx->Style;
+        .def("get_style_internal", [](Context* ctx) -> ImGuiStyle* {
+            auto prev = ctx->setCurrent();
+            ImGuiStyle& s = ImGui::GetStyle();
+            ImGui::SetCurrentContext(prev);
+            return &s;
         }, nb::rv_policy::reference_internal)
-        .def("get_font_internal", [](ImGuiContext* ctx) -> ImFont* {
-            return ctx->Font;
+        .def("get_font_internal", [](Context* ctx) -> ImFont* {
+            auto prev = ctx->setCurrent();
+            ImFont* font = ImGui::GetFont();
+            ImGui::SetCurrentContext(prev);
+            return font;
         }, nb::rv_policy::reference_internal)
-        .def("get_background_draw_list_internal", [](ImGuiContext* ctx) -> ImDrawList* {
-            ImGuiContext* prev = ImGui::GetCurrentContext();
-            ImGui::SetCurrentContext(ctx);
+        .def("get_background_draw_list_internal", [](Context* ctx) -> ImDrawList* {
+            auto prev = ctx->setCurrent();
             ImDrawList* drawList = ImGui::GetBackgroundDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
         }, nb::rv_policy::reference_internal)
-        .def("get_foreground_draw_list_internal", [](ImGuiContext* ctx) -> ImDrawList* {
-            ImGuiContext* prev = ImGui::GetCurrentContext();
-            ImGui::SetCurrentContext(ctx);
+        .def("get_foreground_draw_list_internal", [](Context* ctx) -> ImDrawList* {
+            auto prev = ctx->setCurrent();
             ImDrawList* drawList = ImGui::GetForegroundDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
         }, nb::rv_policy::reference_internal)
-        .def("get_window_draw_list_internal", [](ImGuiContext* ctx) -> ImDrawList* {
-            ImGuiContext* prev = ImGui::GetCurrentContext();
-            ImGui::SetCurrentContext(ctx);
+        .def("get_window_draw_list_internal", [](Context* ctx) -> ImDrawList* {
+            auto prev = ctx->setCurrent();
             ImDrawList* drawList = ImGui::GetWindowDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
         }, nb::rv_policy::reference_internal)
-        .def("accept_drag_drop_payload_internal", [](ImGuiContext* ctx, const char* type, ImGuiDragDropFlags_ flags) -> std::optional<const ImGuiPayload*> {
-            ImGuiContext* prev = ImGui::GetCurrentContext();
-            ImGui::SetCurrentContext(ctx);
+        .def("accept_drag_drop_payload_internal", [](Context* ctx, const char* type, ImGuiDragDropFlags_ flags) -> std::optional<const ImGuiPayload*> {
+            auto prev = ctx->setCurrent();
             const ImGuiPayload* ret = ImGui::AcceptDragDropPayload(type, flags);
             ImGui::SetCurrentContext(prev);
             return ret;
         }, "type"_a, "flags"_a.sig("DragDropFlags.NONE") = ImGuiDragDropFlags_None, nb::rv_policy::reference_internal)
-        .def("get_drag_drop_payload_internal", [](ImGuiContext* ctx) -> std::optional<const ImGuiPayload*> {
-            ImGuiContext* prev = ImGui::GetCurrentContext();
-            ImGui::SetCurrentContext(ctx);
+        .def("get_drag_drop_payload_internal", [](Context* ctx) -> std::optional<const ImGuiPayload*> {
+            auto prev = ctx->setCurrent();
             const ImGuiPayload* ret = ImGui::GetDragDropPayload();
             ImGui::SetCurrentContext(prev);
             if (ret) {
@@ -490,11 +508,12 @@ NB_MODULE(slimgui_ext, top) {
             return std::nullopt;
         }, nb::rv_policy::reference_internal);
 
-    m.def("create_context_internal", &ImGui::CreateContext, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
-    m.def("get_current_context_internal", &ImGui::GetCurrentContext, nb::rv_policy::reference);
-    m.def("set_current_context_internal", &ImGui::SetCurrentContext, nb::rv_policy::reference);
-    m.def("destroy_context_internal", &ImGui::DestroyContext);
-    m.def("get_style_internal", &ImGui::GetStyle, nb::rv_policy::reference);
+    m.def("create_context_internal", [](ImFontAtlas* shared_font_atlas) -> Context {
+        ImGuiContext* ctx = ImGui::CreateContext(shared_font_atlas);
+        return Context(ctx);
+    }, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
+    m.def("set_current_context_internal", [](Context* ctx) { ImGui::SetCurrentContext(ctx->ctx); }, nb::rv_policy::reference);
+    m.def("destroy_context_internal", [](Context* ctx) { ImGui::DestroyContext(ctx->ctx); });
     m.def("render", &ImGui::Render);
     m.def("new_frame", &ImGui::NewFrame);
     m.def("end_frame", &ImGui::EndFrame);
