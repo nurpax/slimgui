@@ -23,6 +23,7 @@ def null_renderer(context):
 def frame_scope(context, null_renderer):
     io = imgui.get_io()
     io.display_size = 640, 800
+    null_renderer.refresh_font_texture()
     imgui.new_frame()
 
 def test_setup_axis_ticks(frame_scope):

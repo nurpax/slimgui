@@ -21,6 +21,7 @@ def null_renderer(imgui_context):
 def frame_scope(imgui_context, null_renderer):
     io = imgui.get_io()
     io.display_size = 320, 200
+    null_renderer.refresh_font_texture()
     imgui.new_frame()
 
 def test_utility_funcs():
