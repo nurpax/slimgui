@@ -247,7 +247,7 @@ class ImguiWindow(GlfwWindow):
         self._imgui_renderer.new_frame()
         imgui.new_frame()
         if self._imgui_fonts is not None:
-            imgui.push_font(self._imgui_fonts[self._cur_font_size])
+            imgui.push_font(self._imgui_fonts[self._cur_font_size], 0)
 
     def end_frame(self):
         assert self._imgui_renderer is not None
