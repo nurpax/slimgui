@@ -28,6 +28,13 @@ npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_d
 
 ## Updating imgui and cimgui metainfo when upgrading imgui
 
+### Download and update imgui, implot, and the C binding definitions
+
+```
+cd $ROOT_DIR
+python gen/imgui_vendor.py
+```
+
 ### Obtaining the right version of imgui
 
 Switch to a new git branch.
