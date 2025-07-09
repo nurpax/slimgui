@@ -356,6 +356,10 @@ class GenContext:
                         args = { 'name': arg_name, 'cpp_type': 'ImTextureID', 'py_type': 'int' }
                         assert default is None
                         out_args.append(FuncArg(**args))
+                    case 'ImTextureRef':
+                        args = { 'name': arg_name, 'cpp_type': 'ImTextureRef', 'py_type': 'TextureRef' }
+                        assert default is None
+                        out_args.append(FuncArg(**args))
                     case 'bool':
                         args = { 'name': arg_name, 'cpp_type': 'bool', 'py_type': 'bool' }
                         args['cpp_default'] = default

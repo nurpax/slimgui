@@ -37,6 +37,17 @@ auto array_to_tuple(const std::array<T, N>& arr) {
     return array_to_tuple_impl(arr, std::make_index_sequence<N>{});
 }
 
+typedef std::variant<ImTextureRef, ImTextureID> TextureRefOrID;
+
+// Converts a TextureRefOrID to ImTextureRef. If the variant holds an ImTextureID, constructs an ImTextureRef from it.
+inline ImTextureRef to_texture_ref(const TextureRefOrID& tex) {
+    if (std::holds_alternative<ImTextureRef>(tex)) {
+        return std::get<ImTextureRef>(tex);
+    } else {
+        return ImTextureRef(std::get<ImTextureID>(tex));
+    }
+}
+
 struct InputTextCallback_UserData
 {
     std::string*            Str;
@@ -132,7 +143,9 @@ NB_MODULE(slimgui_ext, top) {
     m.attr("PAYLOAD_TYPE_COLOR_3F") = IMGUI_PAYLOAD_TYPE_COLOR_3F;
     m.attr("PAYLOAD_TYPE_COLOR_4F") = IMGUI_PAYLOAD_TYPE_COLOR_4F;
 
-    nb::class_<ImFont>(m, "Font");
+    nb::class_<ImFont>(m, "Font")
+        .def_ro("legacy_size", &ImFont::LegacySize);
+
     nb::class_<ImFontConfig>(m, "FontConfig") // exposes only safe fields, e.g., no FontData, FontDataOwnedByAtlas, etc.
         .def(nb::init<>())
         .def_rw("font_no", &ImFontConfig::FontNo)
@@ -141,11 +154,10 @@ NB_MODULE(slimgui_ext, top) {
         .def_rw("oversample_v", &ImFontConfig::OversampleV)
         .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH)
         .def_rw("glyph_offset", &ImFontConfig::GlyphOffset)
-        //.def_rw("glyph_ranges", &ImFontConfig::GlyphRanges) // TODO
         .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX)
         .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX)
         .def_rw("merge_mode", &ImFontConfig::MergeMode)
-        .def_rw("font_builder_flags", &ImFontConfig::FontBuilderFlags)
+        .def_rw("font_loader_flags", &ImFontConfig::FontLoaderFlags)
         .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply)
         .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity)
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar);
@@ -162,7 +174,6 @@ NB_MODULE(slimgui_ext, top) {
             cfg.FontDataOwnedByAtlas = true;
             void* data = IM_ALLOC(font_data.size());
             memcpy(data, font_data.c_str(), font_data.size());
-            // TODO glyph_ranges
             return fonts->AddFontFromMemoryTTF(data, font_data.size(), size_pixels, &cfg, nullptr);
         }, nb::rv_policy::reference_internal, "font_data"_a, "size_pixels"_a, nb::arg("font_cfg").none() = std::nullopt)
         .def("clear_tex_data", &ImFontAtlas::ClearTexData)
@@ -173,9 +184,12 @@ NB_MODULE(slimgui_ext, top) {
             return std::tuple(tex_w, tex_h, nb::bytes(tex_pixels, tex_w*tex_h*4));
         })
         .def_prop_rw("texture_id",
-            [](ImFontAtlas& a) { return a.TexID; },
-            [](ImFontAtlas& a, ImU64 texID) { a.SetTexID(texID); }
+            [](ImFontAtlas& a) { return a.TexRef.GetTexID(); },
+            [](ImFontAtlas& a, ImU64 texID) { a.TexRef = ImTextureRef((ImTextureID)texID); }
         );
+
+    nb::class_<ImTextureRef>(m, "TextureRef")
+        .def("get_tex_id", &ImTextureRef::GetTexID);
 
     // TODO incomplete
     nb::class_<ImGuiViewport>(m, "Viewport")
@@ -208,6 +222,9 @@ NB_MODULE(slimgui_ext, top) {
         });
 
     nb::class_<ImGuiStyle>(m, "Style")
+        .def_ro("font_size_base", &ImGuiStyle::FontSizeBase, "Current base font size before external global factors are applied. Use `imgui.push_font(None, size)` to modify. Use `imgui.get_font_size()` to obtain scaled value.")
+        .def_rw("font_scale_main", &ImGuiStyle::FontScaleMain, "Main global scale factor. May be set by application once, or exposed to end-user.")
+        .def_ro("font_scale_dpi", &ImGuiStyle::FontScaleDpi, "Additional global scale factor from viewport/monitor contents scale. When `io.config_dpi_scale_fonts` is enabled, this is automatically overwritten when changing monitor DPI.")
         .def_rw("alpha", &ImGuiStyle::Alpha)
         .def_rw("disabled_alpha", &ImGuiStyle::DisabledAlpha)
         .def_rw("window_padding", &ImGuiStyle::WindowPadding)
@@ -351,9 +368,7 @@ NB_MODULE(slimgui_ext, top) {
 
     // TODO all fields
     nb::class_<ImDrawCmd>(m, "DrawCmd")
-        .def_prop_ro("texture_id", [](const ImDrawCmd* cmd) {
-            return (uintptr_t)cmd->TextureId;
-        })
+        .def_ro("tex_ref", &ImDrawCmd::TexRef)
         .def_ro("clip_rect", &ImDrawCmd::ClipRect)
         .def_ro("vtx_offset", &ImDrawCmd::VtxOffset)
         .def_ro("idx_offset", &ImDrawCmd::IdxOffset)
@@ -427,15 +442,15 @@ NB_MODULE(slimgui_ext, top) {
         .def("add_concave_poly_filled", [](ImDrawList* drawList, const nb::ndarray<const float, nb::shape<-1, 2>, nb::device::cpu>& points, ImU32 col) {
             drawList->AddConcavePolyFilled((const ImVec2*)points.data(), (int)points.shape(0), col);
         }, "points"_a, "col"_a)
-        .def("add_image", [](ImDrawList* drawList, ImTextureID user_texture_id, ImVec2 p_min, ImVec2 p_max, ImVec2 uv_min, ImVec2 uv_max, ImU32 col) {
-            drawList->AddImage(user_texture_id, p_min, p_max, uv_min, uv_max, col);
-        }, "user_texture_id"_a, "p_min"_a, "p_max"_a, "uv_min"_a = ImVec2(0, 0), "uv_max"_a = ImVec2(1, 1), "col"_a.sig("COL32_WHITE") = IM_COL32_WHITE)
-        .def("add_image_quad", [](ImDrawList* drawList, ImTextureID user_texture_id, ImVec2 p1, ImVec2 p2, ImVec2 p3, ImVec2 p4, ImVec2 uv1, ImVec2 uv2, ImVec2 uv3, ImVec2 uv4, ImU32 col) {
-            drawList->AddImageQuad(user_texture_id, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col);
-        }, "user_texture_id"_a, "p1"_a, "p2"_a, "p3"_a, "p4"_a, "uv1"_a = ImVec2(0.0f, 0.0f), "uv2"_a = ImVec2(1.0f, 0.0f), "uv3"_a = ImVec2(1.0f, 1.0f), "uv4"_a = ImVec2(0.0f, 1.0f), "col"_a.sig("COL32_WHITE") = IM_COL32_WHITE)
-        .def("add_image_rounded", [](ImDrawList* drawList, ImTextureID user_texture_id, ImVec2 p_min, ImVec2 p_max, ImVec2 uv_min, ImVec2 uv_max, ImU32 col, float rounding, ImDrawFlags_ flags) {
-            drawList->AddImageRounded(user_texture_id, p_min, p_max, uv_min, uv_max, col, rounding, flags);
-        }, "user_texture_id"_a, "p_min"_a, "p_max"_a, "uv_min"_a, "uv_max"_a, "col"_a, "rounding"_a, "flags"_a.sig("DrawFlags.NONE") = 0);
+        .def("add_image", [](ImDrawList* drawList, TextureRefOrID tex_ref, ImVec2 p_min, ImVec2 p_max, ImVec2 uv_min, ImVec2 uv_max, ImU32 col) {
+            drawList->AddImage(to_texture_ref(tex_ref), p_min, p_max, uv_min, uv_max, col);
+        }, "tex_ref"_a, "p_min"_a, "p_max"_a, "uv_min"_a = ImVec2(0, 0), "uv_max"_a = ImVec2(1, 1), "col"_a.sig("COL32_WHITE") = IM_COL32_WHITE)
+        .def("add_image_quad", [](ImDrawList* drawList, TextureRefOrID tex_ref, ImVec2 p1, ImVec2 p2, ImVec2 p3, ImVec2 p4, ImVec2 uv1, ImVec2 uv2, ImVec2 uv3, ImVec2 uv4, ImU32 col) {
+            drawList->AddImageQuad(to_texture_ref(tex_ref), p1, p2, p3, p4, uv1, uv2, uv3, uv4, col);
+        }, "tex_ref"_a, "p1"_a, "p2"_a, "p3"_a, "p4"_a, "uv1"_a = ImVec2(0.0f, 0.0f), "uv2"_a = ImVec2(1.0f, 0.0f), "uv3"_a = ImVec2(1.0f, 1.0f), "uv4"_a = ImVec2(0.0f, 1.0f), "col"_a.sig("COL32_WHITE") = IM_COL32_WHITE)
+        .def("add_image_rounded", [](ImDrawList* drawList, TextureRefOrID tex_ref, ImVec2 p_min, ImVec2 p_max, ImVec2 uv_min, ImVec2 uv_max, ImU32 col, float rounding, ImDrawFlags_ flags) {
+            drawList->AddImageRounded(to_texture_ref(tex_ref), p_min, p_max, uv_min, uv_max, col, rounding, flags);
+        }, "tex_ref"_a, "p_min"_a, "p_max"_a, "uv_min"_a, "uv_max"_a, "col"_a, "rounding"_a, "flags"_a.sig("DrawFlags.NONE") = 0);
 
     nb::class_<ImDrawData>(m, "DrawData")
         .def("scale_clip_rects", &ImDrawData::ScaleClipRects, "fb_scale"_a)
@@ -635,7 +650,10 @@ NB_MODULE(slimgui_ext, top) {
     }, "local_y"_a, "center_y_ratio"_a = 0.5f);
 
     // Parameters stacks (shared)
-    m.def("push_font", &ImGui::PushFont, "font"_a.none());
+    m.def("push_font", [](ImFont* font, float font_size_base) {
+        ImGui::PushFont(font, font_size_base);
+    }, "font"_a.none(), "font_size_base"_a);
+
     m.def("pop_font", &ImGui::PopFont);
     m.def("push_style_color", [](ImGuiCol_ idx, ImU32 col) { ImGui::PushStyleColor(idx, col); }, "idx"_a, "col"_a);
     m.def("push_style_color", [](ImGuiCol_ idx, const ImVec4& col) { ImGui::PushStyleColor(idx, col); }, "idx"_a, "col"_a);
@@ -715,11 +733,15 @@ NB_MODULE(slimgui_ext, top) {
     m.def("text_link_open_url", [](const char* label, std::optional<const char*> url) { ImGui::TextLinkOpenURL(label, url ? url.value() : nullptr); }, "label"_a, "url"_a = nb::none());
 
     // Widgets: Images
-    m.def("image", [](ImTextureID user_texture_id, const ImVec2 image_size, const ImVec2 uv0, const ImVec2 uv1) {
-        ImGui::Image(user_texture_id, image_size, uv0, uv1);
-    }, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1));
-    m.def("image_with_bg", &ImGui::ImageWithBg, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "bg_col"_a = ImVec4(0, 0, 0, 0), "tint_col"_a = ImVec4(1, 1, 1, 1));
-    m.def("image_button", &ImGui::ImageButton, "str_id"_a, "user_texture_id"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "bg_col"_a = ImVec4(0, 0, 0, 0), "tint_col"_a = ImVec4(1, 1, 1, 1));
+    m.def("image", [](TextureRefOrID tex_ref, const ImVec2 image_size, const ImVec2 uv0, const ImVec2 uv1) {
+        return ImGui::Image(to_texture_ref(tex_ref), image_size, uv0, uv1);
+    }, "tex_ref"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1));
+    m.def("image_with_bg", [](TextureRefOrID tex_ref, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col) {
+        return ImGui::ImageWithBg(to_texture_ref(tex_ref), image_size, uv0, uv1, bg_col, tint_col);
+    }, "tex_ref"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "bg_col"_a = ImVec4(0, 0, 0, 0), "tint_col"_a = ImVec4(1, 1, 1, 1));
+    m.def("image_button", [](const char* str_id, TextureRefOrID tex_ref, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col) {
+        return ImGui::ImageButton(str_id, to_texture_ref(tex_ref), image_size, uv0, uv1, bg_col, tint_col);
+    }, "str_id"_a, "tex_ref"_a, "image_size"_a, "uv0"_a = ImVec2(0, 0), "uv1"_a = ImVec2(1, 1), "bg_col"_a = ImVec4(0, 0, 0, 0), "tint_col"_a = ImVec4(1, 1, 1, 1));
 
     // Widgets: Combo Box (Dropdown)
     m.def("begin_combo", [](const char *label, const char *preview_value, ImGuiComboFlags_ flags) {

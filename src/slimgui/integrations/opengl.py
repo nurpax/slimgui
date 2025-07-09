@@ -221,7 +221,7 @@ class OpenGLRenderer(BaseRenderer):
 
             # todo: allow to iterate over _CmdList
             for command in commands.commands:
-                gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
+                gl.glBindTexture(gl.GL_TEXTURE_2D, command.tex_ref.get_tex_id())
 
                 # todo: use named tuple
                 x, y, z, w = command.clip_rect

@@ -31,6 +31,11 @@ class BackendFlags(enum.IntFlag):
     Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
     """
 
+    RENDERER_HAS_TEXTURES = 16
+    """
+    Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads. See https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for instructions on how to upgrade your custom backend.
+    """
+
 class ButtonFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -189,74 +194,81 @@ class Col(enum.IntEnum):
 
     RESIZE_GRIP_ACTIVE = 32
 
-    TAB_HOVERED = 33
+    INPUT_TEXT_CURSOR = 33
+    """`input_text` cursor/caret"""
+
+    TAB_HOVERED = 34
     """Tab background, when hovered"""
 
-    TAB = 34
+    TAB = 35
     """Tab background, when tab-bar is focused & tab is unselected"""
 
-    TAB_SELECTED = 35
+    TAB_SELECTED = 36
     """Tab background, when tab-bar is focused & tab is selected"""
 
-    TAB_SELECTED_OVERLINE = 36
+    TAB_SELECTED_OVERLINE = 37
     """Tab horizontal overline, when tab-bar is focused & tab is selected"""
 
-    TAB_DIMMED = 37
+    TAB_DIMMED = 38
     """Tab background, when tab-bar is unfocused & tab is unselected"""
 
-    TAB_DIMMED_SELECTED = 38
+    TAB_DIMMED_SELECTED = 39
     """Tab background, when tab-bar is unfocused & tab is selected"""
 
-    TAB_DIMMED_SELECTED_OVERLINE = 39
+    TAB_DIMMED_SELECTED_OVERLINE = 40
 
-    PLOT_LINES = 40
+    PLOT_LINES = 41
 
-    PLOT_LINES_HOVERED = 41
+    PLOT_LINES_HOVERED = 42
 
-    PLOT_HISTOGRAM = 42
+    PLOT_HISTOGRAM = 43
 
-    PLOT_HISTOGRAM_HOVERED = 43
+    PLOT_HISTOGRAM_HOVERED = 44
 
-    TABLE_HEADER_BG = 44
+    TABLE_HEADER_BG = 45
     """Table header background"""
 
-    TABLE_BORDER_STRONG = 45
+    TABLE_BORDER_STRONG = 46
     """Table outer and header borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_BORDER_LIGHT = 46
+    TABLE_BORDER_LIGHT = 47
     """Table inner borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_ROW_BG = 47
+    TABLE_ROW_BG = 48
     """Table row background (even rows)"""
 
-    TABLE_ROW_BG_ALT = 48
+    TABLE_ROW_BG_ALT = 49
     """Table row background (odd rows)"""
 
-    TEXT_LINK = 49
+    TEXT_LINK = 50
     """Hyperlink color"""
 
-    TEXT_SELECTED_BG = 50
+    TEXT_SELECTED_BG = 51
+    """Selected text inside an `input_text`"""
 
-    DRAG_DROP_TARGET = 51
+    TREE_LINES = 52
+    """Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES`"""
+
+    DRAG_DROP_TARGET = 53
     """Rectangle highlighting a drop target"""
 
-    NAV_CURSOR = 52
+    NAV_CURSOR = 54
     """Color of keyboard/gamepad navigation cursor/rectangle, when visible"""
 
-    NAV_WINDOWING_HIGHLIGHT = 53
+    NAV_WINDOWING_HIGHLIGHT = 55
     """Highlight window when using CTRL+TAB"""
 
-    NAV_WINDOWING_DIM_BG = 54
+    NAV_WINDOWING_DIM_BG = 56
     """
     Darken/colorize entire screen behind the CTRL+TAB window list, when active
     """
 
-    MODAL_WINDOW_DIM_BG = 55
+    MODAL_WINDOW_DIM_BG = 57
     """
     Darken/colorize entire screen behind a modal window, when one is active
     """
 
-    COUNT = 56
+    COUNT = 58
 
 class ColorEditFlags(enum.IntFlag):
     __str__ = __repr__
@@ -564,7 +576,7 @@ class DragDropFlags(enum.IntFlag):
 
 class DrawCmd:
     @property
-    def texture_id(self) -> int: ...
+    def tex_ref(self) -> TextureRef: ...
 
     @property
     def clip_rect(self) -> tuple[float, float, float, float]: ...
@@ -704,11 +716,11 @@ class DrawList:
     @overload
     def add_concave_poly_filled(self, points: Annotated[ArrayLike, dict(dtype='float32', shape=(None, 2), device='cpu', writable=False)], col: int) -> None: ...
 
-    def add_image(self, user_texture_id: int, p_min: tuple[float, float], p_max: tuple[float, float], uv_min: tuple[float, float] = (0.0, 0.0), uv_max: tuple[float, float] = (1.0, 1.0), col: int = COL32_WHITE) -> None: ...
+    def add_image(self, tex_ref: TextureRef | int, p_min: tuple[float, float], p_max: tuple[float, float], uv_min: tuple[float, float] = (0.0, 0.0), uv_max: tuple[float, float] = (1.0, 1.0), col: int = COL32_WHITE) -> None: ...
 
-    def add_image_quad(self, user_texture_id: int, p1: tuple[float, float], p2: tuple[float, float], p3: tuple[float, float], p4: tuple[float, float], uv1: tuple[float, float] = (0.0, 0.0), uv2: tuple[float, float] = (1.0, 0.0), uv3: tuple[float, float] = (1.0, 1.0), uv4: tuple[float, float] = (0.0, 1.0), col: int = COL32_WHITE) -> None: ...
+    def add_image_quad(self, tex_ref: TextureRef | int, p1: tuple[float, float], p2: tuple[float, float], p3: tuple[float, float], p4: tuple[float, float], uv1: tuple[float, float] = (0.0, 0.0), uv2: tuple[float, float] = (1.0, 0.0), uv3: tuple[float, float] = (1.0, 1.0), uv4: tuple[float, float] = (0.0, 1.0), col: int = COL32_WHITE) -> None: ...
 
-    def add_image_rounded(self, user_texture_id: int, p_min: tuple[float, float], p_max: tuple[float, float], uv_min: tuple[float, float], uv_max: tuple[float, float], col: int, rounding: float, flags: DrawFlags = DrawFlags.NONE) -> None: ...
+    def add_image_rounded(self, tex_ref: TextureRef | int, p_min: tuple[float, float], p_max: tuple[float, float], uv_min: tuple[float, float], uv_max: tuple[float, float], col: int, rounding: float, flags: DrawFlags = DrawFlags.NONE) -> None: ...
 
 FLOAT_MAX: float = 3.4028234663852886e+38
 
@@ -745,7 +757,8 @@ class FocusedFlags(enum.IntFlag):
     ROOT_AND_CHILD_WINDOWS = 3
 
 class Font:
-    pass
+    @property
+    def legacy_size(self) -> float: ...
 
 class FontAtlas:
     def add_font_default(self, font_cfg: FontConfig | None = None) -> Font: ...
@@ -820,10 +833,10 @@ class FontConfig:
     def merge_mode(self, arg: bool, /) -> None: ...
 
     @property
-    def font_builder_flags(self) -> int: ...
+    def font_loader_flags(self) -> int: ...
 
-    @font_builder_flags.setter
-    def font_builder_flags(self, arg: int, /) -> None: ...
+    @font_loader_flags.setter
+    def font_loader_flags(self, arg: int, /) -> None: ...
 
     @property
     def rasterizer_multiply(self) -> float: ...
@@ -936,9 +949,9 @@ class HoveredFlags(enum.IntFlag):
     `is_item_hovered()` only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
     """
 
-IMGUI_VERSION: str = '1.91.9'
+IMGUI_VERSION: str = '1.92.1'
 
-IMGUI_VERSION_NUM: int = 19190
+IMGUI_VERSION_NUM: int = 19210
 
 INDEX_SIZE: int = 2
 
@@ -1669,6 +1682,8 @@ class Key(enum.IntEnum):
 
     KEY_NAMED_KEY_END = 667
 
+    KEY_NAMED_KEY_COUNT = 155
+
     MOD_NONE = 0
 
     MOD_CTRL = 4096
@@ -1678,8 +1693,6 @@ class Key(enum.IntEnum):
     MOD_ALT = 16384
 
     MOD_SUPER = 32768
-
-    KEY_NAMED_KEY_COUNT = 155
 
 class MouseButton(enum.IntEnum):
     LEFT = 0
@@ -1890,6 +1903,27 @@ class SliderFlags(enum.IntFlag):
     ALWAYS_CLAMP = 1536
 
 class Style:
+    @property
+    def font_size_base(self) -> float:
+        """
+        Current base font size before external global factors are applied. Use `imgui.push_font(None, size)` to modify. Use `imgui.get_font_size()` to obtain scaled value.
+        """
+
+    @property
+    def font_scale_main(self) -> float:
+        """
+        Main global scale factor. May be set by application once, or exposed to end-user.
+        """
+
+    @font_scale_main.setter
+    def font_scale_main(self, arg: float, /) -> None: ...
+
+    @property
+    def font_scale_dpi(self) -> float:
+        """
+        Additional global scale factor from viewport/monitor contents scale. When `io.config_dpi_scale_fonts` is enabled, this is automatically overwritten when changing monitor DPI.
+        """
+
     @property
     def alpha(self) -> float: ...
 
@@ -2289,22 +2323,28 @@ class StyleVar(enum.IntEnum):
     TABLE_ANGLED_HEADERS_TEXT_ALIGN = 28
     """ImVec2  TableAngledHeadersTextAlign"""
 
-    BUTTON_TEXT_ALIGN = 29
+    TREE_LINES_SIZE = 29
+    """Float     TreeLinesSize"""
+
+    TREE_LINES_ROUNDING = 30
+    """Float     TreeLinesRounding"""
+
+    BUTTON_TEXT_ALIGN = 31
     """ImVec2    ButtonTextAlign"""
 
-    SELECTABLE_TEXT_ALIGN = 30
+    SELECTABLE_TEXT_ALIGN = 32
     """ImVec2    SelectableTextAlign"""
 
-    SEPARATOR_TEXT_BORDER_SIZE = 31
+    SEPARATOR_TEXT_BORDER_SIZE = 33
     """Float     SeparatorTextBorderSize"""
 
-    SEPARATOR_TEXT_ALIGN = 32
+    SEPARATOR_TEXT_ALIGN = 34
     """ImVec2    SeparatorTextAlign"""
 
-    SEPARATOR_TEXT_PADDING = 33
+    SEPARATOR_TEXT_PADDING = 35
     """ImVec2    SeparatorTextPadding"""
 
-    COUNT = 34
+    COUNT = 36
 
 class TabBarFlags(enum.IntFlag):
     __str__ = __repr__
@@ -2683,6 +2723,9 @@ class TableRowFlags(enum.IntFlag):
     Identify header row (set default background color + width of its contents accounted differently for auto column width)
     """
 
+class TextureRef:
+    def get_tex_id(self) -> int: ...
+
 class TreeNodeFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -2759,12 +2802,25 @@ class TreeNodeFlags(enum.IntFlag):
     LABEL_SPAN_ALL_COLUMNS = 32768
     """Label will span all columns of its container table"""
 
-    NAV_LEFT_JUMPS_BACK_HERE = 131072
+    NAV_LEFT_JUMPS_TO_PARENT = 131072
     """
-    (WIP) Nav: left direction may move to this `tree_node()` from any of its child (items submitted between `tree_node` and `tree_pop`)
+    Nav: left arrow moves back to parent. This is processed in `tree_pop()` when there's an unfullfilled Left nav request remaining.
     """
 
     COLLAPSING_HEADER = 26
+
+    DRAW_LINES_NONE = 262144
+    """No lines drawn"""
+
+    DRAW_LINES_FULL = 524288
+    """
+    Horizontal lines to child nodes. Vertical line drawn down to `tree_pop()` position: cover full contents. Faster (for large trees).
+    """
+
+    DRAW_LINES_TO_NODES = 1048576
+    """
+    Horizontal lines to child nodes. Vertical line drawn down to bottom-most child node. Slower (for large trees).
+    """
 
 VERTEX_BUFFER_COL_OFFSET: int = 16
 
@@ -3305,12 +3361,12 @@ def get_cursor_start_pos() -> tuple[float, float]:
 
 
 def get_draw_data() -> DrawData:
-    """Valid after `render()` and until the next call to `new_frame()`. this is what you have to render."""
+    """Valid after `render()` and until the next call to `new_frame()`. Call ImGui_ImplXXXX_RenderDrawData() function in your Renderer Backend to render."""
     ...
 
 
 def get_font_size() -> float:
-    """Get current font size (= height in pixels) of current font with current scale applied"""
+    """Get current scaled font size (= height in pixels). AFTER global scale factors applied. *IMPORTANT* DO NOT PASS THIS VALUE TO `push_font()`! Use ImGui::`get_style()`.FontSizeBase to get value before global scale factors."""
     ...
 
 
@@ -3480,15 +3536,15 @@ def get_window_width() -> float:
     ...
 
 
-def image(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0)) -> None:
+def image(tex_ref: TextureRef | int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0)) -> None:
     ...
 
 
-def image_button(str_id: str, user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)) -> bool:
+def image_button(str_id: str, tex_ref: TextureRef | int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)) -> bool:
     ...
 
 
-def image_with_bg(user_texture_id: int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)) -> None:
+def image_with_bg(tex_ref: TextureRef | int, image_size: tuple[float, float], uv0: tuple[float, float] = (0.0, 0.0), uv1: tuple[float, float] = (1.0, 1.0), bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0), tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)) -> None:
     ...
 
 
@@ -3827,8 +3883,8 @@ def push_clip_rect(clip_rect_min: tuple[float, float], clip_rect_max: tuple[floa
     ...
 
 
-def push_font(font: Font | None) -> None:
-    """Use NULL as a shortcut to push default font"""
+def push_font(font: Font | None, font_size_base: float) -> None:
+    """Use NULL as a shortcut to keep current font. Use 0.0f to keep current size."""
     ...
 
 
@@ -4143,7 +4199,7 @@ def set_window_focus(name: str) -> None:
 
 
 def set_window_font_scale(scale: float) -> None:
-    """[OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild ImFontAtlas + call style.ScaleAllSizes()."""
+    """Set font scale factor for current window. Prefer using `push_font(NULL, style.FontSizeBase * factor)` or use style.FontScaleMain to scale all windows."""
     ...
 
 

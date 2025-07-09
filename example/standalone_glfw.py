@@ -63,7 +63,7 @@ def main():
         gl.glClear(int(gl.GL_COLOR_BUFFER_BIT) | int(gl.GL_DEPTH_BUFFER_BIT))
         renderer.new_frame()
         imgui.new_frame()
-        imgui.push_font(font)
+        imgui.push_font(font, 0)  # or push_font(font, font.legacy_size)
 
         # Your application code goes here..
         imgui.set_next_window_size((400, 400), imgui.Cond.FIRST_USE_EVER)

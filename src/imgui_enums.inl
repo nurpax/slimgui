@@ -369,10 +369,20 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
            "still fit in current column)")
     .value("LABEL_SPAN_ALL_COLUMNS", ImGuiTreeNodeFlags_LabelSpanAllColumns,
            "Label will span all columns of its container table")
-    .value("NAV_LEFT_JUMPS_BACK_HERE", ImGuiTreeNodeFlags_NavLeftJumpsBackHere,
-           "(WIP) Nav: left direction may move to this `tree_node()` from any "
-           "of its child (items submitted between `tree_node` and `tree_pop`)")
-    .value("COLLAPSING_HEADER", ImGuiTreeNodeFlags_CollapsingHeader);
+    .value(
+        "NAV_LEFT_JUMPS_TO_PARENT", ImGuiTreeNodeFlags_NavLeftJumpsToParent,
+        "Nav: left arrow moves back to parent. This is processed in "
+        "`tree_pop()` when there's an unfullfilled Left nav request remaining.")
+    .value("COLLAPSING_HEADER", ImGuiTreeNodeFlags_CollapsingHeader)
+    .value("DRAW_LINES_NONE", ImGuiTreeNodeFlags_DrawLinesNone,
+           "No lines drawn")
+    .value(
+        "DRAW_LINES_FULL", ImGuiTreeNodeFlags_DrawLinesFull,
+        "Horizontal lines to child nodes. Vertical line drawn down to "
+        "`tree_pop()` position: cover full contents. Faster (for large trees).")
+    .value("DRAW_LINES_TO_NODES", ImGuiTreeNodeFlags_DrawLinesToNodes,
+           "Horizontal lines to child nodes. Vertical line drawn down to "
+           "bottom-most child node. Slower (for large trees).");
 nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiTabBarFlags_None)
@@ -776,7 +786,13 @@ nb::enum_<ImGuiBackendFlags_>(m, "BackendFlags", nb::is_flag(),
     .value(
         "RENDERER_HAS_VTX_OFFSET", ImGuiBackendFlags_RendererHasVtxOffset,
         "Backend Renderer supports ImDrawCmd::VtxOffset. This enables output "
-        "of large meshes (64K+ vertices) while still using 16-bit indices.");
+        "of large meshes (64K+ vertices) while still using 16-bit indices.")
+    .value("RENDERER_HAS_TEXTURES", ImGuiBackendFlags_RendererHasTextures,
+           "Backend Renderer supports ImTextureData requests to "
+           "create/update/destroy textures. This enables incremental texture "
+           "updates and texture reloads. See "
+           "https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for "
+           "instructions on how to upgrade your custom backend.");
 nb::enum_<ImGuiCond_>(m, "Cond", nb::is_arithmetic())
     .value("NONE", ImGuiCond_None,
            "No condition (always set the variable), same as _Always")
@@ -1013,6 +1029,8 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
            "Resize grip in lower-right and lower-left corners of windows.")
     .value("RESIZE_GRIP_HOVERED", ImGuiCol_ResizeGripHovered)
     .value("RESIZE_GRIP_ACTIVE", ImGuiCol_ResizeGripActive)
+    .value("INPUT_TEXT_CURSOR", ImGuiCol_InputTextCursor,
+           "`input_text` cursor/caret")
     .value("TAB_HOVERED", ImGuiCol_TabHovered, "Tab background, when hovered")
     .value("TAB", ImGuiCol_Tab,
            "Tab background, when tab-bar is focused & tab is unselected")
@@ -1039,7 +1057,10 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
     .value("TABLE_ROW_BG_ALT", ImGuiCol_TableRowBgAlt,
            "Table row background (odd rows)")
     .value("TEXT_LINK", ImGuiCol_TextLink, "Hyperlink color")
-    .value("TEXT_SELECTED_BG", ImGuiCol_TextSelectedBg)
+    .value("TEXT_SELECTED_BG", ImGuiCol_TextSelectedBg,
+           "Selected text inside an `input_text`")
+    .value("TREE_LINES", ImGuiCol_TreeLines,
+           "Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES`")
     .value("DRAG_DROP_TARGET", ImGuiCol_DragDropTarget,
            "Rectangle highlighting a drop target")
     .value(
@@ -1116,6 +1137,10 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
     .value("TABLE_ANGLED_HEADERS_TEXT_ALIGN",
            ImGuiStyleVar_TableAngledHeadersTextAlign,
            "ImVec2  TableAngledHeadersTextAlign")
+    .value("TREE_LINES_SIZE", ImGuiStyleVar_TreeLinesSize,
+           "Float     TreeLinesSize")
+    .value("TREE_LINES_ROUNDING", ImGuiStyleVar_TreeLinesRounding,
+           "Float     TreeLinesRounding")
     .value("BUTTON_TEXT_ALIGN", ImGuiStyleVar_ButtonTextAlign,
            "ImVec2    ButtonTextAlign")
     .value("SELECTABLE_TEXT_ALIGN", ImGuiStyleVar_SelectableTextAlign,
@@ -1306,10 +1331,10 @@ nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())
     .value("KEY_RESERVED_FOR_MOD_ALT", ImGuiKey_ReservedForModAlt)
     .value("KEY_RESERVED_FOR_MOD_SUPER", ImGuiKey_ReservedForModSuper)
     .value("KEY_NAMED_KEY_END", ImGuiKey_NamedKey_END)
+    .value("KEY_NAMED_KEY_COUNT", ImGuiKey_NamedKey_COUNT)
     .value("MOD_NONE", ImGuiMod_None)
     .value("MOD_CTRL", ImGuiMod_Ctrl)
     .value("MOD_SHIFT", ImGuiMod_Shift)
     .value("MOD_ALT", ImGuiMod_Alt)
     .value("MOD_SUPER", ImGuiMod_Super)
-    .value("MOD_MASK_", ImGuiMod_Mask_)
-    .value("KEY_NAMED_KEY_COUNT", ImGuiKey_NamedKey_COUNT);
+    .value("MOD_MASK_", ImGuiMod_Mask_);
