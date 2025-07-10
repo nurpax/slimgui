@@ -673,7 +673,6 @@ NB_MODULE(slimgui_ext, top) {
     m.def("set_window_size", [](const ImVec2& size, ImGuiCond_ cond) { ImGui::SetWindowSize(size, cond); }, "size"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("set_window_collapsed", [](bool collapsed, ImGuiCond_ cond) { ImGui::SetWindowCollapsed(collapsed, cond); }, "collapsed"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("set_window_focus", []() { ImGui::SetWindowFocus(); });
-    m.def("set_window_font_scale", [](float scale) { ImGui::SetWindowFontScale(scale); }, "scale"_a);
     m.def("set_window_pos", [](const char* name, const ImVec2& pos, ImGuiCond_ cond) { ImGui::SetWindowPos(name, pos, cond); }, "name"_a, "pos"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("set_window_size", [](const char* name, const ImVec2& size, ImGuiCond_ cond) { ImGui::SetWindowSize(name, size, cond); }, "name"_a, "size"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
     m.def("set_window_collapsed", [](const char* name, bool collapsed, ImGuiCond_ cond) { ImGui::SetWindowCollapsed(name, collapsed, cond); }, "name"_a, "collapsed"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);

@@ -4331,11 +4331,6 @@ def set_window_focus(name: str) -> None:
     ...
 
 
-def set_window_font_scale(scale: float) -> None:
-    """Set font scale factor for current window. Prefer using `push_font(NULL, style.FontSizeBase * factor)` or use style.FontScaleMain to scale all windows."""
-    ...
-
-
 @overload
 def set_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE) -> None:
     """(not recommended) set current window position - call within `begin()`/`end()`. prefer using `set_next_window_pos()`, as this may incur tearing and side-effects."""
