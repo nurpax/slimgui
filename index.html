@@ -281,7 +281,7 @@ div.api-class {
 <li><a href="./apiref_implot.html">ImPlot bindings API reference</a></li>
 </ul>
 <p>The project source code is hosted on <a href="https://github.com/nurpax/slimgui">github.com/nurpax/slimgui</a>.</p>
-<p>Slimgui is built against Dear ImGui version 1.91.9.</p>
+<p>Slimgui is built against Dear ImGui version 1.92.1.</p>
 <h2 id="binding-considerations">Binding considerations</h2>
 <p>Slimgui has been developed with the following goals in mind:</p>
 <ul>
@@ -369,7 +369,8 @@ call <code>get_draw_data()</code>.</p>
   <code><span class='keyword'>def</span> <span class='func_name'>get_draw_data</span>() -> <span class='symbol'>DrawData</span></code>
 </div>
 <p>Valid after <code>render()</code> and until the next call to
-<code>new_frame()</code>. this is what you have to render.</p>
+<code>new_frame()</code>. Call ImGui_ImplXXXX_RenderDrawData() function
+in your Renderer Backend to render.</p>
 </div>
 <h3 id="demo-debug-information">Demo, Debug, Information</h3>
 <h4 id="functions-2">Functions</h4>
@@ -631,12 +632,6 @@ using <code>set_next_window_focus()</code>.</p>
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_focus</span>(<span class='arg_name'>name</span><span class='special'>:</span> <span class='symbol'>str</span>) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>set_window_font_scale</span>(<span class='arg_name'>scale</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
-</div>
-<p>[OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to
-scale all windows. This is an old API! For correct scaling, prefer to
-reload font + rebuild ImFontAtlas + call style.ScaleAllSizes().</p>
-<div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_window_pos</span>(<span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cond</span><span class='special'>:</span> <span class='symbol'>Cond</span> = <span class='symbol'>Cond</span>.<span class='symbol'>NONE</span>) -> <span class='keyword'>None</span></code>
 </div>
 <p>(not recommended) set current window position - call within
@@ -742,9 +737,10 @@ position.</p>
 <h4 id="functions-9">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>push_font</span>(<span class='arg_name'>font</span><span class='special'>:</span> <span class='symbol'>Font</span> | <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>push_font</span>(<span class='arg_name'>font</span><span class='special'>:</span> <span class='symbol'>Font</span> | <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>font_size_base</span><span class='special'>:</span> <span class='symbol'>float</span>) -> <span class='keyword'>None</span></code>
 </div>
-<p>Use NULL as a shortcut to push default font</p>
+<p>Use <code>None</code> as a shortcut to keep current font. Use 0.0 for
+<code>font_size_base</code> to keep the current font size.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>pop_font</span>() -> <span class='keyword'>None</span></code>
 </div>
@@ -825,8 +821,14 @@ necessarily the width of last item unlike most 'Item' functions.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_font_size</span>() -> <span class='symbol'>float</span></code>
 </div>
-<p>Get current font size (= height in pixels) of current font with
-current scale applied</p>
+<p>Get current font size (= height in pixels) of current font, with
+global scale factors applied.</p>
+<ul>
+<li>Use <code>style.font_size_base</code> to get value before global
+scale factors.</li>
+<li>recap:
+<code>imgui.get_font_size() == style.font_size_base * (style.font_scale_main * style.font_scale_dpi * other_scaling_factors)</code></li>
+</ul>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>get_font_tex_uv_white_pixel</span>() -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
 </div>
@@ -1107,7 +1109,10 @@ distance that <code>tree_node()</code> uses</p>
 </div>
 <h3 id="widgets-images">Widgets: Images</h3>
 <ul>
-<li>Read about ImTextureID here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples</li>
+<li>Read about texture IDs and TextureRef in ImGui docs: <a href="https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples">Image Loading and Displaying Examples</a>
+<ul>
+<li>In general, you shouldn't need to worry about <code>TextureRef</code> -- all image functions also accept an integer texture ID.</li>
+</ul></li>
 <li><code>uv0</code> and <code>uv1</code> are texture coordinates. Read about them from the same link above.
 <ul>
 <li><code>image()</code> pads adds <code>StyleVar.IMAGE_BORDER_SIZE</code> on each side, <code>image_button()</code> adds <code>StyleVar.FRAME_PADDING</code> on each side.</li>
@@ -1117,13 +1122,13 @@ distance that <code>tree_node()</code> uses</p>
 <h4 id="functions-17">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>image</span>(<span class='arg_name'>user_texture_id</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>image</span>(<span class='arg_name'>tex_ref</span><span class='special'>:</span> <span class='symbol'>TextureRef</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>image_with_bg</span>(<span class='arg_name'>user_texture_id</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>bg_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>tint_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>image_with_bg</span>(<span class='arg_name'>tex_ref</span><span class='special'>:</span> <span class='symbol'>TextureRef</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>bg_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>tint_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>image_button</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>user_texture_id</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>bg_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>tint_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>bool</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>image_button</span>(<span class='arg_name'>str_id</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>tex_ref</span><span class='special'>:</span> <span class='symbol'>TextureRef</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>image_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv0</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>bg_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>tint_col</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)) -> <span class='symbol'>bool</span></code>
 </div>
 </div>
 <h3 id="widgets-combo-box-dropdown">Widgets: Combo Box (Dropdown)</h3>
@@ -2310,6 +2315,7 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">HAS_MOUSE_CURSORS</td><td class="fielddoc">Backend Platform supports honoring <code>get_mouse_cursor()</code> value to change the OS cursor shape.</td></tr>
   <tr><td class="field">HAS_SET_MOUSE_POS</td><td class="fielddoc">Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if io.ConfigNavMoveSetMousePos is set).</td></tr>
   <tr><td class="field">RENDERER_HAS_VTX_OFFSET</td><td class="fielddoc">Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.</td></tr>
+  <tr><td class="field">RENDERER_HAS_TEXTURES</td><td class="fielddoc">Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads. See https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for instructions on how to upgrade your custom backend.</td></tr>
   </table>
 </div>
 <div class="api-class">
@@ -2373,6 +2379,7 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">RESIZE_GRIP</td><td class="fielddoc">Resize grip in lower-right and lower-left corners of windows.</td></tr>
   <tr><td class="field">RESIZE_GRIP_HOVERED</td><td class="fielddoc"></td></tr>
   <tr><td class="field">RESIZE_GRIP_ACTIVE</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">INPUT_TEXT_CURSOR</td><td class="fielddoc"><code>input_text</code> cursor/caret</td></tr>
   <tr><td class="field">TAB_HOVERED</td><td class="fielddoc">Tab background, when hovered</td></tr>
   <tr><td class="field">TAB</td><td class="fielddoc">Tab background, when tab-bar is focused & tab is unselected</td></tr>
   <tr><td class="field">TAB_SELECTED</td><td class="fielddoc">Tab background, when tab-bar is focused & tab is selected</td></tr>
@@ -2390,7 +2397,8 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">TABLE_ROW_BG</td><td class="fielddoc">Table row background (even rows)</td></tr>
   <tr><td class="field">TABLE_ROW_BG_ALT</td><td class="fielddoc">Table row background (odd rows)</td></tr>
   <tr><td class="field">TEXT_LINK</td><td class="fielddoc">Hyperlink color</td></tr>
-  <tr><td class="field">TEXT_SELECTED_BG</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">TEXT_SELECTED_BG</td><td class="fielddoc">Selected text inside an <code>input_text</code></td></tr>
+  <tr><td class="field">TREE_LINES</td><td class="fielddoc">Tree node hierarchy outlines when using <code>TreeNodeFlags.DRAW_LINES</code></td></tr>
   <tr><td class="field">DRAG_DROP_TARGET</td><td class="fielddoc">Rectangle highlighting a drop target</td></tr>
   <tr><td class="field">NAV_CURSOR</td><td class="fielddoc">Color of keyboard/gamepad navigation cursor/rectangle, when visible</td></tr>
   <tr><td class="field">NAV_WINDOWING_HIGHLIGHT</td><td class="fielddoc">Highlight window when using CTRL+TAB</td></tr>
@@ -2739,12 +2747,12 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">KEY_RESERVED_FOR_MOD_ALT</td><td class="fielddoc"></td></tr>
   <tr><td class="field">KEY_RESERVED_FOR_MOD_SUPER</td><td class="fielddoc"></td></tr>
   <tr><td class="field">KEY_NAMED_KEY_END</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">KEY_NAMED_KEY_COUNT</td><td class="fielddoc"></td></tr>
   <tr><td class="field">MOD_NONE</td><td class="fielddoc"></td></tr>
   <tr><td class="field">MOD_CTRL</td><td class="fielddoc"></td></tr>
   <tr><td class="field">MOD_SHIFT</td><td class="fielddoc"></td></tr>
   <tr><td class="field">MOD_ALT</td><td class="fielddoc"></td></tr>
   <tr><td class="field">MOD_SUPER</td><td class="fielddoc"></td></tr>
-  <tr><td class="field">KEY_NAMED_KEY_COUNT</td><td class="fielddoc"></td></tr>
   </table>
 </div>
 <div class="api-class">
@@ -2856,6 +2864,8 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">TAB_BAR_OVERLINE_SIZE</td><td class="fielddoc">Float     TabBarOverlineSize</td></tr>
   <tr><td class="field">TABLE_ANGLED_HEADERS_ANGLE</td><td class="fielddoc">Float     TableAngledHeadersAngle</td></tr>
   <tr><td class="field">TABLE_ANGLED_HEADERS_TEXT_ALIGN</td><td class="fielddoc">ImVec2  TableAngledHeadersTextAlign</td></tr>
+  <tr><td class="field">TREE_LINES_SIZE</td><td class="fielddoc">Float     TreeLinesSize</td></tr>
+  <tr><td class="field">TREE_LINES_ROUNDING</td><td class="fielddoc">Float     TreeLinesRounding</td></tr>
   <tr><td class="field">BUTTON_TEXT_ALIGN</td><td class="fielddoc">ImVec2    ButtonTextAlign</td></tr>
   <tr><td class="field">SELECTABLE_TEXT_ALIGN</td><td class="fielddoc">ImVec2    SelectableTextAlign</td></tr>
   <tr><td class="field">SEPARATOR_TEXT_BORDER_SIZE</td><td class="fielddoc">Float     SeparatorTextBorderSize</td></tr>
@@ -3000,8 +3010,11 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">SPAN_LABEL_WIDTH</td><td class="fielddoc">Narrow hit box + narrow hovering highlight, will only cover the label text.</td></tr>
   <tr><td class="field">SPAN_ALL_COLUMNS</td><td class="fielddoc">Frame will span all columns of its container table (label will still fit in current column)</td></tr>
   <tr><td class="field">LABEL_SPAN_ALL_COLUMNS</td><td class="fielddoc">Label will span all columns of its container table</td></tr>
-  <tr><td class="field">NAV_LEFT_JUMPS_BACK_HERE</td><td class="fielddoc">(WIP) Nav: left direction may move to this <code>tree_node()</code> from any of its child (items submitted between <code>tree_node</code> and <code>tree_pop</code>)</td></tr>
+  <tr><td class="field">NAV_LEFT_JUMPS_TO_PARENT</td><td class="fielddoc">Nav: left arrow moves back to parent. This is processed in <code>tree_pop()</code> when there's an unfullfilled Left nav request remaining.</td></tr>
   <tr><td class="field">COLLAPSING_HEADER</td><td class="fielddoc"></td></tr>
+  <tr><td class="field">DRAW_LINES_NONE</td><td class="fielddoc">No lines drawn</td></tr>
+  <tr><td class="field">DRAW_LINES_FULL</td><td class="fielddoc">Horizontal lines to child nodes. Vertical line drawn down to <code>tree_pop()</code> position: cover full contents. Faster (for large trees).</td></tr>
+  <tr><td class="field">DRAW_LINES_TO_NODES</td><td class="fielddoc">Horizontal lines to child nodes. Vertical line drawn down to bottom-most child node. Slower (for large trees).</td></tr>
   </table>
 </div>
 <div class="api-class">
