@@ -3499,9 +3499,12 @@ def get_draw_data() -> DrawData:
 
 
 def get_font_size() -> float:
-    """Get current scaled font size (= height in pixels). AFTER global scale factors applied. *IMPORTANT* DO NOT PASS THIS VALUE TO `push_font()`! Use ImGui::`get_style()`.FontSizeBase to get value before global scale factors."""
-    ...
+    """
+    Get current font size (= height in pixels) of current font, with global scale factors applied.
 
+    - Use `style.font_size_base` to get value before global scale factors.
+    - recap: `imgui.get_font_size() == style.font_size_base * (style.font_scale_main * style.font_scale_dpi * other_scaling_factors)`
+    """
 
 def get_font_tex_uv_white_pixel() -> tuple[float, float]:
     """Get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API"""
@@ -4017,9 +4020,9 @@ def push_clip_rect(clip_rect_min: tuple[float, float], clip_rect_max: tuple[floa
 
 
 def push_font(font: Font | None, font_size_base: float) -> None:
-    """Use NULL as a shortcut to keep current font. Use 0.0f to keep current size."""
-    ...
-
+    """
+    Use `None` as a shortcut to keep current font.  Use 0.0 for `font_size_base` to keep the current font size.
+    """
 
 @overload
 def push_id(str_id: str) -> None:

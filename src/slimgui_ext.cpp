@@ -703,7 +703,7 @@ NB_MODULE(slimgui_ext, top) {
     // Parameters stacks (shared)
     m.def("push_font", [](ImFont* font, float font_size_base) {
         ImGui::PushFont(font, font_size_base);
-    }, "font"_a.none(), "font_size_base"_a);
+    }, "font"_a.none(), "font_size_base"_a, "Use `None` as a shortcut to keep current font.  Use 0.0 for `font_size_base` to keep the current font size.");
 
     m.def("pop_font", &ImGui::PopFont);
     m.def("push_style_color", [](ImGuiCol_ idx, ImU32 col) { ImGui::PushStyleColor(idx, col); }, "idx"_a, "col"_a);
@@ -731,7 +731,12 @@ NB_MODULE(slimgui_ext, top) {
 
     // Style read access
     // IMGUI_API ImFont*       GetFont();                                                      // get current font
-    m.def("get_font_size", &ImGui::GetFontSize);
+    m.def("get_font_size", &ImGui::GetFontSize,
+        "Get current font size (= height in pixels) of current font, with global scale factors applied.\n"
+        "\n"
+        "- Use `style.font_size_base` to get value before global scale factors.\n"
+        "- recap: `imgui.get_font_size() == style.font_size_base * (style.font_scale_main * style.font_scale_dpi * other_scaling_factors)`");
+
     m.def("get_font_tex_uv_white_pixel", &ImGui::GetFontTexUvWhitePixel);
     m.def("get_color_u32", [](ImGuiCol_ idx, float alpha_mul) { return ImGui::GetColorU32(idx, alpha_mul);}, "idx"_a, "alpha_mul"_a = 1.0f);
     m.def("get_color_u32", [](ImVec4 col)                     { return ImGui::GetColorU32(col);}, "col"_a);

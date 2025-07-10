@@ -1,6 +1,6 @@
 # slimgui 
 
-Work in progress [Dear ImGui](https://github.com/ocornut/imgui) bindings for Python.
+Reasonably complete [Dear ImGui](https://github.com/ocornut/imgui) (and ImPlot) bindings for Python.
 
 ### Getting started
 

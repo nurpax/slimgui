@@ -148,7 +148,7 @@ Important: due to legacy reason, `begin()`/`end()` and `begin_child()`/`end_chil
 - Prefer using `set_next_xxx` functions (before `begin`) rather than `set_xxx` functions (after `begin`).
 
 #### Functions
-<div class="raw-html-insert" data-apirefs="set_next_window_pos, set_next_window_size, set_next_window_size_constraints, set_next_window_content_size, set_next_window_collapsed, set_next_window_focus, set_next_window_scroll, set_next_window_bg_alpha, set_window_pos, set_window_size, set_window_collapsed, set_window_focus, set_window_font_scale, set_window_pos, set_window_size, set_window_collapsed, set_window_focus"></div>
+<div class="raw-html-insert" data-apirefs="set_next_window_pos, set_next_window_size, set_next_window_size_constraints, set_next_window_content_size, set_next_window_collapsed, set_next_window_focus, set_next_window_scroll, set_next_window_bg_alpha, set_window_pos, set_window_size, set_window_collapsed, set_window_focus, set_window_pos, set_window_size, set_window_collapsed, set_window_focus"></div>
 
 ### Windows Scrolling
 
@@ -229,7 +229,8 @@ In this header file we use the `label`/`name` terminology to denote a string tha
 
 ### Widgets: Images
 
-- Read about ImTextureID here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
+- Read about texture IDs and TextureRef in ImGui docs: [Image Loading and Displaying Examples](https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples)
+  - In general, you shouldn't need to worry about `TextureRef` -- all image functions also accept an integer texture ID.
 - `uv0` and `uv1` are texture coordinates. Read about them from the same link above.
   - `image()` pads adds `StyleVar.IMAGE_BORDER_SIZE` on each side, `image_button()` adds `StyleVar.FRAME_PADDING` on each side.
   - `image_button()` draws a background based on regular `button()` color and optionally an inner background if specified.
