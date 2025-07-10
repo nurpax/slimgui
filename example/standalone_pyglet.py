@@ -52,8 +52,8 @@ class PygletRenderer:
 
         window_size = window.get_size()
         self.io.display_size = window_size
-        self.io.display_fb_scale = (1.0, 1.0) # TODO
         self.io.backend_flags |= imgui.BackendFlags.RENDERER_HAS_VTX_OFFSET
+        self.io.backend_flags |= imgui.BackendFlags.RENDERER_HAS_TEXTURES
 
         self._window = window
         window.push_handlers(
@@ -121,7 +121,7 @@ class PygletRenderer:
 
     def on_resize(self, width, height):
         self.io.display_size = width, height
-    
+
     def new_frame(self):
         current_time = pyglet.clock.tick()
 
@@ -130,7 +130,7 @@ class PygletRenderer:
         else:
             self.io.delta_time = 1. / 60.
 
-        if self.io.delta_time <= 0.0: 
+        if self.io.delta_time <= 0.0:
             self.io.delta_time = 1./ 1000.
 
         self._gui_time = current_time
@@ -140,9 +140,6 @@ class PygletRenderer:
 
     def render(self, draw_data: imgui.DrawData):
         self.renderer.render(draw_data)
-
-    def refresh_font_texture(self):
-        self.renderer.refresh_font_texture()
 
 #------------------------------------------------------------------------
 
@@ -160,7 +157,7 @@ def _download_cached(url, cache_dir="slimgui_examples") -> str:
 def _load_font():
     with open(_download_cached('https://github.com/jnmaloney/WebGui/raw/master/data/xkcd-script.ttf'), 'rb') as f:
         font_data = f.read()
-        return imgui.get_io().fonts.add_font_from_memory_ttf(font_data, 48)
+        return imgui.get_io().fonts.add_font_from_memory_ttf(font_data)
 
 #------------------------------------------------------------------------
 
@@ -173,7 +170,6 @@ def main():
     renderer = PygletRenderer(window)
 
     font = _load_font()
-    renderer.refresh_font_texture()
 
     count = 0
     input_text = ''
@@ -181,7 +177,7 @@ def main():
         nonlocal count, input_text
 
         imgui.new_frame()
-        imgui.push_font(font)
+        imgui.push_font(font, 30)
 
         # Your application code goes here..
         imgui.set_next_window_size((400, 400), imgui.Cond.FIRST_USE_EVER)
