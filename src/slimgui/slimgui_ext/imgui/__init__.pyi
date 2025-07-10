@@ -596,6 +596,12 @@ class DrawData:
     def scale_clip_rects(self, fb_scale: tuple[float, float]) -> None: ...
 
     @property
+    def framebuffer_scale(self) -> tuple[float, float]:
+        """
+        Amount of pixels for each unit of `display_size`. Copied from `Viewport.framebuffer_scale` (`== IO.display_framebuffer_scale` for main viewport). Generally (1,1) on normal display, (2,2) on OSX with Retina display.
+        """
+
+    @property
     def commands_lists(self) -> Iterator[DrawList]: ...
 
     @property
@@ -990,10 +996,10 @@ class IO:
     def display_size(self, arg: tuple[float, float], /) -> None: ...
 
     @property
-    def display_fb_scale(self) -> tuple[float, float]: ...
+    def display_framebuffer_scale(self) -> tuple[float, float]: ...
 
-    @display_fb_scale.setter
-    def display_fb_scale(self, arg: tuple[float, float], /) -> None: ...
+    @display_framebuffer_scale.setter
+    def display_framebuffer_scale(self, arg: tuple[float, float], /) -> None: ...
 
     @property
     def delta_time(self) -> float: ...

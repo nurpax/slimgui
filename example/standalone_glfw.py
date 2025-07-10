@@ -20,7 +20,7 @@ def _download_cached(url, cache_dir="slimgui_examples") -> str:
 def _load_font():
     with open(_download_cached('https://github.com/jnmaloney/WebGui/raw/master/data/xkcd-script.ttf'), 'rb') as f:
         font_data = f.read()
-        return imgui.get_io().fonts.add_font_from_memory_ttf(font_data, 48)
+        return imgui.get_io().fonts.add_font_from_memory_ttf(font_data, 24)
 
 _esc_pressed = False
 def _key_callback(_window, key, _scan, action, _mods):
@@ -49,9 +49,6 @@ def main():
     renderer = GlfwRenderer(glfw_window, prev_key_callback=_key_callback)
 
     font = _load_font()
-
-    scl = glfw.get_window_content_scale(glfw_window)
-    imgui.get_style().scale_all_sizes(scl[0])
 
     # Application main loop.
     count = 0

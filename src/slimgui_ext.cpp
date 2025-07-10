@@ -294,7 +294,7 @@ NB_MODULE(slimgui_ext, top) {
             [](ImGuiIO& io, ImGuiBackendFlags_ flags) { io.BackendFlags = flags; }
         )
         .def_rw("display_size", &ImGuiIO::DisplaySize)
-        .def_rw("display_fb_scale", &ImGuiIO::DisplayFramebufferScale)
+        .def_rw("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale)
         .def_rw("delta_time", &ImGuiIO::DeltaTime)
         .def_rw("ini_saving_rate", &ImGuiIO::IniSavingRate)
         .def_prop_rw("ini_filename",
@@ -492,6 +492,7 @@ NB_MODULE(slimgui_ext, top) {
 
     nb::class_<ImDrawData>(m, "DrawData")
         .def("scale_clip_rects", &ImDrawData::ScaleClipRects, "fb_scale"_a)
+        .def_ro("framebuffer_scale", &ImDrawData::FramebufferScale, "Amount of pixels for each unit of `display_size`. Copied from `Viewport.framebuffer_scale` (`== IO.display_framebuffer_scale` for main viewport). Generally (1,1) on normal display, (2,2) on OSX with Retina display.")
         .def_prop_ro("commands_lists", [](ImDrawData& drawData) {
             return nb::make_iterator(nb::type<ImDrawData>(), "iterator", drawData.CmdLists.begin(), drawData.CmdLists.end());
         }, nb::keep_alive<0, 1>())

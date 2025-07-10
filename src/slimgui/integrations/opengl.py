@@ -187,8 +187,9 @@ class OpenGLRenderer(BaseRenderer):
         io = imgui.get_io()
 
         display_width, display_height = io.display_size
-        fb_width = int(display_width * io.display_fb_scale[0])
-        fb_height = int(display_height * io.display_fb_scale[1])
+        fb_scale = draw_data.framebuffer_scale
+        fb_width = int(display_width * fb_scale[0])
+        fb_height = int(display_height * fb_scale[1])
 
         if fb_width == 0 or fb_height == 0:
             return
@@ -197,7 +198,7 @@ class OpenGLRenderer(BaseRenderer):
             for tex_data in draw_data.textures:
                 self._update_texture(tex_data)
 
-        draw_data.scale_clip_rects(io.display_fb_scale)
+        draw_data.scale_clip_rects(fb_scale)
 
         # backup GL state
         # todo: provide cleaner version of this backup-restore code

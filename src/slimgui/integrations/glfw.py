@@ -16,7 +16,6 @@ class GlfwRenderer:
         prev_cursor_pos_callback: Callable[[Any, float, float], None] | None = None,
         prev_mouse_button_callback: Callable[[Any, int, int, int], None] | None = None,
         prev_scroll_callback: Callable[[Any, float, float], None] | None = None,
-        prev_window_size_callback: Callable[[Any, int, int], None] | None = None,
     ):
         self.renderer = OpenGLRenderer()
         self.window = window
@@ -27,13 +26,11 @@ class GlfwRenderer:
         self._prev_cursor_pos_callback = prev_cursor_pos_callback
         self._prev_mouse_button_callback = prev_mouse_button_callback
         self._prev_scroll_callback = prev_scroll_callback
-        self._prev_window_size_callback = prev_window_size_callback
 
         if attach_callbacks:
             glfw.set_key_callback(self.window, self.keyboard_callback)
             glfw.set_cursor_pos_callback(self.window, self.mouse_pos_callback)
             glfw.set_mouse_button_callback(self.window, self.mouse_button_callback)
-            glfw.set_window_size_callback(self.window, self.resize_callback)
             glfw.set_char_callback(self.window, self.char_callback)
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
@@ -135,21 +132,9 @@ class GlfwRenderer:
             self._prev_char_callback(window, char)
         self.io.add_input_character(char)
 
-    def resize_callback(self, window, width, height):
-        if self._prev_window_size_callback is not None:
-            self._prev_window_size_callback(window, width, height)
-        self.io.display_size = width, height
-
     def mouse_pos_callback(self, window, x, y):
         if self._prev_cursor_pos_callback is not None:
             self._prev_cursor_pos_callback(window, x, y)
-
-        w, h = glfw.get_window_size(window)
-        if w <= 0 or h <= 0:
-            return
-        fb_w, fb_h = glfw.get_framebuffer_size(window)
-        x *= fb_w / w
-        y *= fb_h / h
         self.io.add_mouse_pos_event(x, y)
 
     def mouse_button_callback(self, window, btn, action, mods):
@@ -167,8 +152,12 @@ class GlfwRenderer:
 
     def new_frame(self):
         # See https://github.com/ocornut/imgui/issues/5081
-        self.io.display_size = glfw.get_framebuffer_size(self.window)
-        self.io.display_fb_scale = (1, 1)
+
+        w, h = glfw.get_window_size(self.window)
+        disp_w, disp_h = glfw.get_framebuffer_size(self.window)
+        self.io.display_size = w, h
+        if w > 0 and h > 0:
+            self.io.display_framebuffer_scale = float(disp_w) / float(w), float(disp_h) / float(h)
 
         current_time = glfw.get_time()
         if self._gui_time:
