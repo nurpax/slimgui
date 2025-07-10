@@ -177,15 +177,14 @@ class GlfwWindow:  # pylint: disable=too-many-public-methods
 
 
 class ImguiWindow(GlfwWindow):
-    def __init__(self, *, title="ImguiWindow", font_bytes: bytes | None=None, font_sizes=range(14, 24), close_on_esc=False, ini_filename: str | None=None, mouse_wheel_multiplier: float = 1, **glfw_kwargs):
-        font_sizes = {int(size) for size in font_sizes}
+    def __init__(self, *, title="ImguiWindow", font_bytes: bytes | None=None, close_on_esc=False, ini_filename: str | None=None, mouse_wheel_multiplier: float = 1, **glfw_kwargs):
         super().__init__(title=title, **glfw_kwargs)
 
         # Init fields.
         self._imgui_context = None
         self._imgui_renderer = None
-        self._imgui_fonts  = None
-        self._cur_font_size = max(font_sizes)
+        self._imgui_font = None
+        self._cur_font_size = 0
         self._close_on_esc = close_on_esc
         self._esc_pressed = False
 
@@ -203,16 +202,11 @@ class ImguiWindow(GlfwWindow):
         )
 
         if font_bytes is not None:
-            self._imgui_fonts = {size: imgui.get_io().fonts.add_font_from_memory_ttf(font_bytes, size) for size in font_sizes}
-        self._imgui_renderer.refresh_font_texture()
+            self._imgui_font = imgui.get_io().fonts.add_font_from_memory_ttf(font_bytes)
 
-        #scl = glfw.get_window_content_scale(self._glfw_window)
-        #style = imgui.get_style()
-        #style.scale_all_sizes(scl[0])
 
     def close(self):
         self.make_context_current()
-        self._imgui_fonts = None
         if self._imgui_renderer is not None:
             self._imgui_renderer.shutdown()
             self._imgui_renderer = None
@@ -236,9 +230,8 @@ class ImguiWindow(GlfwWindow):
     def spacing(self):
         return round(self._cur_font_size * 0.4)
 
-    def set_font_size(self, target):  # Applied on next frame.
-        assert self._imgui_fonts is not None
-        self._cur_font_size = min((abs(key - target), key) for key in self._imgui_fonts.keys())[1]
+    def set_font_size(self, target: float):  # Applied on next frame.
+        self._cur_font_size = target
 
     def begin_frame(self):
         assert self._imgui_renderer is not None
@@ -246,12 +239,12 @@ class ImguiWindow(GlfwWindow):
 
         self._imgui_renderer.new_frame()
         imgui.new_frame()
-        if self._imgui_fonts is not None:
-            imgui.push_font(self._imgui_fonts[self._cur_font_size], 0)
+        if self._imgui_font is not None:
+            imgui.push_font(self._imgui_font, self._cur_font_size)
 
     def end_frame(self):
         assert self._imgui_renderer is not None
-        if self._imgui_fonts is not None:
+        if self._imgui_font is not None:
             imgui.pop_font()
         imgui.render()
         self._imgui_renderer.render(imgui.get_draw_data())

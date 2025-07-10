@@ -483,6 +483,8 @@ class ConfigFlags(enum.IntFlag):
 class Context:
     def get_io_internal(self) -> IO: ...
 
+    def get_platform_io_internal(self) -> PlatformIO: ...
+
     def get_style_internal(self) -> Style: ...
 
     def get_font_internal(self) -> Font: ...
@@ -595,6 +597,9 @@ class DrawData:
 
     @property
     def commands_lists(self) -> Iterator[DrawList]: ...
+
+    @property
+    def textures(self) -> Iterator[TextureData] | None: ...
 
 class DrawFlags(enum.IntFlag):
     __str__ = __repr__
@@ -763,7 +768,7 @@ class Font:
 class FontAtlas:
     def add_font_default(self, font_cfg: FontConfig | None = None) -> Font: ...
 
-    def add_font_from_memory_ttf(self, font_data: bytes, size_pixels: float, font_cfg: FontConfig | None = None) -> Font: ...
+    def add_font_from_memory_ttf(self, font_data: bytes, size_pixels: float = 0.0, font_cfg: FontConfig | None = None) -> Font: ...
 
     def clear_tex_data(self) -> None: ...
 
@@ -1777,6 +1782,22 @@ class Payload:
 
     def data(self) -> bytes: ...
 
+class PlatformIO:
+    @property
+    def renderer_texture_max_width(self) -> int: ...
+
+    @renderer_texture_max_width.setter
+    def renderer_texture_max_width(self, arg: int, /) -> None: ...
+
+    @property
+    def renderer_texture_max_height(self) -> int: ...
+
+    @renderer_texture_max_height.setter
+    def renderer_texture_max_height(self, arg: int, /) -> None: ...
+
+    @property
+    def textures(self) -> Iterator[TextureData]: ...
+
 class PopupFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -2723,8 +2744,114 @@ class TableRowFlags(enum.IntFlag):
     Identify header row (set default background color + width of its contents accounted differently for auto column width)
     """
 
+class TextureData:
+    @property
+    def status(self) -> TextureStatus:
+        """
+        `TextureStatus.OK/WANT_CREATE/WANT_UPDATES/WANT_DESTROY`. Always use `TextureData.set_status()` to modify!
+        """
+
+    @property
+    def format(self) -> TextureFormat:
+        """`TextureFormat.RGBA32` (default) or `TextureFormat.ALPHA8`."""
+
+    @property
+    def width(self) -> int:
+        """Texture width."""
+
+    @property
+    def height(self) -> int:
+        """Texture height."""
+
+    @property
+    def bytes_per_pixel(self) -> int:
+        """4 or 1."""
+
+    @property
+    def unused_frames(self) -> int:
+        """
+        In order to facilitate handling `TextureData.status == TextureStatus.WANT_DESTROY` in some backends: this is a count successive frames where the texture was not used. Always `>0` when `status == WANT_DESTROY`.
+        """
+
+    @property
+    def ref_count(self) -> int:
+        """Number of contexts using this texture. Used during backend shutdown."""
+
+    @property
+    def updates(self) -> Iterator[TextureRect]:
+        """Array of individual updates."""
+
+    def get_size_in_bytes(self) -> int:
+        """`width * height * `bytes_per_pixel`."""
+
+    def get_pixels(self) -> Annotated[ArrayLike, dict(dtype='uint8', shape=(None))]:
+        """Get texture data as an `ndarray`."""
+
+    def get_pixels_at(self, arg0: int, arg1: int, /) -> Annotated[ArrayLike, dict(dtype='uint8', shape=(None))]:
+        """
+        Get texture data as an `ndarray` starting at `x, y` corner.  Note that the pixel stride is the same as in the original texture.
+        """
+
+    def get_tex_id(self) -> int:
+        """Backend-specific texture identifier."""
+
+    def set_tex_id(self, arg: int, /) -> None:
+        """Call after creating or destroying the texture."""
+
+    def set_status(self, arg: TextureStatus, /) -> None:
+        """
+        Call after honoring a request. Never modify `TextureData.status` directly!
+        """
+
+class TextureFormat(enum.IntEnum):
+    RGBA32 = 0
+    """
+    4 components per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight * 4
+    """
+
+    ALPHA8 = 1
+    """
+    1 component per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight
+    """
+
+class TextureRect:
+    @property
+    def x(self) -> int:
+        """Upper-left x-coordinate of rectangle to update"""
+
+    @property
+    def y(self) -> int:
+        """Upper-left y-coordinate of rectangle to update"""
+
+    @property
+    def w(self) -> int:
+        """Width of rectangle to update (in pixels)"""
+
+    @property
+    def h(self) -> int:
+        """Height of rectangle to update (in pixels)"""
+
 class TextureRef:
     def get_tex_id(self) -> int: ...
+
+class TextureStatus(enum.IntEnum):
+    OK = 0
+
+    DESTROYED = 1
+    """Backend destroyed the texture."""
+
+    WANT_CREATE = 2
+    """Requesting backend to create the texture. Set status OK when done."""
+
+    WANT_UPDATES = 3
+    """
+    Requesting backend to update specific blocks of pixels (write to texture portions which have never been used before). Set status OK when done.
+    """
+
+    WANT_DESTROY = 4
+    """
+    Requesting backend to destroy the texture. Set status to Destroyed when done.
+    """
 
 class TreeNodeFlags(enum.IntFlag):
     __str__ = __repr__

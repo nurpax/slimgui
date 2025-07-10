@@ -1172,6 +1172,26 @@ nb::enum_<ImGuiMouseSource>(m, "MouseSource", nb::is_arithmetic())
            "Input is coming from a pressure/magnetic pen (often used in "
            "conjunction with high-sampling rates).")
     .value("COUNT", ImGuiMouseSource_COUNT);
+nb::enum_<ImTextureStatus>(m, "TextureStatus", nb::is_arithmetic())
+    .value("OK", ImTextureStatus_OK)
+    .value("DESTROYED", ImTextureStatus_Destroyed,
+           "Backend destroyed the texture.")
+    .value("WANT_CREATE", ImTextureStatus_WantCreate,
+           "Requesting backend to create the texture. Set status OK when done.")
+    .value("WANT_UPDATES", ImTextureStatus_WantUpdates,
+           "Requesting backend to update specific blocks of pixels (write to "
+           "texture portions which have never been used before). Set status OK "
+           "when done.")
+    .value("WANT_DESTROY", ImTextureStatus_WantDestroy,
+           "Requesting backend to destroy the texture. Set status to Destroyed "
+           "when done.");
+nb::enum_<ImTextureFormat>(m, "TextureFormat", nb::is_arithmetic())
+    .value("RGBA32", ImTextureFormat_RGBA32,
+           "4 components per pixel, each is unsigned 8-bit. Total size = "
+           "TexWidth * TexHeight * 4")
+    .value("ALPHA8", ImTextureFormat_Alpha8,
+           "1 component per pixel, each is unsigned 8-bit. Total size = "
+           "TexWidth * TexHeight");
 nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic())
     .value("KEY_NONE", ImGuiKey_None)
     .value("KEY_NAMED_KEY_BEGIN", ImGuiKey_NamedKey_BEGIN)

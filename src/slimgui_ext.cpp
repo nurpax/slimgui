@@ -175,7 +175,7 @@ NB_MODULE(slimgui_ext, top) {
             void* data = IM_ALLOC(font_data.size());
             memcpy(data, font_data.c_str(), font_data.size());
             return fonts->AddFontFromMemoryTTF(data, font_data.size(), size_pixels, &cfg, nullptr);
-        }, nb::rv_policy::reference_internal, "font_data"_a, "size_pixels"_a, nb::arg("font_cfg").none() = std::nullopt)
+        }, nb::rv_policy::reference_internal, "font_data"_a, "size_pixels"_a = 0.f, nb::arg("font_cfg").none() = std::nullopt)
         .def("clear_tex_data", &ImFontAtlas::ClearTexData)
         .def("get_tex_data_as_rgba32", [](ImFontAtlas* fonts) {
             int tex_w, tex_h;
@@ -366,6 +366,44 @@ NB_MODULE(slimgui_ext, top) {
         .def_ro("key_alt", &ImGuiIO::KeyAlt)
         .def_ro("key_super", &ImGuiIO::KeySuper);
 
+    nb::class_<ImGuiPlatformIO>(m, "PlatformIO")
+        .def_rw("renderer_texture_max_width", &ImGuiPlatformIO::Renderer_TextureMaxWidth)
+        .def_rw("renderer_texture_max_height", &ImGuiPlatformIO::Renderer_TextureMaxHeight)
+        .def_prop_ro("textures", [](ImGuiPlatformIO* plat_io) {
+            return nb::make_iterator(nb::type<ImGuiPlatformIO>(), "iterator", plat_io->Textures.begin(), plat_io->Textures.end());
+        }, nb::keep_alive<0, 1>());
+
+    nb::class_<ImTextureRect>(m, "TextureRect")
+        .def_ro("x", &ImTextureRect::x, "Upper-left x-coordinate of rectangle to update")
+        .def_ro("y", &ImTextureRect::y, "Upper-left y-coordinate of rectangle to update")
+        .def_ro("w", &ImTextureRect::w, "Width of rectangle to update (in pixels)")
+        .def_ro("h", &ImTextureRect::h, "Height of rectangle to update (in pixels)");
+
+    nb::class_<ImTextureData>(m, "TextureData")
+        .def_ro("status", &ImTextureData::Status, "`TextureStatus.OK/WANT_CREATE/WANT_UPDATES/WANT_DESTROY`. Always use `TextureData.set_status()` to modify!")
+        .def_ro("format", &ImTextureData::Format, "`TextureFormat.RGBA32` (default) or `TextureFormat.ALPHA8`.")
+        .def_ro("width", &ImTextureData::Width, "Texture width.")
+        .def_ro("height", &ImTextureData::Height, "Texture height.")
+        .def_ro("bytes_per_pixel", &ImTextureData::BytesPerPixel, "4 or 1.")
+        .def_ro("unused_frames", &ImTextureData::UnusedFrames, "In order to facilitate handling `TextureData.status == TextureStatus.WANT_DESTROY` in some backends: this is a count successive frames where the texture was not used. Always `>0` when `status == WANT_DESTROY`.")
+        .def_ro("ref_count", &ImTextureData::RefCount, "Number of contexts using this texture. Used during backend shutdown.")
+        .def_prop_ro("updates", [](ImTextureData* texData) {
+            return nb::make_iterator(nb::type<const ImDrawList*>(), "iterator", texData->Updates.begin(), texData->Updates.end());
+        }, "Array of individual updates.")
+        .def("get_size_in_bytes", &ImTextureData::GetSizeInBytes, "`width * height * `bytes_per_pixel`.")
+        .def("get_pixels", [](ImTextureData* texData) {
+            return nb::ndarray<nb::numpy, uint8_t, nb::ndim<1>>(texData->GetPixels(), { (size_t)texData->GetSizeInBytes() });
+        }, nb::rv_policy::reference_internal, "Get texture data as an `ndarray`.")
+        .def("get_pixels_at", [](ImTextureData* texData, int x, int y) {
+            size_t total_bytes = texData->GetSizeInBytes();
+            const uint8_t* pixels_start = (const uint8_t*)texData->GetPixelsAt(x, y);
+            uintptr_t pixels_end = (uintptr_t)texData->GetPixels() + total_bytes;
+            return nb::ndarray<nb::numpy, uint8_t, nb::ndim<1>>(texData->GetPixelsAt(x, y), { pixels_end - (uintptr_t)pixels_start });
+        }, nb::rv_policy::reference_internal, "Get texture data as an `ndarray` starting at `x, y` corner.  Note that the pixel stride is the same as in the original texture.")
+        .def("get_tex_id", &ImTextureData::GetTexID, "Backend-specific texture identifier.")
+        .def("set_tex_id", &ImTextureData::SetTexID, "Call after creating or destroying the texture.")
+        .def("set_status", &ImTextureData::SetStatus, "Call after honoring a request. Never modify `TextureData.status` directly!");
+
     // TODO all fields
     nb::class_<ImDrawCmd>(m, "DrawCmd")
         .def_ro("tex_ref", &ImDrawCmd::TexRef)
@@ -456,7 +494,14 @@ NB_MODULE(slimgui_ext, top) {
         .def("scale_clip_rects", &ImDrawData::ScaleClipRects, "fb_scale"_a)
         .def_prop_ro("commands_lists", [](ImDrawData& drawData) {
             return nb::make_iterator(nb::type<ImDrawData>(), "iterator", drawData.CmdLists.begin(), drawData.CmdLists.end());
+        }, nb::keep_alive<0, 1>())
+        .def_prop_ro("textures", [](ImDrawData& drawData) -> std::optional<nb::typed<nb::iterator, ImTextureData *&>> {
+            if (!drawData.Textures) {
+                return std::nullopt;
+            }
+            return nb::make_iterator(nb::type<ImDrawData>(), "iterator", drawData.Textures->begin(), drawData.Textures->end());
         }, nb::keep_alive<0, 1>());
+
 
      nb::class_<ImGuiPayload>(m, "Payload", "Data payload for Drag and Drop operations: `accept_drag_drop_payload()`, `get_drag_drop_payload()`")
         .def("is_data_type", &ImGuiPayload::IsDataType)
@@ -476,6 +521,12 @@ NB_MODULE(slimgui_ext, top) {
             ImGuiIO& io = ImGui::GetIO();
             ImGui::SetCurrentContext(prev);
             return &io;
+        }, nb::rv_policy::reference_internal)
+        .def("get_platform_io_internal", [](Context* ctx) -> ImGuiPlatformIO* {
+            auto prev = ctx->setCurrent();
+            ImGuiPlatformIO& plat_io = ImGui::GetPlatformIO();
+            ImGui::SetCurrentContext(prev);
+            return &plat_io;
         }, nb::rv_policy::reference_internal)
         .def("get_style_internal", [](Context* ctx) -> ImGuiStyle* {
             auto prev = ctx->setCurrent();

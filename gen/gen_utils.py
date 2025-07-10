@@ -39,6 +39,8 @@ enum_list_imgui = [
     ("ImGuiStyleVar_", "StyleVar"),
     ("ImGuiTableBgTarget_", "TableBgTarget"),
     ("ImGuiMouseSource", "MouseSource"),
+    ("ImTextureStatus", "TextureStatus"),
+    ("ImTextureFormat", "TextureFormat"),
 ]
 
 enum_list_implot = [

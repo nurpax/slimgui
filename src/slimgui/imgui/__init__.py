@@ -15,6 +15,7 @@ class WrappedContext:
     def __init__(self, ctx: imgui_ext.Context):
         self.context = ctx
         self.io = cast(imgui_ext.IO, WrappedIO(ctx.get_io_internal()))
+        self.platform_io = ctx.get_platform_io_internal()
         self.style = ctx.get_style_internal()
 
 # Some trickery with wrapping the slimgui.IO class to avoid
@@ -75,6 +76,12 @@ def get_io() -> imgui_ext.IO:
     ctx = get_current_context()
     assert ctx is not None
     return ctx.io
+
+def get_platform_io() -> imgui_ext.PlatformIO:
+    '''Access the ImGui `PlatformIO` structure.'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.platform_io
 
 def get_style() -> imgui_ext.Style:
     '''Access the `Style` structure (colors, sizes). Always use `push_style_color()`, `push_style_var()` to modify style mid-frame!'''

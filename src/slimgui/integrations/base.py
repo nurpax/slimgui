@@ -12,9 +12,5 @@ class BaseRenderer(ABC):
         pass
 
     @abstractmethod
-    def refresh_font_texture(self):
-        pass
-
-    @abstractmethod
     def shutdown(self):
         pass

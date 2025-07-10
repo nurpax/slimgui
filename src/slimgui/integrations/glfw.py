@@ -40,7 +40,12 @@ class GlfwRenderer:
         self.io = imgui.get_io()
         self.io.display_size = glfw.get_framebuffer_size(self.window)
         self.io.backend_flags |= imgui.BackendFlags.RENDERER_HAS_VTX_OFFSET
+        self.io.backend_flags |= imgui.BackendFlags.RENDERER_HAS_TEXTURES
         self.io.backend_flags |= imgui.BackendFlags.HAS_MOUSE_CURSORS
+
+        plat_io = imgui.get_platform_io()
+        plat_io.renderer_texture_max_height = self.renderer.max_texture_size
+        plat_io.renderer_texture_max_width = self.renderer.max_texture_size
 
         self._cursors: dict[imgui.MouseCursor, glfw._GLFWcursor] = {}
         self._alloc_cursors()
@@ -183,6 +188,3 @@ class GlfwRenderer:
 
     def render(self, draw_data: imgui.DrawData):
         self.renderer.render(draw_data)
-
-    def refresh_font_texture(self):
-        self.renderer.refresh_font_texture()

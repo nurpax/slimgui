@@ -57,30 +57,11 @@ class OpenGLRenderer(BaseRenderer):
         self._attrib_location_uv = None
         self._attrib_location_color = None
 
-        self._font_texture_id = 0
         self._vbo_handle = 0
         self._elements_handle = 0
         self._vao_handle = 0
         self._create_device_objects()
-
-    def refresh_font_texture(self):
-        # save texture state
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
-
-        io = imgui.get_io()
-        width, height, pixels = io.fonts.get_tex_data_as_rgba32()
-
-        gl.glDeleteTextures([self._font_texture_id])
-        self._font_texture_id = gl.glGenTextures(1)
-
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture_id)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
-
-        io = imgui.get_io()
-        io.fonts.texture_id = self._font_texture_id
-        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+        self.max_texture_size = gl.glGetIntegerv(gl.GL_MAX_TEXTURE_SIZE)
 
     def _create_device_objects(self):
         # save state
@@ -155,6 +136,52 @@ class OpenGLRenderer(BaseRenderer):
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindVertexArray(last_vertex_array)
 
+    def _destroy_texture(self, tex: imgui.TextureData):
+        gl.glDeleteTextures([tex.get_tex_id()])
+        tex.set_tex_id(0)   # imgui.h: ((ImTextureID)0)
+        tex.set_status(imgui.TextureStatus.DESTROYED)
+
+    def _update_texture(self, tex: imgui.TextureData):
+        if tex.status == imgui.TextureStatus.WANT_CREATE:
+            assert tex.get_tex_id() == 0
+            assert tex.format == imgui.TextureFormat.RGBA32
+
+            last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
+
+            # Upload texture to graphics system
+            # (Bilinear sampling is required by default.
+            # Set 'io.Fonts->Flags |= ImFontAtlasFlags_NoBakedLines' or 'style.AntiAliasedLinesUseTex = false' to allow point/nearest sampling)
+            tex_id = gl.glGenTextures(1)
+            gl.glBindTexture(gl.GL_TEXTURE_2D, tex_id)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
+            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1) # TODO state save restore?
+            gl.glPixelStorei(gl.GL_UNPACK_ROW_LENGTH, 0) # TODO state save restore?
+            gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, tex.width, tex.height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, tex.get_pixels())
+            tex.set_tex_id(tex_id)
+            tex.set_status(imgui.TextureStatus.OK)
+
+            # Restore state.
+            gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+
+        elif tex.status == imgui.TextureStatus.WANT_UPDATES:
+            last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
+
+            # Update selected blocks. We only ever write to textures regions which have never been used before!
+            # This backend choose to use tex->Updates[] but you can use tex->UpdateRect to upload a single region.
+            gl.glBindTexture(gl.GL_TEXTURE_2D, tex.get_tex_id())
+            gl.glPixelStorei(gl.GL_UNPACK_ROW_LENGTH, tex.width)
+            for r in tex.updates:
+                gl.glTexSubImage2D(gl.GL_TEXTURE_2D, 0, r.x, r.y, r.w, r.h, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, tex.get_pixels_at(r.x, r.y))
+            gl.glPixelStorei(gl.GL_UNPACK_ROW_LENGTH, 0)
+            tex.set_status(imgui.TextureStatus.OK)
+            gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
+
+        elif tex.status == imgui.TextureStatus.WANT_DESTROY and tex.unused_frames > 0:
+            self._destroy_texture(tex)
+
     def render(self, draw_data: imgui.DrawData):
         # perf: local for faster access
         io = imgui.get_io()
@@ -165,6 +192,10 @@ class OpenGLRenderer(BaseRenderer):
 
         if fb_width == 0 or fb_height == 0:
             return
+
+        if draw_data.textures is not None:
+            for tex_data in draw_data.textures:
+                self._update_texture(tex_data)
 
         draw_data.scale_clip_rects(io.display_fb_scale)
 
@@ -254,9 +285,10 @@ class OpenGLRenderer(BaseRenderer):
         gl.glDeleteProgram(self._shader_handle)
         self._shader_handle = 0
 
-        gl.glDeleteTextures([self._font_texture_id])
-        self._font_texture_id = 0
-        imgui.get_io().fonts.texture_id = 0
+        # Destroy all textures
+        for tex in imgui.get_platform_io().textures:
+            if tex.ref_count == 1:
+                self._destroy_texture(tex)
 
 
 def get_common_gl_state():

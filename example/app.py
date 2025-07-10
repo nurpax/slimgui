@@ -84,11 +84,11 @@ def run():
     # GUI boilerplate.
     window = imgui_window.ImguiWindow(
         title="Prompt tool",
-        font_sizes=range(24, 32),
         close_on_esc=True,
         font_bytes=font_bytes,
         request_opengl_core_profile=True,
     )
+    window.set_font_size(24)
     implot.create_context()
 
     texture = _make_texture()

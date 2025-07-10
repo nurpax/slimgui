@@ -49,7 +49,6 @@ def main():
     renderer = GlfwRenderer(glfw_window, prev_key_callback=_key_callback)
 
     font = _load_font()
-    renderer.refresh_font_texture()
 
     scl = glfw.get_window_content_scale(glfw_window)
     imgui.get_style().scale_all_sizes(scl[0])
