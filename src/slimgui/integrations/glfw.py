@@ -98,6 +98,8 @@ class GlfwRenderer:
             return Key(Key.KEY_0 + (glfw_key - glfw.KEY_0))
         if glfw_key >= glfw.KEY_F1 and glfw_key <= glfw.KEY_F24:
             return Key(Key.KEY_F1 + (glfw_key - glfw.KEY_F1))
+        if glfw_key >= glfw.KEY_KP_0 and glfw_key <= glfw.KEY_KP_EQUAL:
+            return Key(Key.KEY_KEYPAD0 + (glfw_key - glfw.KEY_KP_0))
         return {
             glfw.KEY_TAB: Key.KEY_TAB,
             glfw.KEY_LEFT: Key.KEY_LEFT_ARROW,
@@ -114,7 +116,33 @@ class GlfwRenderer:
             glfw.KEY_SPACE: Key.KEY_SPACE,
             glfw.KEY_ENTER: Key.KEY_ENTER,
             glfw.KEY_ESCAPE: Key.KEY_ESCAPE,
-            glfw.KEY_KP_ENTER: Key.KEY_KEYPAD_ENTER,
+            glfw.KEY_APOSTROPHE: Key.KEY_APOSTROPHE,
+            glfw.KEY_COMMA: Key.KEY_COMMA,
+            glfw.KEY_MINUS: Key.KEY_MINUS,
+            glfw.KEY_PERIOD: Key.KEY_PERIOD,
+            glfw.KEY_SLASH: Key.KEY_SLASH,
+            glfw.KEY_SEMICOLON: Key.KEY_SEMICOLON,
+            glfw.KEY_EQUAL: Key.KEY_EQUAL,
+            glfw.KEY_LEFT_BRACKET: Key.KEY_LEFT_BRACKET,
+            glfw.KEY_BACKSLASH: Key.KEY_BACKSLASH,
+            glfw.KEY_WORLD_1: Key.KEY_OEM102,
+            glfw.KEY_WORLD_2: Key.KEY_OEM102,
+            glfw.KEY_RIGHT_BRACKET: Key.KEY_RIGHT_BRACKET,
+            glfw.KEY_GRAVE_ACCENT: Key.KEY_GRAVE_ACCENT,
+            glfw.KEY_CAPS_LOCK: Key.KEY_CAPS_LOCK,
+            glfw.KEY_SCROLL_LOCK: Key.KEY_SCROLL_LOCK,
+            glfw.KEY_NUM_LOCK: Key.KEY_NUM_LOCK,
+            glfw.KEY_PRINT_SCREEN: Key.KEY_PRINT_SCREEN,
+            glfw.KEY_PAUSE: Key.KEY_PAUSE,
+            glfw.KEY_LEFT_SHIFT: Key.KEY_LEFT_SHIFT,
+            glfw.KEY_LEFT_CONTROL: Key.KEY_LEFT_CTRL,
+            glfw.KEY_LEFT_ALT: Key.KEY_LEFT_ALT,
+            glfw.KEY_LEFT_SUPER: Key.KEY_LEFT_SUPER,
+            glfw.KEY_RIGHT_SHIFT: Key.KEY_RIGHT_SHIFT,
+            glfw.KEY_RIGHT_CONTROL: Key.KEY_RIGHT_CTRL,
+            glfw.KEY_RIGHT_ALT: Key.KEY_RIGHT_ALT,
+            glfw.KEY_RIGHT_SUPER: Key.KEY_RIGHT_SUPER,
+            glfw.KEY_MENU: Key.KEY_MENU,
         }.get(glfw_key)
 
     def keyboard_callback(self, window, key, scancode, action, mods):
