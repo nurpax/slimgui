@@ -88,8 +88,6 @@ Important notes:
                docstring="Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with `implot.push_style_color(Col.INLAY_TEXT, ...)`."),
     ImplotFunc('ImPlot_PlotDummy', 'plot_dummy',
                docstring="Plots a dummy item (i.e. adds a legend entry colored by `Col.LINE`)."),
-    ImplotFunc('ImPlot_PlotImage', 'plot_image',
-               docstring="Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot coordinates (y-up) and `uv0`/`uv1` are in texture coordinates (y-down)."),
 
     # Utils
     ImplotFunc('ImPlot_SetAxis', 'set_axis', docstring="Select which axis/axes will be used for subsequent plot elements."),

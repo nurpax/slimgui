@@ -9,6 +9,17 @@ int variant_to_int(const std::variant<Enum, Int>& var) {
     return std::get<Int>(var);
 }
 
+typedef std::variant<ImTextureRef, ImTextureID> TextureRefOrID;
+
+// Converts a TextureRefOrID to ImTextureRef. If the variant holds an ImTextureID, constructs an ImTextureRef from it.
+inline ImTextureRef to_texture_ref(const TextureRefOrID& tex) {
+    if (std::holds_alternative<ImTextureRef>(tex)) {
+        return std::get<ImTextureRef>(tex);
+    } else {
+        return ImTextureRef(std::get<ImTextureID>(tex));
+    }
+}
+
 struct Vec3 {
     float x, y, z;
     constexpr Vec3() : x(0.0f), y(0.0f), z(0.0f) { }

@@ -316,6 +316,18 @@ void implot_bindings(nb::module_& m) {
         ImPlot::PlotDigital(label_id, (const double*)xs.data(), (const double*)ys.data(), count, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("DigitalFlags.NONE") = ImPlotDigitalFlags_None, plot_digital_docstring);
 
+    m.def("plot_image", [](const char *label_id, TextureRefOrID tex_ref, ImPlotPoint bounds_min, ImPlotPoint bounds_max, ImVec2 uv0, ImVec2 uv1, ImVec4 tint_col, ImPlotImageFlags_ flags) {
+        ImPlot::PlotImage(label_id, to_texture_ref(tex_ref), bounds_min, bounds_max, uv0, uv1,
+                          tint_col, flags);
+        },
+        "label_id"_a, "tex_ref"_a, "bounds_min"_a, "bounds_max"_a,
+        "uv0"_a.sig("(0,0)") = ImVec2(0, 0), "uv1"_a.sig("(1,1)") = ImVec2(1, 1),
+        "tint_col"_a.sig("(1,1,1,1)") = ImVec4(1, 1, 1, 1),
+        "flags"_a.sig("ImageFlag.NONE") = ImPlotImageFlags_None,
+        "Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot coordinates (y-up) and `uv0`/`uv1` are in texture coordinates (y-down).\n"
+    );
+
+
 #define NP_ARRAY_ARGS_DOC "The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details."
     // Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.
     m.def("drag_point", [](int id, ndarray_vec2_f64_rw& point, ImVec4 col, float size, ImPlotDragToolFlags_ flags, std::optional<ndarray_scalar_bool_rw> out_clicked, std::optional<ndarray_scalar_bool_rw> out_hovered, std::optional<ndarray_scalar_bool_rw> out_held) {

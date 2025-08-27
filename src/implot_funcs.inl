@@ -169,21 +169,6 @@ m.def(
     "label_id"_a, "flags"_a.sig("DummyFlag.NONE") = ImPlotDummyFlags_None,
     "Plots a dummy item (i.e. adds a legend entry colored by `Col.LINE`).\n");
 m.def(
-    "plot_image",
-    [](const char *label_id, ImTextureRef tex_ref, ImPlotPoint bounds_min,
-       ImPlotPoint bounds_max, ImVec2 uv0, ImVec2 uv1, ImVec4 tint_col,
-       ImPlotImageFlags_ flags) {
-      ImPlot::PlotImage(label_id, tex_ref, bounds_min, bounds_max, uv0, uv1,
-                        tint_col, flags);
-    },
-    "label_id"_a, "tex_ref"_a, "bounds_min"_a, "bounds_max"_a,
-    "uv0"_a.sig("(0,0)") = ImVec2(0, 0), "uv1"_a.sig("(1,1)") = ImVec2(1, 1),
-    "tint_col"_a.sig("(1,1,1,1)") = ImVec4(1, 1, 1, 1),
-    "flags"_a.sig("ImageFlag.NONE") = ImPlotImageFlags_None,
-    "Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot "
-    "coordinates (y-up) and `uv0`/`uv1` are in texture coordinates "
-    "(y-down).\n");
-m.def(
     "set_axis", [](ImAxis_ axis) { ImPlot::SetAxis(axis); }, "axis"_a,
     "Select which axis/axes will be used for subsequent plot elements.\n");
 m.def(

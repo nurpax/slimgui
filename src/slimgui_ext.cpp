@@ -37,17 +37,6 @@ auto array_to_tuple(const std::array<T, N>& arr) {
     return array_to_tuple_impl(arr, std::make_index_sequence<N>{});
 }
 
-typedef std::variant<ImTextureRef, ImTextureID> TextureRefOrID;
-
-// Converts a TextureRefOrID to ImTextureRef. If the variant holds an ImTextureID, constructs an ImTextureRef from it.
-inline ImTextureRef to_texture_ref(const TextureRefOrID& tex) {
-    if (std::holds_alternative<ImTextureRef>(tex)) {
-        return std::get<ImTextureRef>(tex);
-    } else {
-        return ImTextureRef(std::get<ImTextureID>(tex));
-    }
-}
-
 struct InputTextCallback_UserData
 {
     std::string*            Str;
