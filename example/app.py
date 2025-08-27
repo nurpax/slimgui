@@ -131,7 +131,7 @@ def run():
             state.show_implot_demo_window = implot.show_demo_window(state.show_implot_demo_window)
 
         if state.show_python_implot_demo_window:
-            state.show_python_implot_demo_window = implot_demo_window.show_demo_window(state.show_python_implot_demo_window)
+            state.show_python_implot_demo_window = implot_demo_window.show_demo_window(state.show_python_implot_demo_window, texture)
 
         window.end_frame()
     window.close()

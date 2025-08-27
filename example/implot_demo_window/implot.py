@@ -1,4 +1,5 @@
 import time
+from typing import Any
 import numpy as np
 from numpy.typing import NDArray
 
@@ -9,7 +10,7 @@ from slimgui.implot import LineFlags, PlotFlags, ScatterFlags
 
 _surf_it = False
 
-def show_demo_window(show_window: bool):
+def show_demo_window(show_window: bool, texture: dict[str, Any]):
     global _surf_it
     main_viewport = imgui.get_main_viewport()
     imgui.set_next_window_pos((main_viewport.work_pos[0] + 800, main_viewport.work_pos[1] + 40), imgui.Cond.FIRST_USE_EVER)
@@ -157,6 +158,9 @@ def show_demo_window(show_window: bool):
 
     if imgui.collapsing_header('Drag Rects')[0]:
         _drag_rects()
+
+    if imgui.collapsing_header('Images')[0]:
+        _images(texture['id'])
 
     imgui.end()
     return show_window
@@ -551,3 +555,35 @@ def _drag_rects():
         implot.end_plot()
     implot.pop_style_color()
     imgui.text(f"Rect is {'not ' if not state['clicked'] else ''}clicked, {'not ' if not state['hovered'] else ''}hovered, {'not ' if not state['held'] else ''}held")
+
+_images_state = {
+    "bmin": (0.0, 0.0),
+    "bmax": (1.0, 1.0),
+    "uv0": (0.0, 0.0),
+    "uv1": (1.0, 1.0),
+    "tint": (1.0, 1.0, 1.0, 1.0),
+}
+
+def _images(texture_id: int):
+    imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
+    imgui.bullet_text("Use the 'ImTextureID' type as storage to pass pointers or identifiers to your\nown texture data.")
+    imgui.bullet_text("See ImGui Wiki page 'Image Loading and Displaying Examples'.")
+
+    _, _images_state["bmin"] = imgui.slider_float2("Min", _images_state["bmin"], -2.0, 2.0, format="%.1f")
+    _, _images_state["bmax"] = imgui.slider_float2("Max", _images_state["bmax"], -2.0, 2.0, format="%.1f")
+    _, _images_state["uv0"] = imgui.slider_float2("UV0", _images_state["uv0"], -2.0, 2.0, format="%.1f")
+    _, _images_state["uv1"] = imgui.slider_float2("UV1", _images_state["uv1"], -2.0, 2.0, format="%.1f")
+    _, _images_state["tint"] = imgui.color_edit4("Tint", _images_state["tint"])
+
+    if implot.begin_plot("##image"):
+        # Use the provided texture_id (should be a valid ImTextureID/TextureRef)
+        implot.plot_image(
+            "my image",
+            texture_id,
+            _images_state["bmin"],
+            _images_state["bmax"],
+            _images_state["uv0"],
+            _images_state["uv1"],
+            _images_state["tint"],
+        )
+        implot.end_plot()
