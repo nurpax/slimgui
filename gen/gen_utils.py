@@ -90,8 +90,27 @@ def camel_to_snake(name):
         name = name.replace('VSlider', 'Vslider')
     elif name == 'PlotHistogram2D':
         return 'plot_histogram2d'
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+
+    def _camel_chunk(tok: str) -> str:
+        s1 = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', tok)
+        s2 = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', s1)
+        return s2.lower()
+
+    # drop empty parts to avoid double underscores in cases where the
+    # source symbol contains underscores, such as 'renderer_maxHeight'.
+    # But also preserve leading/trailing underscores.  These are used in imgui
+    # enums for masks.
+    leading = len(name) - len(name.lstrip('_'))
+    trailing = len(name) - len(name.rstrip('_'))
+
+    core = name.strip('_')
+    parts = core.split('_')
+    core_out = '_'.join(_camel_chunk(p) for p in parts if p)
+
+    return '_' * leading + core_out + '_' * trailing
+
+def python_classname_from_cimgui_type(name: str) -> str:
+    return re.sub(r'^(ImGui|Im)', '', name).rstrip('*')
 
 @lru_cache
 def get_definitions() -> Dict[str, Any]:
