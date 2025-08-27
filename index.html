@@ -373,6 +373,9 @@ call <code>get_draw_data()</code>.</p>
 in your Renderer Backend to render.</p>
 </div>
 <h3 id="demo-debug-information">Demo, Debug, Information</h3>
+<h4 id="error-recovery-and-debug-options">Error recovery and debug options</h4>
+<p>Please see <a href="https://github.com/ocornut/imgui/wiki/Error-Handling">https://github.com/ocornut/imgui/wiki/Error-Handling</a> for information.</p>
+<p>Currently only the <code>IO.config_*</code> boolean options are exposed from Slimgui. <code>IM_ASSERT</code> is configured by default to raise a Python exception, but note that it is not always recoverable — your Python application may be in a bad state afterward.</p>
 <h4 id="functions-2">Functions</h4>
 <div class="funclist">
 <div class="api">
@@ -1375,6 +1378,7 @@ clicked.</li>
 </ul>
 </div>
 <h3 id="multi-selection-system-for-selectable-checkbox-tree_node-functions-beta">Multi-selection system for <code>selectable()</code>, <code>checkbox()</code>, <code>tree_node()</code> functions [BETA]</h3>
+<p><em>TODO</em> Multi-selection is currently NOT supported in Slimgui. <a href="https://github.com/nurpax/slimgui/issues/16">Issue #16</a> tracks this implementation.</p>
 <ul>
 <li>This enables standard multi-selection/range-selection idioms (CTRL+Mouse/Keyboard, SHIFT+Mouse/Keyboard, etc.) in a way that also allows a clipper to be used.</li>
 <li><code>SelectionUserData</code> is often used to store your item index within the current view (but may store something else).</li>
