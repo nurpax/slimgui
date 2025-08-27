@@ -78,6 +78,12 @@ Each context creates its own `FontAtlas` by default. You may instance one yourse
 
 ### Demo, Debug, Information
 
+#### Error recovery and debug options
+
+Please see [https://github.com/ocornut/imgui/wiki/Error-Handling](https://github.com/ocornut/imgui/wiki/Error-Handling) for information.
+
+Currently only the `IO.config_*` boolean options are exposed from Slimgui. `IM_ASSERT` is configured by default to raise a Python exception, but note that it is not always recoverable — your Python application may be in a bad state afterward.
+
 #### Functions
 <div class="raw-html-insert" data-apirefs="show_demo_window, show_metrics_window, show_debug_log_window, show_id_stack_tool_window, show_about_window, show_style_editor, show_style_selector, show_font_selector, show_user_guide, get_version"></div>
 
@@ -297,6 +303,9 @@ Tip: the `color_edit_*` functions have a little color square that can be left-cl
 <div class="raw-html-insert" data-apirefs="selectable"></div>
 
 ### Multi-selection system for `selectable()`, `checkbox()`, `tree_node()` functions [BETA]
+
+*TODO* Multi-selection is currently NOT supported in Slimgui.  [Issue #16](https://github.com/nurpax/slimgui/issues/16) tracks this implementation.
+
 - This enables standard multi-selection/range-selection idioms (CTRL+Mouse/Keyboard, SHIFT+Mouse/Keyboard, etc.) in a way that also allows a clipper to be used.
 - `SelectionUserData` is often used to store your item index within the current view (but may store something else).
 - Read comments near `MultiSelectIO` for instructions/details and see 'Demo->Widgets->Selection State & Multi-Select' for demo.
