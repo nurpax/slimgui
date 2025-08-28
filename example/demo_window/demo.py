@@ -25,6 +25,9 @@ def show_demo_window(show_window: bool, texture: dict[str, Any]):
     if st.show_app_simple_overlay:
         show_example_app_simple_overlay(st)
 
+    if st.show_app_custom_rendering:
+        st.show_app_custom_rendering = shapes.custom_rendering()
+
     if st.show_tool_metrics:
         st.show_tool_metrics = imgui.show_metrics_window(closable=True)
 

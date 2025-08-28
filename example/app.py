@@ -31,8 +31,8 @@ def download_and_cache(url, cache_dir='cache', filename=None) -> str:
 @dataclass
 class State:
     show_python_demo_window = True
-    show_implot_demo_window = True
-    show_python_implot_demo_window = True
+    show_implot_demo_window = False
+    show_python_implot_demo_window = False
     click_count: int = 0
     text: str = ""
     foo_enabled: bool = False

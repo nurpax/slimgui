@@ -60,6 +60,7 @@ _method_name_filter = [
     "-ImFont_AddRemapChar",             # internal don't use
     "-ImFont_ClearOutputData",          # internal don't use
     "-ImFont_IsGlyphRangeUnused",       # internal don't use
+
     "-ImDrawList__*",                   # internal don't use
 
     "-ImTextureData_Create",            # not needed in apps/python api

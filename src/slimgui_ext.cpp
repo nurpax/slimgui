@@ -441,6 +441,18 @@ NB_MODULE(slimgui_ext, top) {
         .def_prop_ro("commands", [](const ImDrawList* drawList) {
             return nb::make_iterator(nb::type<const ImDrawList*>(), "iterator", drawList->CmdBuffer.begin(), drawList->CmdBuffer.end());
         }, nb::keep_alive<0, 1>())
+
+        .def("push_clip_rect", &ImDrawList::PushClipRect, "clip_rect_min"_a, "clip_rect_max"_a, "intersect_with_current_clip_rect"_a = false,
+             "Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. "
+             "Prefer using higher-level `imgui.push_clip_rect() to affect logic (hit-testing and widget culling)")
+        .def("push_clip_rect_full_screen", &ImDrawList::PushClipRectFullScreen)
+        .def("pop_clip_rect", &ImDrawList::PopClipRect)
+        .def("push_texture", [](ImDrawList* drawList, TextureRefOrID tex_ref) {
+            drawList->PushTexture(to_texture_ref(tex_ref));
+        }, "tex_ref"_a)
+        .def("pop_texture", &ImDrawList::PopTexture)
+        .def("get_clip_rect_min", &ImDrawList::GetClipRectMin)
+        .def("get_clip_rect_max", &ImDrawList::GetClipRectMax)
         .def("add_line", &ImDrawList::AddLine, "p1"_a, "p2"_a, "col"_a, "thickness"_a = 1.0f)
         .def("add_rect", [](ImDrawList* drawList, ImVec2 p_min, ImVec2 p_max, ImU32 col, float rounding, ImDrawFlags_ flags, float thickness) {
             drawList->AddRect(p_min, p_max, col, rounding, flags, thickness);
@@ -501,7 +513,25 @@ NB_MODULE(slimgui_ext, top) {
         }, "tex_ref"_a, "p1"_a, "p2"_a, "p3"_a, "p4"_a, "uv1"_a = ImVec2(0.0f, 0.0f), "uv2"_a = ImVec2(1.0f, 0.0f), "uv3"_a = ImVec2(1.0f, 1.0f), "uv4"_a = ImVec2(0.0f, 1.0f), "col"_a.sig("COL32_WHITE") = IM_COL32_WHITE)
         .def("add_image_rounded", [](ImDrawList* drawList, TextureRefOrID tex_ref, ImVec2 p_min, ImVec2 p_max, ImVec2 uv_min, ImVec2 uv_max, ImU32 col, float rounding, ImDrawFlags_ flags) {
             drawList->AddImageRounded(to_texture_ref(tex_ref), p_min, p_max, uv_min, uv_max, col, rounding, flags);
-        }, "tex_ref"_a, "p_min"_a, "p_max"_a, "uv_min"_a, "uv_max"_a, "col"_a, "rounding"_a, "flags"_a.sig("DrawFlags.NONE") = 0);
+        }, "tex_ref"_a, "p_min"_a, "p_max"_a, "uv_min"_a, "uv_max"_a, "col"_a, "rounding"_a, "flags"_a.sig("DrawFlags.NONE") = 0)
+        .def("path_clear", &ImDrawList::PathClear)
+        .def("path_line_to", &ImDrawList::PathLineTo, "pos"_a)
+        .def("path_line_to_merge_duplicate", &ImDrawList::PathLineToMergeDuplicate, "pos"_a)
+        .def("path_fill_convex", &ImDrawList::PathFillConvex, "col"_a)
+        .def("path_fill_concave", &ImDrawList::PathFillConcave, "col"_a)
+        .def("path_stroke", [](ImDrawList* drawList, ImU32 col, ImDrawFlags_ flags, float thickness) {
+            drawList->PathStroke(col, flags, thickness);
+        }, "col"_a, "flags"_a.sig("DrawFlags.NONE") = 0, "thickness"_a = 1.0f)
+        .def("path_arc_to", &ImDrawList::PathArcTo, "center"_a, "radius"_a, "a_min"_a, "a_max"_a, "num_segments"_a = 0)
+        .def("path_arc_to_fast", &ImDrawList::PathArcToFast, "center"_a, "radius"_a, "a_min_of_12"_a, "a_max_of_12"_a)
+        .def("path_elliptical_arc_to", &ImDrawList::PathEllipticalArcTo, "center"_a, "radius"_a, "rot"_a, "a_min"_a, "a_max"_a, "num_segments"_a = 0)
+        .def("path_bezier_cubic_curve_to", &ImDrawList::PathBezierCubicCurveTo, "p2"_a, "p3"_a, "p4"_a, "num_segments"_a = 0)
+        .def("path_bezier_quadratic_curve_to", &ImDrawList::PathBezierQuadraticCurveTo, "p2"_a, "p3"_a, "num_segments"_a = 0)
+        .def("path_rect", [](ImDrawList* drawList, ImVec2 rect_min, ImVec2 rect_max, float rounding, ImDrawFlags_ flags) {
+            drawList->PathRect(rect_min, rect_max, rounding, flags);
+        }, "rect_min"_a, "rect_max"_a, "rounding"_a = 0.0f, "flags"_a.sig("DrawFlags.NONE") = 0)
+        .def("add_draw_cmd", &ImDrawList::AddDrawCmd, "This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible.");
+
 
     nb::class_<ImDrawData>(m, "DrawData")
         .def("scale_clip_rects", &ImDrawData::ScaleClipRects, "fb_scale"_a)
