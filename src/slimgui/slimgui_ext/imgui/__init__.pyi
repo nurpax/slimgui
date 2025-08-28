@@ -3542,6 +3542,10 @@ def end_tooltip() -> None:
     ...
 
 
+def get_clipboard_text() -> str:
+    ...
+
+
 @overload
 def get_color_u32(idx: Col, alpha_mul: float = 1.0) -> int:
     """Retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList"""
@@ -4244,6 +4248,10 @@ def separator() -> None:
 
 def separator_text(text: str) -> None:
     """Currently: formatted text with a horizontal line"""
+    ...
+
+
+def set_clipboard_text(text: str) -> None:
     ...
 
 

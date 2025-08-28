@@ -1407,6 +1407,9 @@ NB_MODULE(slimgui_ext, top) {
     m.def("set_mouse_cursor", [](ImGuiMouseCursor_ cursor_type) { ImGui::SetMouseCursor(cursor_type); }, "cursor_type"_a);
     m.def("set_next_frame_want_capture_mouse", &ImGui::SetNextFrameWantCaptureMouse, "capture"_a);
 
+    m.def("get_clipboard_text", &ImGui::GetClipboardText);
+    m.def("set_clipboard_text", &ImGui::SetClipboardText, "text"_a);
+
     // Disable Nanobind leak warnings by default.
     nb::set_leak_warnings(false);
     m.def("set_nanobind_leak_warnings", &nb::set_leak_warnings, "enable"_a);

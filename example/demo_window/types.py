@@ -37,3 +37,5 @@ class State:
     show_native_imgui_demo_window = False
 
     widgets_disable_all = False
+
+    text_from_clipboard = ''

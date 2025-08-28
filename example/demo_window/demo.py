@@ -220,6 +220,11 @@ def show_demo_window(show_window: bool, texture: dict[str, Any]):
                 imgui.log_to_clipboard()
                 imgui.log_text("Hello, world!")
                 imgui.log_finish()
+            if imgui.button("Copy \"Hello, world!\" using imgui.set_clipboard_text()"):
+                imgui.set_clipboard_text("Hello, world! (set_clipboard_text)")
+            if imgui.button("Get text from clipboard"):
+                st.text_from_clipboard = imgui.get_clipboard_text()
+            imgui.text(f"Text from clipboad: {st.text_from_clipboard}")
             imgui.tree_pop()
 
     if imgui.collapsing_header("Window options")[0]:
