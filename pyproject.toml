@@ -47,7 +47,7 @@ wheel.py-api = "cp312"
 [tool.cibuildwheel]
 # Necessary to see build output from the actual compilation
 build-verbosity = 1
-skip = ["cp38-*", "pp38-*", "cp39-*", "pp39-*", "*-macosx_*"]
+skip = ["cp38-*", "cp39-*"]
 archs = ["auto64"]          # Only target 64 bit architectures
 
 # Run pytest to ensure that the package was correctly built
@@ -55,7 +55,7 @@ archs = ["auto64"]          # Only target 64 bit architectures
 # test-requires = "pytest"
 
 # Don't test Python 3.8 wheels on macOS/arm64
-test-skip="cp38-macosx_*:arm64"
+test-skip="cp*-macosx_*:arm64"
 
 # Needed for full C++17 support
 [tool.cibuildwheel.macos.environment]
