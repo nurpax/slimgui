@@ -73,7 +73,6 @@ void slimgui_assert(const char* file, int line, const char* expr)
     throw std::runtime_error(expr_buf);
 }
 
-
 static int InputTextCallback(ImGuiInputTextCallbackData* data)
 {
     InputTextCallback_UserData* user_data = (InputTextCallback_UserData*)data->UserData;
@@ -93,6 +92,30 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
         return user_data->ChainCallback(data);
     }
     return 0;
+}
+
+struct ContextBackendData {
+    struct SizeConstraints {
+        void* callable_ptr;
+        uint64_t int_user_data;
+    } size_constraints;
+};
+
+void window_size_constraints_callback_py_wrapper(ImGuiSizeCallbackData* cb_data) {
+    ContextBackendData* userdata = static_cast<ContextBackendData*>(cb_data->UserData);
+    auto callable_ptr = static_cast<PyObject*>(userdata->size_constraints.callable_ptr);
+    try {
+        auto res = nb::borrow<nb::callable>(callable_ptr)(cb_data->Pos, cb_data->CurrentSize, cb_data->DesiredSize, userdata->size_constraints.int_user_data);
+        cb_data->DesiredSize = nb::cast<ImVec2>(res);
+    } catch (nb::python_error& e) {
+        e.discard_as_unraisable("window_size_constraints_callback_py_wrapper callback");
+        return;
+    } catch (nb::cast_error& e) {
+        // TODO how to report errors from here?
+        // e.discard_as_unraisable("window_size_constraints_callback_py_wrapper callback");
+        // PyErr_WriteUnraisable(callable_ptr);
+        return;
+    }
 }
 
 // Used as the type for nanobind instead of binding ImGuiContext directly.  Binding
@@ -620,10 +643,17 @@ NB_MODULE(slimgui_ext, top) {
 
     m.def("create_context_internal", [](ImFontAtlas* shared_font_atlas) -> Context {
         ImGuiContext* ctx = ImGui::CreateContext(shared_font_atlas);
+        ImGuiIO& io = ImGui::GetIO(ctx);
+        io.BackendLanguageUserData = new ContextBackendData();
         return Context(ctx);
     }, "shared_font_atlas"_a = nullptr, nb::rv_policy::reference);
     m.def("set_current_context_internal", [](Context* ctx) { ImGui::SetCurrentContext(ctx->ctx); }, nb::rv_policy::reference);
-    m.def("destroy_context_internal", [](Context* ctx) { ImGui::DestroyContext(ctx->ctx); });
+    m.def("destroy_context_internal", [](Context* context) {
+        ImGuiContext* ctx = context->ctx;
+        ContextBackendData* backend_data = static_cast<ContextBackendData*>(ImGui::GetIO(ctx).BackendLanguageUserData);
+        delete backend_data;
+        ImGui::DestroyContext(ctx);
+    });
     m.def("render", &ImGui::Render);
     m.def("new_frame", &ImGui::NewFrame);
     m.def("end_frame", &ImGui::EndFrame);
@@ -704,7 +734,21 @@ NB_MODULE(slimgui_ext, top) {
     m.def("set_next_window_size", [](const ImVec2 &size, ImGuiCond_ cond) {
         ImGui::SetNextWindowSize(size, cond);
     }, "size"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None);
-    //m.def("set_next_window_size_constraints", ImGui::SetNextWindowSizeConstraints, "size_min"_a, "size_max"_a = 0, "pivot"_a = ImVec2(0,0));
+
+    // Note: the Python callback reference should be kept alive by the WrapperContext on the Python wrapper side.
+    m.def("set_next_window_size_constraints_internal", [](const ImVec2& size_min, const ImVec2& size_max, std::optional<nb::typed<nb::callable, ImVec2(ImVec2, ImVec2, ImVec2, uint64_t)>> cb, uint64_t int_user_data) {
+        ImGuiIO& io = ImGui::GetIO(ImGui::GetCurrentContext());
+        ContextBackendData* backend_data = (ContextBackendData*)io.BackendLanguageUserData;
+        if (cb) {
+            backend_data->size_constraints.callable_ptr = (void*)cb.value().ptr();
+            backend_data->size_constraints.int_user_data = int_user_data;
+            ImGui::SetNextWindowSizeConstraints(size_min, size_max, &window_size_constraints_callback_py_wrapper, backend_data);
+        } else {
+            backend_data->size_constraints.callable_ptr = nullptr;
+            ImGui::SetNextWindowSizeConstraints(size_min, size_max, nullptr, nullptr);
+        }
+    }, "size_min"_a, "size_max"_a, "cb"_a = nb::none(), "int_user_data"_a = 0);
+
     m.def("set_next_window_content_size", ImGui::SetNextWindowContentSize, "size"_a);
     m.def("set_next_window_collapsed", [](bool collapsed, ImGuiCond_ cond) {
         ImGui::SetNextWindowCollapsed(collapsed, cond);
@@ -912,7 +956,7 @@ NB_MODULE(slimgui_ext, top) {
     m.def("begin_popup_modal", [](const char *str_id, bool closable, ImGuiWindowFlags_ flags) {
         bool open = true;
         bool ret = ImGui::BeginPopupModal(str_id, closable ? &open : nullptr, flags);
-        return std::pair(ret, open);        
+        return std::pair(ret, open);
     }, "str_id"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None,
     "Returns a tuple of bools.  If the first returned bool is `True`, the modal is open and you can start outputting to it.");
     m.def("end_popup", &ImGui::EndPopup);
@@ -1122,7 +1166,6 @@ NB_MODULE(slimgui_ext, top) {
         IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
         flags |= ImGuiInputTextFlags_CallbackResize;
 
-        // TODO nurpax
         ImGuiInputTextCallback callback = nullptr;
         void* user_data = nullptr;
 

@@ -48,6 +48,9 @@ def show_demo_window(show_window: bool, texture: dict[str, Any]):
     if st.show_native_imgui_demo_window:
         st.show_native_imgui_demo_window = imgui.show_demo_window(closable=True)
 
+    if st.show_app_constrained_resize:
+        st.show_app_constrained_resize = layout.show_example_app_constrained_resize()
+
     no_menu = st.no_menu
     window_flags = imgui.WindowFlags.NONE
     if st.no_titlebar:

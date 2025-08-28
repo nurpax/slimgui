@@ -1,4 +1,4 @@
-from collections.abc import Iterator, Sequence
+from collections.abc import Callable, Iterator, Sequence
 import enum
 from typing import Annotated, overload
 
@@ -4437,6 +4437,10 @@ def set_next_window_scroll(scroll: tuple[float, float]) -> None:
 
 def set_next_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
     """Set next window size. set axis to 0.0f to force an auto-fit on this axis. call before `begin()`"""
+    ...
+
+
+def set_next_window_size_constraints_internal(size_min: tuple[float, float], size_max: tuple[float, float], cb: Callable[[tuple[float, float], tuple[float, float], tuple[float, float], int], tuple[float, float]] | None = None, int_user_data: int = 0) -> None:
     ...
 
 

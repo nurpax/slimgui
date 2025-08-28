@@ -2,7 +2,7 @@
 See https://nurpax.github.io/slimgui/ for documentation.
 '''
 
-from typing import cast, Any
+from typing import Callable, cast, Any
 from ..slimgui_ext import imgui as imgui_ext
 
 from ..slimgui_ext.imgui import *
@@ -17,6 +17,7 @@ class WrappedContext:
         self.io = cast(imgui_ext.IO, WrappedIO(ctx.get_io_internal()))
         self.platform_io = ctx.get_platform_io_internal()
         self.style = ctx.get_style_internal()
+        self._window_size_constraints_cb: Callable | None = None   # for keeping a Python function alive
 
 # Some trickery with wrapping the slimgui.IO class to avoid
 # duplicating most of the properties and methods here.
@@ -142,3 +143,26 @@ def get_drag_drop_payload() -> Payload | None:
     ctx = get_current_context()
     assert ctx is not None
     return ctx.context.get_drag_drop_payload_internal()
+
+def set_next_window_size_constraints(size_min: tuple[float, float], size_max: tuple[float, float], cb: Callable[[tuple[float, float], tuple[float, float], tuple[float, float], int], tuple[float, float]] | None = None, user_data_id: int = 0) -> None:
+    """
+    Set next window size limits.  Use 0.0 or FLT_MAX if you don't want limits.  Use -1 for both min and max of same axis to preserve current size (which itself is a constraint).  Use callback to apply non-trivial programmatic constraints.
+
+    This function still has some rough corners.  It only accepts an integer `user_data` argument.  If you need to pass a float through it, you could for example convert to fixed point and convert back to float in the constraint function.  Or you can capture any such values as a function closure.
+
+    Use of constrain callbacks:
+    ```
+    def aspect_ratio_constraint_16_9(_pos:  FVec2, _current_size: FVec2, desired_size: FVec2, _int_user_data: int) -> FVec2:
+        aspect_ratio = 16.0 / 9
+        new_desired_y = int(desired_size[0] / aspect_ratio)
+        return (desired_size[0], new_desired_y)
+
+    # usage:
+
+    imgui.set_next_window_size_constraints((0, 0), (FLT_MAX, FLT_MAX), aspect_ratio_constraint_16_9)
+    ```
+    """
+    ctx = get_current_context()
+    assert ctx is not None
+    ctx._window_size_constraints_cb = cb
+    imgui_ext.set_next_window_size_constraints_internal(size_min, size_max, cb, user_data_id)

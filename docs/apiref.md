@@ -156,6 +156,7 @@ Important: due to legacy reason, `begin()`/`end()` and `begin_child()`/`end_chil
 #### Functions
 <div class="raw-html-insert" data-apirefs="set_next_window_pos, set_next_window_size, set_next_window_size_constraints, set_next_window_content_size, set_next_window_collapsed, set_next_window_focus, set_next_window_scroll, set_next_window_bg_alpha, set_window_pos, set_window_size, set_window_collapsed, set_window_focus, set_window_pos, set_window_size, set_window_collapsed, set_window_focus"></div>
 
+
 ### Windows Scrolling
 
 - Any change of scroll will be applied at the beginning of next frame in the first call to `begin()`.
