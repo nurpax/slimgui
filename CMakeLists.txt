@@ -35,6 +35,13 @@ nanobind_add_module(slimgui_ext
 include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/src/c/implot)
 
+if(APPLE)
+  # Used by the default implementation for macOS clipboard access.
+  # See https://github.com/ocornut/imgui/pull/2546 for framework linking history.
+  find_library(APPLICATIONSERVICES_FRAMEWORK ApplicationServices REQUIRED)
+  target_link_libraries(slimgui_ext PRIVATE ${APPLICATIONSERVICES_FRAMEWORK})
+endif()
+
 install(TARGETS slimgui_ext LIBRARY DESTINATION slimgui)
 install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/__init__.pyi" DESTINATION slimgui/slimgui_ext)
 install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/imgui/__init__.pyi" DESTINATION slimgui/slimgui_ext/imgui)
