@@ -16,6 +16,7 @@ class GlfwRenderer:
         prev_cursor_pos_callback: Callable[[Any, float, float], None] | None = None,
         prev_mouse_button_callback: Callable[[Any, int, int, int], None] | None = None,
         prev_scroll_callback: Callable[[Any, float, float], None] | None = None,
+        prev_window_focus_callback: Callable[[Any, int], None] | None = None,
     ):
         self.renderer = OpenGLRenderer()
         self.window = window
@@ -26,6 +27,7 @@ class GlfwRenderer:
         self._prev_cursor_pos_callback = prev_cursor_pos_callback
         self._prev_mouse_button_callback = prev_mouse_button_callback
         self._prev_scroll_callback = prev_scroll_callback
+        self._prev_window_focus_callback = prev_window_focus_callback
 
         if attach_callbacks:
             glfw.set_key_callback(self.window, self.keyboard_callback)
@@ -33,6 +35,7 @@ class GlfwRenderer:
             glfw.set_mouse_button_callback(self.window, self.mouse_button_callback)
             glfw.set_char_callback(self.window, self.char_callback)
             glfw.set_scroll_callback(self.window, self.scroll_callback)
+            glfw.set_window_focus_callback(self.window, self.window_focus_callback)
 
         self.io = imgui.get_io()
         self.io.display_size = glfw.get_framebuffer_size(self.window)
@@ -177,6 +180,11 @@ class GlfwRenderer:
         x_offset *= self.mouse_wheel_multiplier
         y_offset *= self.mouse_wheel_multiplier
         self.io.add_mouse_wheel_event(x_offset, y_offset)
+
+    def window_focus_callback(self, window, focused: int):
+        if self._prev_window_focus_callback is not None:
+            self._prev_window_focus_callback(window, focused)
+        self.io.add_focus_event(focused != 0)
 
     def new_frame(self):
         # See https://github.com/ocornut/imgui/issues/5081
