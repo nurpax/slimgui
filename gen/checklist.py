@@ -78,6 +78,7 @@ _class_field_name_filter = [
     "-DrawList._*",
     "-DrawData.cmd_lists_count",
     "-DrawData.cmd_lists",              # it's called 'commands_lists' for historical reasons
+    "-IO.font_allow_user_scaling",      # obsolete
     "-TextureRef._*",
 ]
 
