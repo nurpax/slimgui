@@ -358,6 +358,7 @@ NB_MODULE(slimgui_ext, top) {
         .def_rw("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges)
         .def_rw("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly)
         .def_rw("config_windows_copy_contents_with_ctrl_c", &ImGuiIO::ConfigWindowsCopyContentsWithCtrlC)
+        .def_rw("config_scrollbar_scroll_by_page", &ImGuiIO::ConfigScrollbarScrollByPage)
         .def_rw("config_memory_compact_timer", &ImGuiIO::ConfigMemoryCompactTimer)
         .def_rw("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime)
         .def_rw("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist)
