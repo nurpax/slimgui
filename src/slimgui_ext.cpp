@@ -165,6 +165,7 @@ NB_MODULE(slimgui_ext, top) {
         .def_rw("oversample_h", &ImFontConfig::OversampleH)
         .def_rw("oversample_v", &ImFontConfig::OversampleV)
         .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH)
+        .def_rw("pixel_snap_v", &ImFontConfig::PixelSnapV)
         .def_rw("glyph_offset", &ImFontConfig::GlyphOffset)
         .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX)
         .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX)

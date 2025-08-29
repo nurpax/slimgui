@@ -78,6 +78,13 @@ _class_field_name_filter = [
     "-DrawList._*",
     "-DrawData.cmd_lists_count",
     "-DrawData.cmd_lists",              # it's called 'commands_lists' for historical reasons
+
+    "-FontConfig.dst_font",             # internal
+    "-FontConfig.font_loader",          # internal
+    "-FontConfig.font_loader_loader",   # internal
+    "-FontConfig.font_loader_loader",   # internal
+    "-FontConfig.glyph_ranges",         # marked legacy
+
     "-IO.font_allow_user_scaling",      # obsolete
     "-TextureRef._*",
 ]
