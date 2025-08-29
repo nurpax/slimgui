@@ -1023,6 +1023,38 @@ class IO:
 
     def add_key_event(self, key: Key, down: bool) -> None: ...
 
+    def add_focus_event(self, focused: bool) -> None:
+        """
+        Queue a gain/loss of focus for the application (generally based on OS/platform focus of your window).
+        """
+
+    def add_input_characters_utf8(self, str: str) -> None:
+        """Queue a new characters input from a UTF-8 string."""
+
+    def add_key_analog_event(self, key: Key, down: bool, v: float) -> None:
+        """
+        Queue a new key down/up event for analog values (e.g. `Key.KEY_GAMEPAD_*` values). Dead-zones should be handled by the backend.
+        """
+
+    def add_mouse_source_event(self, source: MouseSource) -> None:
+        """Queue a mouse source change (Mouse/TouchScreen/Pen)."""
+
+    def set_app_accepting_events(self, accepting_events: bool) -> None:
+        """
+        Set master flag for accepting key/mouse/text events (default to true).  Useful if you have native dialog boxes that are interrupting your application loop/refresh, and you want to disable events being queued while your app is frozen.
+        """
+
+    def clear_events_queue(self) -> None:
+        """Clear all incoming events."""
+
+    def clear_input_keys(self) -> None:
+        """
+        Clear current keyboard/gamepad state + current frame text input buffer.  Equivalent to releasing all keys/buttons.
+        """
+
+    def clear_input_mouse(self) -> None:
+        """Clear current mouse state."""
+
     @property
     def config_flags(self) -> ConfigFlags: ...
 

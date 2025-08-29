@@ -297,6 +297,14 @@ NB_MODULE(slimgui_ext, top) {
         .def("add_mouse_wheel_event", &ImGuiIO::AddMouseWheelEvent, "wheel_x"_a, "wheel_y"_a)
         .def("add_input_character", &ImGuiIO::AddInputCharacter, "c"_a)
         .def("add_key_event", &ImGuiIO::AddKeyEvent, "key"_a, "down"_a)
+        .def("add_focus_event", &ImGuiIO::AddFocusEvent, "focused"_a, "Queue a gain/loss of focus for the application (generally based on OS/platform focus of your window).")
+        .def("add_input_characters_utf8", &ImGuiIO::AddInputCharactersUTF8, "str"_a, "Queue a new characters input from a UTF-8 string.")
+        .def("add_key_analog_event", &ImGuiIO::AddKeyAnalogEvent, "key"_a, "down"_a, "v"_a, "Queue a new key down/up event for analog values (e.g. `Key.KEY_GAMEPAD_*` values). Dead-zones should be handled by the backend.")
+        .def("add_mouse_source_event", &ImGuiIO::AddMouseSourceEvent, "source"_a, "Queue a mouse source change (Mouse/TouchScreen/Pen).")
+        .def("set_app_accepting_events", &ImGuiIO::SetAppAcceptingEvents, "accepting_events"_a, "Set master flag for accepting key/mouse/text events (default to true).  Useful if you have native dialog boxes that are interrupting your application loop/refresh, and you want to disable events being queued while your app is frozen.")
+        .def("clear_events_queue", &ImGuiIO::ClearEventsQueue, "Clear all incoming events.")
+        .def("clear_input_keys", &ImGuiIO::ClearInputKeys, "Clear current keyboard/gamepad state + current frame text input buffer.  Equivalent to releasing all keys/buttons.")
+        .def("clear_input_mouse", &ImGuiIO::ClearInputMouse, "Clear current mouse state.")
         .def_prop_rw("config_flags",
             [](ImGuiIO& io) { return (ImGuiConfigFlags_)io.ConfigFlags; },
             [](ImGuiIO& io, ImGuiConfigFlags_ flags) { io.ConfigFlags = flags; }

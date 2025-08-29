@@ -49,6 +49,9 @@ _ignored_toplevel_funcs_implot: set[str] = {
 _method_name_filter = [
     "-ImColor_*",
 
+    "-ImGuiIO_AddInputCharacterUTF16",  # not needed in apps/python api
+    "-ImGuiIO_SetKeyEventNativeData",   # shouldn't be needed in modern times
+
     "-ImFontAtlas_ClearInputData",      # obsolete
     "-ImFontAtlas_ClearFonts",          # obsolete
     "-ImFontAtlas_ClearTexData",        # obsolete
@@ -71,6 +74,7 @@ _method_name_filter = [
 ]
 
 _class_field_name_filter = [
+    "-Context.*",                       # imgui context is an opaque struct and not accessed directly
     "-DrawList._*",
     "-DrawData.cmd_lists_count",
     "-DrawData.cmd_lists",              # it's called 'commands_lists' for historical reasons
