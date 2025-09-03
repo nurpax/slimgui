@@ -1,10 +1,10 @@
 [build-system]
-requires = ["scikit-build-core >=0.4.3", "nanobind@git+https://github.com/wjakob/nanobind@a5701022b461350f8f01132bcfced2106be6108e", "typing-extensions"]
+requires = ["scikit-build-core >=0.4.3", "nanobind@git+https://github.com/wjakob/nanobind@10cc5109bdb55f7e35583e0fd6a5e3ed06c95683", "typing-extensions"]
 build-backend = "scikit_build_core.build"
 
 [project]
 name = "slimgui"
-version = "0.5.0"
+version = "0.5.1"
 description = "Python Dear ImGui bindings"
 readme = "README.md"
 requires-python = ">=3.10"
