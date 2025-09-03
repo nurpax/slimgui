@@ -9,7 +9,8 @@ MacOS:
 ```
 python3 -m venv .venv
 . .venv/bin/activate
-pip install git+https://github.com/wjakob/nanobind 'scikit-build-core[pyproject]' click glfw pyopengl numpy requests toml
+pip install git+https://github.com/wjakob/nanobind scikit-build-core click glfw pyopengl numpy requests toml
+pip install "git+https://github.com/wjakob/nanobind@10cc5109bdb55f7e35583e0fd6a5e3ed06c95683" scikit-build-core click glfw pyopengl numpy requests toml
 bash full_build.sh
 ```
 
@@ -34,3 +35,4 @@ python gen/imgui_vendor.py
 ```
 
 Edit the `imgui_vendor.py` script to pull newer versions.
+ 
