@@ -27,11 +27,11 @@ def show_demo_window(show_window: bool, texture: dict[str, Any]):
         if implot.begin_plot("Plot", flags=PlotFlags.NO_LEGEND):
             data_x = np.arange(0, 10, 0.25)
             data_y = np.sin(data_x)
-            implot.plot_line("Sine Wave", data_y[::2]) # striding should work
+            implot.plot_line("Sine Wave", data_x[::2], data_y[::2]) # striding should work
 
             data_x = np.linspace(0, 3*np.pi, 200)
             data_y = np.sin(data_x)
-            implot.plot_line("the wave", data_x, data_y) # striding should work
+            implot.plot_line("the wave", data_x, data_y)
 
             if _surf_it:
                 idx = int(time.time()*20)

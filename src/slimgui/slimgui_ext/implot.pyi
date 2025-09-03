@@ -1,8 +1,8 @@
 from collections.abc import Iterator, Sequence
 import enum
-from typing import Annotated, overload
+from typing import Annotated, overload, Any
 
-from numpy import bool, float32, float64
+import numpy
 from numpy.typing import NDArray
 
 import slimgui_ext.imgui
@@ -1088,7 +1088,7 @@ def show_metrics_window(closable: bool = False) -> bool:
     """Shows ImPlot metrics/debug information window."""
 
 @overload
-def setup_axis_ticks(axis: int, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], labels: Sequence[str] | None = None, keep_default: bool = False) -> None:
+def setup_axis_ticks(axis: int, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], labels: Sequence[str] | None = None, keep_default: bool = False) -> None:
     """
     Sets an axis' ticks and optionally the labels. To keep the default ticks, set `keep_default=True`.
     """
@@ -1096,7 +1096,7 @@ def setup_axis_ticks(axis: int, values: Annotated[NDArray[float64], dict(shape=(
 @overload
 def setup_axis_ticks(axis: int, v_min: float, v_max: float, n_ticks: int, labels: Sequence[str] | None = None, keep_default: bool = False) -> None: ...
 
-def begin_subplots(title_id: str, rows: int, cols: int, size: tuple[float, float], flags: SubplotFlags = SubplotFlags.NONE, row_ratios: Annotated[NDArray[float32], dict(shape=(None,), order='C', device='cpu')] | None = None, col_ratios: Annotated[NDArray[float32], dict(shape=(None,), order='C', device='cpu')] | None = None) -> bool:
+def begin_subplots(title_id: str, rows: int, cols: int, size: tuple[float, float], flags: SubplotFlags = SubplotFlags.NONE, row_ratios: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu')] | None = None, col_ratios: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu')] | None = None) -> bool:
     """
     See https://nurpax.github.io/slimgui/apiref_implot.html#subplots for details.
     """
@@ -1104,96 +1104,96 @@ def begin_subplots(title_id: str, rows: int, cols: int, size: tuple[float, float
 def end_subplots() -> None: ...
 
 @overload
-def plot_line(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: LineFlags = LineFlags.NONE) -> None:
+def plot_line(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: LineFlags = LineFlags.NONE) -> None:
     """
     Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.
     """
 
 @overload
-def plot_line(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: LineFlags = LineFlags.NONE) -> None:
+def plot_line(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: LineFlags = LineFlags.NONE) -> None:
     """
     Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.
     """
 
 @overload
-def plot_scatter(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: ScatterFlags = ScatterFlags.NONE) -> None:
+def plot_scatter(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: ScatterFlags = ScatterFlags.NONE) -> None:
     """Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`."""
 
 @overload
-def plot_scatter(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ScatterFlags = ScatterFlags.NONE) -> None: ...
+def plot_scatter(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ScatterFlags = ScatterFlags.NONE) -> None: ...
 
 @overload
-def plot_stairs(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: StairsFlags = StairsFlags.NONE) -> None:
+def plot_stairs(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: StairsFlags = StairsFlags.NONE) -> None:
     """
     Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`
     """
 
 @overload
-def plot_stairs(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: StairsFlags = StairsFlags.NONE) -> None: ...
+def plot_stairs(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: StairsFlags = StairsFlags.NONE) -> None: ...
 
 @overload
-def plot_shaded(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, flags: ShadedFlags = ShadedFlags.NONE) -> None:
+def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, flags: ShadedFlags = ShadedFlags.NONE) -> None:
     """
     Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
     """
 
 @overload
-def plot_shaded(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
+def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
 
 @overload
-def plot_shaded(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
+def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
 
 @overload
-def plot_bars(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, flags: BarsFlags = BarsFlags.NONE) -> None:
+def plot_bars(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, flags: BarsFlags = BarsFlags.NONE) -> None:
     """
     Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.
     """
 
 @overload
-def plot_bars(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, flags: BarsFlags = BarsFlags.NONE) -> None: ...
+def plot_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, flags: BarsFlags = BarsFlags.NONE) -> None: ...
 
-def plot_bar_groups(label_ids: Sequence[str], values: Annotated[NDArray[float64], dict(shape=(None, None), order='C', device='cpu', writable=False)], group_size: float = 0.67, shift: float = 0.0, flags: BarGroupsFlags = BarGroupsFlags.NONE) -> None:
+def plot_bar_groups(label_ids: Sequence[str], values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], group_size: float = 0.67, shift: float = 0.0, flags: BarGroupsFlags = BarGroupsFlags.NONE) -> None:
     """
     Plots a group of bars. `values` is a matrix with a shape `(item_count, group_count)`. `label_ids` should have `item_count` elements.
     """
 
 @overload
-def plot_error_bars(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], err: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ErrorBarsFlags = ErrorBarsFlags.NONE) -> None:
+def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], err: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ErrorBarsFlags = ErrorBarsFlags.NONE) -> None:
     """
     Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
     """
 
 @overload
-def plot_error_bars(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], neg: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], pos: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ErrorBarsFlags = ErrorBarsFlags.NONE) -> None: ...
+def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], neg: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], pos: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ErrorBarsFlags = ErrorBarsFlags.NONE) -> None: ...
 
 @overload
-def plot_stems(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, scale: float = 1.0, start: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None: ...
+def plot_stems(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, scale: float = 1.0, start: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None: ...
 
 @overload
-def plot_stems(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None:
+def plot_stems(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None:
     """Plots stems. Vertical by default."""
 
-def plot_inf_lines(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: InfLinesFlags = InfLinesFlags.NONE) -> None:
+def plot_inf_lines(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: InfLinesFlags = InfLinesFlags.NONE) -> None:
     """
     Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).
     """
 
-def plot_heatmap(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None, None), order='C', device='cpu', writable=False)], scale_min: float = 0, scale_max: float = 0.0, label_fmt: str | None = '%.1f', bounds_min: tuple[float, float] = (0.0, 0.0), bounds_max: tuple[float, float] = (1.0, 1.0), flags: HeatmapFlags = HeatmapFlags.NONE) -> None:
+def plot_heatmap(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], scale_min: float = 0, scale_max: float = 0.0, label_fmt: str | None = '%.1f', bounds_min: tuple[float, float] = (0.0, 0.0), bounds_max: tuple[float, float] = (1.0, 1.0), flags: HeatmapFlags = HeatmapFlags.NONE) -> None:
     """
     Plots a 2D heatmap chart. `values` is expected to have shape (rows, cols). Leave `scale_min` and `scale_max` both at 0 for automatic color scaling, or set them to a predefined range. `label_fmt` can be set to `None` for no labels.
     """
 
-def plot_histogram(label_id: str, values: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], bins: int | Bin = Bin.STURGES, bar_scale: float = 1.0, range: tuple[float, float] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
+def plot_histogram(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bins: int | Bin = Bin.STURGES, bar_scale: float = 1.0, range: tuple[float, float] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
     """
     Plots a horizontal histogram. `bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `values` will be used as the range.  Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
     """
 
-def plot_histogram2d(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], x_bins: int | Bin = Bin.STURGES, y_bins: int | Bin = Bin.STURGES, range: tuple[tuple[float, float], tuple[float, float]] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
+def plot_histogram2d(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], x_bins: int | Bin = Bin.STURGES, y_bins: int | Bin = Bin.STURGES, range: tuple[tuple[float, float], tuple[float, float]] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
     """
     Plots two dimensional, bivariate histogram as a heatmap. `x_bins` and `y_bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `xs` an `ys` will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
     """
 
-def plot_digital(label_id: str, xs: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[float64], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: DigitalFlags = DigitalFlags.NONE) -> None:
+def plot_digital(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: DigitalFlags = DigitalFlags.NONE) -> None:
     """
     Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
     """
@@ -1203,7 +1203,7 @@ def plot_image(label_id: str, tex_ref: slimgui_ext.imgui.TextureRef | int, bound
     Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot coordinates (y-up) and `uv0`/`uv1` are in texture coordinates (y-down).
     """
 
-def drag_point(id: int, point: Annotated[NDArray[float64], dict(shape=(2), order='C', device='cpu')], col: tuple[float, float, float, float], size: float = 4.0, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_point(id: int, point: Annotated[NDArray[Any], dict(shape=(2), order='C', device='cpu')], col: tuple[float, float, float, float], size: float = 4.0, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable point at `point`.  The updated drag position will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
@@ -1212,7 +1212,7 @@ def drag_point(id: int, point: Annotated[NDArray[float64], dict(shape=(2), order
     The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
     """
 
-def drag_line_x(id: int, x: Annotated[NDArray[float64], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_line_x(id: int, x: Annotated[NDArray[Any], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable vertical guide line at an x-value. The updated drag position will be written to the `x` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
@@ -1221,7 +1221,7 @@ def drag_line_x(id: int, x: Annotated[NDArray[float64], dict(shape=(), order='C'
     The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
     """
 
-def drag_line_y(id: int, y: Annotated[NDArray[float64], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_line_y(id: int, y: Annotated[NDArray[Any], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable horizontal guide line at a y-value. The updated drag position will be written to the `y` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the line is clicked, hovered, or held, respectively.
@@ -1230,7 +1230,7 @@ def drag_line_y(id: int, y: Annotated[NDArray[float64], dict(shape=(), order='C'
     The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
     """
 
-def drag_rect(id: int, rect: Annotated[NDArray[float64], dict(shape=(2, 2), order='C', device='cpu')], col: tuple[float, float, float, float], flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_rect(id: int, rect: Annotated[NDArray[Any], dict(shape=(2, 2), order='C', device='cpu')], col: tuple[float, float, float, float], flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable rectangle at `[[x0, y0], [x1, y1]` coordinates, loaded from `rect`.  The updated drag rectangle will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.

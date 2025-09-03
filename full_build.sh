@@ -20,6 +20,9 @@ IMGUI_VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool'
 python -c "from slimgui import imgui; assert imgui.get_version() == '$IMGUI_VERSION'"
 
 python -m nanobind.stubgen -i build/cp312-abi3-macosx_15_0_arm64 -q -m slimgui_ext -r -O src/slimgui
+# Apply workaround for https://github.com/wjakob/nanobind/issues/1155
+python gen/stubfixer.py src/slimgui/slimgui_ext/implot.pyi -o src/slimgui/slimgui_ext/implot.pyi
+python gen/stubfixer.py src/slimgui/slimgui_ext/imgui.pyi -o src/slimgui/slimgui_ext/imgui.pyi
 
 # imgui docs:
 python gen/amend_func_docs.py --cimgui-definitions-file gen/cimgui/definitions.json --imgui-h src/c/imgui/imgui.h --pyi-file src/slimgui/slimgui_ext/imgui.pyi -o src/slimgui/slimgui_ext/imgui.pyi

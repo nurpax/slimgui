@@ -32,17 +32,18 @@ nanobind_add_module(slimgui_ext
   src/c/implot/implot_demo.cpp
 )
 
+# TODO the below works too, should get rid of the docs mangling in full_builld.sh.
 # nanobind_add_stub(
 #     slimgui_ext_stub
 #     MODULE slimgui_ext
-#     OUTPUT my_ext.pyi
-
-#     OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/slimgui"
-#     OUTPUT "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/__init__.pyi" "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/imgui.pyi" "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/implot.pyi"
-
 #     PYTHON_PATH $<TARGET_FILE_DIR:slimgui_ext>
 #     DEPENDS slimgui_ext
 #     RECURSIVE
+#     OUTPUT_PATH "${CMAKE_SOURCE_DIR}/src/slimgui"
+#     OUTPUT 
+#         "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/__init__.pyi"
+#         "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/imgui.pyi"
+#         "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/implot.pyi"
 # )
 
 include_directories(${CMAKE_SOURCE_DIR}/src/c/imgui)
@@ -56,6 +57,6 @@ if(APPLE)
 endif()
 
 install(TARGETS slimgui_ext LIBRARY DESTINATION slimgui)
-install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/__init__.pyi" DESTINATION slimgui/slimgui_ext)
-install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/imgui.pyi" DESTINATION slimgui/slimgui_ext/imgui)
-install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/implot.pyi" DESTINATION slimgui/slimgui_ext/implot)
+install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/__init__.pyi" DESTINATION slimgui/slimgui_ext/)
+install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/imgui.pyi" DESTINATION slimgui/slimgui_ext/)
+install(FILES "${CMAKE_SOURCE_DIR}/src/slimgui/slimgui_ext/implot.pyi" DESTINATION slimgui/slimgui_ext/)

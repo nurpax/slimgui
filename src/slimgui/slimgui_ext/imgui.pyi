@@ -1,8 +1,8 @@
 from collections.abc import Callable, Iterator, Sequence
 import enum
-from typing import Annotated, overload
+from typing import Annotated, overload, Any
 
-from numpy import float32, uint8
+import numpy
 from numpy.typing import NDArray
 
 
@@ -958,10 +958,10 @@ class TextureData:
     def get_size_in_bytes(self) -> int:
         """`width * height * `bytes_per_pixel`."""
 
-    def get_pixels(self) -> Annotated[NDArray[uint8], dict(shape=(None,))]:
+    def get_pixels(self) -> Annotated[NDArray[numpy.uint8], dict(shape=(None,))]:
         """Get texture data as an `ndarray`."""
 
-    def get_pixels_at(self, arg0: int, arg1: int, /) -> Annotated[NDArray[uint8], dict(shape=(None,))]:
+    def get_pixels_at(self, arg0: int, arg1: int, /) -> Annotated[NDArray[numpy.uint8], dict(shape=(None,))]:
         """
         Get texture data as an `ndarray` starting at `x, y` corner.  Note that the pixel stride is the same as in the original texture.
         """
@@ -1068,19 +1068,19 @@ class DrawList:
     def add_polyline(self, points: Sequence[tuple[float, float]], col: int, flags: DrawFlags, thickness: float = 1.0) -> None: ...
 
     @overload
-    def add_polyline(self, points: Annotated[NDArray[float32], dict(shape=(None, 2), device='cpu', writable=False)], col: int, flags: DrawFlags, thickness: float) -> None: ...
+    def add_polyline(self, points: Annotated[NDArray[Any], dict(shape=(None, 2), device='cpu', writable=False)], col: int, flags: DrawFlags, thickness: float) -> None: ...
 
     @overload
     def add_convex_poly_filled(self, points: Sequence[tuple[float, float]], col: int) -> None: ...
 
     @overload
-    def add_convex_poly_filled(self, points: Annotated[NDArray[float32], dict(shape=(None, 2), device='cpu', writable=False)], col: int) -> None: ...
+    def add_convex_poly_filled(self, points: Annotated[NDArray[Any], dict(shape=(None, 2), device='cpu', writable=False)], col: int) -> None: ...
 
     @overload
     def add_concave_poly_filled(self, points: Sequence[tuple[float, float]], col: int) -> None: ...
 
     @overload
-    def add_concave_poly_filled(self, points: Annotated[NDArray[float32], dict(shape=(None, 2), device='cpu', writable=False)], col: int) -> None: ...
+    def add_concave_poly_filled(self, points: Annotated[NDArray[Any], dict(shape=(None, 2), device='cpu', writable=False)], col: int) -> None: ...
 
     def add_image(self, tex_ref: TextureRef | int, p_min: tuple[float, float], p_max: tuple[float, float], uv_min: tuple[float, float] = (0.0, 0.0), uv_max: tuple[float, float] = (1.0, 1.0), col: int = COL32_WHITE) -> None: ...
 
@@ -4142,11 +4142,11 @@ def list_box(label: str, current_item: int, items: Sequence[str], height_in_item
     ...
 
 
-def plot_lines(label: str, values: Annotated[NDArray[float32], dict(shape=(None,), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = FLT_MAX, scale_max: float = FLT_MAX, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
+def plot_lines(label: str, values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = FLT_MAX, scale_max: float = FLT_MAX, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
     ...
 
 
-def plot_histogram(label: str, values: Annotated[NDArray[float32], dict(shape=(None,), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = FLT_MAX, scale_max: float = FLT_MAX, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
+def plot_histogram(label: str, values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)], overlay_text: str | None = None, scale_min: float = FLT_MAX, scale_max: float = FLT_MAX, graph_size: tuple[float, float] = (0.0, 0.0)) -> None:
     ...
 
 
