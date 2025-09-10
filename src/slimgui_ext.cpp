@@ -563,8 +563,10 @@ NB_MODULE(slimgui_ext, top) {
         .def("path_rect", [](ImDrawList* drawList, ImVec2 rect_min, ImVec2 rect_max, float rounding, ImDrawFlags_ flags) {
             drawList->PathRect(rect_min, rect_max, rounding, flags);
         }, "rect_min"_a, "rect_max"_a, "rounding"_a = 0.0f, "flags"_a.sig("DrawFlags.NONE") = 0)
-        .def("add_draw_cmd", &ImDrawList::AddDrawCmd, "This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible.");
-
+        .def("add_draw_cmd", &ImDrawList::AddDrawCmd, "This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible.")
+        .def("channels_split", &ImDrawList::ChannelsSplit, "count"_a)
+        .def("channels_merge", &ImDrawList::ChannelsMerge)
+        .def("channels_set_current", &ImDrawList::ChannelsSetCurrent, "n"_a);
 
     nb::class_<ImDrawData>(m, "DrawData")
         .def("scale_clip_rects", &ImDrawData::ScaleClipRects, "fb_scale"_a)
