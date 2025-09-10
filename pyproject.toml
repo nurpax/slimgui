@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core >=0.4.3", "nanobind@git+https://github.com/wjakob/nanobind@v2.9.2", "typing-extensions"]
+requires = ["scikit-build-core >=0.4.3", "nanobind==2.9.2", "typing-extensions"]
 build-backend = "scikit_build_core.build"
 
 [project]
