@@ -1,3 +1,14 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "glfw",
+#     "numpy",
+#     "pyglet",
+#     "pyopengl",
+#     "requests",
+#     "slimgui",
+# ]
+# ///
 """
 Very much beta quality Pyglet example.  Probably buggy but should be a useful starting point.
 
