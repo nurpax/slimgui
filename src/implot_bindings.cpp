@@ -177,53 +177,53 @@ void implot_bindings(nb::module_& m) {
     m.def("end_subplots", &ImPlot::EndSubplots);
 
     // PlotLine functions
-    const char* line_docstring = "Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.";
-    m.def("plot_line", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotLineFlags_ flags) {
-        ImPlot::PlotLine(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);
-    }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("LineFlags.NONE") = ImPlotLineFlags_None, line_docstring);
-    const char* line_docstring2 = "Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.";
+    const char* line_docstring = "Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.";
     m.def("plot_line", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ImPlotLineFlags_ flags) {
         ImPlot::PlotLine(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), flags);
-    }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("LineFlags.NONE") = ImPlotLineFlags_None, line_docstring2);
+    }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("LineFlags.NONE") = ImPlotLineFlags_None, line_docstring);
+    const char* line_docstring2 = "Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.";
+    m.def("plot_line", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotLineFlags_ flags) {
+        ImPlot::PlotLine(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);
+    }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("LineFlags.NONE") = ImPlotLineFlags_None, line_docstring2);
 
     // PlotScatter functions
     const char* scatter_docstring = "Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`.";
-    m.def("plot_scatter", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotScatterFlags_ flags) {
-        ImPlot::PlotScatter(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);
-    }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("ScatterFlags.NONE") = ImPlotScatterFlags_None, scatter_docstring);
     m.def("plot_scatter", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ImPlotScatterFlags_ flags) {
         ImPlot::PlotScatter(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("ScatterFlags.NONE") = ImPlotScatterFlags_None, scatter_docstring);
+    m.def("plot_scatter", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotScatterFlags_ flags) {
+        ImPlot::PlotScatter(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);
+    }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("ScatterFlags.NONE") = ImPlotScatterFlags_None, scatter_docstring);
 
     // PlotStairs functions
     const char stairs_docstring[] = "Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`";
-    m.def("plot_stairs", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotStairsFlags_ flags) {
-        ImPlot::PlotStairs(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);
-    }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("StairsFlags.NONE") = ImPlotStairsFlags_None, stairs_docstring);
     m.def("plot_stairs", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ImPlotStairsFlags_ flags) {
         ImPlot::PlotStairs(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "flags"_a.sig("StairsFlags.NONE") = ImPlotStairsFlags_None, stairs_docstring);
+    m.def("plot_stairs", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, ImPlotStairsFlags_ flags) {
+        ImPlot::PlotStairs(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, flags);
+    }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("StairsFlags.NONE") = ImPlotStairsFlags_None, stairs_docstring);
 
     // PlotShaded functions
     const char shaded_docstring[] = "Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.";
-    m.def("plot_shaded", [](const char* label_id, ndarray_1d& values, double yref, double xscale, double xstart, ImPlotShadedFlags_ flags) {
-        ImPlot::PlotShaded(label_id, (const double*)values.data(), values.shape(0), yref, xscale, xstart, flags);
-    }, "label_id"_a, "values"_a, "yref"_a = 0, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("ShadedFlags.NONE") = ImPlotShadedFlags_None, shaded_docstring);
-    m.def("plot_shaded", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double yref, ImPlotShadedFlags_ flags) {
-        ImPlot::PlotShaded(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), yref, flags);
-    }, "label_id"_a, "xs"_a, "ys"_a, "yref"_a = 0, "flags"_a.sig("ShadedFlags.NONE") = ImPlotShadedFlags_None, shaded_docstring);
     m.def("plot_shaded", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys1, ndarray_1d& ys2, ImPlotShadedFlags_ flags) {
         ImPlot::PlotShaded(label_id, (const double*)xs.data(), (const double*)ys1.data(), (const double*)ys2.data(), xs.shape(0), flags);
     }, "label_id"_a, "xs"_a, "ys1"_a, "ys2"_a, "flags"_a.sig("ShadedFlags.NONE") = ImPlotShadedFlags_None, shaded_docstring);
+    m.def("plot_shaded", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double yref, ImPlotShadedFlags_ flags) {
+        ImPlot::PlotShaded(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), yref, flags);
+    }, "label_id"_a, "xs"_a, "ys"_a, "yref"_a = 0, "flags"_a.sig("ShadedFlags.NONE") = ImPlotShadedFlags_None, shaded_docstring);
+    m.def("plot_shaded", [](const char* label_id, ndarray_1d& values, double yref, double xscale, double xstart, ImPlotShadedFlags_ flags) {
+        ImPlot::PlotShaded(label_id, (const double*)values.data(), values.shape(0), yref, xscale, xstart, flags);
+    }, "label_id"_a, "values"_a, "yref"_a = 0, "xscale"_a = 1.0, "xstart"_a = 0.0, "flags"_a.sig("ShadedFlags.NONE") = ImPlotShadedFlags_None, shaded_docstring);
 
     // Plots a bar graph. Vertical by default. #bar_size and #shift are in plot units.
     const char bars_docstring[] = "Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.";
-    m.def("plot_bars", [](const char* label_id, ndarray_1d& values, double bar_size, double shift, ImPlotBarsFlags_ flags) {
-        ImPlot::PlotBars(label_id, (const double*)values.data(), values.shape(0), bar_size, shift, flags);
-    }, "label_id"_a, "values"_a, "bar_size"_a = 0.67, "shift"_a = 0.0, "flags"_a.sig("BarsFlags.NONE") = ImPlotBarsFlags_None, bars_docstring);
     m.def("plot_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double bar_size, ImPlotBarsFlags_ flags) {
         ImPlot::PlotBars(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), bar_size, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "bar_size"_a, "flags"_a.sig("BarsFlags.NONE") = ImPlotBarsFlags_None, bars_docstring);
+    m.def("plot_bars", [](const char* label_id, ndarray_1d& values, double bar_size, double shift, ImPlotBarsFlags_ flags) {
+        ImPlot::PlotBars(label_id, (const double*)values.data(), values.shape(0), bar_size, shift, flags);
+    }, "label_id"_a, "values"_a, "bar_size"_a = 0.67, "shift"_a = 0.0, "flags"_a.sig("BarsFlags.NONE") = ImPlotBarsFlags_None, bars_docstring);
 
     // Plots a group of bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements.
     const char bar_groups_docstring[] = "Plots a group of bars. `values` is a matrix with a shape `(item_count, group_count)`. `label_ids` should have `item_count` elements.";
@@ -254,9 +254,6 @@ void implot_bindings(nb::module_& m) {
     }, "label_id"_a, "xs"_a, "ys"_a, "neg"_a, "pos"_a, "flags"_a.sig("ErrorBarsFlags.NONE") = ImPlotErrorBarsFlags_None, error_bars_docstring);
 
     const char plot_stems_docstring[] = "Plots stems. Vertical by default.";
-    m.def("plot_stems", [](const char* label_id, ndarray_1d& values, double ref, double scale, double start, ImPlotStemsFlags_ flags) {
-        ImPlot::PlotStems(label_id, (const double*)values.data(), values.shape(0), ref, scale, start, flags);
-    }, "label_id"_a, "values"_a, "ref"_a = 0.0, "scale"_a = 1.0, "start"_a = 0.0, "flags"_a.sig("StemsFlags.NONE") = ImPlotStemsFlags_None);
     m.def("plot_stems", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double ref, ImPlotStemsFlags_ flags) {
         int count = xs.shape(0);
         if (count != ys.shape(0)) {
@@ -264,6 +261,9 @@ void implot_bindings(nb::module_& m) {
         }
         ImPlot::PlotStems(label_id, (const double*)xs.data(), (const double*)ys.data(), count, ref, flags);
     }, "label_id"_a, "xs"_a, "ys"_a, "ref"_a = 0.0, "flags"_a.sig("StemsFlags.NONE") = ImPlotStemsFlags_None, plot_stems_docstring);
+    m.def("plot_stems", [](const char* label_id, ndarray_1d& values, double ref, double scale, double start, ImPlotStemsFlags_ flags) {
+        ImPlot::PlotStems(label_id, (const double*)values.data(), values.shape(0), ref, scale, start, flags);
+    }, "label_id"_a, "values"_a, "ref"_a = 0.0, "scale"_a = 1.0, "start"_a = 0.0, "flags"_a.sig("StemsFlags.NONE") = ImPlotStemsFlags_None);
 
     const char inf_lines_docstring[] = "Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).";
     m.def("plot_inf_lines", [](const char* label_id, ndarray_1d& values, ImPlotInfLinesFlags_ flags) {

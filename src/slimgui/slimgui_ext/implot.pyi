@@ -1104,35 +1104,35 @@ def begin_subplots(title_id: str, rows: int, cols: int, size: tuple[float, float
 def end_subplots() -> None: ...
 
 @overload
-def plot_line(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: LineFlags = LineFlags.NONE) -> None:
-    """
-    Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.
-    """
-
-@overload
 def plot_line(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: LineFlags = LineFlags.NONE) -> None:
     """
     Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.
     """
 
 @overload
-def plot_scatter(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: ScatterFlags = ScatterFlags.NONE) -> None:
+def plot_line(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: LineFlags = LineFlags.NONE) -> None:
+    """
+    Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.
+    """
+
+@overload
+def plot_scatter(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ScatterFlags = ScatterFlags.NONE) -> None:
     """Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`."""
 
 @overload
-def plot_scatter(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ScatterFlags = ScatterFlags.NONE) -> None: ...
+def plot_scatter(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: ScatterFlags = ScatterFlags.NONE) -> None: ...
 
 @overload
-def plot_stairs(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: StairsFlags = StairsFlags.NONE) -> None:
+def plot_stairs(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: StairsFlags = StairsFlags.NONE) -> None:
     """
     Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`
     """
 
 @overload
-def plot_stairs(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: StairsFlags = StairsFlags.NONE) -> None: ...
+def plot_stairs(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: StairsFlags = StairsFlags.NONE) -> None: ...
 
 @overload
-def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, flags: ShadedFlags = ShadedFlags.NONE) -> None:
+def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ShadedFlags = ShadedFlags.NONE) -> None:
     """
     Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
     """
@@ -1141,16 +1141,16 @@ def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,
 def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
 
 @overload
-def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
+def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
 
 @overload
-def plot_bars(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, flags: BarsFlags = BarsFlags.NONE) -> None:
+def plot_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, flags: BarsFlags = BarsFlags.NONE) -> None:
     """
     Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.
     """
 
 @overload
-def plot_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, flags: BarsFlags = BarsFlags.NONE) -> None: ...
+def plot_bars(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, flags: BarsFlags = BarsFlags.NONE) -> None: ...
 
 def plot_bar_groups(label_ids: Sequence[str], values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], group_size: float = 0.67, shift: float = 0.0, flags: BarGroupsFlags = BarGroupsFlags.NONE) -> None:
     """
@@ -1167,11 +1167,11 @@ def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,
 def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], neg: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], pos: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ErrorBarsFlags = ErrorBarsFlags.NONE) -> None: ...
 
 @overload
-def plot_stems(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, scale: float = 1.0, start: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None: ...
-
-@overload
 def plot_stems(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None:
     """Plots stems. Vertical by default."""
+
+@overload
+def plot_stems(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, scale: float = 1.0, start: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None: ...
 
 def plot_inf_lines(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: InfLinesFlags = InfLinesFlags.NONE) -> None:
     """
