@@ -1212,13 +1212,13 @@ NB_MODULE(slimgui_ext, top) {
     }, "label"_a, "v_current_min"_a, "v_current_max"_a, "v_speed"_a = 1.0f, "v_min"_a = 0, "v_max"_a = 0, "format"_a = "%d", "format_max"_a = nb::none(), "flags"_a.sig("SliderFlags.NONE") = ImGuiSliderFlags_None);
 
     // Widgets: Input with Keyboard
-    auto input_text_handler = [](const char* label, const char* hint, std::string text, ImGuiInputTextFlags flags, bool multiline, nb::callable callback, nb::object user_data, ImVec2 size = ImVec2(0, 0)) {
+    auto input_text_handler = [](const char* label, const char* hint, std::string text, ImGuiInputTextFlags flags, bool multiline, nb::object callback, nb::object user_data, ImVec2 size = ImVec2(0, 0)) {
         IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
         flags |= ImGuiInputTextFlags_CallbackResize;
 
         InputTextCallback_UserData cb_user_data;
         cb_user_data.Str = &text;
-        cb_user_data.ChainCallback = callback;
+        nb::try_cast<nb::callable>(callback, cb_user_data.ChainCallback);
 
         cb_user_data.ChainCallbackUserData = user_data.ptr();
         bool changed;
@@ -1231,13 +1231,13 @@ NB_MODULE(slimgui_ext, top) {
         }
         return std::pair(changed, text);
     };
-    m.def("input_text", [&](const char* label, std::string text, ImGuiInputTextFlags_ flags, nb::callable callback, nb::object user_data) {
+    m.def("input_text", [&](const char* label, std::string text, ImGuiInputTextFlags_ flags, nb::object callback, nb::object user_data) {
         return input_text_handler(label, nullptr, text, flags, false, callback, user_data);
     }, "label"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None, "callback"_a = nb::none(), "user_data"_a = nb::none());
-    m.def("input_text_with_hint", [&](const char* label, const char* hint, std::string text, ImGuiInputTextFlags_ flags, nb::callable callback, nb::object user_data) {
+    m.def("input_text_with_hint", [&](const char* label, const char* hint, std::string text, ImGuiInputTextFlags_ flags, nb::object callback, nb::object user_data) {
         return input_text_handler(label, hint, text, flags, false, callback, user_data);
     }, "label"_a, "hint"_a, "text"_a, "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None, "callback"_a = nb::none(), "user_data"_a = nb::none());
-    m.def("input_text_multiline", [&](const char* label, std::string text, ImVec2 size, ImGuiInputTextFlags_ flags, nb::callable callback, nb::object user_data) {
+    m.def("input_text_multiline", [&](const char* label, std::string text, ImVec2 size, ImGuiInputTextFlags_ flags, nb::object callback, nb::object user_data) {
         return input_text_handler(label, nullptr, text, flags, true, callback, user_data, size);
     }, "label"_a, "text"_a, "size"_a = ImVec2(0, 0), "flags"_a.sig("InputTextFlags.NONE") = ImGuiInputTextFlags_None, "callback"_a = nb::none(), "user_data"_a = nb::none());
     m.def("input_int", [](const char* label, int v, int step, int step_fast, ImGuiInputTextFlags_ flags) {
