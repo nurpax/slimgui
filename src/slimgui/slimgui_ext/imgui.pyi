@@ -6,9 +6,9 @@ import numpy
 from numpy.typing import NDArray
 
 
-IMGUI_VERSION: str = '1.92.1'
+IMGUI_VERSION: str = '1.92.4'
 
-IMGUI_VERSION_NUM: int = 19210
+IMGUI_VERSION_NUM: int = 19240
 
 VERTEX_SIZE: int = 20
 
@@ -1301,6 +1301,9 @@ class InputTextFlags(enum.IntFlag):
     Callback on any edit. Note that `input_text()` already returns true on edit + you can always use `is_item_edited()`. The callback is useful to manipulate the underlying buffer while focus is active.
     """
 
+    WORD_WRAP = 16777216
+    """InputTextMultine(): word-wrap lines that are too long."""
+
 class ButtonFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -1751,11 +1754,16 @@ class TabBarFlags(enum.IntFlag):
     DRAW_SELECTED_OVERLINE = 64
     """Draw selected overline markers over selected tab"""
 
-    FITTING_POLICY_RESIZE_DOWN = 128
-    """Resize tabs when they don't fit"""
+    FITTING_POLICY_MIXED = 128
+    """
+    Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling buttons.
+    """
 
-    FITTING_POLICY_SCROLL = 256
-    """Add scroll buttons when tabs don't fit"""
+    FITTING_POLICY_SHRINK = 256
+    """Shrink down tabs when they don't fit"""
+
+    FITTING_POLICY_SCROLL = 512
+    """Enable scrolling buttons when tabs don't fit"""
 
 class TabItemFlags(enum.IntFlag):
     __str__ = __repr__
@@ -2250,6 +2258,11 @@ class SelectableFlags(enum.IntFlag):
 
     HIGHLIGHT = 32
     """Make the item be displayed as if it is hovered"""
+
+    SELECT_ON_NAV = 64
+    """
+    Auto-select when moved into, unless Ctrl is held. Automatic when in a `begin_multi_select()` block.
+    """
 
 class ConfigFlags(enum.IntFlag):
     __str__ = __repr__
@@ -2755,23 +2768,23 @@ class Col(enum.IntEnum):
     DRAG_DROP_TARGET = 53
     """Rectangle highlighting a drop target"""
 
-    NAV_CURSOR = 54
+    NAV_CURSOR = 55
     """Color of keyboard/gamepad navigation cursor/rectangle, when visible"""
 
-    NAV_WINDOWING_HIGHLIGHT = 55
+    NAV_WINDOWING_HIGHLIGHT = 56
     """Highlight window when using CTRL+TAB"""
 
-    NAV_WINDOWING_DIM_BG = 56
+    NAV_WINDOWING_DIM_BG = 57
     """
     Darken/colorize entire screen behind the CTRL+TAB window list, when active
     """
 
-    MODAL_WINDOW_DIM_BG = 57
+    MODAL_WINDOW_DIM_BG = 58
     """
     Darken/colorize entire screen behind a modal window, when one is active
     """
 
-    COUNT = 58
+    COUNT = 59
 
 class Dir(enum.IntEnum):
     NONE = -1
@@ -2847,55 +2860,64 @@ class StyleVar(enum.IntEnum):
     SCROLLBAR_ROUNDING = 19
     """Float     ScrollbarRounding"""
 
-    GRAB_MIN_SIZE = 20
+    SCROLLBAR_PADDING = 20
+    """Float     ScrollbarPadding"""
+
+    GRAB_MIN_SIZE = 21
     """Float     GrabMinSize"""
 
-    GRAB_ROUNDING = 21
+    GRAB_ROUNDING = 22
     """Float     GrabRounding"""
 
-    IMAGE_BORDER_SIZE = 22
+    IMAGE_BORDER_SIZE = 23
     """Float     ImageBorderSize"""
 
-    TAB_ROUNDING = 23
+    TAB_ROUNDING = 24
     """Float     TabRounding"""
 
-    TAB_BORDER_SIZE = 24
+    TAB_BORDER_SIZE = 25
     """Float     TabBorderSize"""
 
-    TAB_BAR_BORDER_SIZE = 25
+    TAB_MIN_WIDTH_BASE = 26
+    """Float     TabMinWidthBase"""
+
+    TAB_MIN_WIDTH_SHRINK = 27
+    """Float     TabMinWidthShrink"""
+
+    TAB_BAR_BORDER_SIZE = 28
     """Float     TabBarBorderSize"""
 
-    TAB_BAR_OVERLINE_SIZE = 26
+    TAB_BAR_OVERLINE_SIZE = 29
     """Float     TabBarOverlineSize"""
 
-    TABLE_ANGLED_HEADERS_ANGLE = 27
+    TABLE_ANGLED_HEADERS_ANGLE = 30
     """Float     TableAngledHeadersAngle"""
 
-    TABLE_ANGLED_HEADERS_TEXT_ALIGN = 28
+    TABLE_ANGLED_HEADERS_TEXT_ALIGN = 31
     """ImVec2  TableAngledHeadersTextAlign"""
 
-    TREE_LINES_SIZE = 29
+    TREE_LINES_SIZE = 32
     """Float     TreeLinesSize"""
 
-    TREE_LINES_ROUNDING = 30
+    TREE_LINES_ROUNDING = 33
     """Float     TreeLinesRounding"""
 
-    BUTTON_TEXT_ALIGN = 31
+    BUTTON_TEXT_ALIGN = 34
     """ImVec2    ButtonTextAlign"""
 
-    SELECTABLE_TEXT_ALIGN = 32
+    SELECTABLE_TEXT_ALIGN = 35
     """ImVec2    SelectableTextAlign"""
 
-    SEPARATOR_TEXT_BORDER_SIZE = 33
+    SEPARATOR_TEXT_BORDER_SIZE = 36
     """Float     SeparatorTextBorderSize"""
 
-    SEPARATOR_TEXT_ALIGN = 34
+    SEPARATOR_TEXT_ALIGN = 37
     """ImVec2    SeparatorTextAlign"""
 
-    SEPARATOR_TEXT_PADDING = 35
+    SEPARATOR_TEXT_PADDING = 38
     """ImVec2    SeparatorTextPadding"""
 
-    COUNT = 36
+    COUNT = 39
 
 class TableBgTarget(enum.IntEnum):
     NONE = 0
@@ -4376,7 +4398,7 @@ def table_get_column_index() -> int:
 
 
 def table_get_row_index() -> int:
-    """Return current row index."""
+    """Return current row index (header rows are accounted for)"""
     ...
 
 

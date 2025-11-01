@@ -37,10 +37,10 @@ def vendor_in(src_url, outdir, subdir: str | None = None):
         shutil.copytree(src_dir, outdir, ignore=ignore_github_dirs, dirs_exist_ok=True)
 
 if __name__ == "__main__":
-    imgui_src = "https://github.com/ocornut/imgui/archive/refs/tags/v1.92.1.zip"
-    cimgui_src = "https://github.com/cimgui/cimgui/archive/refs/tags/1.92.0.zip" # 1.92.1 not available as of Jul 10, 2025, but 1.92.0 should work too
+    imgui_src = "https://github.com/ocornut/imgui/archive/refs/tags/v1.92.4.zip"
+    cimgui_src = "https://github.com/cimgui/cimgui/archive/refs/tags/1.92.3.zip" # 1.92.4 not available as of Nov 1, 2025, but 1.92.3 probably works too
     implot_src = "https://github.com/epezent/implot/archive/3da8bd34299965d3b0ab124df743fe3e076fa222.zip"
-    cimplot_src = "https://github.com/cimgui/cimplot/archive/98a6ee7762c6b208ec7df908119b3a8d549db977.zip"
+    cimplot_src = "https://github.com/cimgui/cimplot/archive/9981145d7bc916eb9877df6e451543c9134fc061.zip"
     vendor_in(imgui_src, 'src/c/imgui')
     vendor_in(implot_src, 'src/c/implot')
     vendor_in(cimgui_src, 'gen/cimgui', 'generator/output')

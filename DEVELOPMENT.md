@@ -28,10 +28,11 @@ npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_d
 
 ## Updating imgui and cimgui metainfo when upgrading imgui
 
+Edit the `imgui_vendor.py` script to pull newer versions and then:
+
 ```
 cd $ROOT_DIR
 python gen/imgui_vendor.py
 ```
 
-Edit the `imgui_vendor.py` script to pull newer versions.
  

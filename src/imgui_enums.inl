@@ -103,7 +103,9 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
         "CALLBACK_EDIT", ImGuiInputTextFlags_CallbackEdit,
         "Callback on any edit. Note that `input_text()` already returns true "
         "on edit + you can always use `is_item_edited()`. The callback is "
-        "useful to manipulate the underlying buffer while focus is active.");
+        "useful to manipulate the underlying buffer while focus is active.")
+    .value("WORD_WRAP", ImGuiInputTextFlags_WordWrap,
+           "InputTextMultine(): word-wrap lines that are too long.");
 nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiButtonFlags_None)
@@ -407,11 +409,13 @@ nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
            "Disable tooltips when hovering a tab")
     .value("DRAW_SELECTED_OVERLINE", ImGuiTabBarFlags_DrawSelectedOverline,
            "Draw selected overline markers over selected tab")
-    .value("FITTING_POLICY_RESIZE_DOWN",
-           ImGuiTabBarFlags_FittingPolicyResizeDown,
-           "Resize tabs when they don't fit")
+    .value("FITTING_POLICY_MIXED", ImGuiTabBarFlags_FittingPolicyMixed,
+           "Shrink down tabs when they don't fit, until width is "
+           "style.TabMinWidthShrink, then enable scrolling buttons.")
+    .value("FITTING_POLICY_SHRINK", ImGuiTabBarFlags_FittingPolicyShrink,
+           "Shrink down tabs when they don't fit")
     .value("FITTING_POLICY_SCROLL", ImGuiTabBarFlags_FittingPolicyScroll,
-           "Add scroll buttons when tabs don't fit")
+           "Enable scrolling buttons when tabs don't fit")
     .value("FITTING_POLICY_MASK_", ImGuiTabBarFlags_FittingPolicyMask_)
     .value("FITTING_POLICY_DEFAULT_", ImGuiTabBarFlags_FittingPolicyDefault_);
 nb::enum_<ImGuiTabItemFlags_>(m, "TabItemFlags", nb::is_flag(),
@@ -746,7 +750,10 @@ nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags", nb::is_flag(),
     .value("ALLOW_OVERLAP", ImGuiSelectableFlags_AllowOverlap,
            "(WIP) Hit testing to allow subsequent widgets to overlap this one")
     .value("HIGHLIGHT", ImGuiSelectableFlags_Highlight,
-           "Make the item be displayed as if it is hovered");
+           "Make the item be displayed as if it is hovered")
+    .value("SELECT_ON_NAV", ImGuiSelectableFlags_SelectOnNav,
+           "Auto-select when moved into, unless Ctrl is held. Automatic when "
+           "in a `begin_multi_select()` block.");
 nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiConfigFlags_None)
@@ -1120,6 +1127,8 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
            "Float     ScrollbarSize")
     .value("SCROLLBAR_ROUNDING", ImGuiStyleVar_ScrollbarRounding,
            "Float     ScrollbarRounding")
+    .value("SCROLLBAR_PADDING", ImGuiStyleVar_ScrollbarPadding,
+           "Float     ScrollbarPadding")
     .value("GRAB_MIN_SIZE", ImGuiStyleVar_GrabMinSize, "Float     GrabMinSize")
     .value("GRAB_ROUNDING", ImGuiStyleVar_GrabRounding,
            "Float     GrabRounding")
@@ -1128,6 +1137,10 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
     .value("TAB_ROUNDING", ImGuiStyleVar_TabRounding, "Float     TabRounding")
     .value("TAB_BORDER_SIZE", ImGuiStyleVar_TabBorderSize,
            "Float     TabBorderSize")
+    .value("TAB_MIN_WIDTH_BASE", ImGuiStyleVar_TabMinWidthBase,
+           "Float     TabMinWidthBase")
+    .value("TAB_MIN_WIDTH_SHRINK", ImGuiStyleVar_TabMinWidthShrink,
+           "Float     TabMinWidthShrink")
     .value("TAB_BAR_BORDER_SIZE", ImGuiStyleVar_TabBarBorderSize,
            "Float     TabBarBorderSize")
     .value("TAB_BAR_OVERLINE_SIZE", ImGuiStyleVar_TabBarOverlineSize,
