@@ -397,6 +397,7 @@ e.g. \"1e+8\" becomes \"100000000\"." """)
 
     _ranged_sliders()
     _vsliders()
+    _text_inputs()
 
     if st.widgets_disable_all:
         imgui.end_disabled()
@@ -486,3 +487,104 @@ def _vsliders():
 
     imgui.pop_style_var()
     imgui.tree_pop()
+
+#--------------------------------------------------------------------
+
+# Text input demo global variables
+_multiline_text = (
+    "/*\n"
+    " The Pentium F00F bug, shorthand for F0 0F C7 C8,\n"
+    " the hexadecimal encoding of one offending instruction,\n"
+    " more formally, the invalid operand with locked CMPXCHG8B\n"
+    " instruction bug, is a design flaw in the majority of\n"
+    " Intel Pentium, Pentium MMX, and Pentium OverDrive\n"
+    " processors (all in the P5 microarchitecture).\n"
+    "*/\n\n"
+    "label:\n"
+    "\tlock cmpxchg8b eax\n"
+)
+_multiline_flags = imgui.InputTextFlags.ALLOW_TAB_INPUT
+_password = "password123"
+
+def _text_inputs():
+    """Demo for text input widgets"""
+    global _multiline_text, _multiline_flags, _password
+
+    if imgui.tree_node("Text Input"):
+
+        # Multi-line Text Input
+        if imgui.tree_node("Multi-line Text Input"):
+            help_marker("You can use the InputTextFlags.CALLBACK_RESIZE facility if you need to wire "
+                       "input_text_multiline() to a dynamic string type. "
+                       "(This is not demonstrated here because we're using fixed strings)")
+
+            # Checkbox flags for multiline text input
+            _, _multiline_flags = imgui.checkbox_flags(
+                "InputTextFlags.READ_ONLY",
+                _multiline_flags,
+                int(imgui.InputTextFlags.READ_ONLY)
+            )
+
+            _, _multiline_flags = imgui.checkbox_flags(
+                "InputTextFlags.WORD_WRAP",
+                _multiline_flags,
+                int(imgui.InputTextFlags.WORD_WRAP)
+            )
+            imgui.same_line()
+            help_marker("Feature is currently in Beta. Please read comments in imgui.h")
+
+            _, _multiline_flags = imgui.checkbox_flags(
+                "InputTextFlags.ALLOW_TAB_INPUT",
+                _multiline_flags,
+                int(imgui.InputTextFlags.ALLOW_TAB_INPUT)
+            )
+            imgui.same_line()
+            help_marker("When ALLOW_TAB_INPUT is set, passing through the widget with Tabbing doesn't "
+                       "automatically activate it, in order to also cycle through subsequent widgets.")
+
+            _, _multiline_flags = imgui.checkbox_flags(
+                "InputTextFlags.CTRL_ENTER_FOR_NEW_LINE",
+                _multiline_flags,
+                int(imgui.InputTextFlags.CTRL_ENTER_FOR_NEW_LINE)
+            )
+
+            # Multi-line text input
+            text_height = imgui.get_text_line_height() * 16
+            _, _multiline_text = imgui.input_text_multiline(
+                "##source",
+                _multiline_text,
+                size=(-1, text_height),
+                flags=imgui.InputTextFlags(_multiline_flags)
+            )
+
+            imgui.tree_pop()
+
+        # Password Input
+        if imgui.tree_node("Password Input"):
+            _, _password = imgui.input_text(
+                "password",
+                _password,
+                flags=imgui.InputTextFlags.PASSWORD
+            )
+            imgui.same_line()
+            help_marker("Display all characters as '*'.\n"
+                       "Disable clipboard cut and copy.\n"
+                       "Disable logging.\n")
+
+            _, _password = imgui.input_text_with_hint(
+                "password (w/ hint)",
+                "<password>",
+                _password,
+                flags=imgui.InputTextFlags.PASSWORD
+            )
+
+            _, _password = imgui.input_text(
+                "password (clear)",
+                _password
+            )
+
+            imgui.tree_pop()
+
+        imgui.tree_pop()
+
+#--------------------------------------------------------------------
