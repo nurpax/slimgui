@@ -739,7 +739,6 @@ NB_MODULE(slimgui_ext, top) {
 
     // Window manipulation
     // - Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).
-    // TODO how to callback
     m.def("set_next_window_pos", [](const ImVec2 &pos, ImGuiCond_ cond, const ImVec2 &pivot) {
         ImGui::SetNextWindowPos(pos, cond, pivot);
     }, "pos"_a, "cond"_a.sig("Cond.NONE") = ImGuiCond_None, "pivot"_a = ImVec2(0,0));
