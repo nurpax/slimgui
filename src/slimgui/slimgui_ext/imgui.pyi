@@ -2768,6 +2768,9 @@ class Col(enum.IntEnum):
     DRAG_DROP_TARGET = 53
     """Rectangle highlighting a drop target"""
 
+    UNSAVED_MARKER = 54
+    """Unsaved Document marker (in window title and tabs)"""
+
     NAV_CURSOR = 55
     """Color of keyboard/gamepad navigation cursor/rectangle, when visible"""
 

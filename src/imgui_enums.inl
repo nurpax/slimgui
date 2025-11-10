@@ -1070,6 +1070,8 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
            "Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES`")
     .value("DRAG_DROP_TARGET", ImGuiCol_DragDropTarget,
            "Rectangle highlighting a drop target")
+    .value("UNSAVED_MARKER", ImGuiCol_UnsavedMarker,
+           "Unsaved Document marker (in window title and tabs)")
     .value(
         "NAV_CURSOR", ImGuiCol_NavCursor,
         "Color of keyboard/gamepad navigation cursor/rectangle, when visible")

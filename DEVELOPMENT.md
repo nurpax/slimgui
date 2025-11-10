@@ -35,4 +35,4 @@ cd $ROOT_DIR
 python gen/imgui_vendor.py
 ```
 
- 
+You need to also git cherry-pick imconfig related changes + do a `full_rebuild.sh` to update enums.  See git log for reference.
