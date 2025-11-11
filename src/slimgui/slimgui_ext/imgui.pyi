@@ -1009,6 +1009,9 @@ class DrawList:
     @property
     def commands(self) -> Iterator[DrawCmd]: ...
 
+    def ptr(self) -> int:
+        """Internal function for reference book keeping."""
+
     def push_clip_rect(self, clip_rect_min: tuple[float, float], clip_rect_max: tuple[float, float], intersect_with_current_clip_rect: bool = False) -> None:
         """
         Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level `imgui.push_clip_rect() to affect logic (hit-testing and widget culling)
@@ -3330,6 +3333,9 @@ class Context:
 
     def get_drag_drop_payload_internal(self) -> Payload | None: ...
 
+    def new_frame_internal(self) -> None:
+        """Internal ImGui::NewFrame(), don't use directly."""
+
 def create_context_internal(shared_font_atlas: FontAtlas | None = None) -> Context:
     ...
 
@@ -3344,11 +3350,6 @@ def destroy_context_internal(arg: Context, /) -> None:
 
 def render() -> None:
     """Ends the Dear ImGui frame, finalize the draw data. You can then get call `get_draw_data()`."""
-    ...
-
-
-def new_frame() -> None:
-    """Start a new Dear ImGui frame, you can submit any command from this point until `render()`/`end_frame()`."""
     ...
 
 

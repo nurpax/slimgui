@@ -474,7 +474,9 @@ NB_MODULE(slimgui_ext, top) {
         .def_prop_ro("commands", [](const ImDrawList* drawList) {
             return nb::make_iterator(nb::type<const ImDrawList*>(), "iterator", drawList->CmdBuffer.begin(), drawList->CmdBuffer.end());
         }, nb::keep_alive<0, 1>())
-
+        .def("ptr", [](const ImDrawList* drawList) {
+            return reinterpret_cast<uintptr_t>(drawList);
+        }, "Internal function for reference book keeping.")
         .def("push_clip_rect", &ImDrawList::PushClipRect, "clip_rect_min"_a, "clip_rect_max"_a, "intersect_with_current_clip_rect"_a = false,
              "Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. "
              "Prefer using higher-level `imgui.push_clip_rect() to affect logic (hit-testing and widget culling)")
@@ -624,19 +626,19 @@ NB_MODULE(slimgui_ext, top) {
             ImDrawList* drawList = ImGui::GetBackgroundDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
-        }, nb::rv_policy::reference_internal)
+        }, nb::rv_policy::reference)
         .def("get_foreground_draw_list_internal", [](Context* ctx) -> ImDrawList* {
             auto prev = ctx->setCurrent();
             ImDrawList* drawList = ImGui::GetForegroundDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
-        }, nb::rv_policy::reference_internal)
+        }, nb::rv_policy::reference)
         .def("get_window_draw_list_internal", [](Context* ctx) -> ImDrawList* {
             auto prev = ctx->setCurrent();
             ImDrawList* drawList = ImGui::GetWindowDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
-        }, nb::rv_policy::reference_internal)
+        }, nb::rv_policy::reference)
         .def("accept_drag_drop_payload_internal", [](Context* ctx, const char* type, ImGuiDragDropFlags_ flags) -> std::optional<const ImGuiPayload*> {
             auto prev = ctx->setCurrent();
             const ImGuiPayload* ret = ImGui::AcceptDragDropPayload(type, flags);
@@ -651,7 +653,12 @@ NB_MODULE(slimgui_ext, top) {
                 return ret;
             }
             return std::nullopt;
-        }, nb::rv_policy::reference_internal);
+        }, nb::rv_policy::reference_internal)
+        .def("new_frame_internal", [](Context* ctx) {
+            auto prev = ctx->setCurrent();
+            ImGui::NewFrame();
+            ImGui::SetCurrentContext(prev);
+        }, "Internal ImGui::NewFrame(), don't use directly.");
 
     m.def("create_context_internal", [](ImFontAtlas* shared_font_atlas) -> Context {
         ImGuiContext* ctx = ImGui::CreateContext(shared_font_atlas);
@@ -667,7 +674,6 @@ NB_MODULE(slimgui_ext, top) {
         ImGui::DestroyContext(ctx);
     });
     m.def("render", &ImGui::Render);
-    m.def("new_frame", &ImGui::NewFrame);
     m.def("end_frame", &ImGui::EndFrame);
     m.def("get_draw_data", &ImGui::GetDrawData, nb::rv_policy::reference);
     m.def("get_main_viewport", &ImGui::GetMainViewport, nb::rv_policy::reference);

@@ -132,3 +132,55 @@ def test_drag_drop(frame_scope):
 
     if imgui.begin_drag_drop_source():
         imgui.end_drag_drop_source()
+
+def test_drawlist_refcounts(imgui_context, frame_scope):
+    # Note: this test relies on some internal properties.  You should not
+    # need to access the internals like this.
+    import sys
+
+    ctx = imgui_context.context
+    fg_dl = ctx.get_foreground_draw_list_internal()
+    refcount1 = sys.getrefcount(fg_dl)
+    assert refcount1 == 2
+    fg_dl2 = ctx.get_foreground_draw_list_internal()
+    assert fg_dl.ptr() == fg_dl2.ptr()
+    # refcount increased, let's assume that's because fg_dl and fg_dl2 both point to the
+    # same thing.
+    assert sys.getrefcount(fg_dl) == refcount1 + 1
+    assert fg_dl is fg_dl2
+
+    bg_dl = ctx.get_background_draw_list_internal()
+    assert sys.getrefcount(bg_dl) == 2
+    assert fg_dl is not bg_dl
+
+
+def test_drawlist_refcounts2(imgui_context, frame_scope):
+    # Note: this test relies on some internal properties.  You should not
+    # need to access the internals like this.
+    import sys, gc
+
+    ctx = imgui_context.context
+    fg_dl = ctx.get_foreground_draw_list_internal()
+    refcount1 = sys.getrefcount(fg_dl)
+    assert refcount1 == 2  # fg_dl holds +1, call to sys.getrefcount with fg_dl another +1
+
+    # Next use the DrawList wrapper API (the one that user's of this package
+    # are expected to use).  The wrapping business should be reflected in fg_dl
+    # refcounts.
+    wrapped_fg_dl = imgui.get_foreground_draw_list()
+    assert sys.getrefcount(fg_dl) == refcount1 + 1 # wrapper_fg_dl._dl for +1 refcount
+
+    tmp = wrapped_fg_dl._dl
+    assert sys.getrefcount(tmp) == refcount1 + 2  # wrapped_fg_dl +1, tmp +1
+    del tmp
+
+    assert fg_dl is wrapped_fg_dl._dl
+    assert sys.getrefcount(fg_dl) == refcount1 + 1
+    del wrapped_fg_dl
+    assert sys.getrefcount(fg_dl) == refcount1 + 1 # fg_dl kept alive by the dl wrapper stored into context
+
+    # But an imgui.new_frame() call should clear the references.
+    imgui.end_frame()
+    imgui.new_frame()
+    gc.collect()
+    assert sys.getrefcount(fg_dl) == refcount1 # fg_dl now kept alive only by fg_dl variable + getrefcount temporary, just like above
