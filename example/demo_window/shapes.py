@@ -16,6 +16,9 @@ class CustomState:
     curve_segments_override: bool = False
     curve_segments_override_v: int = 8
     colf: tuple[float, float, float, float] = (1.0, 1.0, 0.4, 1.0)
+    # BG/FG draw list state
+    draw_bg: bool = True
+    draw_fg: bool = True
 
 # Global state instance
 _custom = CustomState()
@@ -298,6 +301,74 @@ def custom_rendering() -> bool:
 
             imgui.dummy(((sz + spacing) * 13.2, (sz + spacing) * 3.0))
             imgui.pop_item_width()
+            imgui.end_tab_item()
+
+        if imgui.begin_tab_item("BG/FG draw lists")[0]:
+            _, _custom.draw_bg = imgui.checkbox("Draw in Background draw list", _custom.draw_bg)
+            imgui.same_line()
+            imgui.text_disabled("(?)")
+            if imgui.begin_item_tooltip():
+                imgui.text("The Background draw list will be rendered below every Dear ImGui windows.")
+                imgui.end_tooltip()
+
+            _, _custom.draw_fg = imgui.checkbox("Draw in Foreground draw list", _custom.draw_fg)
+            imgui.same_line()
+            imgui.text_disabled("(?)")
+            if imgui.begin_item_tooltip():
+                imgui.text("The Foreground draw list will be rendered over every Dear ImGui windows.")
+                imgui.end_tooltip()
+
+            window_pos = imgui.get_window_pos()
+            window_size = imgui.get_window_size()
+            window_center = (window_pos[0] + window_size[0] * 0.5, window_pos[1] + window_size[1] * 0.5)
+
+            if _custom.draw_bg:
+                bg_draw_list = imgui.get_background_draw_list()
+                red_color = imgui.color_convert_float4_to_u32((1.0, 0.0, 0.0, 200/255.0))
+                bg_draw_list.add_circle(window_center, window_size[0] * 0.6, red_color, 0, 10 + 4)
+
+            if _custom.draw_fg:
+                fg_draw_list = imgui.get_foreground_draw_list()
+                green_color = imgui.color_convert_float4_to_u32((0.0, 1.0, 0.0, 200/255.0))
+                fg_draw_list.add_circle(window_center, window_size[1] * 0.6, green_color, 0, 10)
+
+            imgui.end_tab_item()
+
+        # Demonstrate out-of-order rendering via channels splitting
+        if imgui.begin_tab_item("Draw Channels")[0]:
+            draw_list = imgui.get_window_draw_list()
+
+            # Normal drawing order demonstration
+            imgui.text("Blue shape is drawn first: appears in back")
+            imgui.text("Red shape is drawn after: appears in front")
+            p0 = imgui.get_cursor_screen_pos()
+            blue_color = imgui.color_convert_float4_to_u32((0.0, 0.0, 1.0, 1.0))
+            red_color = imgui.color_convert_float4_to_u32((1.0, 0.0, 0.0, 1.0))
+            draw_list.add_rect_filled((p0[0], p0[1]), (p0[0] + 50, p0[1] + 50), blue_color)
+            draw_list.add_rect_filled((p0[0] + 25, p0[1] + 25), (p0[0] + 75, p0[1] + 75), red_color)
+            imgui.dummy((75, 75))
+
+            imgui.separator()
+
+            # Channel splitting demonstration
+            imgui.text("Blue shape is drawn first, into channel 1: appears in front")
+            imgui.text("Red shape is drawn after, into channel 0: appears in back")
+            p1 = imgui.get_cursor_screen_pos()
+
+            # Create 2 channels and draw a Blue shape THEN a Red shape.
+            # You can create any number of channels. Tables API use 1 channel per column in order to better batch draw calls.
+            draw_list.channels_split(2)
+            draw_list.channels_set_current(1)
+            draw_list.add_rect_filled((p1[0], p1[1]), (p1[0] + 50, p1[1] + 50), blue_color)
+            draw_list.channels_set_current(0)
+            draw_list.add_rect_filled((p1[0] + 25, p1[1] + 25), (p1[0] + 75, p1[1] + 75), red_color)
+
+            # Flatten/reorder channels. Red shape is in channel 0 and it appears below the Blue shape in channel 1.
+            # This works by copying draw indices only (vertices are not copied).
+            draw_list.channels_merge()
+            imgui.dummy((75, 75))
+            imgui.text("After reordering, contents of channel 0 appears below channel 1.")
+
             imgui.end_tab_item()
 
         imgui.end_tab_bar()
