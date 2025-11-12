@@ -63,6 +63,8 @@ class OpenGLRenderer(BaseRenderer):
         self._create_device_objects()
         self.max_texture_size = gl.glGetIntegerv(gl.GL_MAX_TEXTURE_SIZE)
 
+    #--------------------------------------------------------------------
+
     def _create_device_objects(self):
         # save state
         last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
@@ -99,47 +101,20 @@ class OpenGLRenderer(BaseRenderer):
         self._elements_handle = gl.glGenBuffers(1)
 
         self._vao_handle = gl.glGenVertexArrays(1)
-        gl.glBindVertexArray(self._vao_handle)
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
-
-        gl.glEnableVertexAttribArray(self._attrib_location_position)
-        gl.glEnableVertexAttribArray(self._attrib_location_uv)
-        gl.glEnableVertexAttribArray(self._attrib_location_color)
-
-        gl.glVertexAttribPointer(
-            self._attrib_location_position,
-            2,
-            gl.GL_FLOAT,
-            gl.GL_FALSE,
-            imgui.VERTEX_SIZE,
-            ctypes.c_void_p(imgui.VERTEX_BUFFER_POS_OFFSET),
-        )
-        gl.glVertexAttribPointer(
-            self._attrib_location_uv,
-            2,
-            gl.GL_FLOAT,
-            gl.GL_FALSE,
-            imgui.VERTEX_SIZE,
-            ctypes.c_void_p(imgui.VERTEX_BUFFER_UV_OFFSET),
-        )
-        gl.glVertexAttribPointer(
-            self._attrib_location_color,
-            4,
-            gl.GL_UNSIGNED_BYTE,
-            gl.GL_TRUE,
-            imgui.VERTEX_SIZE,
-            ctypes.c_void_p(imgui.VERTEX_BUFFER_COL_OFFSET),
-        )
 
         # restore state
         gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindVertexArray(last_vertex_array)
 
+    #--------------------------------------------------------------------
+
     def _destroy_texture(self, tex: imgui.TextureData):
         gl.glDeleteTextures([tex.get_tex_id()])
         tex.set_tex_id(0)   # imgui.h: ((ImTextureID)0)
         tex.set_status(imgui.TextureStatus.DESTROYED)
+
+    #--------------------------------------------------------------------
 
     def _update_texture(self, tex: imgui.TextureData):
         if tex.status == imgui.TextureStatus.WANT_CREATE:
@@ -182,6 +157,69 @@ class OpenGLRenderer(BaseRenderer):
         elif tex.status == imgui.TextureStatus.WANT_DESTROY and tex.unused_frames > 0:
             self._destroy_texture(tex)
 
+    #--------------------------------------------------------------------
+
+    def _reset_gl_render_state(self, fb_width: int, fb_height: int):
+        gl.glBindVertexArray(self._vao_handle)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
+
+        gl.glEnableVertexAttribArray(self._attrib_location_position)
+        gl.glEnableVertexAttribArray(self._attrib_location_uv)
+        gl.glEnableVertexAttribArray(self._attrib_location_color)
+
+        gl.glVertexAttribPointer(
+            self._attrib_location_position,
+            2,
+            gl.GL_FLOAT,
+            gl.GL_FALSE,
+            imgui.VERTEX_SIZE,
+            ctypes.c_void_p(imgui.VERTEX_BUFFER_POS_OFFSET),
+        )
+        gl.glVertexAttribPointer(
+            self._attrib_location_uv,
+            2,
+            gl.GL_FLOAT,
+            gl.GL_FALSE,
+            imgui.VERTEX_SIZE,
+            ctypes.c_void_p(imgui.VERTEX_BUFFER_UV_OFFSET),
+        )
+        gl.glVertexAttribPointer(
+            self._attrib_location_color,
+            4,
+            gl.GL_UNSIGNED_BYTE,
+            gl.GL_TRUE,
+            imgui.VERTEX_SIZE,
+            ctypes.c_void_p(imgui.VERTEX_BUFFER_COL_OFFSET),
+        )
+
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendEquation(gl.GL_FUNC_ADD)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+        gl.glDisable(gl.GL_CULL_FACE)
+        gl.glDisable(gl.GL_DEPTH_TEST)
+        gl.glEnable(gl.GL_SCISSOR_TEST)
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+
+        gl.glViewport(0, 0, int(fb_width), int(fb_height))
+
+        io = imgui.get_io()
+        display_width, display_height = io.display_size
+
+        ortho_projection = (ctypes.c_float * 16)(
+             2.0/display_width, 0.0,                   0.0, 0.0,
+             0.0,               2.0/-display_height,   0.0, 0.0,
+             0.0,               0.0,                  -1.0, 0.0,
+            -1.0,               1.0,                   0.0, 1.0
+        )  # fmt: skip
+
+        gl.glUseProgram(self._shader_handle)
+        gl.glUniform1i(self._attrib_location_tex, 0)
+        gl.glUniformMatrix4fv(self._attrib_proj_mtx, 1, gl.GL_FALSE, ortho_projection)
+        gl.glBindVertexArray(self._vao_handle)
+
+    #--------------------------------------------------------------------
+
     def render(self, draw_data: imgui.DrawData):
         # perf: local for faster access
         io = imgui.get_io()
@@ -209,62 +247,40 @@ class OpenGLRenderer(BaseRenderer):
         last_element_array_buffer = gl.glGetIntegerv(gl.GL_ELEMENT_ARRAY_BUFFER_BINDING)
         last_vertex_array = gl.glGetIntegerv(gl.GL_VERTEX_ARRAY_BINDING)
 
-        gl.glEnable(gl.GL_BLEND)
-        gl.glBlendEquation(gl.GL_FUNC_ADD)
-        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
-        gl.glDisable(gl.GL_CULL_FACE)
-        gl.glDisable(gl.GL_DEPTH_TEST)
-        gl.glEnable(gl.GL_SCISSOR_TEST)
-        gl.glActiveTexture(gl.GL_TEXTURE0)
-        gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+        self._reset_gl_render_state(int(fb_width), int(fb_height))
 
-        gl.glViewport(0, 0, int(fb_width), int(fb_height))
-
-        ortho_projection = (ctypes.c_float * 16)(
-             2.0/display_width, 0.0,                   0.0, 0.0,
-             0.0,               2.0/-display_height,   0.0, 0.0,
-             0.0,               0.0,                  -1.0, 0.0,
-            -1.0,               1.0,                   0.0, 1.0
-        )  # fmt: skip
-
-        gl.glUseProgram(self._shader_handle)
-        gl.glUniform1i(self._attrib_location_tex, 0)
-        gl.glUniformMatrix4fv(self._attrib_proj_mtx, 1, gl.GL_FALSE, ortho_projection)
-        gl.glBindVertexArray(self._vao_handle)
-
-        for commands in draw_data.commands_lists:
+        for drawlist in draw_data.commands_lists:
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
-            # todo: check this (sizes)
             gl.glBufferData(
                 gl.GL_ARRAY_BUFFER,
-                commands.vtx_buffer_size * imgui.VERTEX_SIZE,
-                ctypes.c_void_p(commands.vtx_buffer_data),
+                drawlist.vtx_buffer_size * imgui.VERTEX_SIZE,
+                ctypes.c_void_p(drawlist.vtx_buffer_data),
                 gl.GL_STREAM_DRAW,
             )
 
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._elements_handle)
-            # todo: check this (sizes)
             gl.glBufferData(
                 gl.GL_ELEMENT_ARRAY_BUFFER,
-                commands.idx_buffer_size * imgui.INDEX_SIZE,
-                ctypes.c_void_p(commands.idx_buffer_data),
+                drawlist.idx_buffer_size * imgui.INDEX_SIZE,
+                ctypes.c_void_p(drawlist.idx_buffer_data),
                 gl.GL_STREAM_DRAW,
             )
 
             # todo: allow to iterate over _CmdList
-            for command in commands.commands:
-                gl.glBindTexture(gl.GL_TEXTURE_2D, command.tex_ref.get_tex_id())
-
-                # todo: use named tuple
-                x, y, z, w = command.clip_rect
-                gl.glScissor(int(x), int(fb_height - w), int(z - x), int(w - y))
-
-                if imgui.INDEX_SIZE == 2:
-                    gltype = gl.GL_UNSIGNED_SHORT
-                else:
-                    gltype = gl.GL_UNSIGNED_INT
-
-                gl.glDrawElementsBaseVertex(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(command.idx_offset * imgui.INDEX_SIZE), command.vtx_offset)
+            idx_type = gl.GL_UNSIGNED_SHORT if imgui.INDEX_SIZE == 2 else gl.GL_UNSIGNED_INT
+            for cmd in drawlist.commands:
+                match cmd.run_callback(drawlist):
+                    case imgui.DrawListCallbackResult.CALLBACK:
+                        # callback was called, nothing further needed
+                        pass
+                    case imgui.DrawListCallbackResult.DRAW:
+                        # no callback, just draw
+                        gl.glBindTexture(gl.GL_TEXTURE_2D, cmd.tex_ref.get_tex_id())
+                        x, y, z, w = cmd.clip_rect
+                        gl.glScissor(int(x), int(fb_height - w), int(z - x), int(w - y))
+                        gl.glDrawElementsBaseVertex(gl.GL_TRIANGLES, cmd.elem_count, idx_type, ctypes.c_void_p(cmd.idx_offset * imgui.INDEX_SIZE), cmd.vtx_offset)
+                    case imgui.DrawListCallbackResult.RESET_RENDER_STATE:
+                        self._reset_gl_render_state(fb_width, fb_height)
 
         # restore modified GL state
         restore_common_gl_state(common_gl_state_tuple)
@@ -274,6 +290,8 @@ class OpenGLRenderer(BaseRenderer):
         gl.glBindVertexArray(last_vertex_array)
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, last_element_array_buffer)
+
+    #--------------------------------------------------------------------
 
     def shutdown(self):
         gl.glDeleteVertexArrays(1, [self._vao_handle])
@@ -291,6 +309,7 @@ class OpenGLRenderer(BaseRenderer):
             if tex.ref_count == 1:
                 self._destroy_texture(tex)
 
+#------------------------------------------------------------------------
 
 def get_common_gl_state():
     """
