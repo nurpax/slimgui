@@ -184,3 +184,162 @@ def test_drawlist_refcounts2(imgui_context, frame_scope):
     imgui.new_frame()
     gc.collect()
     assert sys.getrefcount(fg_dl) == refcount1 # fg_dl now kept alive only by fg_dl variable + getrefcount temporary, just like above
+
+
+def test_drawlist_run_callback(frame_scope):
+    from slimgui import slimgui_ext
+
+    num_calls = 0
+    larger_bytes = b"barfood"*1024
+    expected_userdata = [0xdeadbeef33, 13, b"foobar", larger_bytes]
+    def cb(dl: slimgui_ext.imgui.DrawList, cmd: slimgui_ext.imgui.DrawCmd, userdata: int | bytes):
+        nonlocal num_calls
+        assert userdata == expected_userdata[num_calls]
+        num_calls += 1
+
+    dl = imgui.get_foreground_draw_list()
+    dl.add_line((0, 0), (32, 64), 0xff00ff00)
+    dl.add_callback(cb, 0xdeadbeef33)
+    dl.add_line((0, 0), (32, 64), 0xff00ff00)
+    dl.add_callback(imgui.DRAW_CALLBACK_RESET_RENDER_STATE, 0)
+    dl.add_line((0, 0), (32, 64), 0xff00ff00)
+    dl.add_callback(cb, 13)
+    dl.add_callback(cb, b"foobar")
+    dl.add_callback(cb, larger_bytes)
+
+    imgui.render()
+    draw_data = imgui.get_draw_data()
+    num_cmds = 0
+    num_draws = 0
+    num_cbs = 0
+    num_resets = 0
+
+    for lst in draw_data.commands_lists:
+        assert lst is dl._dl
+        assert lst.vtx_buffer_size == 12     # hardcoded test, sanity check 4 vertices from the single line
+
+        for c in lst.commands:
+            num_cmds += 1
+            match c.run_callback(lst):
+                case imgui.DrawListCallbackResult.DRAW:
+                    num_draws += 1  # normal rendering, usually glDrawElements or equivalent here
+                case imgui.DrawListCallbackResult.CALLBACK:
+                    num_cbs += 1
+                case imgui.DrawListCallbackResult.RESET_RENDER_STATE:
+                    num_resets += 1
+
+    imgui.new_frame()
+    assert num_cmds == 8
+    assert num_cbs == 4 and num_calls == num_cbs
+    assert num_resets == 1
+
+def test_drawlist_run_callback_all_dl_types(frame_scope):
+    import sys, gc
+    from slimgui import slimgui_ext
+
+    for kind in ['fg', 'bg', 'window']:
+        num_calls = 0
+        larger_bytes = b"barfood"*1024
+        expected_userdata = [0xdeadbeef33, 13, b"foobar", b"", larger_bytes]
+        def cb(dl: slimgui_ext.imgui.DrawList, cmd: slimgui_ext.imgui.DrawCmd, userdata: int | bytes):
+            nonlocal num_calls
+            assert userdata == expected_userdata[num_calls]
+            num_calls += 1
+
+        match kind:
+            case 'fg':
+                dl = imgui.get_foreground_draw_list()
+            case 'bg':
+                dl = imgui.get_background_draw_list()
+            case 'window':
+                dl = imgui.get_window_draw_list()
+        gc.collect(); refcount = sys.getrefcount(cb)
+        dl.add_callback(cb, 0xdeadbeef33)
+        gc.collect()
+        assert refcount < sys.getrefcount(cb); refcount = sys.getrefcount(cb)
+        dl.add_callback(imgui.DRAW_CALLBACK_RESET_RENDER_STATE, 0)
+        assert refcount == sys.getrefcount(cb)
+        dl.add_callback(cb, 13)
+        assert refcount < sys.getrefcount(cb); refcount = sys.getrefcount(cb)
+        dl.add_callback(cb, b"foobar")
+        assert refcount < sys.getrefcount(cb); refcount = sys.getrefcount(cb)
+        dl.add_callback(cb, b"")
+        assert refcount < sys.getrefcount(cb); refcount = sys.getrefcount(cb)
+        dl.add_callback(cb, larger_bytes)
+        assert refcount < sys.getrefcount(cb); refcount = sys.getrefcount(cb)
+
+        imgui.render()
+        num_cmds = 0
+        num_draws = 0
+        num_cbs = 0
+        num_resets = 0
+
+        for lst in imgui.get_draw_data().commands_lists:
+            for c in lst.commands:
+                num_cmds += 1
+                match c.run_callback(lst):
+                    case imgui.DrawListCallbackResult.DRAW:
+                        num_draws += 1  # normal rendering, usually glDrawElements or equivalent here
+                    case imgui.DrawListCallbackResult.CALLBACK:
+                        num_cbs += 1
+                    case imgui.DrawListCallbackResult.RESET_RENDER_STATE:
+                        num_resets += 1
+
+        imgui.new_frame()
+        if kind in ['fg', 'bg']:
+            assert num_cmds == 6
+            assert num_draws == 0
+        else:
+            assert num_cmds == 7 # callbacks + one draw
+            assert num_draws == 1
+        assert num_cbs == 5 and num_calls == num_cbs
+        assert num_resets == 1
+
+
+def test_drawlist_callback_refcounts(frame_scope):
+    import sys, gc
+    from slimgui import slimgui_ext
+
+    num_calls = 0
+    expected_userdata = [0xdeadbeef33]
+    def cb(dl: slimgui_ext.imgui.DrawList, cmd: slimgui_ext.imgui.DrawCmd, userdata: int | bytes):
+        nonlocal num_calls
+        assert userdata == expected_userdata[num_calls]
+        num_calls += 1
+
+    dl = imgui.get_foreground_draw_list()
+    dl.add_line((0, 0), (32, 64), 0xff00ff00)
+
+    gc.collect()
+    assert sys.getrefcount(cb) == 2, "refcount should've increased"
+
+    dl.add_callback(cb, 0xdeadbeef33)
+
+    gc.collect()
+    assert sys.getrefcount(cb) == 3, "refcount should've increased"
+
+    imgui.render()
+    draw_data = imgui.get_draw_data()
+    num_cmds = 0
+    num_draws = 0
+    num_cbs = 0
+    num_resets = 0
+
+    for lst in draw_data.commands_lists:
+        assert lst is dl._dl
+
+        for c in lst.commands:
+            num_cmds += 1
+            match c.run_callback(lst):
+                case imgui.DrawListCallbackResult.DRAW:
+                    num_draws += 1  # normal rendering, usually glDrawElements or equivalent here
+                case imgui.DrawListCallbackResult.CALLBACK:
+                    num_cbs += 1
+                case imgui.DrawListCallbackResult.RESET_RENDER_STATE:
+                    num_resets += 1
+
+    imgui.new_frame()
+    gc.collect()
+    assert sys.getrefcount(cb) == 2, "refcount should've decreased after new_frame()"
+    assert num_cbs == 1 and num_calls == num_cbs
+    assert num_draws == 1 and num_cmds == num_draws + num_cbs

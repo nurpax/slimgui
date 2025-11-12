@@ -22,6 +22,8 @@ extern void implot_bindings(nb::module_& implot);  // implot_bindings.cpp
 
 #include "type_casts.h"
 
+using DrawListCallbackCallable = nb::typed<nb::callable, void(ImDrawList*, ImDrawCmd*, std::variant<int64_t, nb::bytes>)>;
+
 template<typename T, typename... Args>
 auto tuple_to_array(const std::tuple<Args...>& tpl) {
     return std::apply([](auto&&... args) { return std::array<T, sizeof...(Args)>{args...}; }, tpl);
@@ -101,7 +103,7 @@ struct ContextBackendData {
     } size_constraints;
 };
 
-void window_size_constraints_callback_py_wrapper(ImGuiSizeCallbackData* cb_data) {
+static void window_size_constraints_callback_py_wrapper(ImGuiSizeCallbackData* cb_data) {
     ContextBackendData* userdata = static_cast<ContextBackendData*>(cb_data->UserData);
     auto callable_ptr = static_cast<PyObject*>(userdata->size_constraints.callable_ptr);
     try {
@@ -111,12 +113,45 @@ void window_size_constraints_callback_py_wrapper(ImGuiSizeCallbackData* cb_data)
         e.discard_as_unraisable("window_size_constraints_callback_py_wrapper callback");
         return;
     } catch (nb::cast_error& e) {
-        // TODO how to report errors from here?
-        // e.discard_as_unraisable("window_size_constraints_callback_py_wrapper callback");
-        // PyErr_WriteUnraisable(callable_ptr);
+        PyErr_SetString(PyExc_RuntimeError, "window_size_constraints_callback_py_wrapper callback cast error");
+        PyErr_WriteUnraisable(callable_ptr);
         return;
     }
 }
+
+
+static void drawlist_callback_py_wrapper(const ImDrawList* parent_list, const ImDrawCmd* cmd) {
+    auto callable_ptr = static_cast<PyObject*>(((void**)cmd->UserCallbackData)[0]);
+    try {
+        // callable ptr is used to mark userdata data variant (raw int or Python bytes)
+        bool has_bytes = ((intptr_t)callable_ptr & 1) != 0;
+        // remove tag bits and call
+        callable_ptr = (PyObject*)((uintptr_t)callable_ptr & ~1);
+
+        if (!has_bytes) {
+            const intptr_t* data = (const intptr_t*)cmd->UserCallbackData + 1;
+            nb::borrow<nb::callable>(callable_ptr)(parent_list, cmd, *data);
+        } else {
+            // Source userdata format:
+            //
+            // int64 [0]:   callable ptr (with | 1 tag bit)
+            // int64 [1..]: bytes
+            //
+            // The length of the byte string is stored in cmd->UserCallbackDataSize minus the callable ptr sizeof.
+            const intptr_t* data = (const intptr_t*)cmd->UserCallbackData + 1;
+            auto bytes = nb::bytes((const void*)data, (size_t)cmd->UserCallbackDataSize - sizeof(intptr_t));
+            nb::borrow<nb::callable>((PyObject*)((uintptr_t)callable_ptr & ~1))(parent_list, cmd, bytes);
+        }
+    } catch (nb::python_error& e) {
+        e.discard_as_unraisable("drawlist_callback_py_wrapper callback");
+        return;
+    } catch (nb::cast_error& e) {
+        PyErr_SetString(PyExc_RuntimeError, "drawlist_callback_py_wrapper callback cast error");
+        PyErr_WriteUnraisable(callable_ptr);
+        return;
+    }
+}
+
 
 // Used as the type for nanobind instead of binding ImGuiContext directly.  Binding
 // ImGuiContext directly triggers ocornut/imgui#7676
@@ -132,6 +167,13 @@ struct Context {
     }
 };
 
+enum DrawListCallbackResult
+{
+    DRAW = 0,
+    CALLBACK = 1,
+    RESET_RENDER_STATE = 2,
+};
+
 NB_MODULE(slimgui_ext, top) {
     nb::module_ m = top.def_submodule("imgui", "Dear ImGui bindings");
 
@@ -142,6 +184,8 @@ NB_MODULE(slimgui_ext, top) {
     m.attr("VERTEX_BUFFER_POS_OFFSET") = offsetof(ImDrawVert, pos);
     m.attr("VERTEX_BUFFER_UV_OFFSET") = offsetof(ImDrawVert, uv);
     m.attr("VERTEX_BUFFER_COL_OFFSET") = offsetof(ImDrawVert, col);
+
+    m.attr("DRAW_CALLBACK_RESET_RENDER_STATE") = (intptr_t)ImDrawCallback_ResetRenderState;
 
     m.attr("FLT_MIN") = FLT_MIN;
     m.attr("FLT_MAX") = FLT_MAX;
@@ -450,13 +494,31 @@ NB_MODULE(slimgui_ext, top) {
         .def("set_tex_id", &ImTextureData::SetTexID, "Call after creating or destroying the texture.")
         .def("set_status", &ImTextureData::SetStatus, "Call after honoring a request. Never modify `TextureData.status` directly!");
 
-    // TODO all fields
+    nb::enum_<DrawListCallbackResult>(m, "DrawListCallbackResult", "Return value for `DrawCmd.run_callback()` that's used in backend renderers.")
+        .value("DRAW", DrawListCallbackResult::DRAW, "No callback, backend should draw elements.")
+        .value("CALLBACK", DrawListCallbackResult::CALLBACK, "Callback executed, no further processing of this command necessary.")
+        .value("RESET_RENDER_STATE", DrawListCallbackResult::RESET_RENDER_STATE, "Reset render state token, backend should perform render state reset.");
+
     nb::class_<ImDrawCmd>(m, "DrawCmd")
         .def_ro("tex_ref", &ImDrawCmd::TexRef)
         .def_ro("clip_rect", &ImDrawCmd::ClipRect)
         .def_ro("vtx_offset", &ImDrawCmd::VtxOffset)
         .def_ro("idx_offset", &ImDrawCmd::IdxOffset)
-        .def_ro("elem_count", &ImDrawCmd::ElemCount);
+        .def_ro("elem_count", &ImDrawCmd::ElemCount)
+        .def("run_callback", [](const ImDrawCmd* cmd, ImDrawList* dl) {
+            if (cmd->UserCallback) {
+                if (cmd->UserCallback == ImDrawCallback_ResetRenderState) {
+                    return DrawListCallbackResult::RESET_RENDER_STATE;
+                }
+                cmd->UserCallback(dl, cmd);
+                return DrawListCallbackResult::CALLBACK;
+            }
+            return DrawListCallbackResult::DRAW;
+        },
+        "Run the callback added with `DrawList.add_callback` or do nothing if this draw command doesn't have a callback.\n"
+        "Slimgui renderer backends should call this for every draw command.\n"
+        "\n"
+        "Returns: `DrawListCallbackResult` which the backend should always handle.  See docs for `DrawListCallbackResult`.");
 
     nb::class_<ImDrawList>(m, "DrawList")
         .def_prop_ro("vtx_buffer_size", [](const ImDrawList* drawList) {
@@ -568,7 +630,36 @@ NB_MODULE(slimgui_ext, top) {
         .def("add_draw_cmd", &ImDrawList::AddDrawCmd, "This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible.")
         .def("channels_split", &ImDrawList::ChannelsSplit, "count"_a)
         .def("channels_merge", &ImDrawList::ChannelsMerge)
-        .def("channels_set_current", &ImDrawList::ChannelsSetCurrent, "n"_a);
+        .def("channels_set_current", &ImDrawList::ChannelsSetCurrent, "n"_a)
+        .def("add_callback", [](ImDrawList* drawList, std::variant<int, DrawListCallbackCallable> cbv, std::variant<int64_t, nb::bytes> userdatav) {
+            if (int* v = std::get_if<int>(&cbv)) {
+                IM_ASSERT(*v == (intptr_t)ImDrawCallback_ResetRenderState);
+                drawList->AddCallback(ImDrawCallback_ResetRenderState, nullptr, 0);
+            } else {
+                const void* cb_ptr = (const void*)std::get<DrawListCallbackCallable>(cbv).ptr();
+                if (nb::bytes* bytes = std::get_if<nb::bytes>(&userdatav)) {
+                    intptr_t tmp[256];
+                    int64_t required_size = sizeof(intptr_t) + bytes->size();
+
+                    tmp[0] = (intptr_t)cb_ptr | 1;
+
+                    // Need a temp heap alloc
+                    if (required_size > sizeof(tmp)) {
+                        std::vector<uint8_t> buf(required_size);
+                        memcpy(&buf[0], tmp, sizeof(intptr_t));
+                        memcpy(&buf[sizeof(intptr_t)], bytes->c_str(), bytes->size());
+                        drawList->AddCallback(&drawlist_callback_py_wrapper, &buf[0], required_size);
+                    } else {
+                        memcpy(tmp + 1, bytes->c_str(), bytes->size());
+                        drawList->AddCallback(&drawlist_callback_py_wrapper, tmp, required_size);
+                    }
+                } else {
+                    int64_t userdata_int = std::get<int64_t>(userdatav);
+                    intptr_t userdata[2] = { (intptr_t)cb_ptr, userdata_int };
+                    drawList->AddCallback(&drawlist_callback_py_wrapper, userdata, sizeof(userdata));
+                }
+            }
+        }, "callable"_a, "userdata"_a);
 
     nb::class_<ImDrawData>(m, "DrawData")
         .def("scale_clip_rects", &ImDrawData::ScaleClipRects, "fb_scale"_a)

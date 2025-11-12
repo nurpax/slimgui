@@ -21,6 +21,7 @@ class DrawList:
 
     def __init__(self, drawlist: imgui_ext.DrawList):
         self._dl = drawlist
+        self._callback_refs: list[Callable] = []
 
     @property
     def vtx_buffer_size(self) -> int: return self._dl.vtx_buffer_size
@@ -36,6 +37,28 @@ class DrawList:
 
     @property
     def commands(self) -> Iterator[imgui_ext.DrawCmd]: return self._dl.commands
+
+    def _clear_callback_refs(self):
+        self._callback_refs.clear()
+
+    def add_callback(self, callable: int | Callable[[imgui_ext.DrawList, imgui_ext.DrawCmd, int | bytes], None], userdata: int | bytes):
+        """
+        - May be used to alter render state (change sampler, blending, current shader). May be used to emit custom rendering commands (difficult to do correctly, but possible).
+        - Use the special render state reset callback with `dl.add_callback(DRAW_CALLBACK_RESET_RENDER_STATE, 0)` to instruct backend to reset its render state to the default.
+        - Your backend rendering must call `DrawCmd.run_callback()` and handle the result appropriately.  All standard backends are honoring this.
+        - For some backends, the callback may access selected render-states exposed by the backend in a ImGui_ImplXXXX_RenderState structure pointed to by platform_io.Renderer_RenderState.
+        - (Immutable) userdata can be passed as either an `int` or a `bytes` object.  This data will be passed down to the callback when it's invoked in the backend renderer.
+
+        Special `DRAW_CALLBACK_RESET_RENDER_STATE` value can be passsed as the callable argument to request renderer backend to reset the graphics/render state.
+        The renderer backend needs to handle this special value, otherwise it will crash trying to call a function at this address.
+        This is useful, for example, if you submitted callbacks which you know have altered the render state and you want it to be restored.
+        Render state is not reset by default because they are many perfectly useful way of altering render state (e.g. changing shader/blending settings before an Image call).
+        """
+
+        self._dl.add_callback(callable, userdata)
+        # Keep track of callbacks so that they're not deallocated before the next `imgui.new_frame()`.
+        if not isinstance(callable, int):
+            self._callback_refs.append(callable)
 
     def push_clip_rect(self, clip_rect_min: tuple[float, float], clip_rect_max: tuple[float, float], intersect_with_current_clip_rect: bool = False) -> None:
         """
@@ -240,6 +263,8 @@ class WrappedContext:
         """
         Internal implementation for `imgui.new_frame()` that clears drawlist references.
         """
+        for dl in self._drawlist_by_ptr.values():
+            dl._clear_callback_refs()
         self._drawlist_by_ptr.clear()
         self.context.new_frame_internal()
 

@@ -117,7 +117,7 @@ def pyi_to_html_lookup(file_path, outf):
             outf.write(f'{json.dumps(entry)}\n')
             outf.write('$$end\n')
         elif isinstance(node, ast.ClassDef):
-            if not any(ty in source_line for ty in ['(enum.IntEnum)', '(enum.IntFlag)']):
+            if not any(ty in source_line for ty in ['(enum.Enum)', '(enum.IntEnum)', '(enum.IntFlag)']):
                 continue
             outf.write(f'$$class={node.name}\n')
             outf.write('<div class="api-class">\n')

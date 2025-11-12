@@ -20,6 +20,8 @@ VERTEX_BUFFER_UV_OFFSET: int = 8
 
 VERTEX_BUFFER_COL_OFFSET: int = 16
 
+DRAW_CALLBACK_RESET_RENDER_STATE: int = -8
+
 FLT_MIN: float = 1.1754943508222875e-38
 
 FLT_MAX: float = 3.4028234663852886e+38
@@ -977,6 +979,20 @@ class TextureData:
         Call after honoring a request. Never modify `TextureData.status` directly!
         """
 
+class DrawListCallbackResult(enum.Enum):
+    """
+    Return value for `DrawCmd.run_callback()` that's used in backend renderers.
+    """
+
+    DRAW = 0
+    """No callback, backend should draw elements."""
+
+    CALLBACK = 1
+    """Callback executed, no further processing of this command necessary."""
+
+    RESET_RENDER_STATE = 2
+    """Reset render state token, backend should perform render state reset."""
+
 class DrawCmd:
     @property
     def tex_ref(self) -> TextureRef: ...
@@ -992,6 +1008,14 @@ class DrawCmd:
 
     @property
     def elem_count(self) -> int: ...
+
+    def run_callback(self, arg: DrawList, /) -> DrawListCallbackResult:
+        """
+        Run the callback added with `DrawList.add_callback` or do nothing if this draw command doesn't have a callback.
+        Slimgui renderer backends should call this for every draw command.
+
+        Returns: `DrawListCallbackResult` which the backend should always handle.  See docs for `DrawListCallbackResult`.
+        """
 
 class DrawList:
     @property
@@ -1125,6 +1149,8 @@ class DrawList:
     def channels_merge(self) -> None: ...
 
     def channels_set_current(self, n: int) -> None: ...
+
+    def add_callback(self, callable: int | Callable[[DrawList, DrawCmd, int | bytes], None], userdata: int | bytes) -> None: ...
 
 class DrawData:
     def scale_clip_rects(self, fb_scale: tuple[float, float]) -> None: ...
