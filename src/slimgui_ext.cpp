@@ -140,7 +140,7 @@ static void drawlist_callback_py_wrapper(const ImDrawList* parent_list, const Im
             // The length of the byte string is stored in cmd->UserCallbackDataSize minus the callable ptr sizeof.
             const intptr_t* data = (const intptr_t*)cmd->UserCallbackData + 1;
             auto bytes = nb::bytes((const void*)data, (size_t)cmd->UserCallbackDataSize - sizeof(intptr_t));
-            nb::borrow<nb::callable>((PyObject*)((uintptr_t)callable_ptr & ~1))(parent_list, cmd, bytes);
+            nb::borrow<nb::callable>(callable_ptr)(parent_list, cmd, bytes);
         }
     } catch (nb::python_error& e) {
         e.discard_as_unraisable("drawlist_callback_py_wrapper callback");

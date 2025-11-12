@@ -54,10 +54,13 @@ python example/app.py
 
 Browse the example code: [example/](https://github.com/nurpax/slimgui/blob/main/example/)
 
-## Dear ImGui Enums
+## Dear ImGui Enums and Classes
 
 <!-- could list enums here like in a forward decl? -->
-A detailed enum and class reference can be found here: [Enum Reference](#enum-reference)
+A detailed enum and class reference can be found at the bottom of this document:
+
+- [Enum Reference](#enum-reference)
+- [Class Reference](#class-reference)
 
 ## Dear ImGui API functions
 
@@ -617,3 +620,7 @@ You can visualize registered routes in the "Metrics/Debugger->Inputs" window.
 ## Enum Reference
 
 <div class="raw-html-insert" data-apirefs="BackendFlags,ButtonFlags,ChildFlags,Col,ColorEditFlags,ComboFlags,Cond,ConfigFlags,Dir,DragDropFlags,DrawFlags,FocusedFlags,HoveredFlags,InputTextFlags,Key,MouseButton,MouseCursor,MouseSource,PopupFlags,SelectableFlags,SliderFlags,StyleVar,TabBarFlags,TabItemFlags,TableBgTarget,TableColumnFlags,TableFlags,TableRowFlags,TreeNodeFlags,WindowFlags,DrawListCallbackResult"></div>
+
+## Class Reference
+
+<div class="raw-html-insert" data-classrefs="slimgui.imgui.DrawList"></div>

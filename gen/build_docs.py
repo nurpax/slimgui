@@ -12,6 +12,8 @@ import types
 import ast
 import tempfile
 
+import markdown # pip install markdown==3.10
+
 def _tokenize_code(line):
     # Define patterns for different elements
     keyword_pat = r'(def|class|return|if|else|elif|for|while|import|from|as|with|try|except|finally|True|False|None)'
@@ -119,9 +121,14 @@ def pyi_to_html_lookup(file_path, outf):
         elif isinstance(node, ast.ClassDef):
             if not any(ty in source_line for ty in ['(enum.Enum)', '(enum.IntEnum)', '(enum.IntFlag)']):
                 continue
+
             outf.write(f'$$class={node.name}\n')
             outf.write('<div class="api-class">\n')
             outf.write(f'  <div><span class="class_name">{node.name}</span> (enum)</div>\n')
+
+            if (docstring := ast.get_docstring(node)):
+                outf.write(markdown.markdown(str(docstring)))
+
             outf.write('  <table>\n')
 
             expr_for_assign = {}
@@ -153,8 +160,8 @@ def pyi_to_html_lookup(file_path, outf):
             outf.write('</div>\n')
             outf.write('$$end\n')
 
-def module_to_html_lookup(module, outf):
-    m =  importlib.import_module(module)
+def module_funcs_to_html_lookup(module, outf):
+    m = importlib.import_module(module)
     for name in dir(m):
         obj = getattr(m, name)
 
@@ -163,8 +170,8 @@ def module_to_html_lookup(module, outf):
         if isinstance(obj, types.FunctionType):
             func = obj
             outf.write(f'$$func={name}\n')
-            sig = inspect.signature(func)
-            sig = inspect.signature(func)
+            sig = str(inspect.signature(func))
+            sig = sig.replace("'", "")  # remove all apostrophes from types
             func_def = f'def {func.__name__}{sig}'
             entry = {
                 'def_line_html': f'<div class="api">\n  <code>{_highlight_def_line(func_def)}</code>\n</div>\n',
@@ -173,6 +180,43 @@ def module_to_html_lookup(module, outf):
             if docstring is not None and docstring != '':
                 entry['docstring'] = docstring
             outf.write(f'{json.dumps(entry)}\n')
+            outf.write('$$end\n')
+
+def module_classes_to_html_lookup(module, outf):
+    m = importlib.import_module(module)
+    for name in dir(m):
+        obj = getattr(m, name)
+
+        if isinstance(obj, type):
+            cls = obj
+
+            fqname = f"{cls.__module__}.{cls.__qualname__}"
+            outf.write(f'$$class={fqname}\n')
+
+            outf.write('<div class="api-class">\n')
+            outf.write(f'  <div><span class="class_name">{fqname}</span> (class)</div>\n')
+
+            if (class_docstring := inspect.getdoc(cls)):
+                outf.write(markdown.markdown(class_docstring))
+
+            outf.write('  <div class="funclist">\n')
+
+            for member_name, member_obj in inspect.getmembers(cls):
+                if member_name.startswith('_'):
+                    continue
+                if inspect.ismethod(member_obj) or inspect.isfunction(member_obj):
+                    sig = str(inspect.signature(member_obj))
+                    sig = sig.replace("'", "")  # remove all apostrophes from types
+                    def_line = f'def {member_name}{sig}'
+                    def_html = f'<div class="api">\n  <code>{_highlight_def_line(def_line)}</code>\n</div>\n'
+                    outf.write(f'    {def_html}\n')
+                    if (docstr := inspect.getdoc(member_obj)) is not None:
+                        doc_html = markdown.markdown(docstr)
+                        outf.write(f'    {doc_html}\n')
+
+            outf.write('  </div>\n')   # funclist
+
+            outf.write('</div>\n')
             outf.write('$$end\n')
 
 def main():
@@ -200,7 +244,8 @@ def main():
             if args.pyi_file is not None:
                 pyi_to_html_lookup(args.pyi_file, file)
             if args.module is not None:
-                module_to_html_lookup(args.module, file)
+                module_funcs_to_html_lookup(args.module, file)
+                module_classes_to_html_lookup(args.module, file)
 
         if args.print_apiref_html:
             print('Generated HTML API ref content:')

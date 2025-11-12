@@ -23,8 +23,8 @@ function load_api_html()
     local sym_name = nil
     for line in str:gmatch("[^\r\n]+") do
         if in_state == nil then
-            local tmp_func = line:match("%$%$func=([%w_]+)")
-            local tmp_class = line:match("%$%$class=([%w_]+)")
+            local tmp_func = line:match("%$%$func=([%w_.]+)")
+            local tmp_class = line:match("%$%$class=([%w_.]+)")
             if tmp_func then
                 in_state = "func"
                 sym_name = tmp_func
@@ -63,11 +63,35 @@ function get_vars (meta)
     load_api_html()
 end
 
+function div_handle_classrefs (el, classrefs)
+    local html = pandoc.write(pandoc.Pandoc(el.content), "html")
+    local out_html = "<div class=\"classlist\">\n"
+    for func in string.gmatch(classrefs, '([^,]+)') do
+        name = func:match("^%s*(.-)%s*$") -- strip ws
+        if class_dict[name] then
+            out_html = out_html .. class_dict[name]
+        else
+            print("[WARN] No class found for " .. name)
+        end
+    end
+    out_html = out_html .. html .. "\n</div>\n"
+    return {
+        pandoc.RawBlock('html', out_html)
+    }
+end
+
 -- Replace divs with 'raw-html-insert' class in them with raw HTML from a file
 function div (el)
+    local classrefs = el.attributes['data-classrefs']
+    if classrefs ~= nil then
+        return div_handle_classrefs(el, classrefs)
+    end
     local funcrefs = el.attributes['data-apirefs']
-    local html = pandoc.write(pandoc.Pandoc(el.content), "html")
+    if funcrefs == nil then
+        return nil -- return unmodified input
+    end
 
+    local html = pandoc.write(pandoc.Pandoc(el.content), "html")
     local out_html = "<div class=\"funclist\">\n"
     for func in string.gmatch(funcrefs, '([^,]+)') do
         name = func:match("^%s*(.-)%s*$") -- strip ws

@@ -16,7 +16,30 @@ if TYPE_CHECKING:
 
 class DrawList:
     """
-    Python wrapper for `imgui_ext.DrawList` to express frame-to-frame ownership relations.
+    Draw command list.
+
+    This is the low-level list of polygons that `imgui` functions are filling. At the end of the frame,
+    all command lists are passed to your backend renderer for drawing.
+
+    Each Dear ImGui window contains its own `DrawList`. You can use `imgui.get_window_draw_list()` to
+    access the current window draw list and draw custom primitives.
+
+    You can interleave normal `imgui` calls and adding primitives to the current draw list.
+
+    In single viewport mode, top-left is == `imgui.get_main_viewport().pos` (generally `(0,0)`), bottom-right is == `imgui.get_main_viewport().pos + size` (generally `io.display_size`).
+    You are totally free to apply whatever transformation matrix you want to the data (depending on the use of the transformation you may want to apply it to `clip_rect` as well!).
+
+    Important: Primitives are always added to the list and not culled (culling is done at higher-level by ImGui:: functions), if you use this API a lot consider coarse culling your drawn objects.
+
+    Slimgui specific details:
+
+    This class is a thin Python wrapper on top of the native binding `slimgui.slimgui_ext.imgui.DrawList` class.
+    It forwards most of the method calls down to the real implementation.  However, it handles `add_callback()` specially
+    by keeping track of the added callback objects.  This is done to keep the callback objects alive until the
+    next `imgui.new_frame()` call (when it's known that these callbacks won't get called anymore.)
+
+    Renderer backends use the `slimgui.slimgui_ext.imgui.DrawList` class directly, as that's easily
+    available and there's no need for extra indirection for read-only access.
     """
 
     def __init__(self, drawlist: imgui_ext.DrawList):
@@ -41,18 +64,29 @@ class DrawList:
     def _clear_callback_refs(self):
         self._callback_refs.clear()
 
-    def add_callback(self, callable: int | Callable[[imgui_ext.DrawList, imgui_ext.DrawCmd, int | bytes], None], userdata: int | bytes):
+    def add_callback(self, callable: int | Callable[[imgui_ext.DrawList, imgui_ext.DrawCmd, int | bytes], None], userdata: int | bytes) -> None:
         """
-        - May be used to alter render state (change sampler, blending, current shader). May be used to emit custom rendering commands (difficult to do correctly, but possible).
-        - Use the special render state reset callback with `dl.add_callback(DRAW_CALLBACK_RESET_RENDER_STATE, 0)` to instruct backend to reset its render state to the default.
-        - Your backend rendering must call `DrawCmd.run_callback()` and handle the result appropriately.  All standard backends are honoring this.
-        - For some backends, the callback may access selected render-states exposed by the backend in a ImGui_ImplXXXX_RenderState structure pointed to by platform_io.Renderer_RenderState.
-        - (Immutable) userdata can be passed as either an `int` or a `bytes` object.  This data will be passed down to the callback when it's invoked in the backend renderer.
+        May be used to alter render state (change sampler, blending, current shader). May be used to emit custom rendering commands (difficult to do correctly, but possible).
+
+        Use the special render state reset callback with `dl.add_callback(DRAW_CALLBACK_RESET_RENDER_STATE, 0)` to instruct backend to reset its render state to the default.
+
+        Your backend renderer must call `DrawCmd.run_callback()` and handle the result appropriately.  All standard backends honor this.
 
         Special `DRAW_CALLBACK_RESET_RENDER_STATE` value can be passsed as the callable argument to request renderer backend to reset the graphics/render state.
         The renderer backend needs to handle this special value, otherwise it will crash trying to call a function at this address.
         This is useful, for example, if you submitted callbacks which you know have altered the render state and you want it to be restored.
         Render state is not reset by default because they are many perfectly useful way of altering render state (e.g. changing shader/blending settings before an Image call).
+
+        Immutable userdata can be passed as either an `int` or a `bytes` object.  This data will be passed down to the callback when it's invoked in the backend renderer.
+
+        Slimgui specific details:
+
+        You should NOT call `DrawList` methods in the backend to output drawing primitives.  This won't work.  The ImDrawList instance is marked
+        const in Dear ImGui C++ callback, so the `ImDrawList::Add*` functions are not callable but there's no easy way to forbid
+        these calls in Python.
+
+        Note that the callback is passed the "native" `imgui_ext.DrawList` instance and not the `slimgui.imgui.DrawList` instance.  If you need
+        to do some identity checks, then you'd have to do it like `parent_dl is other_dl._dl`, not `parent_dl is other_dl`.
         """
 
         self._dl.add_callback(callable, userdata)
@@ -62,7 +96,7 @@ class DrawList:
 
     def push_clip_rect(self, clip_rect_min: tuple[float, float], clip_rect_max: tuple[float, float], intersect_with_current_clip_rect: bool = False) -> None:
         """
-        Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level `imgui.push_clip_rect() to affect logic (hit-testing and widget culling)
+        Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level `imgui.push_clip_rect()` to affect logic (hit-testing and widget culling).
         """
         self._dl.push_clip_rect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
 

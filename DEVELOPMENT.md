@@ -23,7 +23,7 @@ pytest
 ## Docs build with filewatching
 
 ```
-npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_docs.py --pyi-file src/slimgui/slimgui_ext.pyi --output docs/index.html docs/apiref.md
+npx nodemon -w gen -w docs/template.html -w docs/apiref.md -x python gen/build_docs.py --module slimgui.imgui --pyi-file src/slimgui/slimgui_ext/imgui.pyi --output dist/index.html docs/apiref.md
 ```
 
 ## Updating imgui and cimgui metainfo when upgrading imgui
