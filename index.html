@@ -172,6 +172,12 @@ div.funclist {
     margin-left: 2em;
 }
 
+div.classlist {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 2em;
+}
+
 div.api { margin-top: 1em; }
 
 div.api-class {
@@ -202,17 +208,18 @@ div.api-class {
 }
 
 .api > code span.func_name {
-    color: #000;
+    color: #333;
     font-weight: bold;
 }
 
 .api > code span.arg_name {
-    color: #000;
+    color: #222;
 }
 
 .api-class div span.class_name {
-    color: #000;
-    font-weight: bold;
+    color: #444;
+    font-weight: 600;
+    font-size: 1.1em;
 }
 
 .api-class table {
@@ -281,7 +288,7 @@ div.api-class {
 <li><a href="./apiref_implot.html">ImPlot bindings API reference</a></li>
 </ul>
 <p>The project source code is hosted on <a href="https://github.com/nurpax/slimgui">github.com/nurpax/slimgui</a>.</p>
-<p>Slimgui is built against Dear ImGui version 1.92.1.</p>
+<p>Slimgui is built against Dear ImGui version 1.92.4.</p>
 <h2 id="binding-considerations">Binding considerations</h2>
 <p>Slimgui has been developed with the following goals in mind:</p>
 <ul>
@@ -304,9 +311,13 @@ cd slimgui
 pip install glfw pyopengl numpy requests
 python example/app.py</code></pre>
 <p>Browse the example code: <a href="https://github.com/nurpax/slimgui/blob/main/example/">example/</a></p>
-<h2 id="dear-imgui-enums">Dear ImGui Enums</h2>
+<h2 id="dear-imgui-enums-and-classes">Dear ImGui Enums and Classes</h2>
 <!-- could list enums here like in a forward decl? -->
-<p>A detailed enum and class reference can be found here: <a href="#enum-reference">Enum Reference</a></p>
+<p>A detailed enum and class reference can be found at the bottom of this document:</p>
+<ul>
+<li><a href="#enum-reference">Enum Reference</a></li>
+<li><a href="#class-reference">Class Reference</a></li>
+</ul>
 <h2 id="dear-imgui-api-functions">Dear ImGui API functions</h2>
 <p>The following documentation is primarily adapted from Dear ImGui main header <a href="https://github.com/ocornut/imgui/blob/master/imgui.h">imgui.h</a>, with minor modifications to adapt symbol naming to Pythonic snake case.</p>
 <h3 id="context-creation-and-access">Context creation and access</h3>
@@ -314,21 +325,21 @@ python example/app.py</code></pre>
 <h4 id="functions">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>create_context</span>(<span class='arg_name'>shared_font_atlas</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>FontAtlas</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>create_context</span>(<span class='arg_name'>shared_font_atlas</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>FontAtlas</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='symbol'>WrappedContext</span></code>
 </div>
 <p>Create an ImGui <code>Context</code>. The newly created context is
 also set current.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>destroy_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>destroy_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
 </div>
 <p>Destroy ImGui <code>Context</code>. <code>None</code> = destroy
 current context.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_current_context</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_current_context</span>() -> <span class='symbol'>WrappedContext</span> | <span class='keyword'>None</span></code>
 </div>
 <p>Get the current ImGui context.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>set_current_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>WrappedContext</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>set_current_context</span>(<span class='arg_name'>ctx</span><span class='special'>:</span> <span class='symbol'>WrappedContext</span>) -> <span class='keyword'>None</span></code>
 </div>
 <p>Set the current ImGui context.</p>
 </div>
@@ -336,21 +347,21 @@ current context.</p>
 <h4 id="functions-1">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_io</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>IO</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_io</span>() -> <span class='symbol'>imgui_ext</span>.<span class='symbol'>IO</span></code>
 </div>
 <p>Access the ImGui <code>IO</code> structure (mouse/keyboard/gamepad
 inputs, time, various configuration options/flags).</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_style</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_style</span>() -> <span class='symbol'>imgui_ext</span>.<span class='symbol'>Style</span></code>
 </div>
 <p>Access the <code>Style</code> structure (colors, sizes). Always use
 <code>push_style_color()</code>, <code>push_style_var()</code> to modify
 style mid-frame!</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>new_frame</span>() -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>new_frame</span></code>
 </div>
-<p>Start a new Dear ImGui frame, you can submit any command from this
-point until <code>render()</code>/<code>end_frame()</code>.</p>
+<p>ImGui::NewFrame() call but with some Python binding specific book
+keeping.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>end_frame</span>() -> <span class='keyword'>None</span></code>
 </div>
@@ -436,17 +447,17 @@ value for IMGUI_VERSION from the compiled version of imgui.cpp)</p>
 <h4 id="functions-3">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_dark</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_dark</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
 <p>Write dark mode styles into the destination style. Set directly to
 context's style if dst is None.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_light</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_light</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
 <p>Write light mode styles into the destination style. Set directly to
 context's style if dst is None.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_classic</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>style_colors_classic</span>(<span class='arg_name'>dst</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>Style</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span>) -> <span class='keyword'>None</span></code>
 </div>
 <p>Write classic mode styles into the destination style. Set directly to
 context's style if dst is None.</p>
@@ -527,7 +538,7 @@ the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry "How can
 I tell whether to dispatch mouse/keyboard to Dear ImGui or my
 application?" for details.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_window_draw_list</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>DrawList</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_window_draw_list</span>() -> <span class='symbol'>DrawList</span></code>
 </div>
 <p>Get draw list associated to the current window, to append your own
 drawing primitives.</p>
@@ -571,6 +582,27 @@ pivot=(0.5f,0.5f) to center on given point, etc.</p>
 </div>
 <p>Set next window size. set axis to 0.0f to force an auto-fit on this
 axis. call before <code>begin()</code></p>
+<div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_size_constraints</span>(<span class='arg_name'>size_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>size_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>cb</span><span class='special'>:</span> <span class='symbol'>Callable</span><span class='special'>[</span><span class='special'>[</span><span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='symbol'>int</span><span class='special'>]</span><span class='special'>,</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>]</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>user_data_id</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+<p>Set next window size limits. Use 0.0 or FLT_MAX if you don't want
+limits. Use -1 for both min and max of same axis to preserve current
+size (which itself is a constraint). Use callback to apply non-trivial
+programmatic constraints.</p>
+<p>This function still has some rough corners. It only accepts an
+integer <code>user_data</code> argument. If you need to pass a float
+through it, you could for example convert to fixed point and convert
+back to float in the constraint function. Or you can capture any such
+values as a function closure.</p>
+<p>Use of constrain callbacks:</p>
+<pre><code>def aspect_ratio_constraint_16_9(_pos:  FVec2, _current_size: FVec2, desired_size: FVec2, _int_user_data: int) -&gt; FVec2:
+    aspect_ratio = 16.0 / 9
+    new_desired_y = int(desired_size[0] / aspect_ratio)
+    return (desired_size[0], new_desired_y)
+
+# usage:
+
+imgui.set_next_window_size_constraints((0, 0), (FLT_MAX, FLT_MAX), aspect_ratio_constraint_16_9)</code></pre>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>set_next_window_content_size</span>(<span class='arg_name'>size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
 </div>
@@ -818,7 +850,7 @@ necessarily the width of last item unlike most 'Item' functions.</p>
 <h4 id="functions-11">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_font</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>Font</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_font</span>() -> <span class='symbol'>imgui_ext</span>.<span class='symbol'>Font</span></code>
 </div>
 <p>Get the current font.</p>
 <div class="api">
@@ -1427,10 +1459,10 @@ clicked.</li>
 <h4 id="functions-26">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>plot_lines</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float32'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>overlay_text</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>scale_min</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>scale_max</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>graph_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>plot_lines</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>NDArray</span><span class='special'>[</span><span class='symbol'>Any</span><span class='special'>]</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>shape</span>=(<span class='keyword'>None</span><span class='special'>,</span>)<span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>overlay_text</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>scale_min</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>scale_max</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>graph_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
 </div>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>plot_histogram</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>ArrayLike</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>dtype</span>=<span class='string'>'float32'</span><span class='special'>,</span> <span class='symbol'>shape</span>=(<span class='keyword'>None</span>)<span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>overlay_text</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>scale_min</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>scale_max</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>graph_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>plot_histogram</span>(<span class='arg_name'>label</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>values</span><span class='special'>:</span> <span class='symbol'>Annotated</span><span class='special'>[</span><span class='symbol'>NDArray</span><span class='special'>[</span><span class='symbol'>Any</span><span class='special'>]</span><span class='special'>,</span> <span class='symbol'>dict</span>(<span class='symbol'>shape</span>=(<span class='keyword'>None</span><span class='special'>,</span>)<span class='special'>,</span> <span class='symbol'>device</span>=<span class='string'>'cpu'</span><span class='special'>,</span> <span class='symbol'>writable</span>=<span class='keyword'>False</span>)<span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>overlay_text</span><span class='special'>:</span> <span class='symbol'>str</span> | <span class='keyword'>None</span> = <span class='keyword'>None</span><span class='special'>,</span> <span class='arg_name'>scale_min</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>scale_max</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>FLT_MAX</span><span class='special'>,</span> <span class='arg_name'>graph_size</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)) -> <span class='keyword'>None</span></code>
 </div>
 </div>
 <h3 id="widgets-value-helpers">Widgets: Value() Helpers</h3>
@@ -1726,7 +1758,7 @@ visible.</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_get_row_index</span>() -> <span class='symbol'>int</span></code>
 </div>
-<p>Return current row index.</p>
+<p>Return current row index (header rows are accounted for)</p>
 <div class="api">
   <code><span class='keyword'>def</span> <span class='func_name'>table_get_column_name</span>(<span class='arg_name'>column_n</span><span class='special'>:</span> <span class='symbol'>int</span> = -<span class='symbol'>1</span>) -> <span class='symbol'>str</span></code>
 </div>
@@ -1882,7 +1914,7 @@ accepted.</p>
 returns true, you can call <code>accept_drag_drop_payload()</code> +
 <code>end_drag_drop_target()</code></p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>accept_drag_drop_payload</span>(<span class='arg_name'>type</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui</span>.<span class='symbol'>DragDropFlags</span> = <span class='symbol'>0</span>) -> <span class='symbol'>imgui</span>.<span class='symbol'>Payload</span> | <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>accept_drag_drop_payload</span>(<span class='arg_name'>type</span><span class='special'>:</span> <span class='symbol'>str</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DragDropFlags</span> = <span class='symbol'>0</span>) -> <span class='symbol'>imgui_ext</span>.<span class='symbol'>Payload</span> | <span class='keyword'>None</span></code>
 </div>
 <p>Accept contents of a given type. If
 <code>DragDropFlags.ACCEPT_BEFORE_DELIVERY</code> is set you can peek
@@ -1893,7 +1925,7 @@ into the payload before the mouse button is released.</p>
 <p>Only call <code>end_drag_drop_target()</code> if
 <code>begin_drag_drop_target()</code> returns true!</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_drag_drop_payload</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>Payload</span> | <span class='keyword'>None</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_drag_drop_payload</span>() -> <span class='symbol'>imgui_ext</span>.<span class='symbol'>Payload</span> | <span class='keyword'>None</span></code>
 </div>
 <p>Peek directly into the current payload from anywhere. Returns
 <code>None</code> when drag and drop is finished or inactive. Use
@@ -2077,12 +2109,12 @@ space)</p>
 <h4 id="functions-45">Functions</h4>
 <div class="funclist">
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_background_draw_list</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>DrawList</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_background_draw_list</span>() -> <span class='symbol'>DrawList</span></code>
 </div>
 <p>This draw list will be the first rendered one. Useful to quickly draw
 shapes/text behind dear imgui contents.</p>
 <div class="api">
-  <code><span class='keyword'>def</span> <span class='func_name'>get_foreground_draw_list</span>() -> <span class='symbol'>imgui</span>.<span class='symbol'>DrawList</span></code>
+  <code><span class='keyword'>def</span> <span class='func_name'>get_foreground_draw_list</span>() -> <span class='symbol'>DrawList</span></code>
 </div>
 <p>This draw list will be the last rendered one. Useful to quickly draw
 shapes/text over dear imgui contents.</p>
@@ -2404,6 +2436,7 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">TEXT_SELECTED_BG</td><td class="fielddoc">Selected text inside an <code>input_text</code></td></tr>
   <tr><td class="field">TREE_LINES</td><td class="fielddoc">Tree node hierarchy outlines when using <code>TreeNodeFlags.DRAW_LINES</code></td></tr>
   <tr><td class="field">DRAG_DROP_TARGET</td><td class="fielddoc">Rectangle highlighting a drop target</td></tr>
+  <tr><td class="field">UNSAVED_MARKER</td><td class="fielddoc">Unsaved Document marker (in window title and tabs)</td></tr>
   <tr><td class="field">NAV_CURSOR</td><td class="fielddoc">Color of keyboard/gamepad navigation cursor/rectangle, when visible</td></tr>
   <tr><td class="field">NAV_WINDOWING_HIGHLIGHT</td><td class="fielddoc">Highlight window when using CTRL+TAB</td></tr>
   <tr><td class="field">NAV_WINDOWING_DIM_BG</td><td class="fielddoc">Darken/colorize entire screen behind the CTRL+TAB window list, when active</td></tr>
@@ -2588,6 +2621,7 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">CALLBACK_CHAR_FILTER</td><td class="fielddoc">Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.</td></tr>
   <tr><td class="field">CALLBACK_RESIZE</td><td class="fielddoc">Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)</td></tr>
   <tr><td class="field">CALLBACK_EDIT</td><td class="fielddoc">Callback on any edit. Note that <code>input_text()</code> already returns true on edit + you can always use <code>is_item_edited()</code>. The callback is useful to manipulate the underlying buffer while focus is active.</td></tr>
+  <tr><td class="field">WORD_WRAP</td><td class="fielddoc">InputTextMultine(): word-wrap lines that are too long.</td></tr>
   </table>
 </div>
 <div class="api-class">
@@ -2820,6 +2854,7 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">DISABLED</td><td class="fielddoc">Cannot be selected, display grayed out text</td></tr>
   <tr><td class="field">ALLOW_OVERLAP</td><td class="fielddoc">(WIP) Hit testing to allow subsequent widgets to overlap this one</td></tr>
   <tr><td class="field">HIGHLIGHT</td><td class="fielddoc">Make the item be displayed as if it is hovered</td></tr>
+  <tr><td class="field">SELECT_ON_NAV</td><td class="fielddoc">Auto-select when moved into, unless Ctrl is held. Automatic when in a <code>begin_multi_select()</code> block.</td></tr>
   </table>
 </div>
 <div class="api-class">
@@ -2859,11 +2894,14 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">CELL_PADDING</td><td class="fielddoc">ImVec2    CellPadding</td></tr>
   <tr><td class="field">SCROLLBAR_SIZE</td><td class="fielddoc">Float     ScrollbarSize</td></tr>
   <tr><td class="field">SCROLLBAR_ROUNDING</td><td class="fielddoc">Float     ScrollbarRounding</td></tr>
+  <tr><td class="field">SCROLLBAR_PADDING</td><td class="fielddoc">Float     ScrollbarPadding</td></tr>
   <tr><td class="field">GRAB_MIN_SIZE</td><td class="fielddoc">Float     GrabMinSize</td></tr>
   <tr><td class="field">GRAB_ROUNDING</td><td class="fielddoc">Float     GrabRounding</td></tr>
   <tr><td class="field">IMAGE_BORDER_SIZE</td><td class="fielddoc">Float     ImageBorderSize</td></tr>
   <tr><td class="field">TAB_ROUNDING</td><td class="fielddoc">Float     TabRounding</td></tr>
   <tr><td class="field">TAB_BORDER_SIZE</td><td class="fielddoc">Float     TabBorderSize</td></tr>
+  <tr><td class="field">TAB_MIN_WIDTH_BASE</td><td class="fielddoc">Float     TabMinWidthBase</td></tr>
+  <tr><td class="field">TAB_MIN_WIDTH_SHRINK</td><td class="fielddoc">Float     TabMinWidthShrink</td></tr>
   <tr><td class="field">TAB_BAR_BORDER_SIZE</td><td class="fielddoc">Float     TabBarBorderSize</td></tr>
   <tr><td class="field">TAB_BAR_OVERLINE_SIZE</td><td class="fielddoc">Float     TabBarOverlineSize</td></tr>
   <tr><td class="field">TABLE_ANGLED_HEADERS_ANGLE</td><td class="fielddoc">Float     TableAngledHeadersAngle</td></tr>
@@ -2889,8 +2927,9 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">NO_TAB_LIST_SCROLLING_BUTTONS</td><td class="fielddoc">Disable scrolling buttons (apply when fitting policy is <code>TabBarFlags.FITTING_POLICY_SCROLL</code>)</td></tr>
   <tr><td class="field">NO_TOOLTIP</td><td class="fielddoc">Disable tooltips when hovering a tab</td></tr>
   <tr><td class="field">DRAW_SELECTED_OVERLINE</td><td class="fielddoc">Draw selected overline markers over selected tab</td></tr>
-  <tr><td class="field">FITTING_POLICY_RESIZE_DOWN</td><td class="fielddoc">Resize tabs when they don't fit</td></tr>
-  <tr><td class="field">FITTING_POLICY_SCROLL</td><td class="fielddoc">Add scroll buttons when tabs don't fit</td></tr>
+  <tr><td class="field">FITTING_POLICY_MIXED</td><td class="fielddoc">Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling buttons.</td></tr>
+  <tr><td class="field">FITTING_POLICY_SHRINK</td><td class="fielddoc">Shrink down tabs when they don't fit</td></tr>
+  <tr><td class="field">FITTING_POLICY_SCROLL</td><td class="fielddoc">Enable scrolling buttons when tabs don't fit</td></tr>
   </table>
 </div>
 <div class="api-class">
@@ -3054,6 +3093,195 @@ io.MouseDrawCursor ImGui will render those for you</p>
   <tr><td class="field">CHILD_MENU</td><td class="fielddoc">Don't use! For internal use by <code>begin_menu()</code></td></tr>
   </table>
 </div>
+<div class="api-class">
+  <div><span class="class_name">DrawListCallbackResult</span> (enum)</div>
+<p>Return value for <code>DrawCmd.run_callback()</code> that's used in backend renderers.</p>  <table>
+  <tr><td class="field">DRAW</td><td class="fielddoc">No callback, backend should draw elements.</td></tr>
+  <tr><td class="field">CALLBACK</td><td class="fielddoc">Callback executed, no further processing of this command necessary.</td></tr>
+  <tr><td class="field">RESET_RENDER_STATE</td><td class="fielddoc">Reset render state token, backend should perform render state reset.</td></tr>
+  </table>
+</div>
+</div>
+<h2 id="class-reference">Class Reference</h2>
+<div class="classlist">
+<div class="api-class">
+  <div><span class="class_name">slimgui.imgui.DrawList</span> (class)</div>
+<p>Draw command list.</p>
+<p>This is the low-level list of polygons that <code>imgui</code> functions are filling. At the end of the frame,
+all command lists are passed to your backend renderer for drawing.</p>
+<p>Each Dear ImGui window contains its own <code>DrawList</code>. You can use <code>imgui.get_window_draw_list()</code> to
+access the current window draw list and draw custom primitives.</p>
+<p>You can interleave normal <code>imgui</code> calls and adding primitives to the current draw list.</p>
+<p>In single viewport mode, top-left is == <code>imgui.get_main_viewport().pos</code> (generally <code>(0,0)</code>), bottom-right is == <code>imgui.get_main_viewport().pos + size</code> (generally <code>io.display_size</code>).
+You are totally free to apply whatever transformation matrix you want to the data (depending on the use of the transformation you may want to apply it to <code>clip_rect</code> as well!).</p>
+<p>Important: Primitives are always added to the list and not culled (culling is done at higher-level by ImGui:: functions), if you use this API a lot consider coarse culling your drawn objects.</p>
+<p>Slimgui specific details:</p>
+<p>This class is a thin Python wrapper on top of the native binding <code>slimgui.slimgui_ext.imgui.DrawList</code> class.
+It forwards most of the method calls down to the real implementation.  However, it handles <code>add_callback()</code> specially
+by keeping track of the added callback objects.  This is done to keep the callback objects alive until the
+next <code>imgui.new_frame()</code> call (when it's known that these callbacks won't get called anymore.)</p>
+<p>Renderer backends use the <code>slimgui.slimgui_ext.imgui.DrawList</code> class directly, as that's easily
+available and there's no need for extra indirection for read-only access.</p>  <div class="funclist">
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_bezier_cubic</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p4</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_bezier_quadratic</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_callback</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>callable</span><span class='special'>:</span> <span class='symbol'>int</span> | <span class='symbol'>Callable</span><span class='special'>[</span><span class='special'>[</span><span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawList</span><span class='special'>,</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawCmd</span><span class='special'>,</span> <span class='symbol'>int</span> | <span class='symbol'>bytes</span><span class='special'>]</span><span class='special'>,</span> <span class='keyword'>None</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>userdata</span><span class='special'>:</span> <span class='symbol'>int</span> | <span class='symbol'>bytes</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <p>May be used to alter render state (change sampler, blending, current shader). May be used to emit custom rendering commands (difficult to do correctly, but possible).</p>
+<p>Use the special render state reset callback with <code>dl.add_callback(DRAW_CALLBACK_RESET_RENDER_STATE, 0)</code> to instruct backend to reset its render state to the default.</p>
+<p>Your backend renderer must call <code>DrawCmd.run_callback()</code> and handle the result appropriately.  All standard backends honor this.</p>
+<p>Special <code>DRAW_CALLBACK_RESET_RENDER_STATE</code> value can be passsed as the callable argument to request renderer backend to reset the graphics/render state.
+The renderer backend needs to handle this special value, otherwise it will crash trying to call a function at this address.
+This is useful, for example, if you submitted callbacks which you know have altered the render state and you want it to be restored.
+Render state is not reset by default because they are many perfectly useful way of altering render state (e.g. changing shader/blending settings before an Image call).</p>
+<p>Immutable userdata can be passed as either an <code>int</code> or a <code>bytes</code> object.  This data will be passed down to the callback when it's invoked in the backend renderer.</p>
+<p>Slimgui specific details:</p>
+<p>You should NOT call <code>DrawList</code> methods in the backend to output drawing primitives.  This won't work.  The ImDrawList instance is marked
+const in Dear ImGui C++ callback, so the <code>ImDrawList::Add*</code> functions are not callable but there's no easy way to forbid
+these calls in Python.</p>
+<p>Note that the callback is passed the "native" <code>imgui_ext.DrawList</code> instance and not the <code>slimgui.imgui.DrawList</code> instance.  If you need
+to do some identity checks, then you'd have to do it like <code>parent_dl is other_dl._dl</code>, not <code>parent_dl is other_dl</code>.</p>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_circle</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_circle_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_concave_poly_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='symbol'>points</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_convex_poly_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='symbol'>points</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_draw_cmd</span>(<span class='symbol'>self</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <p>This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible.</p>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_ellipse</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>rot</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_ellipse_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>rot</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_image</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>tex_ref</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>TextureRef</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>p_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>4294967295</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_image_quad</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>tex_ref</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>TextureRef</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p4</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>0</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>1</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>uv4</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span> = (<span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='symbol'>1</span>.<span class='symbol'>0</span>)<span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>4294967295</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_image_rounded</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>tex_ref</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>TextureRef</span> | <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>p_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>uv_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>rounding</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawFlags</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_line</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_ngon</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_ngon_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_polyline</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='symbol'>points</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawFlags</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_quad</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p4</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_quad_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p4</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_rect</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>rounding</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawFlags</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_rect_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>rounding</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawFlags</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_rect_filled_multi_color</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col_upr_left</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>col_upr_right</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>col_bot_right</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>col_bot_left</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_text</span>(<span class='symbol'>self</span><span class='special'>,</span> *<span class='symbol'>args</span><span class='special'>,</span> **<span class='symbol'>kwargs</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_triangle</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>add_triangle_filled</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p1</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>channels_merge</span>(<span class='symbol'>self</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>channels_set_current</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>n</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>channels_split</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>count</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_clip_rect_max</span>(<span class='symbol'>self</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>get_clip_rect_min</span>(<span class='symbol'>self</span>) -> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_arc_to</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>a_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>a_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_arc_to_fast</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>a_min_of_12</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>a_max_of_12</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_bezier_cubic_curve_to</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p4</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_bezier_quadratic_curve_to</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>p2</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>p3</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_clear</span>(<span class='symbol'>self</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_elliptical_arc_to</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>center</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>radius</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>rot</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>a_min</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>a_max</span><span class='special'>:</span> <span class='symbol'>float</span><span class='special'>,</span> <span class='arg_name'>num_segments</span><span class='special'>:</span> <span class='symbol'>int</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_fill_concave</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_fill_convex</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_line_to</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_line_to_merge_duplicate</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>pos</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_rect</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>rect_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>rect_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>rounding</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>0</span>.<span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawFlags</span> = <span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>path_stroke</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>col</span><span class='special'>:</span> <span class='symbol'>int</span><span class='special'>,</span> <span class='arg_name'>flags</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>DrawFlags</span> = <span class='symbol'>0</span><span class='special'>,</span> <span class='arg_name'>thickness</span><span class='special'>:</span> <span class='symbol'>float</span> = <span class='symbol'>1</span>.<span class='symbol'>0</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>pop_clip_rect</span>(<span class='symbol'>self</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>pop_texture</span>(<span class='symbol'>self</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_clip_rect</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>clip_rect_min</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>clip_rect_max</span><span class='special'>:</span> <span class='symbol'>tuple</span><span class='special'>[</span><span class='symbol'>float</span><span class='special'>,</span> <span class='symbol'>float</span><span class='special'>]</span><span class='special'>,</span> <span class='arg_name'>intersect_with_current_clip_rect</span><span class='special'>:</span> <span class='symbol'>bool</span> = <span class='keyword'>False</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <p>Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level <code>imgui.push_clip_rect()</code> to affect logic (hit-testing and widget culling).</p>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_clip_rect_full_screen</span>(<span class='symbol'>self</span>) -> <span class='keyword'>None</span></code>
+</div>
+    <div class="api">
+  <code><span class='keyword'>def</span> <span class='func_name'>push_texture</span>(<span class='symbol'>self</span><span class='special'>,</span> <span class='arg_name'>tex_ref</span><span class='special'>:</span> <span class='symbol'>imgui_ext</span>.<span class='symbol'>TextureRef</span> | <span class='symbol'>int</span>) -> <span class='keyword'>None</span></code>
+</div>
+  </div>
+</div>
+
 </div>
 </body>
 
