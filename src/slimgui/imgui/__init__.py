@@ -443,7 +443,7 @@ def set_next_window_size_constraints(size_min: tuple[float, float], size_max: tu
     This function still has some rough corners.  It only accepts an integer `user_data` argument.  If you need to pass a float through it, you could for example convert to fixed point and convert back to float in the constraint function.  Or you can capture any such values as a function closure.
 
     Use of constrain callbacks:
-    ```
+    ```python
     def aspect_ratio_constraint_16_9(_pos:  FVec2, _current_size: FVec2, desired_size: FVec2, _int_user_data: int) -> FVec2:
         aspect_ratio = 16.0 / 9
         new_desired_y = int(desired_size[0] / aspect_ratio)

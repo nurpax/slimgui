@@ -6,7 +6,7 @@ from numpy.typing import NDArray
 from slimgui import imgui
 from slimgui import implot
 
-from slimgui.implot import LineFlags, PlotFlags, ScatterFlags
+from slimgui.implot import PlotFlags
 
 _surf_it = False
 

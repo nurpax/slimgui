@@ -176,7 +176,7 @@ class Texture:
     def __del__(self):
         try:
             self.delete()
-        except:
+        except Exception:
             pass
 
     @contextlib.contextmanager
@@ -306,7 +306,7 @@ class Framebuffer:
     def __del__(self):
         try:
             self.delete()
-        except:
+        except Exception:
             pass
 
     @contextlib.contextmanager

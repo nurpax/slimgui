@@ -1038,7 +1038,7 @@ class DrawList:
 
     def push_clip_rect(self, clip_rect_min: tuple[float, float], clip_rect_max: tuple[float, float], intersect_with_current_clip_rect: bool = False) -> None:
         """
-        Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level `imgui.push_clip_rect() to affect logic (hit-testing and widget culling)
+        Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level `imgui.push_clip_rect()` to affect logic (hit-testing and widget culling)
         """
 
     def push_clip_rect_full_screen(self) -> None: ...
@@ -3457,12 +3457,22 @@ def style_colors_classic_internal(dst: Style) -> None:
 
 
 def begin(name: str, closable: bool = False, flags: WindowFlags = WindowFlags.NONE) -> tuple[bool, bool]:
-    ...
+    """
+    When the `closable` argument is set to `True`, the created window will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:
+    ```python
+    win_open = True  # open/closed state
 
+    visible, win_open = imgui.begin(..., closable=win_open)
+    if visible:
+        # render window contents here..
+    imgui.end()
+    ```
+    """
 
 def end() -> None:
-    ...
-
+    """
+    Every `begin()` call must be paired with a corresponding `end()` call, regardless of the return value of `begin()` return value.
+    """
 
 def begin_child(str_id: str, size: tuple[float, float] = (0.0, 0.0), child_flags: ChildFlags = ChildFlags.NONE, window_flags: WindowFlags = WindowFlags.NONE) -> bool:
     ...
@@ -4506,9 +4516,17 @@ def end_tab_bar() -> None:
 
 
 def begin_tab_item(str_id: str, closable: bool = False, flags: TabItemFlags = TabItemFlags.NONE) -> tuple[bool, bool]:
-    """Create a Tab. Returns true if the Tab is selected."""
-    ...
+    """
+    When the `closable` argument is set to `True`, the created tab will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:
 
+    ```
+    tab_open = True  # open/closed state
+
+    visible, tab_open = imgui.begin_tab_item(..., closable=tab_open)
+    if visible:
+        # render tab contents here..
+    ```
+    """
 
 def end_tab_item() -> None:
     """Only call `end_tab_item()` if `begin_tab_item()` returns true!"""

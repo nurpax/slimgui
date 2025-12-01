@@ -541,7 +541,7 @@ NB_MODULE(slimgui_ext, top) {
         }, "Internal function for reference book keeping.")
         .def("push_clip_rect", &ImDrawList::PushClipRect, "clip_rect_min"_a, "clip_rect_max"_a, "intersect_with_current_clip_rect"_a = false,
              "Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. "
-             "Prefer using higher-level `imgui.push_clip_rect() to affect logic (hit-testing and widget culling)")
+             "Prefer using higher-level `imgui.push_clip_rect()` to affect logic (hit-testing and widget culling)")
         .def("push_clip_rect_full_screen", &ImDrawList::PushClipRectFullScreen)
         .def("pop_clip_rect", &ImDrawList::PopClipRect)
         .def("push_texture", [](ImDrawList* drawList, TextureRefOrID tex_ref) {
@@ -813,8 +813,17 @@ NB_MODULE(slimgui_ext, top) {
         bool open = true;
         bool visible = ImGui::Begin(name, closable ? &open : NULL, flags);
         return std::pair(visible, open);
-    }, "name"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None);
-    m.def("end", &ImGui::End);
+    }, "name"_a, "closable"_a = false, "flags"_a.sig("WindowFlags.NONE") = ImGuiWindowFlags_None,
+"When the `closable` argument is set to `True`, the created window will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:\n"
+"```python\n"
+"win_open = True  # open/closed state\n"
+"\n"
+"visible, win_open = imgui.begin(..., closable=win_open)\n"
+"if visible:\n"
+"    # render window contents here..\n"
+"imgui.end()\n"
+"```\n");
+    m.def("end", &ImGui::End, "Every `begin()` call must be paired with a corresponding `end()` call, regardless of the return value of `begin()` return value.");
 
 
     // IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);
@@ -1433,7 +1442,17 @@ NB_MODULE(slimgui_ext, top) {
         bool open = true;
         bool selected = ImGui::BeginTabItem(label, closable ? &open : NULL, flags);
         return std::pair(selected, open);
-    }, "str_id"_a, "closable"_a = false, "flags"_a.sig("TabItemFlags.NONE") = ImGuiTabItemFlags_None);
+    }, "str_id"_a, "closable"_a = false, "flags"_a.sig("TabItemFlags.NONE") = ImGuiTabItemFlags_None,
+    "When the `closable` argument is set to `True`, the created tab will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:\n"
+    "\n"
+    "```\n"
+    "tab_open = True  # open/closed state\n"
+    "\n"
+    "visible, tab_open = imgui.begin_tab_item(..., closable=tab_open)\n"
+    "if visible:\n"
+    "    # render tab contents here..\n"
+    "```\n"
+    );
     m.def("end_tab_item", &ImGui::EndTabItem);
 
     m.def("tab_item_button", [](const char* label, ImGuiTabItemFlags_ flags) {
