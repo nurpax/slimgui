@@ -72,7 +72,7 @@ class GlfwRenderer:
 
     def _update_mouse_cursor(self):
         imgui_cursor = imgui.get_mouse_cursor()
-        if imgui_cursor == imgui.MouseCursor.NONE or self.io.mouse_draw_cursor:
+        if imgui_cursor == imgui.MouseCursor.NONE or not self.io.mouse_draw_cursor:
             glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
         else:
             glfw.set_cursor(self.window, self._cursors.get(imgui_cursor, self._cursors[imgui.MouseCursor.ARROW]))
