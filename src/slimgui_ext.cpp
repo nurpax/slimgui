@@ -463,6 +463,13 @@ NB_MODULE(slimgui_ext, top) {
             return nb::make_iterator(nb::type<ImGuiPlatformIO>(), "iterator", plat_io->Textures.begin(), plat_io->Textures.end());
         }, nb::keep_alive<0, 1>());
 
+    nb::class_<ImGuiPlatformImeData>(m, "PlatformImeData")
+        .def_ro("want_visible", &ImGuiPlatformImeData::WantVisible)
+        .def_ro("want_text_input", &ImGuiPlatformImeData::WantTextInput)
+        .def_ro("input_pos", &ImGuiPlatformImeData::InputPos)
+        .def_ro("input_line_height", &ImGuiPlatformImeData::InputLineHeight)
+        .def_ro("viewport_id", &ImGuiPlatformImeData::ViewportId);
+
     nb::class_<ImTextureRect>(m, "TextureRect")
         .def_ro("x", &ImTextureRect::x, "Upper-left x-coordinate of rectangle to update")
         .def_ro("y", &ImTextureRect::y, "Upper-left y-coordinate of rectangle to update")
@@ -723,6 +730,12 @@ NB_MODULE(slimgui_ext, top) {
             ImDrawList* drawList = ImGui::GetForegroundDrawList();
             ImGui::SetCurrentContext(prev);
             return drawList;
+        }, nb::rv_policy::reference)
+        .def("get_platform_ime_data_internal", [](Context* ctx) -> ImGuiPlatformImeData* {
+            auto prev = ctx->setCurrent();
+            ImGuiPlatformImeData* ime_data = &ctx->ctx->PlatformImeData;
+            ImGui::SetCurrentContext(prev);
+            return ime_data;
         }, nb::rv_policy::reference)
         .def("get_window_draw_list_internal", [](Context* ctx) -> ImDrawList* {
             auto prev = ctx->setCurrent();

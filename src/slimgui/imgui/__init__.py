@@ -400,6 +400,12 @@ def get_foreground_draw_list() -> DrawList:
     assert ctx is not None
     return ctx._wrap_drawlist(ctx.context.get_foreground_draw_list_internal())
 
+def get_platform_ime_data() -> imgui_ext.PlatformImeData:
+    '''Access the ImGui `PlatformImeData` structure.  This structure holds data to support IME (Input Method Editor).'''
+    ctx = get_current_context()
+    assert ctx is not None
+    return ctx.context.get_platform_ime_data_internal()
+
 def get_window_draw_list() -> DrawList:
     '''Get draw list associated to the current window, to append your own drawing primitives.'''
     ctx = get_current_context()
