@@ -1,3 +1,13 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = [
+#     "glfw",
+#     "numpy",
+#     "pyopengl",
+#     "requests",
+#     "slimgui",
+# ]
+# ///
 import os
 
 import glfw
