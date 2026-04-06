@@ -2793,7 +2793,7 @@ def table_next_row(
     min_row_height: float = 0.0,
 ) -> None:
     """
-    Append into the first cell of a new row.
+    Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0f.
     """
 ```
 :::
@@ -3299,7 +3299,7 @@ def set_nav_cursor_visible(
 ```python
 def set_next_item_allow_overlap() -> None:
     """
-    Allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both `selectable()` and `tree_node()` have dedicated flags doing this.
+    Allow next item to be overlapped by a subsequent item. Typically useful with `invisible_button()`, `selectable()`, `tree_node()` covering an area where subsequent items may need to be added. Note that both `selectable()` and `tree_node()` have dedicated flags doing this.
     """
 ```
 :::
@@ -3630,7 +3630,7 @@ def is_key_pressed(
     repeat: bool = True,
 ) -> bool:
     """
-    Was key pressed (went from !Down to Down)? if repeat=true, uses io.KeyRepeatDelay / KeyRepeatRate
+    Was key pressed (went from !Down to Down)? Repeat rate uses io.KeyRepeatDelay / KeyRepeatRate.
     """
 ```
 :::
@@ -3933,6 +3933,7 @@ def set_next_frame_want_capture_mouse(
 | MOUSE_BUTTON_RIGHT | React on right mouse button |
 | MOUSE_BUTTON_MIDDLE | React on center mouse button |
 | ENABLE_NAV | `invisible_button()`: do not disable navigation/tabbing. Otherwise disabled by default. |
+| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`. |
 
 ### Enum: ChildFlags
 
@@ -4006,11 +4007,12 @@ def set_next_frame_want_capture_mouse(
 | TEXT_LINK | Hyperlink color |
 | TEXT_SELECTED_BG | Selected text inside an `input_text` |
 | TREE_LINES | Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES` |
-| DRAG_DROP_TARGET | Rectangle highlighting a drop target |
+| DRAG_DROP_TARGET | Rectangle border highlighting a drop target |
+| DRAG_DROP_TARGET_BG | Rectangle background highlighting a drop target |
 | UNSAVED_MARKER | Unsaved Document marker (in window title and tabs) |
 | NAV_CURSOR | Color of keyboard/gamepad navigation cursor/rectangle, when visible |
-| NAV_WINDOWING_HIGHLIGHT | Highlight window when using CTRL+TAB |
-| NAV_WINDOWING_DIM_BG | Darken/colorize entire screen behind the CTRL+TAB window list, when active |
+| NAV_WINDOWING_HIGHLIGHT | Highlight window when using Ctrl+Tab |
+| NAV_WINDOWING_DIM_BG | Darken/colorize entire screen behind the Ctrl+Tab window list, when active |
 | MODAL_WINDOW_DIM_BG | Darken/colorize entire screen behind a modal window, when one is active |
 | COUNT |  |
 
@@ -4027,8 +4029,9 @@ def set_next_frame_want_capture_mouse(
 | NO_TOOLTIP | ColorEdit, ColorPicker, `color_button`: disable tooltip when hovering the preview. |
 | NO_LABEL | ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker). |
 | NO_SIDE_PREVIEW | ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead. |
-| NO_DRAG_DROP | ColorEdit: disable drag and drop target. `color_button`: disable drag and drop source. |
+| NO_DRAG_DROP | ColorEdit: disable drag and drop target/source. `color_button`: disable drag and drop source. |
 | NO_BORDER | `color_button`: disable border (which is enforced by default) |
+| NO_COLOR_MARKERS | ColorEdit: disable rendering R/G/B/A color marker. May also be disabled globally by setting style.ColorMarkerSize = 0. |
 | ALPHA_OPAQUE | ColorEdit, ColorPicker, `color_button`: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling `color_edit4()`/`color_picker4()`. For `color_button()` this does the same as _NoAlpha. |
 | ALPHA_NO_BG | ColorEdit, ColorPicker, `color_button`: disable rendering a checkerboard background behind transparent color. |
 | ALPHA_PREVIEW_HALF | ColorEdit, ColorPicker, `color_button`: display half opaque / half transparent preview. |
@@ -4073,7 +4076,7 @@ def set_next_frame_want_capture_mouse(
 | Name | Description |
 | --- | --- |
 | NONE |  |
-| NAV_ENABLE_KEYBOARD | Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate. |
+| NAV_ENABLE_KEYBOARD | Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + Space/Enter to activate. Note: some features such as basic Tabbing and CtrL+Tab are enabled by regardless of this flag (and may be disabled via other means, see #4828, #9218). |
 | NAV_ENABLE_GAMEPAD | Master gamepad navigation enable flag. Backend also needs to set `BackendFlags.HAS_GAMEPAD`. |
 | NO_MOUSE | Instruct dear imgui to disable mouse inputs and interactions. |
 | NO_MOUSE_CURSOR_CHANGE | Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use `set_mouse_cursor()` to change mouse cursor. You may want to honor requests from imgui by reading `get_mouse_cursor()` yourself instead. |
@@ -4108,6 +4111,7 @@ def set_next_frame_want_capture_mouse(
 | ACCEPT_BEFORE_DELIVERY | `accept_drag_drop_payload()` will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered. |
 | ACCEPT_NO_DRAW_DEFAULT_RECT | Do not draw the default highlight rectangle when hovering over target. |
 | ACCEPT_NO_PREVIEW_TOOLTIP | Request hiding the `begin_drag_drop_source` tooltip from the `begin_drag_drop_target` site. |
+| ACCEPT_DRAW_AS_HOVERED | Accepting item will render as if hovered. Useful for e.g. a `button()` used as a drop target. |
 | ACCEPT_PEEK_ONLY | For peeking ahead and inspecting the payload before delivery. |
 
 ### Enum: DrawFlags
@@ -4174,7 +4178,7 @@ def set_next_frame_want_capture_mouse(
 | ROUTE_GLOBAL | Global route (unless a focused window or active item registered the route). |
 | ROUTE_ALWAYS | Do not register route, poll keys directly. |
 | ROUTE_OVER_FOCUSED | Option: global route: higher priority than focused route (unless active item in focused route). |
-| ROUTE_OVER_ACTIVE | Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. CTRL+A registered by `input_text` will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active. |
+| ROUTE_OVER_ACTIVE | Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. Ctrl+A registered by `input_text` will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active. |
 | ROUTE_UNLESS_BG_FOCUSED | Option: global route: will not be applied if underlying background/void is focused (== no Dear ImGui windows are focused). Useful for overlay applications. |
 | ROUTE_FROM_ROOT_WINDOW | Option: route evaluated from the point of view of root window rather than current window. |
 | TOOLTIP | Automatically display a tooltip when hovering item [BETA] Unsure of right api (opt-in/opt-out) |
@@ -4192,7 +4196,7 @@ def set_next_frame_want_capture_mouse(
 | ALLOW_TAB_INPUT | Pressing TAB input a '  ' character into the text field |
 | ENTER_RETURNS_TRUE | Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using `is_item_deactivated_after_edit()` instead! |
 | ESCAPE_CLEARS_ALL | Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert) |
-| CTRL_ENTER_FOR_NEW_LINE | In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). |
+| CTRL_ENTER_FOR_NEW_LINE | In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way. |
 | READ_ONLY | Read-only mode |
 | PASSWORD | Password mode, display all characters as '*', disable copy |
 | ALWAYS_OVERWRITE | Overwrite mode |
@@ -4208,7 +4212,7 @@ def set_next_frame_want_capture_mouse(
 | CALLBACK_CHAR_FILTER | Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard. |
 | CALLBACK_RESIZE | Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this) |
 | CALLBACK_EDIT | Callback on any edit. Note that `input_text()` already returns true on edit + you can always use `is_item_edited()`. The callback is useful to manipulate the underlying buffer while focus is active. |
-| WORD_WRAP | InputTextMultine(): word-wrap lines that are too long. |
+| WORD_WRAP | `input_text_multiline()`: word-wrap lines that are too long. |
 
 ### Enum: ItemFlags
 
@@ -4221,6 +4225,7 @@ def set_next_frame_want_capture_mouse(
 | BUTTON_REPEAT | Any button-like behavior will have repeat mode enabled (based on io.KeyRepeatDelay and io.KeyRepeatRate values). Note that you can also call `is_item_active()` after any button to tell if it is being held. |
 | AUTO_CLOSE_POPUPS | `menu_item()`/`selectable()` automatically close their parent popup window. |
 | ALLOW_DUPLICATE_ID | Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set. |
+| DISABLED | [Internal] Disable interactions. DOES NOT affect visuals. This is used by `begin_disabled()`/`end_disabled()` and only provided here so you can read back via `get_item_flags()`. |
 
 ### Enum: Key
 
@@ -4432,9 +4437,9 @@ def set_next_frame_want_capture_mouse(
 | Name | Description |
 | --- | --- |
 | NONE |  |
-| MOUSE_BUTTON_LEFT | For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as `MouseButton.LEFT`) |
-| MOUSE_BUTTON_RIGHT | For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as `MouseButton.RIGHT`) |
-| MOUSE_BUTTON_MIDDLE | For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as `MouseButton.MIDDLE`) |
+| MOUSE_BUTTON_LEFT | For BeginPopupContext*(): open on Left Mouse release. Only one button allowed! |
+| MOUSE_BUTTON_RIGHT | For BeginPopupContext*(): open on Right Mouse release. Only one button allowed! (default) |
+| MOUSE_BUTTON_MIDDLE | For BeginPopupContext*(): open on Middle Mouse release. Only one button allowed! |
 | NO_REOPEN | For `open_popup`*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation) |
 | NO_OPEN_OVER_EXISTING_POPUP | For `open_popup`*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack |
 | NO_OPEN_OVER_ITEMS | For `begin_popup_context_window()`: don't return true when hovering items, only when hovering empty space |
@@ -4451,7 +4456,7 @@ def set_next_frame_want_capture_mouse(
 | SPAN_ALL_COLUMNS | Frame will span all columns of its container table (text will still fit in current column) |
 | ALLOW_DOUBLE_CLICK | Generate press events on double clicks too |
 | DISABLED | Cannot be selected, display grayed out text |
-| ALLOW_OVERLAP | (WIP) Hit testing to allow subsequent widgets to overlap this one |
+| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`. |
 | HIGHLIGHT | Make the item be displayed as if it is hovered |
 | SELECT_ON_NAV | Auto-select when moved into, unless Ctrl is held. Automatic when in a `begin_multi_select()` block. |
 
@@ -4462,11 +4467,12 @@ def set_next_frame_want_capture_mouse(
 | NONE |  |
 | LOGARITHMIC | Make the widget logarithmic (linear otherwise). Consider using `SliderFlags.NO_ROUND_TO_FORMAT` with this if using a format-string with small amount of digits. |
 | NO_ROUND_TO_FORMAT | Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits). |
-| NO_INPUT | Disable CTRL+Click or Enter key allowing to input text directly into the widget. |
+| NO_INPUT | Disable Ctrl+Click or Enter key allowing to input text directly into the widget. |
 | WRAP_AROUND | Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now. |
-| CLAMP_ON_INPUT | Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds. |
+| CLAMP_ON_INPUT | Clamp value to min/max bounds when input manually with Ctrl+Click. By default Ctrl+Click allows going out of bounds. |
 | CLAMP_ZERO_RANGE | Clamp even if min==max==0.0f. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
 | NO_SPEED_TWEAKS | Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic. |
+| COLOR_MARKERS | `drag_scalar_n()`, `slider_scalar_n()`: Draw R/G/B/A color markers on each component. |
 | ALWAYS_CLAMP |  |
 
 ### Enum: StyleVar
@@ -4496,6 +4502,7 @@ def set_next_frame_want_capture_mouse(
 | SCROLLBAR_PADDING | Float     ScrollbarPadding |
 | GRAB_MIN_SIZE | Float     GrabMinSize |
 | GRAB_ROUNDING | Float     GrabRounding |
+| IMAGE_ROUNDING | Float     ImageRounding |
 | IMAGE_BORDER_SIZE | Float     ImageBorderSize |
 | TAB_ROUNDING | Float     TabRounding |
 | TAB_BORDER_SIZE | Float     TabBorderSize |
@@ -4509,6 +4516,7 @@ def set_next_frame_want_capture_mouse(
 | TREE_LINES_ROUNDING | Float     TreeLinesRounding |
 | BUTTON_TEXT_ALIGN | ImVec2    ButtonTextAlign |
 | SELECTABLE_TEXT_ALIGN | ImVec2    SelectableTextAlign |
+| SEPARATOR_SIZE | Float     SeparatorSize |
 | SEPARATOR_TEXT_BORDER_SIZE | Float     SeparatorTextBorderSize |
 | SEPARATOR_TEXT_ALIGN | ImVec2    SeparatorTextAlign |
 | SEPARATOR_TEXT_PADDING | ImVec2    SeparatorTextPadding |
@@ -4589,11 +4597,11 @@ def set_next_frame_want_capture_mouse(
 | --- | --- |
 | NONE |  |
 | RESIZABLE | Enable resizing columns. |
-| REORDERABLE | Enable reordering columns in header row (need calling `table_setup_column()` + `table_headers_row()` to display headers) |
+| REORDERABLE | Enable reordering columns in header row. (Need calling `table_setup_column()` + `table_headers_row()` to display headers, or using `TableFlags.CONTEXT_MENU_IN_BODY` to access context-menu without headers). |
 | HIDEABLE | Enable hiding/disabling columns in context menu. |
 | SORTABLE | Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. Also see `TableFlags.SORT_MULTI` and `TableFlags.SORT_TRISTATE`. |
-| NO_SAVED_SETTINGS | Disable persisting columns order, width and sort settings in the .ini file. |
-| CONTEXT_MENU_IN_BODY | Right-click on columns body/contents will display table context menu. By default it is available in `table_headers_row()`. |
+| NO_SAVED_SETTINGS | Disable persisting columns order, width, visibility and sort settings in the .ini file. |
+| CONTEXT_MENU_IN_BODY | Right-click on columns body/contents will also display table context menu. By default it is available in `table_headers_row()`. |
 | ROW_BG | Set each RowBg color with `Col.TABLE_ROW_BG` or `Col.TABLE_ROW_BG_ALT` (equivalent of calling `table_set_bg_color` with ImGuiTableBgFlags_RowBg0 on each row manually) |
 | BORDERS_INNER_H | Draw horizontal borders between rows. |
 | BORDERS_OUTER_H | Draw horizontal borders at the top and bottom. |
@@ -4655,13 +4663,13 @@ def set_next_frame_want_capture_mouse(
 | NONE |  |
 | SELECTED | Draw as selected |
 | FRAMED | Draw frame with background (e.g. for `collapsing_header`) |
-| ALLOW_OVERLAP | Hit testing to allow subsequent widgets to overlap this one |
+| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`. |
 | NO_TREE_PUSH_ON_OPEN | Don't do a `tree_push()` when open (e.g. for `collapsing_header`) = no extra indent nor pushing on ID stack |
 | NO_AUTO_OPEN_ON_LOG | Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes) |
 | DEFAULT_OPEN | Default node to be open |
 | OPEN_ON_DOUBLE_CLICK | Open on double-click instead of simple click (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined. |
 | OPEN_ON_ARROW | Open when clicking on the arrow part (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined. |
-| LEAF | No collapsing, no arrow (use as a convenience for leaf nodes). |
+| LEAF | No collapsing, no arrow (use as a convenience for leaf nodes). Note: will always open a tree/id scope and return true. If you never use that scope, add `TreeNodeFlags.NO_TREE_PUSH_ON_OPEN`. |
 | BULLET | Display a bullet instead of arrow. IMPORTANT: node can still be marked open/close if you don't set the _Leaf flag! |
 | FRAME_PADDING | Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling `align_text_to_frame_padding()` before the node. |
 | SPAN_AVAIL_WIDTH | Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line without using AllowOverlap mode. |
@@ -4669,7 +4677,7 @@ def set_next_frame_want_capture_mouse(
 | SPAN_LABEL_WIDTH | Narrow hit box + narrow hovering highlight, will only cover the label text. |
 | SPAN_ALL_COLUMNS | Frame will span all columns of its container table (label will still fit in current column) |
 | LABEL_SPAN_ALL_COLUMNS | Label will span all columns of its container table |
-| NAV_LEFT_JUMPS_TO_PARENT | Nav: left arrow moves back to parent. This is processed in `tree_pop()` when there's an unfullfilled Left nav request remaining. |
+| NAV_LEFT_JUMPS_TO_PARENT | Nav: left arrow moves back to parent. This is processed in `tree_pop()` when there's an unfulfilled Left nav request remaining. |
 | COLLAPSING_HEADER |  |
 | DRAW_LINES_NONE | No lines drawn |
 | DRAW_LINES_FULL | Horizontal lines to child nodes. Vertical line drawn down to `tree_pop()` position: cover full contents. Faster (for large trees). |
@@ -4697,7 +4705,7 @@ def set_next_frame_want_capture_mouse(
 | ALWAYS_VERTICAL_SCROLLBAR | Always show vertical scrollbar (even if ContentSize.y < Size.y) |
 | ALWAYS_HORIZONTAL_SCROLLBAR | Always show horizontal scrollbar (even if ContentSize.x < Size.x) |
 | NO_NAV_INPUTS | No keyboard/gamepad navigation within the window |
-| NO_NAV_FOCUS | No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by CTRL+TAB) |
+| NO_NAV_FOCUS | No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by Ctrl+Tab) |
 | UNSAVED_DOCUMENT | Display a dot next to the title. When used in a tab/docking context, tab is selected when clicking the X + closure is not assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar. |
 | NO_NAV |  |
 | NO_DECORATION |  |

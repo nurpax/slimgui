@@ -2048,7 +2048,7 @@ def show_demo_window(
 | LEGEND_TEXT | Legend text color (defaults to `Col.INLAY_TEXT`) |
 | TITLE_TEXT | Plot title text color (defaults to `Col.TEXT`) |
 | INLAY_TEXT | Color of text appearing inside of plots (defaults to `Col.TEXT`) |
-| AXIS_TEXT | Axis label and tick lables color (defaults to `Col.TEXT`) |
+| AXIS_TEXT | Axis label and tick labels color (defaults to `Col.TEXT`) |
 | AXIS_GRID | Axis grid color (defaults to 25% `Col.AXIS_TEXT`) |
 | AXIS_TICK | Axis tick color (defaults to AxisGrid) |
 | AXIS_BG | Background color of axis hover region (defaults to transparent) |
@@ -2124,7 +2124,7 @@ def show_demo_window(
 | --- | --- |
 | LINEAR | Default linear scale |
 | TIME | Date/time scale |
-| LOG10 | Base 10 logartithmic scale |
+| LOG10 | Base 10 logarithmic scale |
 | SYM_LOG | Symmetric log scale |
 
 ### Enum: StyleVar
@@ -2253,7 +2253,7 @@ def show_demo_window(
 | HORIZONTAL | Histogram bars will be rendered horizontally (not supported by PlotHistogram2D) |
 | CUMULATIVE | Each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D) |
 | DENSITY | Counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set |
-| NO_OUTLIERS | Exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts |
+| NO_OUTLIERS | Exclude values outside the specified histogram range from the count toward normalizing and cumulative counts |
 | COL_MAJOR | Data will be read in column major order (not supported by `plot_histogram`) |
 
 ### Enum: ImageFlag
@@ -2289,6 +2289,7 @@ def show_demo_window(
 | OUTSIDE | Legend will be rendered outside of the plot area |
 | HORIZONTAL | Legend entries will be displayed horizontally |
 | SORT | Legend entries will be displayed in alphabetical order |
+| REVERSE | Legend entries will be displayed in reverse order |
 
 ### Enum: LineFlags
 
@@ -2324,7 +2325,7 @@ def show_demo_window(
 | Name | Description |
 | --- | --- |
 | NONE | Default |
-| NO_TITLE | The plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MyPlot") |
+| NO_TITLE | The plot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. "##MyPlot") |
 | NO_LEGEND | The legend will not be displayed |
 | NO_MOUSE_TEXT | The mouse position, in plot coordinates, will not be displayed inside of the plot |
 | NO_INPUTS | The user will not be able to interact with the plot |
@@ -2368,7 +2369,7 @@ def show_demo_window(
 | Name | Description |
 | --- | --- |
 | NONE | Default |
-| NO_TITLE | The subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MySubplot") |
+| NO_TITLE | The subplot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. "##MySubplot") |
 | NO_LEGEND | The legend will not be displayed (only applicable if `SubplotFlags.SHARE_ITEMS` is enabled) |
 | NO_MENUS | The user will not be able to open context menus with right-click |
 | NO_RESIZE | Resize splitters between subplot cells will be not be provided |
