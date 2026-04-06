@@ -1,0 +1,6103 @@
+---
+url: /api/imgui.md
+---
+
+# ImGui API reference
+
+Slimgui is built against Dear ImGui version 1.92.4.
+
+API reference documentation is primarily adapted from Dear ImGui main header [imgui.h](https://github.com/ocornut/imgui/blob/master/imgui.h),
+with minor modifications to adapt symbol naming to Pythonic snake case.
+
+See [Typing](/guide/typing) for an explanation of the public `imgui` module,
+wrapper types such as `slimgui.imgui.DrawList`, and how they relate to the
+underlying `slimgui.slimgui_ext.*` bindings.
+
+## Context creation and access
+
+Each context creates its own `FontAtlas` by default. You may instance one yourself and pass it to `create_context()` to share a font atlas between contexts.
+
+### Functions
+
+::: api-signature
+
+```python
+def create_context(
+    shared_font_atlas: slimgui.slimgui_ext.imgui.FontAtlas | None = None,
+) -> slimgui.imgui.WrappedContext:
+    """
+    Create an ImGui `Context`.  The newly created context is also set current.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def destroy_context(
+    ctx: slimgui.imgui.WrappedContext | None,
+):
+    """
+    Destroy ImGui `Context`.  `None` = destroy current context.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_current_context() -> slimgui.imgui.WrappedContext | None:
+    """
+    Get the current ImGui context.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_current_context(
+    ctx: slimgui.imgui.WrappedContext,
+) -> None:
+    """
+    Set the current ImGui context.
+    """
+```
+
+:::
+
+## Main
+
+### Functions
+
+::: api-signature
+
+```python
+def get_io() -> slimgui.slimgui_ext.imgui.IO:
+    """
+    Access the ImGui `IO` structure (mouse/keyboard/gamepad inputs, time, various configuration options/flags).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_style() -> slimgui.slimgui_ext.imgui.Style:
+    """
+    Access the `Style` structure (colors, sizes). Always use `push_style_color()`, `push_style_var()` to modify style mid-frame!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_frame() -> None:
+    """
+    Ends the Dear ImGui frame. automatically called by `render()`. If you don't need to render data (skipping rendering) you may call `end_frame()` without `render()`... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call `new_frame()` at all!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def render() -> None:
+    """
+    Ends the Dear ImGui frame, finalize the draw data. You can then get call `get_draw_data()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_draw_data() -> DrawData:
+    """
+    Valid after `render()` and until the next call to `new_frame()`. Call ImGui_ImplXXXX_RenderDrawData() function in your Renderer Backend to render.
+    """
+```
+
+:::
+
+## Demo, Debug, Information
+
+### Error recovery and debug options
+
+Please see <https://github.com/ocornut/imgui/wiki/Error-Handling> for information.
+
+Currently only the `IO.config_*` boolean options are exposed from Slimgui. `IM_ASSERT` is configured by default to raise a Python exception, but note that it is not always recoverable — your Python application may be in a bad state afterward.
+
+### Functions
+
+::: api-signature
+
+```python
+def show_demo_window(
+    closable: bool = False,
+) -> bool:
+    """
+    Create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_metrics_window(
+    closable: bool = False,
+) -> bool:
+    """
+    Create Metrics/Debugger window. display Dear ImGui internals: windows, draw commands, various internal state, etc.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_debug_log_window(
+    closable: bool = False,
+) -> bool:
+    """
+    Create Debug Log window. display a simplified log of important dear imgui events.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_id_stack_tool_window(
+    closable: bool = False,
+) -> bool:
+    """
+    Create Stack Tool window. hover items with mouse to query information about the source of their unique ID.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_about_window(
+    closable: bool = False,
+) -> bool:
+    """
+    Create About window. display Dear ImGui version, credits and build/system information.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_style_editor() -> None:
+    """
+    Add style editor block (not a window). you can pass in a reference ImGuiStyle structure to compare to, revert to and save to (else it uses the default style)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_style_selector(
+    label: str,
+) -> bool:
+    """
+    Add style selector block (not a window), essentially a combo listing the default styles.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_font_selector(
+    label: str,
+) -> None:
+    """
+    Add font selector block (not a window), essentially a combo listing the loaded fonts.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def show_user_guide() -> None:
+    """
+    Add basic help/info block (not a window): how to manipulate ImGui as an end-user (mouse/keyboard controls).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_version() -> str:
+    """
+    Get the compiled version string e.g. "1.80 WIP" (essentially the value for IMGUI_VERSION from the compiled version of imgui.cpp)
+    """
+```
+
+:::
+
+## Styles
+
+Note: functions shown below intentionally do not accept `None` as the destination style.  Python wrappers with same name exist in the `slimgui` module that can be called with `None` that then modifies the current context's style.
+
+### Functions
+
+::: api-signature
+
+```python
+def style_colors_dark(
+    dst: slimgui.slimgui_ext.imgui.Style | None = None,
+) -> None:
+    """
+    Write dark mode styles into the destination style.  Set directly to context's style if dst is None.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def style_colors_light(
+    dst: slimgui.slimgui_ext.imgui.Style | None = None,
+) -> None:
+    """
+    Write light mode styles into the destination style.  Set directly to context's style if dst is None.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def style_colors_classic(
+    dst: slimgui.slimgui_ext.imgui.Style | None = None,
+) -> None:
+    """
+    Write classic mode styles into the destination style.  Set directly to context's style if dst is None.
+    """
+```
+
+:::
+
+## Windows
+
+* `begin()` = push window to the stack and start appending to it. `end()` = pop window from the stack.
+* Passing `closable = True` shows a window-closing widget in the upper-right corner of the window,
+  which clicking will set the boolean to false when clicked.
+* You may append multiple times to the same window during the same frame by calling `begin()`/`end()` pairs multiple times. Some information such as `flags` or `closable` will only be considered by the first call to `begin()`.
+* `begin()` returns `False` to indicate the window is collapsed or fully clipped, so you may early out and omit submitting
+  anything to the window. Always call a matching `end()` for each `begin()` call, regardless of its return value!
+
+  Important: due to legacy reason, `begin()`/`end()` and `begin_child()`/`end_child()` are inconsistent with all other functions such as `begin_menu()`/`end_menu()`, `begin_popup()`/`end_popup()`, etc. where the `end_xxx()` call should only be called if the corresponding
+  `begin_xxx()` function returned `True`. `begin()` and `begin_child()` are the only odd ones out. Will be fixed in a future update.
+* Note that the bottom of window stack always contains a window called "Debug".
+
+### Functions
+
+::: api-signature
+
+````python
+def begin(
+    name: str,
+    closable: bool = False,
+    flags: WindowFlags = WindowFlags.NONE,
+) -> tuple[bool, bool]:
+    """
+    When the `closable` argument is set to `True`, the created window will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:
+    ```python
+    win_open = True  # open/closed state
+
+    visible, win_open = imgui.begin(..., closable=win_open)
+    if visible:
+        # render window contents here..
+    imgui.end()
+    ```
+    """
+````
+
+:::
+
+::: api-signature
+
+```python
+def end() -> None:
+    """
+    Every `begin()` call must be paired with a corresponding `end()` call, regardless of the return value of `begin()` return value.
+    """
+```
+
+:::
+
+## Child Windows
+
+* Use child windows to begin into a self-contained independent scrolling/clipping regions within a host window. Child windows can embed their own child.
+* Manual sizing (each axis can use a different setting e.g. `(0, 400)`):
+  \== 0: use remaining parent window size for this axis.
+  > 0: use specified size for this axis.
+  > < 0: right/bottom-align to specified distance from available content boundaries.
+* Specifying `ChildFlags.AUTO_RESIZE_X` or `ChildFlags.AUTO_RESIZE_Y` makes the sizing automatic based on child contents.
+  Combining both `ChildFlags.AUTO_RESIZE_X` *and* `ChildFlags.AUTO_RESIZE_Y` defeats purpose of a scrolling region and is NOT recommended.
+* `begin_child()` returns false to indicate the window is collapsed or fully clipped, so you may early out and omit submitting
+  anything to the window. Always call a matching `end_child()` for each `begin_child()` call, regardless of its return value.
+
+Important: due to legacy reason, `begin()`/`end()` and `begin_child()`/`end_child()` are inconsistent with all other functions such as `begin_menu()`/`end_menu()`, `begin_popup()`/`end_popup()`, etc. where the `end_xxx()` call should only be called if the corresponding `begin_xxx()` function returned true. `begin()` and `begin_child()` are the only odd ones out. Will be fixed in a future update.
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_child(
+    str_id: str,
+    size: tuple[float, float] = (0.0, 0.0),
+    child_flags: ChildFlags = ChildFlags.NONE,
+    window_flags: WindowFlags = WindowFlags.NONE,
+) -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_child() -> None:
+```
+
+:::
+
+## Window Utilities
+
+* 'current window' = the window we are appending into while inside a `begin()`/`end()` block. 'next window' = next window we will `begin()` into.
+
+### Functions
+
+::: api-signature
+
+```python
+def is_window_appearing() -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_window_collapsed() -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_window_focused(
+    flags: FocusedFlags = FocusedFlags.NONE,
+) -> bool:
+    """
+    Is current window focused? or its root/child, depending on flags. see flags for options.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_window_hovered(
+    flags: HoveredFlags = HoveredFlags.NONE,
+) -> bool:
+    """
+    Is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See `HoveredFlags` for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry "How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?" for details.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_window_draw_list() -> slimgui.imgui.DrawList:
+    """
+    Get draw list associated to the current window, to append your own drawing primitives.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_window_pos() -> tuple[float, float]:
+    """
+    Get current window position in screen space (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using `get_cursor_screen_pos()` and `get_content_region_avail()` instead)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_window_size() -> tuple[float, float]:
+    """
+    Get current window size (IT IS UNLIKELY YOU EVER NEED TO USE THIS. Consider always using `get_cursor_screen_pos()` and `get_content_region_avail()` instead)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_window_width() -> float:
+    """
+    Get current window width (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for `get_window_size()`.x.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_window_height() -> float:
+    """
+    Get current window height (IT IS UNLIKELY YOU EVER NEED TO USE THIS). Shortcut for `get_window_size()`.y.
+    """
+```
+
+:::
+
+## Window Manipulation
+
+* Prefer using `set_next_xxx` functions (before `begin`) rather than `set_xxx` functions (after `begin`).
+
+### Functions
+
+::: api-signature
+
+```python
+def set_next_window_pos(
+    pos: tuple[float, float],
+    cond: Cond = Cond.NONE,
+    pivot: tuple[float, float] = (0.0, 0.0),
+) -> None:
+    """
+    Set next window position. call before `begin()`. use pivot=(0.5f,0.5f) to center on given point, etc.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_window_size(
+    size: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    Set next window size. set axis to 0.0f to force an auto-fit on this axis. call before `begin()`
+    """
+```
+
+:::
+
+::: api-signature
+
+````python
+def set_next_window_size_constraints(
+    size_min: tuple[float, float],
+    size_max: tuple[float, float],
+    cb: Optional[Callable[[tuple[float, float], tuple[float, float], tuple[float, float], int], tuple[float, float]]] = None,
+    user_data_id: int = 0,
+) -> None:
+    """
+    Set next window size limits.  Use 0.0 or FLT_MAX if you don't want limits.  Use -1 for both min and max of same axis to preserve current size (which itself is a constraint).  Use callback to apply non-trivial programmatic constraints.
+
+    This function still has some rough corners.  It only accepts an integer `user_data` argument.  If you need to pass a float through it, you could for example convert to fixed point and convert back to float in the constraint function.  Or you can capture any such values as a function closure.
+
+    Use of constrain callbacks:
+    ```python
+    def aspect_ratio_constraint_16_9(_pos:  FVec2, _current_size: FVec2, desired_size: FVec2, _int_user_data: int) -> FVec2:
+        aspect_ratio = 16.0 / 9
+        new_desired_y = int(desired_size[0] / aspect_ratio)
+        return (desired_size[0], new_desired_y)
+
+    # usage:
+
+    imgui.set_next_window_size_constraints((0, 0), (FLT_MAX, FLT_MAX), aspect_ratio_constraint_16_9)
+    ```
+    """
+````
+
+:::
+
+::: api-signature
+
+```python
+def set_next_window_content_size(
+    size: tuple[float, float],
+) -> None:
+    """
+    Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before `begin()`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_window_collapsed(
+    collapsed: bool,
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    Set next window collapsed state. call before `begin()`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_window_focus() -> None:
+    """
+    Set next window to be focused / top-most. call before `begin()`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_window_scroll(
+    scroll: tuple[float, float],
+) -> None:
+    """
+    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_window_bg_alpha(
+    alpha: float,
+) -> None:
+    """
+    Set next window background color alpha. helper to easily override the Alpha component of `Col.WINDOW_BG`/ChildBg/PopupBg. you may also use `WindowFlags.NO_BACKGROUND`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_pos(
+    pos: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window position - call within `begin()`/`end()`. prefer using `set_next_window_pos()`, as this may incur tearing and side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_pos(
+    name: str,
+    pos: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window position - call within `begin()`/`end()`. prefer using `set_next_window_pos()`, as this may incur tearing and side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_size(
+    size: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window size - call within `begin()`/`end()`. set to ImVec2(0, 0) to force an auto-fit. prefer using `set_next_window_size()`, as this may incur tearing and minor side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_size(
+    name: str,
+    size: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window size - call within `begin()`/`end()`. set to ImVec2(0, 0) to force an auto-fit. prefer using `set_next_window_size()`, as this may incur tearing and minor side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_collapsed(
+    collapsed: bool,
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window collapsed state. prefer using `set_next_window_collapsed()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_collapsed(
+    name: str,
+    collapsed: bool,
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window collapsed state. prefer using `set_next_window_collapsed()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_focus() -> None:
+    """
+    (not recommended) set current window to be focused / top-most. prefer using `set_next_window_focus()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_focus(
+    name: str,
+) -> None:
+    """
+    (not recommended) set current window to be focused / top-most. prefer using `set_next_window_focus()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_pos(
+    pos: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window position - call within `begin()`/`end()`. prefer using `set_next_window_pos()`, as this may incur tearing and side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_pos(
+    name: str,
+    pos: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window position - call within `begin()`/`end()`. prefer using `set_next_window_pos()`, as this may incur tearing and side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_size(
+    size: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window size - call within `begin()`/`end()`. set to ImVec2(0, 0) to force an auto-fit. prefer using `set_next_window_size()`, as this may incur tearing and minor side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_size(
+    name: str,
+    size: tuple[float, float],
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window size - call within `begin()`/`end()`. set to ImVec2(0, 0) to force an auto-fit. prefer using `set_next_window_size()`, as this may incur tearing and minor side-effects.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_collapsed(
+    collapsed: bool,
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window collapsed state. prefer using `set_next_window_collapsed()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_collapsed(
+    name: str,
+    collapsed: bool,
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    (not recommended) set current window collapsed state. prefer using `set_next_window_collapsed()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_focus() -> None:
+    """
+    (not recommended) set current window to be focused / top-most. prefer using `set_next_window_focus()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_window_focus(
+    name: str,
+) -> None:
+    """
+    (not recommended) set current window to be focused / top-most. prefer using `set_next_window_focus()`.
+    """
+```
+
+:::
+
+## Windows Scrolling
+
+* Any change of scroll will be applied at the beginning of next frame in the first call to `begin()`.
+* You may instead use `set_next_window_scroll()` prior to calling `begin()` to avoid this delay, as an alternative to using `set_scroll_x()`/`set_scroll_y()`.
+
+### Functions
+
+::: api-signature
+
+```python
+def set_next_window_scroll(
+    scroll: tuple[float, float],
+) -> None:
+    """
+    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_scroll_x() -> float:
+    """
+    Get scrolling amount [0 .. `get_scroll_max_x()`]
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_scroll_y() -> float:
+    """
+    Get scrolling amount [0 .. `get_scroll_max_y()`]
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_scroll_x(
+    scroll_x: float,
+) -> None:
+    """
+    Set scrolling amount [0 .. `get_scroll_max_x()`]
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_scroll_y(
+    scroll_y: float,
+) -> None:
+    """
+    Set scrolling amount [0 .. `get_scroll_max_y()`]
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_scroll_max_x() -> float:
+    """
+    Get maximum scrolling amount ~~ ContentSize.x - WindowSize.x - DecorationsSize.x
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_scroll_max_y() -> float:
+    """
+    Get maximum scrolling amount ~~ ContentSize.y - WindowSize.y - DecorationsSize.y
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_scroll_here_x(
+    center_x_ratio: float = 0.5,
+) -> None:
+    """
+    Adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a "default/current item" visible, consider using `set_item_default_focus()` instead.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_scroll_here_y(
+    center_y_ratio: float = 0.5,
+) -> None:
+    """
+    Adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using `set_item_default_focus()` instead.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_scroll_from_pos_x(
+    local_x: float,
+    center_x_ratio: float = 0.5,
+) -> None:
+    """
+    Adjust scrolling amount to make given position visible. Generally `get_cursor_start_pos()` + offset to compute a valid position.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_scroll_from_pos_y(
+    local_y: float,
+    center_y_ratio: float = 0.5,
+) -> None:
+    """
+    Adjust scrolling amount to make given position visible. Generally `get_cursor_start_pos()` + offset to compute a valid position.
+    """
+```
+
+:::
+
+## Parameter stacks (shared)
+
+### Functions
+
+::: api-signature
+
+```python
+def push_font(
+    font: Font | None,
+    font_size_base: float,
+) -> None:
+    """
+    Use `None` as a shortcut to keep current font.  Use 0.0 for `font_size_base` to keep the current font size.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_font() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_style_color(
+    idx: Col,
+    col: int,
+) -> None:
+    """
+    Modify a style color. always use this if you modify the style after `new_frame()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_style_color(
+    idx: Col,
+    col: tuple[float, float, float, float],
+) -> None:
+    """
+    Modify a style color. always use this if you modify the style after `new_frame()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_style_color(
+    idx: Col,
+    col: tuple[float, float, float],
+) -> None:
+    """
+    Modify a style color. always use this if you modify the style after `new_frame()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_style_color(
+    count: int = 1,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_style_var(
+    idx: StyleVar,
+    val: float,
+) -> None:
+    """
+    Modify a style float variable. always use this if you modify the style after `new_frame()`!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_style_var(
+    idx: StyleVar,
+    val: tuple[float, float],
+) -> None:
+    """
+    Modify a style float variable. always use this if you modify the style after `new_frame()`!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_style_var_x(
+    idx: StyleVar,
+    val_x: float,
+) -> None:
+    """
+    Modify X component of a style ImVec2 variable. "
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_style_var_y(
+    idx: StyleVar,
+    val_y: float,
+) -> None:
+    """
+    Modify Y component of a style ImVec2 variable. "
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_style_var(
+    count: int = 1,
+) -> None:
+```
+
+:::
+
+## Parameter stacks (current window)
+
+### Functions
+
+::: api-signature
+
+```python
+def push_item_width(
+    item_width: float,
+) -> None:
+    """
+    Push width of items for common large "item+label" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_item_width() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_item_width(
+    item_width: float,
+) -> None:
+    """
+    Set width of the _next_ common large "item+label" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def calc_item_width() -> float:
+    """
+    Width of item given pushed settings and current cursor position. NOT necessarily the width of last item unlike most 'Item' functions.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_text_wrap_pos(
+    wrap_local_pos_x: float = 0.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_text_wrap_pos() -> None:
+```
+
+:::
+
+## Style read access
+
+* Use `show_style_editor()` function to interactively see/edit the colors.
+
+### Functions
+
+::: api-signature
+
+```python
+def get_font() -> slimgui.slimgui_ext.imgui.Font:
+    """
+    Get the current font.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_font_size() -> float:
+    """
+    Get current font size (= height in pixels) of current font, with global scale factors applied.
+
+    - Use `style.font_size_base` to get value before global scale factors.
+    - recap: `imgui.get_font_size() == style.font_size_base * (style.font_scale_main * style.font_scale_dpi * other_scaling_factors)`
+    """
+```
+
+:::
+
+Get current font size (= height in pixels) of current font, with global scale factors applied.
+
+* Use `style.font_size_base` to get value before global scale factors.
+* recap: `imgui.get_font_size() == style.font_size_base * (style.font_scale_main * style.font_scale_dpi * other_scaling_factors)`
+
+::: api-signature
+
+```python
+def get_font_tex_uv_white_pixel() -> tuple[float, float]:
+    """
+    Get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_color_u32(
+    idx: Col,
+    alpha_mul: float = 1.0,
+) -> int:
+    """
+    Retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_color_u32(
+    col: tuple[float, float, float, float],
+) -> int:
+    """
+    Retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_color_u32(
+    col: int,
+    alpha_mul: float = 1.0,
+) -> int:
+    """
+    Retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_style_color_vec4(
+    col: Col,
+) -> tuple[float, float, float, float]:
+    """
+    Retrieve style color as stored in ImGuiStyle structure. use to feed back into `push_style_color()`, otherwise use `get_color_u32()` to get style color with style alpha baked in.
+    """
+```
+
+:::
+
+## Layout cursor positioning
+
+* By "cursor" we mean the current output position.
+* The typical widget behavior is to output themselves at the current cursor position, then move the cursor one line down.
+* You can call `same_line()` between widgets to undo the last carriage return and output at the right of the preceding widget.
+* YOU CAN DO 99% OF WHAT YOU NEED WITH ONLY `get_cursor_screen_pos()` and `get_content_region_avail()`.
+* Attention! We currently have inconsistencies between window-local and absolute positions we will aim to fix with future API:
+  * Absolute coordinate: `get_cursor_screen_pos()`, `set_cursor_screen_pos()`, all `DrawList` functions. -> this is the preferred way forward.
+  * Window-local coordinates: `same_line(offset)`, `get_cursor_pos()`, `set_cursor_pos()`, `get_cursor_start_pos()`, `push_text_wrap_pos()`
+  * Window-local coordinates: `get_content_region_max()`, `get_window_content_region_min()`, `get_window_content_region_max()` --> all obsoleted. YOU DON'T NEED THEM.
+* `get_cursor_screen_pos()` = `get_cursor_pos()` + `get_window_pos()`. `get_window_pos()` is almost only ever useful to convert from window-local to absolute coordinates. Try not to use it.
+
+### Functions
+
+::: api-signature
+
+```python
+def get_cursor_screen_pos() -> tuple[float, float]:
+    """
+    Cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND (prefer using this rather than `get_cursor_pos()`, also more useful to work with ImDrawList API).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_cursor_screen_pos(
+    pos: tuple[float, float],
+) -> None:
+    """
+    Cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_content_region_avail() -> tuple[float, float]:
+    """
+    Available space from current position. THIS IS YOUR BEST FRIEND.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_cursor_pos() -> tuple[float, float]:
+    """
+    [window-local] cursor position in window-local coordinates. This is not your best friend.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_cursor_pos_x() -> float:
+    """
+    [window-local] "
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_cursor_pos_y() -> float:
+    """
+    [window-local] "
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_cursor_pos(
+    local_pos: tuple[float, float],
+) -> None:
+    """
+    [window-local] "
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_cursor_pos_x(
+    local_x: float,
+) -> None:
+    """
+    [window-local] "
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_cursor_pos_y(
+    local_y: float,
+) -> None:
+    """
+    [window-local] "
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_cursor_start_pos() -> tuple[float, float]:
+    """
+    [window-local] initial cursor position, in window-local coordinates. Call `get_cursor_screen_pos()` after `begin()` to get the absolute coordinates version.
+    """
+```
+
+:::
+
+## Other layout functions
+
+### Functions
+
+::: api-signature
+
+```python
+def separator() -> None:
+    """
+    Separator, generally horizontal. inside a menu bar or in horizontal layout mode, this becomes a vertical separator.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def same_line(
+    offset_from_start_x: float = 0.0,
+    spacing: float = -1.0,
+) -> None:
+    """
+    Call between widgets or groups to layout them horizontally. X position given in window coordinates.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def new_line() -> None:
+    """
+    Undo a `same_line()` or force a new line when in a horizontal-layout context.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def spacing() -> None:
+    """
+    Add vertical spacing.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def dummy(
+    size: tuple[float, float],
+) -> None:
+    """
+    Add a dummy item of given size. unlike `invisible_button()`, `dummy()` won't take the mouse click or be navigable into.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def indent(
+    indent_w: float = 0.0,
+) -> None:
+    """
+    Move content position toward the right, by indent_w, or style.IndentSpacing if indent_w <= 0
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def unindent(
+    indent_w: float = 0.0,
+) -> None:
+    """
+    Move content position back to the left, by indent_w, or style.IndentSpacing if indent_w <= 0
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def begin_group() -> None:
+    """
+    Lock horizontal starting position
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_group() -> None:
+    """
+    Unlock horizontal starting position + capture the whole group bounding box into one "item" (so you can use `is_item_hovered()` or layout primitives such as `same_line()` on whole group, etc.)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def align_text_to_frame_padding() -> None:
+    """
+    Vertically align upcoming text baseline to FramePadding.y so that it will align properly to regularly framed items (call if you have text on a line before a framed item)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_text_line_height() -> float:
+    """
+    ~ FontSize
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_text_line_height_with_spacing() -> float:
+    """
+    ~ FontSize + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of text)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_frame_height() -> float:
+    """
+    ~ FontSize + style.FramePadding.y * 2
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_frame_height_with_spacing() -> float:
+    """
+    ~ FontSize + style.FramePadding.y * 2 + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of framed widgets)
+    """
+```
+
+:::
+
+## ID stack/scopes
+
+Read the FAQ (docs/FAQ.md or http://dearimgui.com/faq) for more details about how ID are handled in dear imgui.
+
+Those questions are answered and impacted by understanding of the ID stack system:
+
+* "Q: Why is my widget not reacting when I click on it?"
+* "Q: How can I have widgets with an empty label?"
+* "Q: How can I have multiple widgets with the same label?"
+
+Short version: ID are hashes of the entire ID stack. If you are creating widgets in a loop you most likely want to push a unique identifier (e.g. object pointer, loop index) to uniquely differentiate them.
+
+You can also use the `"Label##foobar"` syntax within widget label to distinguish them from each others.
+
+In this header file we use the `label`/`name` terminology to denote a string that will be displayed + used as an ID, whereas `str_id` denote a string that is only used as an ID and not normally displayed.
+
+### Functions
+
+::: api-signature
+
+```python
+def push_id(
+    str_id: str,
+) -> None:
+    """
+    Push string into the ID stack (will hash string).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def push_id(
+    int_id: int,
+) -> None:
+    """
+    Push string into the ID stack (will hash string).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_id() -> None:
+    """
+    Pop from the ID stack.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_id(
+    str_id: str,
+) -> None:
+    """
+    Calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_id(
+    int_id: int,
+) -> None:
+    """
+    Calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself
+    """
+```
+
+:::
+
+## Widgets: Text
+
+### Functions
+
+::: api-signature
+
+```python
+def text(
+    text: str,
+) -> None:
+    """
+    Formatted text
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def text_colored(
+    col: tuple[float, float, float, float],
+    text: str,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def text_disabled(
+    text: str,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def text_wrapped(
+    text: str,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def label_text(
+    label: str,
+    text: str,
+) -> None:
+    """
+    Display text+label aligned the same way as value+label widgets
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def bullet_text(
+    text: str,
+) -> None:
+    """
+    Shortcut for `bullet()`+`text()`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def separator_text(
+    text: str,
+) -> None:
+    """
+    Currently: formatted text with a horizontal line
+    """
+```
+
+:::
+
+## Widgets: Main
+
+* Most widgets return `True` when the value has been changed or when pressed/selected.
+* You may also use one of the many `is_item_xxx` functions (e.g. `is_item_active()`, `is_item_hovered()`, etc.) to query widget state.
+
+### Functions
+
+::: api-signature
+
+```python
+def button(
+    label: str,
+    size: tuple[float, float] = (0.0, 0.0),
+) -> bool:
+    """
+    Button
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def small_button(
+    label: str,
+) -> bool:
+    """
+    Button with (FramePadding.y == 0) to easily embed within text
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def invisible_button(
+    str_id: str,
+    size: tuple[float, float],
+    flags: ButtonFlags = ButtonFlags.NONE,
+) -> bool:
+    """
+    Flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with `is_item_active`, `is_item_hovered`, etc.)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def arrow_button(
+    str_id: str,
+    dir: Dir,
+) -> bool:
+    """
+    Square button with an arrow shape
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def checkbox(
+    label: str,
+    v: bool,
+) -> tuple[bool, bool]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def checkbox_flags(
+    label: str,
+    flags: int,
+    flags_value: int,
+) -> tuple[bool, int]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def radio_button(
+    label: str,
+    active: bool,
+) -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def radio_button(
+    label: str,
+    v: int,
+    v_button: int,
+) -> tuple[bool, int]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def progress_bar(
+    fraction: float,
+    size_arg: tuple[float, float] = (-FLT_MIN, 0),
+    overlay: str | None = None,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def bullet() -> None:
+    """
+    Draw a small circle + keep the cursor on the same line. advance cursor x position by `get_tree_node_to_label_spacing()`, same distance that `tree_node()` uses
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def text_link(
+    label: str,
+) -> None:
+    """
+    Hyperlink text button, return true when clicked
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def text_link_open_url(
+    label: str,
+    url: str | None = None,
+) -> None:
+    """
+    Hyperlink text button, automatically open file/url when clicked
+    """
+```
+
+:::
+
+## Widgets: Images
+
+* Read about texture IDs and TextureRef in ImGui docs: [Image Loading and Displaying Examples](https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples)
+  * In general, you shouldn't need to worry about `TextureRef` -- all image functions also accept an integer texture ID.
+* `uv0` and `uv1` are texture coordinates. Read about them from the same link above.
+  * `image()` pads adds `StyleVar.IMAGE_BORDER_SIZE` on each side, `image_button()` adds `StyleVar.FRAME_PADDING` on each side.
+  * `image_button()` draws a background based on regular `button()` color and optionally an inner background if specified.
+
+### Functions
+
+::: api-signature
+
+```python
+def image(
+    tex_ref: TextureRef | int,
+    image_size: tuple[float, float],
+    uv0: tuple[float, float] = (0.0, 0.0),
+    uv1: tuple[float, float] = (1.0, 1.0),
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def image_with_bg(
+    tex_ref: TextureRef | int,
+    image_size: tuple[float, float],
+    uv0: tuple[float, float] = (0.0, 0.0),
+    uv1: tuple[float, float] = (1.0, 1.0),
+    bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0),
+    tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def image_button(
+    str_id: str,
+    tex_ref: TextureRef | int,
+    image_size: tuple[float, float],
+    uv0: tuple[float, float] = (0.0, 0.0),
+    uv1: tuple[float, float] = (1.0, 1.0),
+    bg_col: tuple[float, float, float, float] = (0.0, 0.0, 0.0, 0.0),
+    tint_col: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0),
+) -> bool:
+```
+
+:::
+
+## Widgets: Combo Box (Dropdown)
+
+* The `begin_combo()`/`end_combo()` API allows you to manage your contents and selection state however you want it, by creating e.g. `selectable()` items.
+* The old `combo()` API are helpers over `begin_combo()`/`end_combo()` which are kept available for convenience purposes. This is analogous to how `list_box` is created.
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_combo(
+    label: str,
+    preview_value: str,
+    flags: ComboFlags = ComboFlags.NONE,
+) -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_combo() -> None:
+    """
+    Only call `end_combo()` if `begin_combo()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def combo(
+    label: str,
+    current_item: int,
+    items: Sequence[str],
+    popup_max_height_in_items: int = -1,
+) -> tuple[bool, int]:
+```
+
+:::
+
+## Widgets: Drag Sliders
+
+* CTRL+Click on any drag box to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use `SliderFlags.ALWAYS_CLAMP` to always clamp.
+* Adjust format string to decorate the value with a prefix, a suffix, or adapt the editing and display precision e.g. `"%.3f"` -> `1.234`; `"%5.2f secs"` -> `01.23 secs`; `"Biscuit: %.0f"` -> `Biscuit: 1`; etc.
+* Format string may also be set to `None` or use the default format (`"%f"` or `"%d"`).
+* Speed is per-pixel of mouse movement (`v_speed=0.2`: mouse needs to move by 5 pixels to increase value by 1). For keyboard/gamepad navigation, minimum speed is `max(v_speed, minimum_step_at_given_precision)`.
+* Use `v_min < v_max` to clamp edits to given limits. Note that CTRL+Click manual input can override those limits if `SliderFlags.ALWAYS_CLAMP` is not used.
+* Use `v_max = FLT_MAX` / `INT_MAX` etc. to avoid clamping to a maximum, same with `v_min = -FLT_MAX` / `INT_MIN` to avoid clamping to a minimum.
+* We use the same sets of flags for `drag_xxx()` and `slider_xxx()` functions as the features are the same and it makes it easier to swap them.
+
+### Functions
+
+::: api-signature
+
+```python
+def drag_float(
+    label: str,
+    v: float,
+    v_speed: float = 1.0,
+    v_min: float = 0.0,
+    v_max: float = 0.0,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, float]:
+    """
+    If v_min >= v_max we have no bound
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_float2(
+    label: str,
+    v: tuple[float, float],
+    v_speed: float = 1.0,
+    v_min: float = 0.0,
+    v_max: float = 0.0,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_float3(
+    label: str,
+    v: tuple[float, float, float],
+    v_speed: float = 1.0,
+    v_min: float = 0.0,
+    v_max: float = 0.0,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_float4(
+    label: str,
+    v: tuple[float, float, float, float],
+    v_speed: float = 1.0,
+    v_min: float = 0.0,
+    v_max: float = 0.0,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[float, float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_float_range2(
+    label: str,
+    v_current_min: float,
+    v_current_max: float,
+    v_speed: float = 1.0,
+    v_min: float = 0.0,
+    v_max: float = 0.0,
+    format: str = '%.3f',
+    format_max: str | None = None,
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, float, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_int(
+    label: str,
+    v: int,
+    v_speed: float = 1.0,
+    v_min: int = 0,
+    v_max: int = 0,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, int]:
+    """
+    If v_min >= v_max we have no bound
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_int2(
+    label: str,
+    v: tuple[int, int],
+    v_speed: float = 1.0,
+    v_min: int = 0,
+    v_max: int = 0,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_int3(
+    label: str,
+    v: tuple[int, int, int],
+    v_speed: float = 1.0,
+    v_min: int = 0,
+    v_max: int = 0,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[int, int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_int4(
+    label: str,
+    v: tuple[int, int, int, int],
+    v_speed: float = 1.0,
+    v_min: int = 0,
+    v_max: int = 0,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[int, int, int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def drag_int_range2(
+    label: str,
+    v_current_min: int,
+    v_current_max: int,
+    v_speed: float = 1.0,
+    v_min: int = 0,
+    v_max: int = 0,
+    format: str = '%d',
+    format_max: str | None = None,
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, int, int]:
+```
+
+:::
+
+## Widgets: Regular Sliders
+
+* CTRL+Click on any slider to turn it into an input box. Manually input values aren't clamped by default and can go off-bounds. Use `SliderFlags.ALWAYS_CLAMP` to always clamp.
+* Adjust the format string to decorate the value with a prefix, a suffix, or adapt the editing and display precision, e.g., `"%.3f"` -> `1.234`; `"%5.2f secs"` -> `01.23 secs`; `"Biscuit: %.0f"` -> `Biscuit: 1`; etc.
+* The format string may also be set to `None` or use the default format (`"%f"` or `"%d"`).
+
+### Functions
+
+::: api-signature
+
+```python
+def slider_float(
+    label: str,
+    v: float,
+    v_min: float,
+    v_max: float,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, float]:
+    """
+    Adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_float2(
+    label: str,
+    v: tuple[float, float],
+    v_min: float,
+    v_max: float,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_float3(
+    label: str,
+    v: tuple[float, float, float],
+    v_min: float,
+    v_max: float,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_float4(
+    label: str,
+    v: tuple[float, float, float, float],
+    v_min: float,
+    v_max: float,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[float, float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_angle(
+    label: str,
+    v: float,
+    v_degrees_min: float = -360.0,
+    v_degrees_max: float = 360.0,
+    format: str = '%.0f deg',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_int(
+    label: str,
+    v: int,
+    v_min: int,
+    v_max: int,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, int]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_int2(
+    label: str,
+    v: tuple[int, int],
+    v_min: int,
+    v_max: int,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_int3(
+    label: str,
+    v: tuple[int, int, int],
+    v_min: int,
+    v_max: int,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[int, int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def slider_int4(
+    label: str,
+    v: tuple[int, int, int, int],
+    v_min: int,
+    v_max: int,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, tuple[int, int, int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def vslider_float(
+    label: str,
+    size: tuple[float, float],
+    v: float,
+    v_min: float,
+    v_max: float,
+    format: str = '%.3f',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def vslider_int(
+    label: str,
+    size: tuple[float, float],
+    v: int,
+    v_min: int,
+    v_max: int,
+    format: str = '%d',
+    flags: SliderFlags = SliderFlags.NONE,
+) -> tuple[bool, int]:
+```
+
+:::
+
+## Widgets: Input with Keyboard
+
+* Most of the `InputTextFlags` flags are only useful for `input_text()` and not for `input_float_*`, `input_float_*`, `input_int_*`, etc.
+
+### Functions
+
+::: api-signature
+
+```python
+def input_text(
+    label: str,
+    text: str,
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, str]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_text_multiline(
+    label: str,
+    text: str,
+    size: tuple[float, float] = (0.0, 0.0),
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, str]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_text_with_hint(
+    label: str,
+    hint: str,
+    text: str,
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, str]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_float(
+    label: str,
+    v: float,
+    step: float = 0.0,
+    step_fast: float = 0.0,
+    format: str = '%.3f',
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_float2(
+    label: str,
+    v: tuple[float, float],
+    format: str = '%.3f',
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, tuple[float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_float3(
+    label: str,
+    v: tuple[float, float, float],
+    format: str = '%.3f',
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, tuple[float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_float4(
+    label: str,
+    v: tuple[float, float, float, float],
+    format: str = '%.3f',
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, tuple[float, float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_int(
+    label: str,
+    v: int,
+    step: int = 1,
+    step_fast: int = 100,
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, int]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_int2(
+    label: str,
+    v: tuple[int, int],
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, tuple[int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_int3(
+    label: str,
+    v: tuple[int, int, int],
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, tuple[int, int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_int4(
+    label: str,
+    v: tuple[int, int, int, int],
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, tuple[int, int, int, int]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def input_double(
+    label: str,
+    v: float,
+    step: float = 0.0,
+    step_fast: float = 0.0,
+    format: str = '%.6f',
+    flags: InputTextFlags = InputTextFlags.NONE,
+) -> tuple[bool, float]:
+```
+
+:::
+
+## Widgets: Color Editor/Picker
+
+Tip: the `color_edit_*` functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.
+
+### Functions
+
+::: api-signature
+
+```python
+def color_edit3(
+    label: str,
+    col: tuple[float, float, float],
+    flags: ColorEditFlags = ColorEditFlags.NONE,
+) -> tuple[bool, tuple[float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def color_edit4(
+    label: str,
+    col: tuple[float, float, float, float],
+    flags: ColorEditFlags = ColorEditFlags.NONE,
+) -> tuple[bool, tuple[float, float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def color_picker3(
+    label: str,
+    col: tuple[float, float, float],
+    flags: ColorEditFlags = ColorEditFlags.NONE,
+) -> tuple[bool, tuple[float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def color_picker4(
+    label: str,
+    col: tuple[float, float, float, float],
+    flags: ColorEditFlags = ColorEditFlags.NONE,
+    ref_col: tuple[float, float, float, float] | None = None,
+) -> tuple[bool, tuple[float, float, float, float]]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def color_button(
+    desc_id: str,
+    col: tuple[float, float, float, float],
+    flags: ColorEditFlags = ColorEditFlags.NONE,
+    size: tuple[float, float] = (0.0, 0.0),
+) -> bool:
+    """
+    Display a color square/button, hover for details, return true when pressed.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_color_edit_options(
+    flags: ColorEditFlags,
+) -> None:
+    """
+    Initialize current options (generally on application startup) if you want to select a default format, picker type, etc. User will be able to change many settings, unless you pass the _NoOptions flag to your calls.
+    """
+```
+
+:::
+
+## Widgets: Trees
+
+* `tree_node` functions return `True` when the node is open, in which case you need to also call `tree_pop()` when you are finished displaying the tree node contents.
+
+### Functions
+
+::: api-signature
+
+```python
+def tree_node(
+    label: str,
+    flags: TreeNodeFlags = TreeNodeFlags.NONE,
+) -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def tree_node(
+    str_id: str,
+    text: str,
+    flags: TreeNodeFlags = TreeNodeFlags.NONE,
+) -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def tree_push(
+    str_id: str,
+) -> None:
+    """
+    ~ `indent()`+`push_id()`. Already called by `tree_node()` when returning true, but you can call `tree_push`/`tree_pop` yourself if desired.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def tree_pop() -> None:
+    """
+    ~ `unindent()`+`pop_id()`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_tree_node_to_label_spacing() -> float:
+    """
+    Horizontal distance preceding label when using `tree_node`*() or `bullet()` == (g.FontSize + style.FramePadding.x*2) for a regular unframed `tree_node`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def collapsing_header(
+    label: str,
+    visible: bool | None = None,
+    flags: TreeNodeFlags = TreeNodeFlags.NONE,
+) -> tuple[bool, bool | None]:
+    """
+    If returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call `tree_pop()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_item_open(
+    is_open: bool,
+    cond: Cond = Cond.NONE,
+) -> None:
+    """
+    Set next `tree_node`/`collapsing_header` open state.
+    """
+```
+
+:::
+
+## Widgets: Selectables
+
+* A selectable highlights when hovered, and can display another color when selected.
+* Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected `selectable` appear contiguous.
+
+### Functions
+
+::: api-signature
+
+```python
+def selectable(
+    label: str,
+    selected: bool = False,
+    flags: SelectableFlags = SelectableFlags.NONE,
+    size: tuple[float, float] = (0.0, 0.0),
+) -> tuple[bool, bool]:
+    """
+    The `selected` argument indicates whether the item is selected or not.
+
+    When `size[0] == 0.0` use remaining width.  Use `size[0] > 0.0` to specify width.
+    When `size[1] == 0.0` use label height.  Use `size[1] > 0.0` to specify height.
+
+    The returned pair contains:
+
+    - first element: a boolean indicating whether the item was clicked.
+    - second element: the updated selection state of the item.
+    """
+```
+
+:::
+
+## Multi-selection system for `selectable()`, `checkbox()`, `tree_node()` functions \[BETA]
+
+*TODO* Multi-selection is currently NOT supported in Slimgui.  [Issue #16](https://github.com/nurpax/slimgui/issues/16) tracks this implementation.
+
+* This enables standard multi-selection/range-selection idioms (CTRL+Mouse/Keyboard, SHIFT+Mouse/Keyboard, etc.) in a way that also allows a clipper to be used.
+* `SelectionUserData` is often used to store your item index within the current view (but may store something else).
+* Read comments near `MultiSelectIO` for instructions/details and see 'Demo->Widgets->Selection State & Multi-Select' for demo.
+* `tree_node()` is technically supported but... using this correctly is more complicated. You need some sort of linear/random access to your tree, which is suited to advanced tree setups already implementing filters and clipper. We will work on simplifying the current demo.
+* `selection_size` and `items_count` parameters are optional and used by a few features. If they are costly for you to compute, you may avoid them.
+
+## Widgets: List Boxes
+
+* This is essentially a thin wrapper to using `begin_child()`/`end_child()` with the `ChildFlags.FRAME_STYLE` flag for stylistic changes and displaying a label.
+* If you don't need a label, you can probably simply use `begin_child()` with the `ChildFlags.FRAME_STYLE` flag for the same result.
+* You can submit contents and manage your selection state however you want, by creating e.g. `selectable()` or any other items.
+* The simplified/old `list_box()` API are helpers over `begin_list_box()`/`end_list_box()` which are kept available for convenience purposes. This is analogous to how combos are created.
+* Choose frame width:
+  * `size.x > 0`: custom
+  * `size.x < 0` or `-FLT_MIN`: right-align
+  * `size.x = 0` (default): use current `item_width`
+* Choose frame height:
+  * `size.y > 0`: custom
+  * `size.y < 0` or `-FLT_MIN`: bottom-align
+  * `size.y = 0` (default): arbitrary default height which can fit ~7 items
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_list_box(
+    label: str,
+    size: tuple[float, float] = (0.0, 0.0),
+) -> bool:
+    """
+    Open a framed scrolling region
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_list_box() -> None:
+    """
+    Only call `end_list_box()` if `begin_list_box()` returned true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def list_box(
+    label: str,
+    current_item: int,
+    items: Sequence[str],
+    height_in_items: int = -1,
+) -> tuple[bool, int]:
+```
+
+:::
+
+## Widgets: Data Plotting
+
+Consider using [ImPlot](https://github.com/epezent/implot) which is much better! Slimgui includes ImPlot bindings; see the [Slimgui ImPlot API reference](/api/implot) for details.
+
+### Functions
+
+::: api-signature
+
+```python
+def plot_lines(
+    label: str,
+    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    overlay_text: str | None = None,
+    scale_min: float = FLT_MAX,
+    scale_max: float = FLT_MAX,
+    graph_size: tuple[float, float] = (0.0, 0.0),
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def plot_histogram(
+    label: str,
+    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    overlay_text: str | None = None,
+    scale_min: float = FLT_MAX,
+    scale_max: float = FLT_MAX,
+    graph_size: tuple[float, float] = (0.0, 0.0),
+) -> None:
+```
+
+:::
+
+## Widgets: Value() Helpers
+
+These are merely shortcuts to calling `text()` with a format string. Output single value in "name: value" format.
+
+### Functions
+
+## Widgets: Menus
+
+* Use `begin_menu_bar()` on a window `WindowFlags.MENU_BAR` to append to its menu bar.
+* Use `begin_main_menu_bar()` to create a menu bar at the top of the screen and append to it.
+* Use `begin_menu()` to create a menu. You can call `begin_menu()` multiple times with the same identifier to append more items to it.
+* Note that `menu_item()` keyboard shortcuts are displayed as a convenience but *not processed* by Dear ImGui at the moment.
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_menu_bar() -> bool:
+    """
+    Append to menu-bar of current window (requires `WindowFlags.MENU_BAR` flag set on parent window).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_menu_bar() -> None:
+    """
+    Only call `end_menu_bar()` if `begin_menu_bar()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def begin_main_menu_bar() -> bool:
+    """
+    Create and append to a full screen menu-bar.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_main_menu_bar() -> None:
+    """
+    Only call `end_main_menu_bar()` if `begin_main_menu_bar()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def begin_menu(
+    label: str,
+    enabled: bool = True,
+) -> bool:
+    """
+    Create a sub-menu entry. only call `end_menu()` if this returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_menu() -> None:
+    """
+    Only call `end_menu()` if `begin_menu()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def menu_item(
+    label: str,
+    shortcut: str | None = None,
+    selected: bool = False,
+    enabled: bool = True,
+) -> tuple[bool, bool]:
+    """
+    Return true when activated.
+    """
+```
+
+:::
+
+## Tooltips
+
+* Tooltips are windows following the mouse. They do not take focus away.
+* A tooltip window can contain items of any types.
+* `set_tooltip()` is more or less a shortcut for the below idiom  (with a subtlety that it discards any previously submitted tooltip):
+  ```
+  if begin_tooltip():
+      text(...)
+      end_tooltip()
+  ```
+
+::: api-signature
+
+```python
+def begin_tooltip() -> bool:
+    """
+    Begin/append a tooltip window.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_tooltip() -> None:
+    """
+    Only call `end_tooltip()` if `begin_tooltip()`/`begin_item_tooltip()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_tooltip(
+    text: str,
+) -> None:
+    """
+    Set a text-only tooltip. Often used after a ImGui::`is_item_hovered()` check. Override any previous call to `set_tooltip()`.
+    """
+```
+
+:::
+
+## Tooltip helpers
+
+Tooltip helpers for showing a tooltip when hovering an item:
+
+* `begin_item_tooltip()` is a shortcut for the `if is_item_hovered(HoveredFlags.FOR_TOOLTIP) and begin_tooltip()` idiom.
+* `set_item_tooltip()` is a shortcut for the `if is_item_hovered(HoveredFlags.FOR_TOOLTIP): set_tooltip(...)` idiom.
+* Where `HoveredFlags.FOR_TOOLTIP` itself is a shortcut to use `Style.hover_flags_for_tooltip_mouse` or `Style.hover_flags_for_tooltip_nav` depending on the active input type. For mouse, it defaults to `HoveredFlags.STATIONARY | HoveredFlags.DELAY_SHORT`.
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_item_tooltip() -> bool:
+    """
+    Begin/append a tooltip window if preceding item was hovered.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_item_tooltip(
+    text: str,
+) -> None:
+    """
+    Set a text-only tooltip if preceding item was hovered. override any previous call to `set_tooltip()`.
+    """
+```
+
+:::
+
+## Popups, Modals
+
+* Popups and modals block normal mouse hovering detection (and therefore most mouse interactions) behind them.
+* If not modal: they can be closed by clicking anywhere outside them, or by pressing ESCAPE.
+* Their visibility state (~bool) is held internally instead of being held by the programmer as we are used to with regular `begin_*()` calls.
+* The 3 properties above are related: we need to retain popup visibility state in the library because popups may be closed at any time.
+* You can bypass the hovering restriction by using `HoveredFlags.ALLOW_WHEN_BLOCKED_BY_POPUP` when calling `is_item_hovered()` or `is_window_hovered()`.
+* IMPORTANT: Popup identifiers are relative to the current ID stack, so `open_popup()` and `begin_popup()` generally need to be at the same level of the stack. This sometimes leads to confusing mistakes. May rework this in the future.
+* `begin_popup()`: query popup state, if open start appending into the window. Call `end_popup()` afterwards if returned true. `WindowFlags` are forwarded to the window.
+* `begin_popup_modal()`: block every interaction behind the window, cannot be closed by user, add a dimming background, has a title bar.
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_popup(
+    str_id: str,
+    flags: WindowFlags = WindowFlags.NONE,
+) -> bool:
+    """
+    Return true if the popup is open, and you can start outputting to it.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def begin_popup_modal(
+    str_id: str,
+    closable: bool = False,
+    flags: WindowFlags = WindowFlags.NONE,
+) -> tuple[bool, bool]:
+    """
+    Returns a tuple of bools.  If the first returned bool is `True`, the modal is open and you can start outputting to it.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_popup() -> None:
+    """
+    Only call `end_popup()` if BeginPopupXXX() returns true!
+    """
+```
+
+:::
+
+## Popups: open/close functions
+
+* `open_popup()`: set popup state to open. `PopupFlags` are available for opening options.
+* If not modal: they can be closed by clicking anywhere outside them, or by pressing ESCAPE.
+* `close_current_popup()`: use inside the `begin_popup()`/`end_popup()` scope to close manually.
+* `close_current_popup()` is called by default by `selectable()`/`menu_item()` when activated.
+* Use `PopupFlags.NO_OPEN_OVER_EXISTING_POPUP` to avoid opening a popup if there's already one at the same level. This is equivalent to e.g. testing for `not is_any_popup_open()` prior to `open_popup()`.
+* Use `is_window_appearing()` after `begin_popup()` to tell if a window just opened.
+
+### Functions
+
+::: api-signature
+
+```python
+def open_popup(
+    str_id: str,
+    flags: PopupFlags = PopupFlags.NONE,
+) -> None:
+    """
+    Call to mark popup as open (don't call every frame!).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def open_popup_on_item_click(
+    str_id: str | None = None,
+    flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT,
+) -> None:
+    """
+    Helper to open popup when clicked on last item. Default to `PopupFlags.MOUSE_BUTTON_RIGHT` == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def close_current_popup() -> None:
+    """
+    Manually close the popup we have begin-ed into.
+    """
+```
+
+:::
+
+## Popups: open+begin combined functions helpers
+
+* Helpers to do `open_popup()` + `begin_popup()` where the open action is triggered by, e.g., hovering an item and right-clicking.
+* They are convenient to easily create context menus, hence the name.
+* IMPORTANT: Notice that `begin_popup_context_xxx()` takes `PopupFlags` just like `open_popup()` and unlike `begin_popup()`. For full consistency, we may add `WindowFlags` to the `begin_popup_context_xxx()` functions in the future.
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_popup_context_item(
+    str_id: str | None = None,
+    flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT,
+) -> bool:
+    """
+    Open+begin popup when clicked on last item. Use str_id==NULL to associate the popup to previous item. If you want to use that on a non-interactive item such as `text()` you need to pass in an explicit ID here. read comments in .cpp!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def begin_popup_context_window(
+    str_id: str | None = None,
+    flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT,
+) -> bool:
+    """
+    Open+begin popup when clicked on current window.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def begin_popup_context_void(
+    str_id: str | None = None,
+    flags: PopupFlags = PopupFlags.MOUSE_BUTTON_RIGHT,
+) -> bool:
+    """
+    Open+begin popup when clicked in void (where there are no windows).
+    """
+```
+
+:::
+
+## Popups: query functions
+
+* `is_popup_open()`: return true if the popup is open at the current `begin_popup()` level of the popup stack.
+* `is_popup_open()` with `PopupFlags.ANY_POPUP_ID`: return true if any popup is open at the current `begin_popup()` level of the popup stack.
+* `is_popup_open()` with `PopupFlags.ANY_POPUP_ID` + `PopupFlags.ANY_POPUP_LEVEL`: return true if any popup is open.
+
+### Functions
+
+::: api-signature
+
+```python
+def is_popup_open(
+    str_id: str,
+    flags: PopupFlags = PopupFlags.NONE,
+) -> bool:
+    """
+    Return true if the popup is open.
+    """
+```
+
+:::
+
+## Tables
+
+* Full-featured replacement for old Columns API.
+* See Demo->Tables for demo code. See top of imgui\_tables.cpp for general commentary.
+* See `TableFlags` and `TableColumnFlags` enums for a description of available flags.
+
+The typical call flow is:
+
+1. Call `begin_table()`, early out if returning `False`.
+2. Optionally call `table_setup_column()` to submit column name/flags/defaults.
+3. Optionally call `table_setup_scroll_freeze()` to request scroll freezing of columns/rows.
+4. Optionally call `table_headers_row()` to submit a header row. Names are pulled from `table_setup_column()` data.
+5. Populate contents:
+
+* In most situations you can use `table_next_row()` + `table_set_column_index(N)` to start appending into a column.
+* If you are using tables as a sort of grid, where every column is holding the same type of contents, you may prefer using `table_next_column()` instead of `table_next_row()` + `table_set_column_index()`. `table_next_column()` will automatically wrap-around into the next row if needed.
+* IMPORTANT: Comparatively to the old `columns()` API, we need to call `table_next_column()` for the first column!
+* Summary of possible call flow:
+  * `table_next_row()` -> `table_set_column_index(0)` -> `text("Hello 0")` -> `table_set_column_index(1)` -> `text("Hello 1")`  // OK
+  * `table_next_row()` -> `table_next_column()` -> `text("Hello 0")` -> `table_next_column()` -> `text("Hello 1")`  // OK
+  * `table_next_column()` -> `text("Hello 0")` -> `table_next_column()` -> `text("Hello 1")`  // OK: `table_next_column()` automatically gets to next row!
+  * `table_next_row()` -> `text("Hello 0")`  // Not OK! Missing `table_set_column_index()` or `table_next_column()`! Text will not appear!
+
+6. Call `end_table()`
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_table(
+    str_id: str,
+    column: int,
+    flags: TableFlags = TableFlags.NONE,
+    outer_size: tuple[float, float] = (0.0, 0.0),
+    inner_width: float = 0.0,
+) -> bool:
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_table() -> None:
+    """
+    Only call `end_table()` if `begin_table()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_next_row(
+    flags: TableRowFlags = TableRowFlags.NONE,
+    min_row_height: float = 0.0,
+) -> None:
+    """
+    Append into the first cell of a new row.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_next_column() -> bool:
+    """
+    Append into the next column (or first column of next row if currently in last column). Return true when column is visible.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_set_column_index(
+    column_n: int,
+) -> bool:
+    """
+    Append into the specified column. Return true when column is visible.
+    """
+```
+
+:::
+
+## Tables: Headers & Columns declaration
+
+* Use `table_setup_column()` to specify label, resizing policy, default width/weight, id, various other flags, etc.
+* Use `table_headers_row()` to create a header row and automatically submit a `table_header()` for each column.
+  Headers are required to perform: reordering, sorting, and opening the context menu.
+  The context menu can also be made available in columns body using `TableFlags.CONTEXT_MENU_IN_BODY`.
+* You may manually submit headers using `table_next_row()` + `table_header()` calls, but this is only useful in
+  some advanced use cases (e.g., adding custom widgets in header row).
+* Use `table_setup_scroll_freeze()` to lock columns/rows so they stay visible when scrolled.
+
+### Functions
+
+::: api-signature
+
+```python
+def table_setup_column(
+    label: str,
+    flags: TableColumnFlags = TableColumnFlags.NONE,
+    init_width_or_weight: float = 0.0,
+    user_id: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_setup_scroll_freeze(
+    cols: int,
+    rows: int,
+) -> None:
+    """
+    Lock columns/rows so they stay visible when scrolled.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_header(
+    label: str,
+) -> None:
+    """
+    Submit one header cell manually (rarely used)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_headers_row() -> None:
+    """
+    Submit a row with headers cells based on data provided to `table_setup_column()` + submit context menu
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_angled_headers_row() -> None:
+    """
+    Submit a row with angled headers for every column with the `TableColumnFlags.ANGLED_HEADER` flag. MUST BE FIRST ROW.
+    """
+```
+
+:::
+
+## Tables: Sorting & Miscellaneous functions
+
+* Sorting: call `table_get_sort_specs()` to retrieve the latest sort specs for the table. Returns `None` when not sorting.
+  When `sort_specs->SpecsDirty == True` you should sort your data. It will be `True` when sorting specs have changed since the last call, or the first time. Make sure to set `SpecsDirty = False` after sorting, else you may wastefully sort your data every frame!
+* Functions args `column_n` treat the default value of -1 as the same as passing the current column index.
+
+### Functions
+
+::: api-signature
+
+```python
+def table_get_column_count() -> int:
+    """
+    Return number of columns (value passed to `begin_table`)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_get_column_index() -> int:
+    """
+    Return current column index.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_get_row_index() -> int:
+    """
+    Return current row index (header rows are accounted for)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_get_column_name(
+    column_n: int = -1,
+) -> str:
+    """
+    Return "" if column didn't have a name declared by `table_setup_column()`. Pass -1 to use current column.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_get_column_flags(
+    column_n: int = -1,
+) -> TableColumnFlags:
+    """
+    Return column flags so you can query their Enabled/Visible/Sorted/Hovered status flags. Pass -1 to use current column.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_set_column_enabled(
+    column_n: int,
+    v: bool,
+) -> None:
+    """
+    Change user accessible enabled/disabled state of a column. Set to false to hide the column. User can use the context menu to change this themselves (right-click in headers, or right-click in columns body with `TableFlags.CONTEXT_MENU_IN_BODY`)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_get_hovered_column() -> int:
+    """
+    Return hovered column. return -1 when table is not hovered. return columns_count if the unused space at the right of visible columns is hovered. Can also use (`table_get_column_flags()` & `TableColumnFlags.IS_HOVERED`) instead.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def table_set_bg_color(
+    target: TableBgTarget,
+    color: tuple[float, float, float, float],
+    column_n: int = -1,
+) -> None:
+    """
+    Change the color of a cell, row, or column. See `TableBgTarget` flags for details.
+    """
+```
+
+:::
+
+## Legacy Columns API (prefer using Tables!)
+
+* You can also use `same_line(pos_x)` to mimic simplified columns.
+
+### Functions
+
+::: api-signature
+
+```python
+def columns(
+    count: int = 1,
+    id: str | None = None,
+    border: bool = True,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def next_column() -> None:
+    """
+    Next column, defaults to current row or next row if the current row is finished
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_column_index() -> int:
+    """
+    Get current column index
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_column_width(
+    column_index: int = -1,
+) -> float:
+    """
+    Get column width (in pixels). pass -1 to use current column
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_column_width(
+    column_index: int,
+    width: float,
+) -> None:
+    """
+    Set column width (in pixels). pass -1 to use current column
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_column_offset(
+    column_index: int = -1,
+) -> float:
+    """
+    Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0f
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_column_offset(
+    column_index: int,
+    offset_x: float,
+) -> None:
+    """
+    Set position of column line (in pixels, from the left side of the contents region). pass -1 to use current column
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_columns_count() -> int:
+```
+
+:::
+
+## Tab Bars, Tabs
+
+* Note: Tabs are automatically created by the docking system (when in 'docking' branch). Use this to create tab bars/tabs yourself.
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_tab_bar(
+    str_id: str,
+    flags: TabBarFlags = TabBarFlags.NONE,
+) -> bool:
+    """
+    Create and append into a TabBar
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_tab_bar() -> None:
+    """
+    Only call `end_tab_bar()` if `begin_tab_bar()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def tab_item_button(
+    label: str,
+    flags: TabItemFlags = TabItemFlags.NONE,
+) -> bool:
+    """
+    Create a Tab behaving like a button. return true when clicked. cannot be selected in the tab bar.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_tab_item_closed(
+    label: str,
+) -> None:
+    """
+    Notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after `begin_tab_bar()` and before Tab submissions. Otherwise call with a window name.
+    """
+```
+
+:::
+
+::: api-signature
+
+````python
+def begin_tab_item(
+    str_id: str,
+    closable: bool = False,
+    flags: TabItemFlags = TabItemFlags.NONE,
+) -> tuple[bool, bool]:
+    """
+    When the `closable` argument is set to `True`, the created tab will display a close button.  The second bool of the return value will be `False` if the close button was pressed.  The intended usage is as follows:
+
+    ```
+    tab_open = True  # open/closed state
+
+    visible, tab_open = imgui.begin_tab_item(..., closable=tab_open)
+    if visible:
+        # render tab contents here..
+    ```
+    """
+````
+
+:::
+
+::: api-signature
+
+```python
+def end_tab_item() -> None:
+    """
+    Only call `end_tab_item()` if `begin_tab_item()` returns true!
+    """
+```
+
+:::
+
+## Drag and Drop
+
+* On source items, call `begin_drag_drop_source()`, if it returns true also call `set_drag_drop_payload()` + `end_drag_drop_source()`.
+* On target candidates, call `begin_drag_drop_target()`, if it returns true also call `accept_drag_drop_payload()` + `end_drag_drop_target()`.
+* If you stop calling `begin_drag_drop_source()` the payload is preserved however it won't have a preview tooltip (we currently display a fallback "..." tooltip, see [#1725](https://github.com/ocornut/imgui/issues/1725)).
+* An item can be both drag source and drop target.
+
+::: api-signature
+
+```python
+def begin_drag_drop_source(
+    flags: DragDropFlags = DragDropFlags.NONE,
+) -> bool:
+    """
+    Call after submitting an item which may be dragged. when this return true, you can call `set_drag_drop_payload()` + `end_drag_drop_source()`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_drag_drop_payload(
+    type: str,
+    data: bytes,
+    cond: Cond = Cond.NONE,
+) -> bool:
+    """
+    Type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return true when payload has been accepted.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_drag_drop_source() -> None:
+    """
+    Only call `end_drag_drop_source()` if `begin_drag_drop_source()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def begin_drag_drop_target() -> bool:
+    """
+    Call after submitting an item that may receive a payload. If this returns true, you can call `accept_drag_drop_payload()` + `end_drag_drop_target()`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def accept_drag_drop_payload(
+    type: str,
+    flags: slimgui.slimgui_ext.imgui.DragDropFlags = 0,
+) -> slimgui.slimgui_ext.imgui.Payload | None:
+    """
+    Accept contents of a given type. If `DragDropFlags.ACCEPT_BEFORE_DELIVERY` is set you can peek into the payload before the mouse button is released.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_drag_drop_target() -> None:
+    """
+    Only call `end_drag_drop_target()` if `begin_drag_drop_target()` returns true!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_drag_drop_payload() -> slimgui.slimgui_ext.imgui.Payload | None:
+    """
+    Peek directly into the current payload from anywhere. Returns `None` when drag and drop is finished or inactive. Use `Payload.is_data_type()` to test for the payload type.
+    """
+```
+
+:::
+
+## Disabling \[BETA API]
+
+* Disable all user interactions and dim items visuals (applying `Style.disabled_alpha` over current colors).
+* These can be nested but cannot be used to enable an already disabled section (a single `begin_disabled(True)` in the stack is enough to keep everything disabled).
+* Tooltip windows, by exception, are opted out of disabling.
+* `begin_disabled(False)`/`end_disabled()` essentially does nothing but is provided to facilitate the use of boolean expressions (as a micro-optimization: if you have tens of thousands of `begin_disabled(False)`/`end_disabled()` pairs, you might want to reformulate your code to avoid making those calls).
+
+### Functions
+
+::: api-signature
+
+```python
+def begin_disabled(
+    disabled: bool = True,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def end_disabled() -> None:
+```
+
+:::
+
+## Clipping
+
+* Mouse hovering is affected by `push_clip_rect()` calls, unlike direct calls to `DrawList.push_clip_rect()` which are render only.
+
+### Functions
+
+::: api-signature
+
+```python
+def push_clip_rect(
+    clip_rect_min: tuple[float, float],
+    clip_rect_max: tuple[float, float],
+    intersect_with_current_clip_rect: bool,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_clip_rect() -> None:
+```
+
+:::
+
+## Focus, Activation
+
+### Functions
+
+::: api-signature
+
+```python
+def set_item_default_focus() -> None:
+    """
+    Make last item the default focused item of a newly appearing window.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_keyboard_focus_here(
+    offset: int = 0,
+) -> None:
+    """
+    Focus keyboard on the next widget. Use positive 'offset' to access sub components of a multiple component widget. Use -1 to access previous widget.
+    """
+```
+
+:::
+
+## Keyboard/Gamepad Navigation
+
+::: api-signature
+
+```python
+def set_nav_cursor_visible(
+    visible: bool,
+) -> None:
+    """
+    Alter visibility of keyboard/gamepad cursor. by default: show when using an arrow key, hide when clicking with mouse.
+    """
+```
+
+:::
+
+## Overlapping mode
+
+### Functions
+
+::: api-signature
+
+```python
+def set_next_item_allow_overlap() -> None:
+    """
+    Allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both `selectable()` and `tree_node()` have dedicated flags doing this.
+    """
+```
+
+:::
+
+## Item/Widgets Utilities and Query Functions
+
+* Most of the functions are referring to the previous Item that has been submitted.
+* See Demo Window under "Widgets->Querying Status" for an interactive visualization of most of those functions.
+
+### Functions
+
+::: api-signature
+
+```python
+def is_item_hovered(
+    flags: HoveredFlags = HoveredFlags.NONE,
+) -> bool:
+    """
+    Is the last item hovered? (and usable, aka not blocked by a popup, etc.). See ImGuiHoveredFlags for more options.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_active() -> bool:
+    """
+    Is the last item active? (e.g. button being held, text field being edited. This will continuously return true while holding mouse button on an item. Items that don't interact will always return false)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_focused() -> bool:
+    """
+    Is the last item focused for keyboard/gamepad navigation?
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_clicked(
+    mouse_button: MouseButton = MouseButton.LEFT,
+) -> bool:
+    """
+    Is the last item hovered and mouse clicked on? (**)  == `is_mouse_clicked(mouse_button)` && `is_item_hovered()`Important. (**) this is NOT equivalent to the behavior of e.g. `button()`. Read comments in function definition.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_visible() -> bool:
+    """
+    Is the last item visible? (items may be out of sight because of clipping/scrolling)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_edited() -> bool:
+    """
+    Did the last item modify its underlying value this frame? or was pressed? This is generally the same as the "bool" return value of many widgets.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_activated() -> bool:
+    """
+    Was the last item just made active (item was previously inactive).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_deactivated() -> bool:
+    """
+    Was the last item just made inactive (item was previously active). Useful for Undo/Redo patterns with widgets that require continuous editing.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_deactivated_after_edit() -> bool:
+    """
+    Was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). Useful for Undo/Redo patterns with widgets that require continuous editing. Note that you may get false positives (some widgets such as `combo()`/`list_box()`/`selectable()` will return true even when clicking an already selected item).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_item_toggled_open() -> bool:
+    """
+    Was the last item open state toggled? set by `tree_node()`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_any_item_hovered() -> bool:
+    """
+    Is any item hovered?
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_any_item_active() -> bool:
+    """
+    Is any item active?
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_any_item_focused() -> bool:
+    """
+    Is any item focused?
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_item_id() -> int:
+    """
+    Get ID of last item (often roughly the same as `get_id(label)` beforehand)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_item_rect_min() -> tuple[float, float]:
+    """
+    Get upper-left bounding rectangle of the last item (screen space)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_item_rect_max() -> tuple[float, float]:
+    """
+    Get lower-right bounding rectangle of the last item (screen space)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_item_rect_size() -> tuple[float, float]:
+    """
+    Get size of last item
+    """
+```
+
+:::
+
+## Viewports
+
+* Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
+* In 'docking' branch with multi-viewport enabled, we extend this concept to have multiple active viewports.
+* In the future we will extend this concept further to also represent Platform Monitor and support a "no main platform window" operation mode.
+
+### Functions
+
+::: api-signature
+
+```python
+def get_main_viewport() -> Viewport:
+    """
+    Return primary/default viewport. This can never be NULL.
+    """
+```
+
+:::
+
+## Background/Foreground Draw Lists
+
+### Functions
+
+::: api-signature
+
+```python
+def get_background_draw_list() -> slimgui.imgui.DrawList:
+    """
+    This draw list will be the first rendered one. Useful to quickly draw shapes/text behind dear imgui contents.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_foreground_draw_list() -> slimgui.imgui.DrawList:
+    """
+    This draw list will be the last rendered one. Useful to quickly draw shapes/text over dear imgui contents.
+    """
+```
+
+:::
+
+## Miscellaneous Utilities
+
+### Functions
+
+::: api-signature
+
+```python
+def is_rect_visible(
+    size: tuple[float, float],
+) -> bool:
+    """
+    Test if rectangle (of given size, starting from cursor position) is visible / not clipped.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_rect_visible(
+    rect_min: tuple[float, float],
+    rect_max: tuple[float, float],
+) -> bool:
+    """
+    Test if rectangle (of given size, starting from cursor position) is visible / not clipped.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_time() -> float:
+    """
+    Get global imgui time. incremented by io.DeltaTime every frame.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_frame_count() -> int:
+    """
+    Get global imgui frame count. incremented by 1 every frame.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_style_color_name(
+    col: Col,
+) -> str:
+    """
+    Get a string corresponding to the enum value (for display, saving, etc.).
+    """
+```
+
+:::
+
+## Text Utilities
+
+### Functions
+
+::: api-signature
+
+```python
+def calc_text_size(
+    text: str,
+    hide_text_after_double_hash: bool = False,
+    wrap_width: float = -1.0,
+) -> tuple[float, float]:
+```
+
+:::
+
+## Color Utilities
+
+### Functions
+
+::: api-signature
+
+```python
+def color_convert_u32_to_float4(
+    arg: int,
+    /,
+) -> tuple[float, float, float, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def color_convert_float4_to_u32(
+    arg: tuple[float, float, float, float],
+    /,
+) -> int:
+```
+
+:::
+
+::: api-signature
+
+```python
+def color_convert_rgb_to_hsv(
+    rgba: tuple[float, float, float, float],
+) -> tuple[float, float, float, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+def color_convert_hsv_to_rgb(
+    hsv: tuple[float, float, float, float],
+) -> tuple[float, float, float, float]:
+```
+
+:::
+
+## Inputs Utilities: Keyboard/Mouse/Gamepad
+
+* The `Key` enum contains all possible keyboard, mouse, and gamepad inputs (e.g., `Key.KEY_A`, `Key.MOUSE_LEFT`, `Key.GAMEPAD_DPAD_UP`).
+
+### Functions
+
+::: api-signature
+
+```python
+def is_key_down(
+    key: Key,
+) -> bool:
+    """
+    Is key being held.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_key_pressed(
+    key: Key,
+    repeat: bool = True,
+) -> bool:
+    """
+    Was key pressed (went from !Down to Down)? if repeat=true, uses io.KeyRepeatDelay / KeyRepeatRate
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_key_released(
+    key: Key,
+) -> bool:
+    """
+    Was key released (went from Down to !Down)?
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_key_chord_pressed(
+    key_chord: Key | int,
+) -> bool:
+    """
+    Was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using `shortcut()` function instead.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_key_pressed_amount(
+    key: Key,
+    repeat_delay: float,
+    rate: float,
+) -> int:
+    """
+    Uses provided repeat rate/delay. return a count, most often 0 or 1 but might be >1 if RepeatRate is small enough that DeltaTime > RepeatRate
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_key_name(
+    key: Key,
+) -> str:
+    """
+    [DEBUG] returns English name of the key. Those names are provided for debugging purpose and are not meant to be saved persistently nor compared.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_frame_want_capture_keyboard(
+    want_capture_keyboard: bool,
+) -> None:
+```
+
+:::
+
+## Inputs Utilities: Shortcut Testing & Routing \[BETA]
+
+A `key_chord` passed to the below shortcut functions is a `Key` value + an optional `Key.MOD_ALT/CTRL_SHIFT_SUPER`.  E.g.,
+
+* `Key.KEY_C`: accepted by functions taking `Key` or `Key | int` (keychord arguments)
+* `Key.MOD_CTRL | Key.KEY_C`: accepted by functions taking `Key | int` keychord arguments
+* It's legal to only combine `KEY_*` values with a `MOD_*` value.
+
+The general idea is that several callers may register interest in a shortcut, and only one owner gets it:
+
+* Parent -> call Shortcut(Ctrl+S)  - when Parent is focused, Parent gets the shortcut
+  * Child1 -> call Shortcut(Ctrl+S) - when Child1 is focused, Child1 gets the shortcut (Child1 overrides Parent shortcuts)
+  * Child2 -> no call - when Child2 is focused, Parent gets the shortcut.
+
+The whole system is order independent, so if Child1 makes its calls before Parent, results will be identical.
+This is an important property as it facilitates working with foreign code or a larger codebase. To understand the difference:
+
+* `is_key_chord_pressed()` compares mods and calls `is_key_pressed()` -> function has no side-effect.
+* `shortcut()` submits a route, routes are resolved, if it currently can be routed it calls `is_key_chord_pressed()` -> function has (desirable) side-effects as it can prevent another call from getting the route.
+
+You can visualize registered routes in the "Metrics/Debugger->Inputs" window.
+
+### Functions
+
+::: api-signature
+
+```python
+def shortcut(
+    key_chord: Key | int,
+    flags: InputFlags = InputFlags.NONE,
+) -> bool:
+    """
+    Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_item_shortcut(
+    key_chord: Key | int,
+    flags: InputFlags = InputFlags.NONE,
+) -> None:
+    """
+    Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.
+    """
+```
+
+:::
+
+## Inputs Utilities: Mouse
+
+* To refer to a mouse button, you may use named enums in your code, e.g., `MouseButton.LEFT`, `MouseButton.RIGHT`.
+
+### Functions
+
+::: api-signature
+
+```python
+def is_mouse_down(
+    button: MouseButton,
+) -> bool:
+    """
+    Is mouse button held?
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_mouse_clicked(
+    button: MouseButton,
+    repeat: bool = False,
+) -> bool:
+    """
+    Did mouse button clicked? (went from !Down to Down). Same as `get_mouse_clicked_count()` == 1.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_mouse_released(
+    button: MouseButton,
+) -> bool:
+    """
+    Did mouse button released? (went from Down to !Down)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_mouse_double_clicked(
+    button: MouseButton,
+) -> bool:
+    """
+    Did mouse button double-clicked? Same as `get_mouse_clicked_count()` == 2. (note that a double-click will also report `is_mouse_clicked()` == true)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_mouse_released_with_delay(
+    button: MouseButton,
+    delay: float,
+) -> bool:
+    """
+    Delayed mouse release (use very sparingly!). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test. This is a very rarely used UI idiom, but some apps use this: e.g. MS Explorer single click on an icon to rename.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_mouse_clicked_count(
+    button: MouseButton,
+) -> int:
+    """
+    Return the number of successive mouse-clicks at the time where a click happen (otherwise 0).
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_mouse_hovering_rect(
+    r_min: tuple[float, float],
+    r_max: tuple[float, float],
+    clip: bool = True,
+) -> bool:
+    """
+    Is mouse hovering given bounding rect (in screen space). clipped by current clipping settings, but disregarding of other consideration of focus/window ordering/popup-block.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_mouse_pos_valid(
+    mouse_pos: tuple[float, float] | None = None,
+) -> bool:
+    """
+    By convention we use (-FLT_MAX,-FLT_MAX) to denote that there is no mouse available
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_mouse_pos() -> tuple[float, float]:
+    """
+    Shortcut to ImGui::`get_io()`.MousePos provided by user, to be consistent with other calls
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_mouse_pos_on_opening_current_popup() -> tuple[float, float]:
+    """
+    Retrieve mouse position at the time of opening popup we have `begin_popup()` into (helper to avoid user backing that value themselves)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def is_mouse_dragging(
+    button: MouseButton,
+    lock_threshold: float = -1.0,
+) -> bool:
+    """
+    Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_mouse_drag_delta(
+    button: MouseButton = MouseButton.LEFT,
+    lock_threshold: float = -1.0,
+) -> tuple[float, float]:
+    """
+    Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def reset_mouse_drag_delta(
+    button: MouseButton = MouseButton.LEFT,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_mouse_cursor() -> MouseCursor:
+    """
+    Get desired mouse cursor shape. Important: reset in ImGui::`new_frame()`, this is updated during the frame. valid before `render()`. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_mouse_cursor(
+    cursor_type: MouseCursor,
+) -> None:
+    """
+    Set desired mouse cursor shape
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_next_frame_want_capture_mouse(
+    capture: bool,
+) -> None:
+```
+
+:::
+
+## Enum Reference
+
+### Enum: BackendFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| HAS\_GAMEPAD | Backend Platform supports gamepad and currently has one connected. |
+| HAS\_MOUSE\_CURSORS | Backend Platform supports honoring `get_mouse_cursor()` value to change the OS cursor shape. |
+| HAS\_SET\_MOUSE\_POS | Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if io.ConfigNavMoveSetMousePos is set). |
+| RENDERER\_HAS\_VTX\_OFFSET | Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices. |
+| RENDERER\_HAS\_TEXTURES | Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads. See https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for instructions on how to upgrade your custom backend. |
+
+### Enum: ButtonFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| MOUSE\_BUTTON\_LEFT | React on left mouse button (default) |
+| MOUSE\_BUTTON\_RIGHT | React on right mouse button |
+| MOUSE\_BUTTON\_MIDDLE | React on center mouse button |
+| ENABLE\_NAV | `invisible_button()`: do not disable navigation/tabbing. Otherwise disabled by default. |
+
+### Enum: ChildFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| BORDERS | Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == true for legacy reason) |
+| ALWAYS\_USE\_WINDOW\_PADDING | Pad with style.WindowPadding even if no border are drawn (no padding by default for non-bordered child windows because it makes more sense) |
+| RESIZE\_X | Allow resize from right border (layout direction). Enable .ini saving (unless `WindowFlags.NO_SAVED_SETTINGS` passed to window flags) |
+| RESIZE\_Y | Allow resize from bottom border (layout direction). |
+| AUTO\_RESIZE\_X | Enable auto-resizing width. Read IMPORTANT: Size measurement" details above. |
+| AUTO\_RESIZE\_Y | Enable auto-resizing height. Read IMPORTANT: Size measurement" details above. |
+| ALWAYS\_AUTO\_RESIZE | Combined with AutoResizeX/AutoResizeY. Always measure size even when child is hidden, always return true, always disable clipping optimization! NOT RECOMMENDED. |
+| FRAME\_STYLE | Style the child window like a framed item: use FrameBg, FrameRounding, FrameBorderSize, FramePadding instead of ChildBg, ChildRounding, ChildBorderSize, WindowPadding. |
+| NAV\_FLATTENED | \[BETA] Share focus scope, allow keyboard/gamepad navigation to cross over parent border to this child or between sibling child windows. |
+
+### Enum: Col
+
+| Name | Description |
+| --- | --- |
+| TEXT |  |
+| TEXT\_DISABLED |  |
+| WINDOW\_BG | Background of normal windows |
+| CHILD\_BG | Background of child windows |
+| POPUP\_BG | Background of popups, menus, tooltips windows |
+| BORDER |  |
+| BORDER\_SHADOW |  |
+| FRAME\_BG | Background of checkbox, radio button, plot, slider, text input |
+| FRAME\_BG\_HOVERED |  |
+| FRAME\_BG\_ACTIVE |  |
+| TITLE\_BG | Title bar |
+| TITLE\_BG\_ACTIVE | Title bar when focused |
+| TITLE\_BG\_COLLAPSED | Title bar when collapsed |
+| MENU\_BAR\_BG |  |
+| SCROLLBAR\_BG |  |
+| SCROLLBAR\_GRAB |  |
+| SCROLLBAR\_GRAB\_HOVERED |  |
+| SCROLLBAR\_GRAB\_ACTIVE |  |
+| CHECK\_MARK | `checkbox` tick and `radio_button` circle |
+| SLIDER\_GRAB |  |
+| SLIDER\_GRAB\_ACTIVE |  |
+| BUTTON |  |
+| BUTTON\_HOVERED |  |
+| BUTTON\_ACTIVE |  |
+| HEADER | Header\* colors are used for `collapsing_header`, `tree_node`, `selectable`, `menu_item` |
+| HEADER\_HOVERED |  |
+| HEADER\_ACTIVE |  |
+| SEPARATOR |  |
+| SEPARATOR\_HOVERED |  |
+| SEPARATOR\_ACTIVE |  |
+| RESIZE\_GRIP | Resize grip in lower-right and lower-left corners of windows. |
+| RESIZE\_GRIP\_HOVERED |  |
+| RESIZE\_GRIP\_ACTIVE |  |
+| INPUT\_TEXT\_CURSOR | `input_text` cursor/caret |
+| TAB\_HOVERED | Tab background, when hovered |
+| TAB | Tab background, when tab-bar is focused & tab is unselected |
+| TAB\_SELECTED | Tab background, when tab-bar is focused & tab is selected |
+| TAB\_SELECTED\_OVERLINE | Tab horizontal overline, when tab-bar is focused & tab is selected |
+| TAB\_DIMMED | Tab background, when tab-bar is unfocused & tab is unselected |
+| TAB\_DIMMED\_SELECTED | Tab background, when tab-bar is unfocused & tab is selected |
+| TAB\_DIMMED\_SELECTED\_OVERLINE |  |
+| PLOT\_LINES |  |
+| PLOT\_LINES\_HOVERED |  |
+| PLOT\_HISTOGRAM |  |
+| PLOT\_HISTOGRAM\_HOVERED |  |
+| TABLE\_HEADER\_BG | Table header background |
+| TABLE\_BORDER\_STRONG | Table outer and header borders (prefer using Alpha=1.0 here) |
+| TABLE\_BORDER\_LIGHT | Table inner borders (prefer using Alpha=1.0 here) |
+| TABLE\_ROW\_BG | Table row background (even rows) |
+| TABLE\_ROW\_BG\_ALT | Table row background (odd rows) |
+| TEXT\_LINK | Hyperlink color |
+| TEXT\_SELECTED\_BG | Selected text inside an `input_text` |
+| TREE\_LINES | Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES` |
+| DRAG\_DROP\_TARGET | Rectangle highlighting a drop target |
+| UNSAVED\_MARKER | Unsaved Document marker (in window title and tabs) |
+| NAV\_CURSOR | Color of keyboard/gamepad navigation cursor/rectangle, when visible |
+| NAV\_WINDOWING\_HIGHLIGHT | Highlight window when using CTRL+TAB |
+| NAV\_WINDOWING\_DIM\_BG | Darken/colorize entire screen behind the CTRL+TAB window list, when active |
+| MODAL\_WINDOW\_DIM\_BG | Darken/colorize entire screen behind a modal window, when one is active |
+| COUNT |  |
+
+### Enum: ColorEditFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| NO\_ALPHA | ColorEdit, ColorPicker, `color_button`: ignore Alpha component (will only read 3 components from the input pointer). |
+| NO\_PICKER | ColorEdit: disable picker when clicking on color square. |
+| NO\_OPTIONS | ColorEdit: disable toggling options menu when right-clicking on inputs/small preview. |
+| NO\_SMALL\_PREVIEW | ColorEdit, ColorPicker: disable color square preview next to the inputs. (e.g. to show only the inputs) |
+| NO\_INPUTS | ColorEdit, ColorPicker: disable inputs sliders/text widgets (e.g. to show only the small preview color square). |
+| NO\_TOOLTIP | ColorEdit, ColorPicker, `color_button`: disable tooltip when hovering the preview. |
+| NO\_LABEL | ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker). |
+| NO\_SIDE\_PREVIEW | ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead. |
+| NO\_DRAG\_DROP | ColorEdit: disable drag and drop target. `color_button`: disable drag and drop source. |
+| NO\_BORDER | `color_button`: disable border (which is enforced by default) |
+| ALPHA\_OPAQUE | ColorEdit, ColorPicker, `color_button`: disable alpha in the preview,. Contrary to \_NoAlpha it may still be edited when calling `color_edit4()`/`color_picker4()`. For `color_button()` this does the same as \_NoAlpha. |
+| ALPHA\_NO\_BG | ColorEdit, ColorPicker, `color_button`: disable rendering a checkerboard background behind transparent color. |
+| ALPHA\_PREVIEW\_HALF | ColorEdit, ColorPicker, `color_button`: display half opaque / half transparent preview. |
+| ALPHA\_BAR | ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker. |
+| HDR | (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well). |
+| DISPLAY\_RGB | ColorEdit: override *display* type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex. |
+| DISPLAY\_HSV |  |
+| DISPLAY\_HEX |  |
+| UINT8 | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0..255. |
+| FLOAT | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers. |
+| PICKER\_HUE\_BAR | ColorPicker: bar for Hue, rectangle for Sat/Value. |
+| PICKER\_HUE\_WHEEL | ColorPicker: wheel for Hue, triangle for Sat/Value. |
+| INPUT\_RGB | ColorEdit, ColorPicker: input and output data in RGB format. |
+| INPUT\_HSV | ColorEdit, ColorPicker: input and output data in HSV format. |
+
+### Enum: ComboFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| POPUP\_ALIGN\_LEFT | Align the popup toward the left by default |
+| HEIGHT\_SMALL | Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use `set_next_window_size_constraints()` prior to calling `begin_combo()` |
+| HEIGHT\_REGULAR | Max ~8 items visible (default) |
+| HEIGHT\_LARGE | Max ~20 items visible |
+| HEIGHT\_LARGEST | As many fitting items as possible |
+| NO\_ARROW\_BUTTON | Display on the preview box without the square arrow button |
+| NO\_PREVIEW | Display only a square arrow button |
+| WIDTH\_FIT\_PREVIEW | Width dynamically calculated from preview contents |
+
+### Enum: Cond
+
+| Name | Description |
+| --- | --- |
+| NONE | No condition (always set the variable), same as \_Always |
+| ALWAYS | No condition (always set the variable), same as \_None |
+| ONCE | Set the variable once per runtime session (only the first call will succeed) |
+| FIRST\_USE\_EVER | Set the variable if the object/window has no persistently saved data (no entry in .ini file) |
+| APPEARING | Set the variable if the object/window is appearing after being hidden/inactive (or the first time) |
+
+### Enum: ConfigFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| NAV\_ENABLE\_KEYBOARD | Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate. |
+| NAV\_ENABLE\_GAMEPAD | Master gamepad navigation enable flag. Backend also needs to set `BackendFlags.HAS_GAMEPAD`. |
+| NO\_MOUSE | Instruct dear imgui to disable mouse inputs and interactions. |
+| NO\_MOUSE\_CURSOR\_CHANGE | Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use `set_mouse_cursor()` to change mouse cursor. You may want to honor requests from imgui by reading `get_mouse_cursor()` yourself instead. |
+| NO\_KEYBOARD | Instruct dear imgui to disable keyboard inputs and interactions. This is done by ignoring keyboard events and clearing existing states. |
+| IS\_SRGB | Application is SRGB-aware. |
+| IS\_TOUCH\_SCREEN | Application is using a touch screen instead of a mouse. |
+
+### Enum: Dir
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| LEFT |  |
+| RIGHT |  |
+| UP |  |
+| DOWN |  |
+| COUNT |  |
+
+### Enum: DragDropFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| SOURCE\_NO\_PREVIEW\_TOOLTIP | Disable preview tooltip. By default, a successful call to `begin_drag_drop_source` opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior. |
+| SOURCE\_NO\_DISABLE\_HOVER | By default, when dragging we clear data so that `is_item_hovered()` will return false, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call `is_item_hovered()` on the source item. |
+| SOURCE\_NO\_HOLD\_TO\_OPEN\_OTHERS | Disable the behavior that allows to open tree nodes and collapsing header by holding over them while dragging a source item. |
+| SOURCE\_ALLOW\_NULL\_ID | Allow items such as `text()`, `image()` that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit. |
+| SOURCE\_EXTERN | External source (from outside of dear imgui), won't attempt to read current item/window info. Will always return true. Only one Extern source can be active simultaneously. |
+| PAYLOAD\_AUTO\_EXPIRE | Automatically expire the payload if the source cease to be submitted (otherwise payloads are persisting while being dragged) |
+| PAYLOAD\_NO\_CROSS\_CONTEXT | Hint to specify that the payload may not be copied outside current dear imgui context. |
+| PAYLOAD\_NO\_CROSS\_PROCESS | Hint to specify that the payload may not be copied outside current process. |
+| ACCEPT\_BEFORE\_DELIVERY | `accept_drag_drop_payload()` will returns true even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered. |
+| ACCEPT\_NO\_DRAW\_DEFAULT\_RECT | Do not draw the default highlight rectangle when hovering over target. |
+| ACCEPT\_NO\_PREVIEW\_TOOLTIP | Request hiding the `begin_drag_drop_source` tooltip from the `begin_drag_drop_target` site. |
+| ACCEPT\_PEEK\_ONLY | For peeking ahead and inspecting the payload before delivery. |
+
+### Enum: DrawFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| CLOSED | PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason) |
+| ROUND\_CORNERS\_TOP\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01. |
+| ROUND\_CORNERS\_TOP\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02. |
+| ROUND\_CORNERS\_BOTTOM\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04. |
+| ROUND\_CORNERS\_BOTTOM\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08. |
+| ROUND\_CORNERS\_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag! |
+| ROUND\_CORNERS\_TOP |  |
+| ROUND\_CORNERS\_BOTTOM |  |
+| ROUND\_CORNERS\_LEFT |  |
+| ROUND\_CORNERS\_RIGHT |  |
+| ROUND\_CORNERS\_ALL |  |
+
+### Enum: FocusedFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| CHILD\_WINDOWS | Return true if any children of the window is focused |
+| ROOT\_WINDOW | Test from root window (top most parent of the current hierarchy) |
+| ANY\_WINDOW | Return true if any window is focused. Important: If you are trying to tell how to dispatch your low-level inputs, do NOT use this. Use 'io.WantCaptureMouse' instead! Please read the FAQ! |
+| NO\_POPUP\_HIERARCHY | Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with \_ChildWindows or \_RootWindow) |
+| ROOT\_AND\_CHILD\_WINDOWS |  |
+
+### Enum: HoveredFlags
+
+| Name | Description |
+| --- | --- |
+| NONE | Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them. |
+| CHILD\_WINDOWS | `is_window_hovered()` only: Return true if any children of the window is hovered |
+| ROOT\_WINDOW | `is_window_hovered()` only: Test from root window (top most parent of the current hierarchy) |
+| ANY\_WINDOW | `is_window_hovered()` only: Return true if any window is hovered |
+| NO\_POPUP\_HIERARCHY | `is_window_hovered()` only: Do not consider popup hierarchy (do not treat popup emitter as parent of popup) (when used with \_ChildWindows or \_RootWindow) |
+| ALLOW\_WHEN\_BLOCKED\_BY\_POPUP | Return true even if a popup window is normally blocking access to this item/window |
+| ALLOW\_WHEN\_BLOCKED\_BY\_ACTIVE\_ITEM | Return true even if an active item is blocking access to this item/window. Useful for Drag and Drop patterns. |
+| ALLOW\_WHEN\_OVERLAPPED\_BY\_ITEM | `is_item_hovered()` only: Return true even if the item uses AllowOverlap mode and is overlapped by another hoverable item. |
+| ALLOW\_WHEN\_OVERLAPPED\_BY\_WINDOW | `is_item_hovered()` only: Return true even if the position is obstructed or overlapped by another window. |
+| ALLOW\_WHEN\_DISABLED | `is_item_hovered()` only: Return true even if the item is disabled |
+| NO\_NAV\_OVERRIDE | `is_item_hovered()` only: Disable using keyboard/gamepad navigation state when active, always query mouse |
+| ALLOW\_WHEN\_OVERLAPPED |  |
+| RECT\_ONLY |  |
+| ROOT\_AND\_CHILD\_WINDOWS |  |
+| FOR\_TOOLTIP | Shortcut for standard flags when using `is_item_hovered()` + `set_tooltip()` sequence. |
+| STATIONARY | Require mouse to be stationary for style.HoverStationaryDelay (~0.15 sec) *at least one time*. After this, can move on same item/window. Using the stationary test tends to reduces the need for a long delay. |
+| DELAY\_NONE | `is_item_hovered()` only: Return true immediately (default). As this is the default you generally ignore this. |
+| DELAY\_SHORT | `is_item_hovered()` only: Return true after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item). |
+| DELAY\_NORMAL | `is_item_hovered()` only: Return true after style.HoverDelayNormal elapsed (~0.40 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item). |
+| NO\_SHARED\_DELAY | `is_item_hovered()` only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays) |
+
+### Enum: InputFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| REPEAT | Enable repeat. Return true on successive repeats. Default for legacy `is_key_pressed()`. NOT Default for legacy `is_mouse_clicked()`. MUST BE == 1. |
+| ROUTE\_ACTIVE | Route to active item only. |
+| ROUTE\_FOCUSED | Route to windows in the focus stack (DEFAULT). Deep-most focused window takes inputs. Active item takes inputs over deep-most focused window. |
+| ROUTE\_GLOBAL | Global route (unless a focused window or active item registered the route). |
+| ROUTE\_ALWAYS | Do not register route, poll keys directly. |
+| ROUTE\_OVER\_FOCUSED | Option: global route: higher priority than focused route (unless active item in focused route). |
+| ROUTE\_OVER\_ACTIVE | Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. CTRL+A registered by `input_text` will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active. |
+| ROUTE\_UNLESS\_BG\_FOCUSED | Option: global route: will not be applied if underlying background/void is focused (== no Dear ImGui windows are focused). Useful for overlay applications. |
+| ROUTE\_FROM\_ROOT\_WINDOW | Option: route evaluated from the point of view of root window rather than current window. |
+| TOOLTIP | Automatically display a tooltip when hovering item \[BETA] Unsure of right api (opt-in/opt-out) |
+
+### Enum: InputTextFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| CHARS\_DECIMAL | Allow 0123456789.+-*/ |
+| CHARS\_HEXADECIMAL | Allow 0123456789ABCDEFabcdef |
+| CHARS\_SCIENTIFIC | Allow 0123456789.+-*/eE (Scientific notation input) |
+| CHARS\_UPPERCASE | Turn a..z into A..Z |
+| CHARS\_NO\_BLANK | Filter out spaces, tabs |
+| ALLOW\_TAB\_INPUT | Pressing TAB input a '  ' character into the text field |
+| ENTER\_RETURNS\_TRUE | Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using `is_item_deactivated_after_edit()` instead! |
+| ESCAPE\_CLEARS\_ALL | Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert) |
+| CTRL\_ENTER\_FOR\_NEW\_LINE | In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). |
+| READ\_ONLY | Read-only mode |
+| PASSWORD | Password mode, display all characters as '\*', disable copy |
+| ALWAYS\_OVERWRITE | Overwrite mode |
+| AUTO\_SELECT\_ALL | Select entire text when first taking mouse focus |
+| PARSE\_EMPTY\_REF\_VAL | `input_float()`, `input_int()`, `input_scalar()` etc. only: parse empty string as zero value. |
+| DISPLAY\_EMPTY\_REF\_VAL | `input_float()`, `input_int()`, `input_scalar()` etc. only: when value is zero, do not display it. Generally used with `InputTextFlags.PARSE_EMPTY_REF_VAL`. |
+| NO\_HORIZONTAL\_SCROLL | Disable following the cursor horizontally |
+| NO\_UNDO\_REDO | Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call `clear_active_id()`. |
+| ELIDE\_LEFT | When text doesn't fit, elide left side to ensure right side stays visible. Useful for path/filenames. Single-line only! |
+| CALLBACK\_COMPLETION | Callback on pressing TAB (for completion handling) |
+| CALLBACK\_HISTORY | Callback on pressing Up/Down arrows (for history handling) |
+| CALLBACK\_ALWAYS | Callback on each iteration. User code may query cursor position, modify text buffer. |
+| CALLBACK\_CHAR\_FILTER | Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard. |
+| CALLBACK\_RESIZE | Callback on buffer capacity changes request (beyond 'buf\_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui\_stdlib.h for an example of using this) |
+| CALLBACK\_EDIT | Callback on any edit. Note that `input_text()` already returns true on edit + you can always use `is_item_edited()`. The callback is useful to manipulate the underlying buffer while focus is active. |
+| WORD\_WRAP | InputTextMultine(): word-wrap lines that are too long. |
+
+### Enum: ItemFlags
+
+| Name | Description |
+| --- | --- |
+| NONE | (Default) |
+| NO\_TAB\_STOP | Disable keyboard tabbing. This is a "lighter" version of `ItemFlags.NO_NAV`. |
+| NO\_NAV | Disable any form of focusing (keyboard/gamepad directional navigation and `set_keyboard_focus_here()` calls). |
+| NO\_NAV\_DEFAULT\_FOCUS | Disable item being a candidate for default focus (e.g. used by title bar items). |
+| BUTTON\_REPEAT | Any button-like behavior will have repeat mode enabled (based on io.KeyRepeatDelay and io.KeyRepeatRate values). Note that you can also call `is_item_active()` after any button to tell if it is being held. |
+| AUTO\_CLOSE\_POPUPS | `menu_item()`/`selectable()` automatically close their parent popup window. |
+| ALLOW\_DUPLICATE\_ID | Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set. |
+
+### Enum: Key
+
+| Name | Description |
+| --- | --- |
+| KEY\_NONE |  |
+| KEY\_NAMED\_KEY\_BEGIN |  |
+| KEY\_TAB |  |
+| KEY\_LEFT\_ARROW |  |
+| KEY\_RIGHT\_ARROW |  |
+| KEY\_UP\_ARROW |  |
+| KEY\_DOWN\_ARROW |  |
+| KEY\_PAGE\_UP |  |
+| KEY\_PAGE\_DOWN |  |
+| KEY\_HOME |  |
+| KEY\_END |  |
+| KEY\_INSERT |  |
+| KEY\_DELETE |  |
+| KEY\_BACKSPACE |  |
+| KEY\_SPACE |  |
+| KEY\_ENTER |  |
+| KEY\_ESCAPE |  |
+| KEY\_LEFT\_CTRL |  |
+| KEY\_LEFT\_SHIFT |  |
+| KEY\_LEFT\_ALT |  |
+| KEY\_LEFT\_SUPER |  |
+| KEY\_RIGHT\_CTRL |  |
+| KEY\_RIGHT\_SHIFT |  |
+| KEY\_RIGHT\_ALT |  |
+| KEY\_RIGHT\_SUPER |  |
+| KEY\_MENU |  |
+| KEY\_0 |  |
+| KEY\_1 |  |
+| KEY\_2 |  |
+| KEY\_3 |  |
+| KEY\_4 |  |
+| KEY\_5 |  |
+| KEY\_6 |  |
+| KEY\_7 |  |
+| KEY\_8 |  |
+| KEY\_9 |  |
+| KEY\_A |  |
+| KEY\_B |  |
+| KEY\_C |  |
+| KEY\_D |  |
+| KEY\_E |  |
+| KEY\_F |  |
+| KEY\_G |  |
+| KEY\_H |  |
+| KEY\_I |  |
+| KEY\_J |  |
+| KEY\_K |  |
+| KEY\_L |  |
+| KEY\_M |  |
+| KEY\_N |  |
+| KEY\_O |  |
+| KEY\_P |  |
+| KEY\_Q |  |
+| KEY\_R |  |
+| KEY\_S |  |
+| KEY\_T |  |
+| KEY\_U |  |
+| KEY\_V |  |
+| KEY\_W |  |
+| KEY\_X |  |
+| KEY\_Y |  |
+| KEY\_Z |  |
+| KEY\_F1 |  |
+| KEY\_F2 |  |
+| KEY\_F3 |  |
+| KEY\_F4 |  |
+| KEY\_F5 |  |
+| KEY\_F6 |  |
+| KEY\_F7 |  |
+| KEY\_F8 |  |
+| KEY\_F9 |  |
+| KEY\_F10 |  |
+| KEY\_F11 |  |
+| KEY\_F12 |  |
+| KEY\_F13 |  |
+| KEY\_F14 |  |
+| KEY\_F15 |  |
+| KEY\_F16 |  |
+| KEY\_F17 |  |
+| KEY\_F18 |  |
+| KEY\_F19 |  |
+| KEY\_F20 |  |
+| KEY\_F21 |  |
+| KEY\_F22 |  |
+| KEY\_F23 |  |
+| KEY\_F24 |  |
+| KEY\_APOSTROPHE |  |
+| KEY\_COMMA |  |
+| KEY\_MINUS |  |
+| KEY\_PERIOD |  |
+| KEY\_SLASH |  |
+| KEY\_SEMICOLON |  |
+| KEY\_EQUAL |  |
+| KEY\_LEFT\_BRACKET |  |
+| KEY\_BACKSLASH |  |
+| KEY\_RIGHT\_BRACKET |  |
+| KEY\_GRAVE\_ACCENT |  |
+| KEY\_CAPS\_LOCK |  |
+| KEY\_SCROLL\_LOCK |  |
+| KEY\_NUM\_LOCK |  |
+| KEY\_PRINT\_SCREEN |  |
+| KEY\_PAUSE |  |
+| KEY\_KEYPAD0 |  |
+| KEY\_KEYPAD1 |  |
+| KEY\_KEYPAD2 |  |
+| KEY\_KEYPAD3 |  |
+| KEY\_KEYPAD4 |  |
+| KEY\_KEYPAD5 |  |
+| KEY\_KEYPAD6 |  |
+| KEY\_KEYPAD7 |  |
+| KEY\_KEYPAD8 |  |
+| KEY\_KEYPAD9 |  |
+| KEY\_KEYPAD\_DECIMAL |  |
+| KEY\_KEYPAD\_DIVIDE |  |
+| KEY\_KEYPAD\_MULTIPLY |  |
+| KEY\_KEYPAD\_SUBTRACT |  |
+| KEY\_KEYPAD\_ADD |  |
+| KEY\_KEYPAD\_ENTER |  |
+| KEY\_KEYPAD\_EQUAL |  |
+| KEY\_APP\_BACK |  |
+| KEY\_APP\_FORWARD |  |
+| KEY\_OEM102 |  |
+| KEY\_GAMEPAD\_START |  |
+| KEY\_GAMEPAD\_BACK |  |
+| KEY\_GAMEPAD\_FACE\_LEFT |  |
+| KEY\_GAMEPAD\_FACE\_RIGHT |  |
+| KEY\_GAMEPAD\_FACE\_UP |  |
+| KEY\_GAMEPAD\_FACE\_DOWN |  |
+| KEY\_GAMEPAD\_DPAD\_LEFT |  |
+| KEY\_GAMEPAD\_DPAD\_RIGHT |  |
+| KEY\_GAMEPAD\_DPAD\_UP |  |
+| KEY\_GAMEPAD\_DPAD\_DOWN |  |
+| KEY\_GAMEPAD\_L1 |  |
+| KEY\_GAMEPAD\_R1 |  |
+| KEY\_GAMEPAD\_L2 |  |
+| KEY\_GAMEPAD\_R2 |  |
+| KEY\_GAMEPAD\_L3 |  |
+| KEY\_GAMEPAD\_R3 |  |
+| KEY\_GAMEPAD\_L\_STICK\_LEFT |  |
+| KEY\_GAMEPAD\_L\_STICK\_RIGHT |  |
+| KEY\_GAMEPAD\_L\_STICK\_UP |  |
+| KEY\_GAMEPAD\_L\_STICK\_DOWN |  |
+| KEY\_GAMEPAD\_R\_STICK\_LEFT |  |
+| KEY\_GAMEPAD\_R\_STICK\_RIGHT |  |
+| KEY\_GAMEPAD\_R\_STICK\_UP |  |
+| KEY\_GAMEPAD\_R\_STICK\_DOWN |  |
+| KEY\_MOUSE\_LEFT |  |
+| KEY\_MOUSE\_RIGHT |  |
+| KEY\_MOUSE\_MIDDLE |  |
+| KEY\_MOUSE\_X1 |  |
+| KEY\_MOUSE\_X2 |  |
+| KEY\_MOUSE\_WHEEL\_X |  |
+| KEY\_MOUSE\_WHEEL\_Y |  |
+| KEY\_RESERVED\_FOR\_MOD\_CTRL |  |
+| KEY\_RESERVED\_FOR\_MOD\_SHIFT |  |
+| KEY\_RESERVED\_FOR\_MOD\_ALT |  |
+| KEY\_RESERVED\_FOR\_MOD\_SUPER |  |
+| KEY\_NAMED\_KEY\_END |  |
+| KEY\_NAMED\_KEY\_COUNT |  |
+| MOD\_NONE |  |
+| MOD\_CTRL |  |
+| MOD\_SHIFT |  |
+| MOD\_ALT |  |
+| MOD\_SUPER |  |
+
+### Enum: MouseButton
+
+| Name | Description |
+| --- | --- |
+| LEFT |  |
+| RIGHT |  |
+| MIDDLE |  |
+| COUNT |  |
+
+### Enum: MouseCursor
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| ARROW |  |
+| TEXT\_INPUT | When hovering over `input_text`, etc. |
+| RESIZE\_ALL | (Unused by Dear ImGui functions) |
+| RESIZE\_NS | When hovering over a horizontal border |
+| RESIZE\_EW | When hovering over a vertical border or a column |
+| RESIZE\_NESW | When hovering over the bottom-left corner of a window |
+| RESIZE\_NWSE | When hovering over the bottom-right corner of a window |
+| HAND | (Unused by Dear ImGui functions. Use for e.g. hyperlinks) |
+| WAIT | When waiting for something to process/load. |
+| PROGRESS | When waiting for something to process/load, but application is still interactive. |
+| NOT\_ALLOWED | When hovering something with disallowed interaction. Usually a crossed circle. |
+| COUNT |  |
+
+### Enum: MouseSource
+
+| Name | Description |
+| --- | --- |
+| MOUSE | Input is coming from an actual mouse. |
+| TOUCH\_SCREEN | Input is coming from a touch screen (no hovering prior to initial press, less precise initial press aiming, dual-axis wheeling possible). |
+| PEN | Input is coming from a pressure/magnetic pen (often used in conjunction with high-sampling rates). |
+| COUNT |  |
+
+### Enum: PopupFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| MOUSE\_BUTTON\_LEFT | For BeginPopupContext\*(): open on Left Mouse release. Guaranteed to always be == 0 (same as `MouseButton.LEFT`) |
+| MOUSE\_BUTTON\_RIGHT | For BeginPopupContext\*(): open on Right Mouse release. Guaranteed to always be == 1 (same as `MouseButton.RIGHT`) |
+| MOUSE\_BUTTON\_MIDDLE | For BeginPopupContext\*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as `MouseButton.MIDDLE`) |
+| NO\_REOPEN | For `open_popup`*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation) |
+| NO\_OPEN\_OVER\_EXISTING\_POPUP | For `open_popup`*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack |
+| NO\_OPEN\_OVER\_ITEMS | For `begin_popup_context_window()`: don't return true when hovering items, only when hovering empty space |
+| ANY\_POPUP\_ID | For `is_popup_open()`: ignore the ImGuiID parameter and test for any popup. |
+| ANY\_POPUP\_LEVEL | For `is_popup_open()`: search/test at any level of the popup stack (default test in the current level) |
+| ANY\_POPUP |  |
+
+### Enum: SelectableFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| NO\_AUTO\_CLOSE\_POPUPS | Clicking this doesn't close parent popup window (overrides `ItemFlags.AUTO_CLOSE_POPUPS`) |
+| SPAN\_ALL\_COLUMNS | Frame will span all columns of its container table (text will still fit in current column) |
+| ALLOW\_DOUBLE\_CLICK | Generate press events on double clicks too |
+| DISABLED | Cannot be selected, display grayed out text |
+| ALLOW\_OVERLAP | (WIP) Hit testing to allow subsequent widgets to overlap this one |
+| HIGHLIGHT | Make the item be displayed as if it is hovered |
+| SELECT\_ON\_NAV | Auto-select when moved into, unless Ctrl is held. Automatic when in a `begin_multi_select()` block. |
+
+### Enum: SliderFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| LOGARITHMIC | Make the widget logarithmic (linear otherwise). Consider using `SliderFlags.NO_ROUND_TO_FORMAT` with this if using a format-string with small amount of digits. |
+| NO\_ROUND\_TO\_FORMAT | Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits). |
+| NO\_INPUT | Disable CTRL+Click or Enter key allowing to input text directly into the widget. |
+| WRAP\_AROUND | Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now. |
+| CLAMP\_ON\_INPUT | Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds. |
+| CLAMP\_ZERO\_RANGE | Clamp even if min==max==0.0f. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
+| NO\_SPEED\_TWEAKS | Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic. |
+| ALWAYS\_CLAMP |  |
+
+### Enum: StyleVar
+
+| Name | Description |
+| --- | --- |
+| ALPHA | Float     Alpha |
+| DISABLED\_ALPHA | Float     DisabledAlpha |
+| WINDOW\_PADDING | ImVec2    WindowPadding |
+| WINDOW\_ROUNDING | Float     WindowRounding |
+| WINDOW\_BORDER\_SIZE | Float     WindowBorderSize |
+| WINDOW\_MIN\_SIZE | ImVec2    WindowMinSize |
+| WINDOW\_TITLE\_ALIGN | ImVec2    WindowTitleAlign |
+| CHILD\_ROUNDING | Float     ChildRounding |
+| CHILD\_BORDER\_SIZE | Float     ChildBorderSize |
+| POPUP\_ROUNDING | Float     PopupRounding |
+| POPUP\_BORDER\_SIZE | Float     PopupBorderSize |
+| FRAME\_PADDING | ImVec2    FramePadding |
+| FRAME\_ROUNDING | Float     FrameRounding |
+| FRAME\_BORDER\_SIZE | Float     FrameBorderSize |
+| ITEM\_SPACING | ImVec2    ItemSpacing |
+| ITEM\_INNER\_SPACING | ImVec2    ItemInnerSpacing |
+| INDENT\_SPACING | Float     IndentSpacing |
+| CELL\_PADDING | ImVec2    CellPadding |
+| SCROLLBAR\_SIZE | Float     ScrollbarSize |
+| SCROLLBAR\_ROUNDING | Float     ScrollbarRounding |
+| SCROLLBAR\_PADDING | Float     ScrollbarPadding |
+| GRAB\_MIN\_SIZE | Float     GrabMinSize |
+| GRAB\_ROUNDING | Float     GrabRounding |
+| IMAGE\_BORDER\_SIZE | Float     ImageBorderSize |
+| TAB\_ROUNDING | Float     TabRounding |
+| TAB\_BORDER\_SIZE | Float     TabBorderSize |
+| TAB\_MIN\_WIDTH\_BASE | Float     TabMinWidthBase |
+| TAB\_MIN\_WIDTH\_SHRINK | Float     TabMinWidthShrink |
+| TAB\_BAR\_BORDER\_SIZE | Float     TabBarBorderSize |
+| TAB\_BAR\_OVERLINE\_SIZE | Float     TabBarOverlineSize |
+| TABLE\_ANGLED\_HEADERS\_ANGLE | Float     TableAngledHeadersAngle |
+| TABLE\_ANGLED\_HEADERS\_TEXT\_ALIGN | ImVec2  TableAngledHeadersTextAlign |
+| TREE\_LINES\_SIZE | Float     TreeLinesSize |
+| TREE\_LINES\_ROUNDING | Float     TreeLinesRounding |
+| BUTTON\_TEXT\_ALIGN | ImVec2    ButtonTextAlign |
+| SELECTABLE\_TEXT\_ALIGN | ImVec2    SelectableTextAlign |
+| SEPARATOR\_TEXT\_BORDER\_SIZE | Float     SeparatorTextBorderSize |
+| SEPARATOR\_TEXT\_ALIGN | ImVec2    SeparatorTextAlign |
+| SEPARATOR\_TEXT\_PADDING | ImVec2    SeparatorTextPadding |
+| COUNT |  |
+
+### Enum: TabBarFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| REORDERABLE | Allow manually dragging tabs to re-order them + New tabs are appended at the end of list |
+| AUTO\_SELECT\_NEW\_TABS | Automatically select new tabs when they appear |
+| TAB\_LIST\_POPUP\_BUTTON | Disable buttons to open the tab list popup |
+| NO\_CLOSE\_WITH\_MIDDLE\_MOUSE\_BUTTON | Disable behavior of closing tabs (that are submitted with p\_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked(2)`) \*p\_open = false. |
+| NO\_TAB\_LIST\_SCROLLING\_BUTTONS | Disable scrolling buttons (apply when fitting policy is `TabBarFlags.FITTING_POLICY_SCROLL`) |
+| NO\_TOOLTIP | Disable tooltips when hovering a tab |
+| DRAW\_SELECTED\_OVERLINE | Draw selected overline markers over selected tab |
+| FITTING\_POLICY\_MIXED | Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling buttons. |
+| FITTING\_POLICY\_SHRINK | Shrink down tabs when they don't fit |
+| FITTING\_POLICY\_SCROLL | Enable scrolling buttons when tabs don't fit |
+
+### Enum: TabItemFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| UNSAVED\_DOCUMENT | Display a dot next to the title + set `TabItemFlags.NO_ASSUMED_CLOSURE`. |
+| SET\_SELECTED | Trigger flag to programmatically make the tab selected when calling `begin_tab_item()` |
+| NO\_CLOSE\_WITH\_MIDDLE\_MOUSE\_BUTTON | Disable behavior of closing tabs (that are submitted with p\_open != NULL) with middle mouse button. You may handle this behavior manually on user's side with if (`is_item_hovered()` && `is_mouse_clicked(2)`) \*p\_open = false. |
+| NO\_PUSH\_ID | Don't call `push_id()`/`pop_id()` on `begin_tab_item()`/`end_tab_item()` |
+| NO\_TOOLTIP | Disable tooltip for the given tab |
+| NO\_REORDER | Disable reordering this tab or having another tab cross over this tab |
+| LEADING | Enforce the tab position to the left of the tab bar (after the tab list popup button) |
+| TRAILING | Enforce the tab position to the right of the tab bar (before the scrolling buttons) |
+| NO\_ASSUMED\_CLOSURE | Tab is selected when trying to close + closure is not immediately assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar. |
+
+### Enum: TableBgTarget
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| ROW\_BG0 | Set row background color 0 (generally used for background, automatically set when `TableFlags.ROW_BG` is used) |
+| ROW\_BG1 | Set row background color 1 (generally used for selection marking) |
+| CELL\_BG | Set cell background color (top-most color) |
+
+### Enum: TableColumnFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| DISABLED | Overriding/master disable flag: hide column, won't show in context menu (unlike calling `table_set_column_enabled()` which manipulates the user accessible state) |
+| DEFAULT\_HIDE | Default as a hidden/disabled column. |
+| DEFAULT\_SORT | Default as a sorting column. |
+| WIDTH\_STRETCH | Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is \_SizingStretchSame or \_SizingStretchProp). |
+| WIDTH\_FIXED | Column will not stretch. Preferable with horizontal scrolling enabled (default if table sizing policy is \_SizingFixedFit and table is resizable). |
+| NO\_RESIZE | Disable manual resizing. |
+| NO\_REORDER | Disable manual reordering this column, this will also prevent other columns from crossing over this column. |
+| NO\_HIDE | Disable ability to hide/disable this column. |
+| NO\_CLIP | Disable clipping for this column (all NoClip columns will render in a same draw command). |
+| NO\_SORT | Disable ability to sort on this field (even if `TableFlags.SORTABLE` is set on the table). |
+| NO\_SORT\_ASCENDING | Disable ability to sort in the ascending direction. |
+| NO\_SORT\_DESCENDING | Disable ability to sort in the descending direction. |
+| NO\_HEADER\_LABEL | `table_headers_row()` will submit an empty label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers. You may append into this cell by calling `table_set_column_index()` right after the `table_headers_row()` call. |
+| NO\_HEADER\_WIDTH | Disable header text width contribution to automatic column width. |
+| PREFER\_SORT\_ASCENDING | Make the initial sort direction Ascending when first sorting on this column (default). |
+| PREFER\_SORT\_DESCENDING | Make the initial sort direction Descending when first sorting on this column. |
+| INDENT\_ENABLE | Use current `indent` value when entering cell (default for column 0). |
+| INDENT\_DISABLE | Ignore current `indent` value when entering cell (default for columns > 0). Indentation changes *within* the cell will still be honored. |
+| ANGLED\_HEADER | `table_headers_row()` will submit an angled header row for this column. Note this will add an extra row. |
+| IS\_ENABLED | Status: is enabled == not hidden by user/api (referred to as "Hide" in \_DefaultHide and \_NoHide) flags. |
+| IS\_VISIBLE | Status: is visible == is enabled AND not clipped by scrolling. |
+| IS\_SORTED | Status: is currently part of the sort specs |
+| IS\_HOVERED | Status: is hovered by mouse |
+
+### Enum: TableFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| RESIZABLE | Enable resizing columns. |
+| REORDERABLE | Enable reordering columns in header row (need calling `table_setup_column()` + `table_headers_row()` to display headers) |
+| HIDEABLE | Enable hiding/disabling columns in context menu. |
+| SORTABLE | Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. Also see `TableFlags.SORT_MULTI` and `TableFlags.SORT_TRISTATE`. |
+| NO\_SAVED\_SETTINGS | Disable persisting columns order, width and sort settings in the .ini file. |
+| CONTEXT\_MENU\_IN\_BODY | Right-click on columns body/contents will display table context menu. By default it is available in `table_headers_row()`. |
+| ROW\_BG | Set each RowBg color with `Col.TABLE_ROW_BG` or `Col.TABLE_ROW_BG_ALT` (equivalent of calling `table_set_bg_color` with ImGuiTableBgFlags\_RowBg0 on each row manually) |
+| BORDERS\_INNER\_H | Draw horizontal borders between rows. |
+| BORDERS\_OUTER\_H | Draw horizontal borders at the top and bottom. |
+| BORDERS\_INNER\_V | Draw vertical borders between columns. |
+| BORDERS\_OUTER\_V | Draw vertical borders on the left and right sides. |
+| BORDERS\_H | Draw horizontal borders. |
+| BORDERS\_V | Draw vertical borders. |
+| BORDERS\_INNER | Draw inner borders. |
+| BORDERS\_OUTER | Draw outer borders. |
+| BORDERS | Draw all borders. |
+| NO\_BORDERS\_IN\_BODY | \[ALPHA] Disable vertical borders in columns Body (borders will always appear in Headers). -> May move to style |
+| NO\_BORDERS\_IN\_BODY\_UNTIL\_RESIZE | \[ALPHA] Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers). -> May move to style |
+| SIZING\_FIXED\_FIT | `columns` default to \_WidthFixed or \_WidthAuto (if resizable or not resizable), matching contents width. |
+| SIZING\_FIXED\_SAME | `columns` default to \_WidthFixed or \_WidthAuto (if resizable or not resizable), matching the maximum contents width of all columns. Implicitly enable `TableFlags.NO_KEEP_COLUMNS_VISIBLE`. |
+| SIZING\_STRETCH\_PROP | `columns` default to \_WidthStretch with default weights proportional to each columns contents widths. |
+| SIZING\_STRETCH\_SAME | `columns` default to \_WidthStretch with default weights all equal, unless overridden by `table_setup_column()`. |
+| NO\_HOST\_EXTEND\_X | Make outer width auto-fit to columns, overriding outer\_size.x value. Only available when ScrollX/ScrollY are disabled and Stretch columns are not used. |
+| NO\_HOST\_EXTEND\_Y | Make outer height stop exactly at outer\_size.y (prevent auto-extending table past the limit). Only available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible. |
+| NO\_KEEP\_COLUMNS\_VISIBLE | Disable keeping column always minimally visible when ScrollX is off and table gets too small. Not recommended if columns are resizable. |
+| PRECISE\_WIDTHS | Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth. |
+| NO\_CLIP | Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with `table_setup_scroll_freeze()`. |
+| PAD\_OUTER\_X | Default if BordersOuterV is on. Enable outermost padding. Generally desirable if you have headers. |
+| NO\_PAD\_OUTER\_X | Default if BordersOuterV is off. Disable outermost padding. |
+| NO\_PAD\_INNER\_X | Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off). |
+| SCROLL\_X | Enable horizontal scrolling. Require 'outer\_size' parameter of `begin_table()` to specify the container size. Changes default sizing policy. Because this creates a child window, ScrollY is currently generally recommended when using ScrollX. |
+| SCROLL\_Y | Enable vertical scrolling. Require 'outer\_size' parameter of `begin_table()` to specify the container size. |
+| SORT\_MULTI | Hold shift when clicking headers to sort on multiple column. `table_get_sort_specs()` may return specs where (SpecsCount > 1). |
+| SORT\_TRISTATE | Allow no sorting, disable default sorting. `table_get_sort_specs()` may return specs where (SpecsCount == 0). |
+| HIGHLIGHT\_HOVERED\_COLUMN | Highlight column headers when hovered (may evolve into a fuller highlight) |
+
+### Enum: TableRowFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| HEADERS | Identify header row (set default background color + width of its contents accounted differently for auto column width) |
+
+### Enum: TextureFormat
+
+| Name | Description |
+| --- | --- |
+| RGBA32 | 4 components per pixel, each is unsigned 8-bit. Total size = TexWidth \* TexHeight \* 4 |
+| ALPHA8 | 1 component per pixel, each is unsigned 8-bit. Total size = TexWidth \* TexHeight |
+
+### Enum: TextureStatus
+
+| Name | Description |
+| --- | --- |
+| OK |  |
+| DESTROYED | Backend destroyed the texture. |
+| WANT\_CREATE | Requesting backend to create the texture. Set status OK when done. |
+| WANT\_UPDATES | Requesting backend to update specific blocks of pixels (write to texture portions which have never been used before). Set status OK when done. |
+| WANT\_DESTROY | Requesting backend to destroy the texture. Set status to Destroyed when done. |
+
+### Enum: TreeNodeFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| SELECTED | Draw as selected |
+| FRAMED | Draw frame with background (e.g. for `collapsing_header`) |
+| ALLOW\_OVERLAP | Hit testing to allow subsequent widgets to overlap this one |
+| NO\_TREE\_PUSH\_ON\_OPEN | Don't do a `tree_push()` when open (e.g. for `collapsing_header`) = no extra indent nor pushing on ID stack |
+| NO\_AUTO\_OPEN\_ON\_LOG | Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes) |
+| DEFAULT\_OPEN | Default node to be open |
+| OPEN\_ON\_DOUBLE\_CLICK | Open on double-click instead of simple click (default for multi-select unless any \_OpenOnXXX behavior is set explicitly). Both behaviors may be combined. |
+| OPEN\_ON\_ARROW | Open when clicking on the arrow part (default for multi-select unless any \_OpenOnXXX behavior is set explicitly). Both behaviors may be combined. |
+| LEAF | No collapsing, no arrow (use as a convenience for leaf nodes). |
+| BULLET | Display a bullet instead of arrow. IMPORTANT: node can still be marked open/close if you don't set the \_Leaf flag! |
+| FRAME\_PADDING | Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling `align_text_to_frame_padding()` before the node. |
+| SPAN\_AVAIL\_WIDTH | Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line without using AllowOverlap mode. |
+| SPAN\_FULL\_WIDTH | Extend hit box to the left-most and right-most edges (cover the indent area). |
+| SPAN\_LABEL\_WIDTH | Narrow hit box + narrow hovering highlight, will only cover the label text. |
+| SPAN\_ALL\_COLUMNS | Frame will span all columns of its container table (label will still fit in current column) |
+| LABEL\_SPAN\_ALL\_COLUMNS | Label will span all columns of its container table |
+| NAV\_LEFT\_JUMPS\_TO\_PARENT | Nav: left arrow moves back to parent. This is processed in `tree_pop()` when there's an unfullfilled Left nav request remaining. |
+| COLLAPSING\_HEADER |  |
+| DRAW\_LINES\_NONE | No lines drawn |
+| DRAW\_LINES\_FULL | Horizontal lines to child nodes. Vertical line drawn down to `tree_pop()` position: cover full contents. Faster (for large trees). |
+| DRAW\_LINES\_TO\_NODES | Horizontal lines to child nodes. Vertical line drawn down to bottom-most child node. Slower (for large trees). |
+
+### Enum: WindowFlags
+
+| Name | Description |
+| --- | --- |
+| NONE |  |
+| NO\_TITLE\_BAR | Disable title-bar |
+| NO\_RESIZE | Disable user resizing with the lower-right grip |
+| NO\_MOVE | Disable user moving the window |
+| NO\_SCROLLBAR | Disable scrollbars (window can still scroll with mouse or programmatically) |
+| NO\_SCROLL\_WITH\_MOUSE | Disable user vertically scrolling with mouse wheel. On child window, mouse wheel will be forwarded to the parent unless NoScrollbar is also set. |
+| NO\_COLLAPSE | Disable user collapsing window by double-clicking on it. Also referred to as Window Menu Button (e.g. within a docking node). |
+| ALWAYS\_AUTO\_RESIZE | Resize every window to its content every frame |
+| NO\_BACKGROUND | Disable drawing background color (WindowBg, etc.) and outside border. Similar as using `set_next_window_bg_alpha(0.0)`. |
+| NO\_SAVED\_SETTINGS | Never load/save settings in .ini file |
+| NO\_MOUSE\_INPUTS | Disable catching mouse, hovering test with pass through. |
+| MENU\_BAR | Has a menu-bar |
+| HORIZONTAL\_SCROLLBAR | Allow horizontal scrollbar to appear (off by default). You may use `set_next_window_content_size((width,0.0))`; prior to calling `begin()` to specify width. Read code in imgui\_demo in the "Horizontal Scrolling" section. |
+| NO\_FOCUS\_ON\_APPEARING | Disable taking focus when transitioning from hidden to visible state |
+| NO\_BRING\_TO\_FRONT\_ON\_FOCUS | Disable bringing window to front when taking focus (e.g. clicking on it or programmatically giving it focus) |
+| ALWAYS\_VERTICAL\_SCROLLBAR | Always show vertical scrollbar (even if ContentSize.y < Size.y) |
+| ALWAYS\_HORIZONTAL\_SCROLLBAR | Always show horizontal scrollbar (even if ContentSize.x < Size.x) |
+| NO\_NAV\_INPUTS | No keyboard/gamepad navigation within the window |
+| NO\_NAV\_FOCUS | No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by CTRL+TAB) |
+| UNSAVED\_DOCUMENT | Display a dot next to the title. When used in a tab/docking context, tab is selected when clicking the X + closure is not assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar. |
+| NO\_NAV |  |
+| NO\_DECORATION |  |
+| NO\_INPUTS |  |
+| CHILD\_WINDOW | Don't use! For internal use by `begin_child()` |
+| TOOLTIP | Don't use! For internal use by `begin_tooltip()` |
+| POPUP | Don't use! For internal use by `begin_popup()` |
+| MODAL | Don't use! For internal use by `begin_popup_modal()` |
+| CHILD\_MENU | Don't use! For internal use by `begin_menu()` |
+
+### Enum: DrawListCallbackResult
+
+| Name | Description |
+| --- | --- |
+| DRAW | No callback, backend should draw elements. |
+| CALLBACK | Callback executed, no further processing of this command necessary. |
+| RESET\_RENDER\_STATE | Reset render state token, backend should perform render state reset. |
+
+## Class Reference
+
+### Class: DrawList
+
+::: api-signature
+
+```python
+DrawList.add_bezier_cubic(
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    p4: tuple[float, float],
+    col: int,
+    thickness: float,
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_bezier_quadratic(
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    col: int,
+    thickness: float,
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_callback(
+    callable: int | Callable[[DrawList, DrawCmd, int | bytes], None],
+    userdata: int | bytes,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_circle(
+    center: tuple[float, float],
+    radius: float,
+    col: int,
+    num_segments: int = 0,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_circle_filled(
+    center: tuple[float, float],
+    radius: float,
+    col: int,
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_concave_poly_filled(
+    points: Sequence[tuple[float, float]],
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_concave_poly_filled(
+    points: Annotated[NDArray[Any], dict(shape=(None, 2), device='cpu', writable=False)],
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_convex_poly_filled(
+    points: Sequence[tuple[float, float]],
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_convex_poly_filled(
+    points: Annotated[NDArray[Any], dict(shape=(None, 2), device='cpu', writable=False)],
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_draw_cmd() -> None:
+    """
+    This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_ellipse(
+    center: tuple[float, float],
+    radius: tuple[float, float],
+    col: int,
+    rot: float = 0.0,
+    num_segments: int = 0,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_ellipse_filled(
+    center: tuple[float, float],
+    radius: tuple[float, float],
+    col: int,
+    rot: float = 0.0,
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_image(
+    tex_ref: TextureRef | int,
+    p_min: tuple[float, float],
+    p_max: tuple[float, float],
+    uv_min: tuple[float, float] = (0.0, 0.0),
+    uv_max: tuple[float, float] = (1.0, 1.0),
+    col: int = COL32_WHITE,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_image_quad(
+    tex_ref: TextureRef | int,
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    p4: tuple[float, float],
+    uv1: tuple[float, float] = (0.0, 0.0),
+    uv2: tuple[float, float] = (1.0, 0.0),
+    uv3: tuple[float, float] = (1.0, 1.0),
+    uv4: tuple[float, float] = (0.0, 1.0),
+    col: int = COL32_WHITE,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_image_rounded(
+    tex_ref: TextureRef | int,
+    p_min: tuple[float, float],
+    p_max: tuple[float, float],
+    uv_min: tuple[float, float],
+    uv_max: tuple[float, float],
+    col: int,
+    rounding: float,
+    flags: DrawFlags = DrawFlags.NONE,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_line(
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    col: int,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_ngon(
+    center: tuple[float, float],
+    radius: float,
+    col: int,
+    num_segments: int,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_ngon_filled(
+    center: tuple[float, float],
+    radius: float,
+    col: int,
+    num_segments: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_polyline(
+    points: Sequence[tuple[float, float]],
+    col: int,
+    flags: DrawFlags,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_polyline(
+    points: Annotated[NDArray[Any], dict(shape=(None, 2), device='cpu', writable=False)],
+    col: int,
+    flags: DrawFlags,
+    thickness: float,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_quad(
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    p4: tuple[float, float],
+    col: int,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_quad_filled(
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    p4: tuple[float, float],
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_rect(
+    p_min: tuple[float, float],
+    p_max: tuple[float, float],
+    col: int,
+    rounding: float = 0.0,
+    flags: DrawFlags = DrawFlags.NONE,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_rect_filled(
+    p_min: tuple[float, float],
+    p_max: tuple[float, float],
+    col: int,
+    rounding: float = 0.0,
+    flags: DrawFlags = DrawFlags.NONE,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_rect_filled_multi_color(
+    p_min: tuple[float, float],
+    p_max: tuple[float, float],
+    col_upr_left: int,
+    col_upr_right: int,
+    col_bot_right: int,
+    col_bot_left: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_text(
+    pos: tuple[float, float],
+    col: int,
+    text: str,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_text(
+    font: Font,
+    font_size: float,
+    pos: tuple[float, float],
+    col: int,
+    text: str,
+    wrap_width: float = 0.0,
+    cpu_fine_clip_rect: tuple[float, float, float, float] | None = None,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_triangle(
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    col: int,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.add_triangle_filled(
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.channels_merge() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.channels_set_current(
+    n: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.channels_split(
+    count: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.commands -> Iterator[DrawCmd]:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.get_clip_rect_max() -> tuple[float, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.get_clip_rect_min() -> tuple[float, float]:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.idx_buffer_data -> int:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.idx_buffer_size -> int:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_arc_to(
+    center: tuple[float, float],
+    radius: float,
+    a_min: float,
+    a_max: float,
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_arc_to_fast(
+    center: tuple[float, float],
+    radius: float,
+    a_min_of_12: int,
+    a_max_of_12: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_bezier_cubic_curve_to(
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    p4: tuple[float, float],
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_bezier_quadratic_curve_to(
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_clear() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_elliptical_arc_to(
+    center: tuple[float, float],
+    radius: tuple[float, float],
+    rot: float,
+    a_min: float,
+    a_max: float,
+    num_segments: int = 0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_fill_concave(
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_fill_convex(
+    col: int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_line_to(
+    pos: tuple[float, float],
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_line_to_merge_duplicate(
+    pos: tuple[float, float],
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_rect(
+    rect_min: tuple[float, float],
+    rect_max: tuple[float, float],
+    rounding: float = 0.0,
+    flags: DrawFlags = DrawFlags.NONE,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.path_stroke(
+    col: int,
+    flags: DrawFlags = DrawFlags.NONE,
+    thickness: float = 1.0,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.pop_clip_rect() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.pop_texture() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.ptr() -> int:
+    """
+    Internal function for reference book keeping.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.push_clip_rect(
+    clip_rect_min: tuple[float, float],
+    clip_rect_max: tuple[float, float],
+    intersect_with_current_clip_rect: bool = False,
+) -> None:
+    """
+    Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level `imgui.push_clip_rect()` to affect logic (hit-testing and widget culling)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.push_clip_rect_full_screen() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.push_texture(
+    tex_ref: TextureRef | int,
+) -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.vtx_buffer_data -> int:
+```
+
+:::
+
+::: api-signature
+
+```python
+DrawList.vtx_buffer_size -> int:
+```
+
+:::

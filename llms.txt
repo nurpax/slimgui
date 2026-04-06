@@ -1,0 +1,24 @@
+# Slimgui
+
+> Slimgui bindings and examples
+
+## Table of Contents
+
+### Guide
+
+- [Getting Started](/guide/getting-started.md)
+- [Typing](/guide/typing.md)
+
+### API Reference
+
+- [slimgui - ImGui API reference](/api/imgui.md)
+- [slimgui - ImPlot API reference](/api/implot.md)
+
+### Recipes
+
+- [Recipes](/recipes.md)
+- [Widgets](/recipes/widgets.md)
+- [Styles](/recipes/styles.md)
+- [Layout](/recipes/layout.md)
+- [ImPlot](/recipes/implot.md)
+
