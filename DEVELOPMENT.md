@@ -118,13 +118,41 @@ Recommended manual publish flow:
 - run `python3 gen/recipes/build_recipes.py`
 - run `bash deploy_docs.sh`
 
-## Updating imgui and cimgui metainfo when upgrading imgui
+## Upgrading Dear ImGui / ImPlot
 
-Edit the `imgui_vendor.py` script to pull newer versions and then:
+When updating vendored Dear ImGui / ImPlot versions:
 
+1. Edit `gen/imgui_vendor.py` to point at the new upstream versions.
+2. Re-vendor the sources & regenerate bindings/stubs:
+
+```bash
+python3 gen/imgui_vendor.py
+bash full_build.sh
 ```
-cd $ROOT_DIR
-python gen/imgui_vendor.py
+
+3. Create a dedicated vendoring commit so the upstream version bump stays easy to find in this repository's history. Follow the existing pattern, for example:
+
+```text
+Upgrade imgui to 1.92.4 and implot + updating binding definitions for the same
 ```
 
-You need to also git cherry-pick imconfig related changes + do a `full_rebuild.sh` to update enums.  See git log for reference.
+Use the actual Dear ImGui / cimgui / ImPlot / cimplot versions or commits that were vendored in `gen/imgui_vendor.py`.
+
+4. Reapply the local vendored `imconfig`-related patch:
+
+```bash
+git cherry-pick 0f477ab1533bec6126f7caa988139549151510f4
+```
+
+5. Re-sync and validate the authored API docs if the public API changed:
+
+```bash
+python3 gen/check_apiref_docs.py sync
+python3 gen/check_apiref_docs.py check
+```
+
+6. Run the test suite:
+
+```bash
+pytest
+```
