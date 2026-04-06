@@ -56,8 +56,9 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
            "(contrast to default behavior of Escape to revert)")
     .value(
         "CTRL_ENTER_FOR_NEW_LINE", ImGuiInputTextFlags_CtrlEnterForNewLine,
-        "In multi-line mode, validate with Enter, add new line with Ctrl+Enter "
-        "(default is opposite: validate with Ctrl+Enter, add line with Enter).")
+        "In multi-line mode: validate with Enter, add new line with Ctrl+Enter "
+        "(default is opposite: validate with Ctrl+Enter, add line with Enter). "
+        "Note that Shift+Enter always enter a new line either way.")
     .value("READ_ONLY", ImGuiInputTextFlags_ReadOnly, "Read-only mode")
     .value("PASSWORD", ImGuiInputTextFlags_Password,
            "Password mode, display all characters as '*', disable copy")
@@ -105,7 +106,7 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
         "on edit + you can always use `is_item_edited()`. The callback is "
         "useful to manipulate the underlying buffer while focus is active.")
     .value("WORD_WRAP", ImGuiInputTextFlags_WordWrap,
-           "InputTextMultine(): word-wrap lines that are too long.");
+           "`input_text_multiline()`: word-wrap lines that are too long.");
 nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiButtonFlags_None)
@@ -119,7 +120,11 @@ nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
            "[Internal]")
     .value("ENABLE_NAV", ImGuiButtonFlags_EnableNav,
            "`invisible_button()`: do not disable navigation/tabbing. Otherwise "
-           "disabled by default.");
+           "disabled by default.")
+    .value("ALLOW_OVERLAP", ImGuiButtonFlags_AllowOverlap,
+           "Hit testing will allow subsequent widgets to overlap this one. "
+           "Require previous frame HoveredId to match before being usable. "
+           "`shortcut` to calling `set_next_item_allow_overlap()`.");
 nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiChildFlags_None)
     .value("BORDERS", ImGuiChildFlags_Borders,
@@ -202,6 +207,9 @@ nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags", nb::is_flag(),
            ImGuiDragDropFlags_AcceptNoPreviewTooltip,
            "Request hiding the `begin_drag_drop_source` tooltip from the "
            "`begin_drag_drop_target` site.")
+    .value("ACCEPT_DRAW_AS_HOVERED", ImGuiDragDropFlags_AcceptDrawAsHovered,
+           "Accepting item will render as if hovered. Useful for e.g. a "
+           "`button()` used as a drop target.")
     .value("ACCEPT_PEEK_ONLY", ImGuiDragDropFlags_AcceptPeekOnly,
            "For peeking ahead and inspecting the payload before delivery.");
 nb::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags", nb::is_flag(),
@@ -242,7 +250,7 @@ nb::enum_<ImGuiInputFlags_>(m, "InputFlags", nb::is_flag(), nb::is_arithmetic())
     .value("ROUTE_OVER_ACTIVE", ImGuiInputFlags_RouteOverActive,
            "Option: global route: higher priority than active item. Unlikely "
            "you need to use that: will interfere with every active items, e.g. "
-           "CTRL+A registered by `input_text` will be overridden by this. May "
+           "Ctrl+A registered by `input_text` will be overridden by this. May "
            "not be fully honored as user/internal code is likely to always "
            "assume they can access keys when active.")
     .value("ROUTE_UNLESS_BG_FOCUSED", ImGuiInputFlags_RouteUnlessBgFocused,
@@ -303,7 +311,7 @@ nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags", nb::is_flag(),
            "No keyboard/gamepad navigation within the window")
     .value("NO_NAV_FOCUS", ImGuiWindowFlags_NoNavFocus,
            "No focusing toward this window with keyboard/gamepad navigation "
-           "(e.g. skipped by CTRL+TAB)")
+           "(e.g. skipped by Ctrl+Tab)")
     .value("UNSAVED_DOCUMENT", ImGuiWindowFlags_UnsavedDocument,
            "Display a dot next to the title. When used in a tab/docking "
            "context, tab is selected when clicking the X + closure is not "
@@ -330,7 +338,9 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value("FRAMED", ImGuiTreeNodeFlags_Framed,
            "Draw frame with background (e.g. for `collapsing_header`)")
     .value("ALLOW_OVERLAP", ImGuiTreeNodeFlags_AllowOverlap,
-           "Hit testing to allow subsequent widgets to overlap this one")
+           "Hit testing will allow subsequent widgets to overlap this one. "
+           "Require previous frame HoveredId to match before being usable. "
+           "`shortcut` to calling `set_next_item_allow_overlap()`.")
     .value("NO_TREE_PUSH_ON_OPEN", ImGuiTreeNodeFlags_NoTreePushOnOpen,
            "Don't do a `tree_push()` when open (e.g. for `collapsing_header`) "
            "= no extra indent nor pushing on ID stack")
@@ -348,7 +358,9 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
            "unless any _OpenOnXXX behavior is set explicitly). Both behaviors "
            "may be combined.")
     .value("LEAF", ImGuiTreeNodeFlags_Leaf,
-           "No collapsing, no arrow (use as a convenience for leaf nodes).")
+           "No collapsing, no arrow (use as a convenience for leaf nodes). "
+           "Note: will always open a tree/id scope and return true. If you "
+           "never use that scope, add `TreeNodeFlags.NO_TREE_PUSH_ON_OPEN`.")
     .value("BULLET", ImGuiTreeNodeFlags_Bullet,
            "Display a bullet instead of arrow. IMPORTANT: node can still be "
            "marked open/close if you don't set the _Leaf flag!")
@@ -374,7 +386,7 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value(
         "NAV_LEFT_JUMPS_TO_PARENT", ImGuiTreeNodeFlags_NavLeftJumpsToParent,
         "Nav: left arrow moves back to parent. This is processed in "
-        "`tree_pop()` when there's an unfullfilled Left nav request remaining.")
+        "`tree_pop()` when there's an unfulfilled Left nav request remaining.")
     .value("COLLAPSING_HEADER", ImGuiTreeNodeFlags_CollapsingHeader)
     .value("DRAW_LINES_NONE", ImGuiTreeNodeFlags_DrawLinesNone,
            "No lines drawn")
@@ -456,8 +468,10 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiTableFlags_None)
     .value("RESIZABLE", ImGuiTableFlags_Resizable, "Enable resizing columns.")
     .value("REORDERABLE", ImGuiTableFlags_Reorderable,
-           "Enable reordering columns in header row (need calling "
-           "`table_setup_column()` + `table_headers_row()` to display headers)")
+           "Enable reordering columns in header row. (Need calling "
+           "`table_setup_column()` + `table_headers_row()` to display headers, "
+           "or using `TableFlags.CONTEXT_MENU_IN_BODY` to access context-menu "
+           "without headers).")
     .value("HIDEABLE", ImGuiTableFlags_Hideable,
            "Enable hiding/disabling columns in context menu.")
     .value(
@@ -465,11 +479,11 @@ nb::enum_<ImGuiTableFlags_>(m, "TableFlags", nb::is_flag(), nb::is_arithmetic())
         "Enable sorting. Call `table_get_sort_specs()` to obtain sort specs. "
         "Also see `TableFlags.SORT_MULTI` and `TableFlags.SORT_TRISTATE`.")
     .value("NO_SAVED_SETTINGS", ImGuiTableFlags_NoSavedSettings,
-           "Disable persisting columns order, width and sort settings in the "
-           ".ini file.")
+           "Disable persisting columns order, width, visibility and sort "
+           "settings in the .ini file.")
     .value("CONTEXT_MENU_IN_BODY", ImGuiTableFlags_ContextMenuInBody,
-           "Right-click on columns body/contents will display table context "
-           "menu. By default it is available in `table_headers_row()`.")
+           "Right-click on columns body/contents will also display table "
+           "context menu. By default it is available in `table_headers_row()`.")
     .value("ROW_BG", ImGuiTableFlags_RowBg,
            "Set each RowBg color with `Col.TABLE_ROW_BG` or "
            "`Col.TABLE_ROW_BG_ALT` (equivalent of calling `table_set_bg_color` "
@@ -666,10 +680,13 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
            "ColorPicker: disable bigger color preview on right side of the "
            "picker, use small color square preview instead.")
     .value("NO_DRAG_DROP", ImGuiColorEditFlags_NoDragDrop,
-           "ColorEdit: disable drag and drop target. `color_button`: disable "
-           "drag and drop source.")
+           "ColorEdit: disable drag and drop target/source. `color_button`: "
+           "disable drag and drop source.")
     .value("NO_BORDER", ImGuiColorEditFlags_NoBorder,
            "`color_button`: disable border (which is enforced by default)")
+    .value("NO_COLOR_MARKERS", ImGuiColorEditFlags_NoColorMarkers,
+           "ColorEdit: disable rendering R/G/B/A color marker. May also be "
+           "disabled globally by setting style.ColorMarkerSize = 0.")
     .value("ALPHA_OPAQUE", ImGuiColorEditFlags_AlphaOpaque,
            "ColorEdit, ColorPicker, `color_button`: disable alpha in the "
            "preview,. Contrary to _NoAlpha it may still be edited when calling "
@@ -748,7 +765,9 @@ nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags", nb::is_flag(),
     .value("DISABLED", ImGuiSelectableFlags_Disabled,
            "Cannot be selected, display grayed out text")
     .value("ALLOW_OVERLAP", ImGuiSelectableFlags_AllowOverlap,
-           "(WIP) Hit testing to allow subsequent widgets to overlap this one")
+           "Hit testing will allow subsequent widgets to overlap this one. "
+           "Require previous frame HoveredId to match before being usable. "
+           "`shortcut` to calling `set_next_item_allow_overlap()`.")
     .value("HIGHLIGHT", ImGuiSelectableFlags_Highlight,
            "Make the item be displayed as if it is hovered")
     .value("SELECT_ON_NAV", ImGuiSelectableFlags_SelectOnNav,
@@ -759,7 +778,9 @@ nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags", nb::is_flag(),
     .value("NONE", ImGuiConfigFlags_None)
     .value("NAV_ENABLE_KEYBOARD", ImGuiConfigFlags_NavEnableKeyboard,
            "Master keyboard navigation enable flag. Enable full Tabbing + "
-           "directional arrows + space/enter to activate.")
+           "directional arrows + Space/Enter to activate. Note: some features "
+           "such as basic Tabbing and CtrL+Tab are enabled by regardless of "
+           "this flag (and may be disabled via other means, see #4828, #9218).")
     .value("NAV_ENABLE_GAMEPAD", ImGuiConfigFlags_NavEnableGamepad,
            "Master gamepad navigation enable flag. Backend also needs to set "
            "`BackendFlags.HAS_GAMEPAD`.")
@@ -901,7 +922,11 @@ nb::enum_<ImGuiItemFlags_>(m, "ItemFlags", nb::is_flag(), nb::is_arithmetic())
     .value("ALLOW_DUPLICATE_ID", ImGuiItemFlags_AllowDuplicateId,
            "Allow submitting an item with the same identifier as an item "
            "already submitted this frame without triggering a warning tooltip "
-           "if io.ConfigDebugHighlightIdConflicts is set.");
+           "if io.ConfigDebugHighlightIdConflicts is set.")
+    .value("DISABLED", ImGuiItemFlags_Disabled,
+           "[Internal] Disable interactions. DOES NOT affect visuals. This is "
+           "used by `begin_disabled()`/`end_disabled()` and only provided here "
+           "so you can read back via `get_item_flags()`.");
 nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiSliderFlags_None)
@@ -914,14 +939,14 @@ nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
         "Disable rounding underlying value to match precision of the display "
         "format string (e.g. %.3f values are rounded to those 3 digits).")
     .value("NO_INPUT", ImGuiSliderFlags_NoInput,
-           "Disable CTRL+Click or Enter key allowing to input text directly "
+           "Disable Ctrl+Click or Enter key allowing to input text directly "
            "into the widget.")
     .value("WRAP_AROUND", ImGuiSliderFlags_WrapAround,
            "Enable wrapping around from max to min and from min to max. Only "
            "supported by DragXXX() functions for now.")
     .value("CLAMP_ON_INPUT", ImGuiSliderFlags_ClampOnInput,
-           "Clamp value to min/max bounds when input manually with CTRL+Click. "
-           "By default CTRL+Click allows going out of bounds.")
+           "Clamp value to min/max bounds when input manually with Ctrl+Click. "
+           "By default Ctrl+Click allows going out of bounds.")
     .value("CLAMP_ZERO_RANGE", ImGuiSliderFlags_ClampZeroRange,
            "Clamp even if min==max==0.0f. Otherwise due to legacy reason "
            "DragXXX functions don't clamp with those values. When your "
@@ -929,24 +954,25 @@ nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
     .value("NO_SPEED_TWEAKS", ImGuiSliderFlags_NoSpeedTweaks,
            "Disable keyboard modifiers altering tweak speed. Useful if you "
            "want to alter tweak speed yourself based on your own logic.")
+    .value("COLOR_MARKERS", ImGuiSliderFlags_ColorMarkers,
+           "`drag_scalar_n()`, `slider_scalar_n()`: Draw R/G/B/A color markers "
+           "on each component.")
     .value("ALWAYS_CLAMP", ImGuiSliderFlags_AlwaysClamp)
     .value("INVALID_MASK_", ImGuiSliderFlags_InvalidMask_,
            "[Internal] We treat using those bits as being potentially a 'float "
-           "power' argument from the previous API that has got miscast to this "
-           "enum, and will trigger an assert if needed.");
+           "power' argument from legacy API (obsoleted 2020-08) that has got "
+           "miscast to this enum, and will trigger an assert if needed.");
 nb::enum_<ImGuiPopupFlags_>(m, "PopupFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiPopupFlags_None)
     .value("MOUSE_BUTTON_LEFT", ImGuiPopupFlags_MouseButtonLeft,
-           "For BeginPopupContext*(): open on Left Mouse release. Guaranteed "
-           "to always be == 0 (same as `MouseButton.LEFT`)")
+           "For BeginPopupContext*(): open on Left Mouse release. Only one "
+           "button allowed!")
     .value("MOUSE_BUTTON_RIGHT", ImGuiPopupFlags_MouseButtonRight,
-           "For BeginPopupContext*(): open on Right Mouse release. Guaranteed "
-           "to always be == 1 (same as `MouseButton.RIGHT`)")
+           "For BeginPopupContext*(): open on Right Mouse release. Only one "
+           "button allowed! (default)")
     .value("MOUSE_BUTTON_MIDDLE", ImGuiPopupFlags_MouseButtonMiddle,
-           "For BeginPopupContext*(): open on Middle Mouse release. Guaranteed "
-           "to always be == 2 (same as `MouseButton.MIDDLE`)")
-    .value("MOUSE_BUTTON_MASK_", ImGuiPopupFlags_MouseButtonMask_)
-    .value("MOUSE_BUTTON_DEFAULT_", ImGuiPopupFlags_MouseButtonDefault_)
+           "For BeginPopupContext*(): open on Middle Mouse release. Only one "
+           "button allowed!")
     .value("NO_REOPEN", ImGuiPopupFlags_NoReopen,
            "For `open_popup`*(), BeginPopupContext*(): don't reopen same popup "
            "if already open (won't reposition, won't reinitialize navigation)")
@@ -963,7 +989,13 @@ nb::enum_<ImGuiPopupFlags_>(m, "PopupFlags", nb::is_flag(), nb::is_arithmetic())
     .value("ANY_POPUP_LEVEL", ImGuiPopupFlags_AnyPopupLevel,
            "For `is_popup_open()`: search/test at any level of the popup stack "
            "(default test in the current level)")
-    .value("ANY_POPUP", ImGuiPopupFlags_AnyPopup);
+    .value("ANY_POPUP", ImGuiPopupFlags_AnyPopup)
+    .value("MOUSE_BUTTON_SHIFT_", ImGuiPopupFlags_MouseButtonShift_,
+           "[Internal]")
+    .value("MOUSE_BUTTON_MASK_", ImGuiPopupFlags_MouseButtonMask_, "[Internal]")
+    .value("INVALID_MASK_", ImGuiPopupFlags_InvalidMask_,
+           "[Internal] Reserve legacy bits 0-1 to detect incorrectly passing 1 "
+           "or 2 to the function.");
 nb::enum_<ImGuiMouseButton_>(m, "MouseButton", nb::is_arithmetic())
     .value("LEFT", ImGuiMouseButton_Left)
     .value("RIGHT", ImGuiMouseButton_Right)
@@ -1069,16 +1101,18 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
     .value("TREE_LINES", ImGuiCol_TreeLines,
            "Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES`")
     .value("DRAG_DROP_TARGET", ImGuiCol_DragDropTarget,
-           "Rectangle highlighting a drop target")
+           "Rectangle border highlighting a drop target")
+    .value("DRAG_DROP_TARGET_BG", ImGuiCol_DragDropTargetBg,
+           "Rectangle background highlighting a drop target")
     .value("UNSAVED_MARKER", ImGuiCol_UnsavedMarker,
            "Unsaved Document marker (in window title and tabs)")
     .value(
         "NAV_CURSOR", ImGuiCol_NavCursor,
         "Color of keyboard/gamepad navigation cursor/rectangle, when visible")
     .value("NAV_WINDOWING_HIGHLIGHT", ImGuiCol_NavWindowingHighlight,
-           "Highlight window when using CTRL+TAB")
+           "Highlight window when using Ctrl+Tab")
     .value("NAV_WINDOWING_DIM_BG", ImGuiCol_NavWindowingDimBg,
-           "Darken/colorize entire screen behind the CTRL+TAB window list, "
+           "Darken/colorize entire screen behind the Ctrl+Tab window list, "
            "when active")
     .value("MODAL_WINDOW_DIM_BG", ImGuiCol_ModalWindowDimBg,
            "Darken/colorize entire screen behind a modal window, when one is "
@@ -1134,6 +1168,8 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
     .value("GRAB_MIN_SIZE", ImGuiStyleVar_GrabMinSize, "Float     GrabMinSize")
     .value("GRAB_ROUNDING", ImGuiStyleVar_GrabRounding,
            "Float     GrabRounding")
+    .value("IMAGE_ROUNDING", ImGuiStyleVar_ImageRounding,
+           "Float     ImageRounding")
     .value("IMAGE_BORDER_SIZE", ImGuiStyleVar_ImageBorderSize,
            "Float     ImageBorderSize")
     .value("TAB_ROUNDING", ImGuiStyleVar_TabRounding, "Float     TabRounding")
@@ -1160,6 +1196,8 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
            "ImVec2    ButtonTextAlign")
     .value("SELECTABLE_TEXT_ALIGN", ImGuiStyleVar_SelectableTextAlign,
            "ImVec2    SelectableTextAlign")
+    .value("SEPARATOR_SIZE", ImGuiStyleVar_SeparatorSize,
+           "Float     SeparatorSize")
     .value("SEPARATOR_TEXT_BORDER_SIZE", ImGuiStyleVar_SeparatorTextBorderSize,
            "Float     SeparatorTextBorderSize")
     .value("SEPARATOR_TEXT_ALIGN", ImGuiStyleVar_SeparatorTextAlign,

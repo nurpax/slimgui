@@ -40,7 +40,7 @@ class PlotFlags(enum.IntFlag):
 
     NO_TITLE = 1
     """
-    The plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MyPlot")
+    The plot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. "##MyPlot")
     """
 
     NO_LEGEND = 2
@@ -159,7 +159,7 @@ class SubplotFlags(enum.IntFlag):
 
     NO_TITLE = 1
     """
-    The subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MySubplot")
+    The subplot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. "##MySubplot")
     """
 
     NO_LEGEND = 2
@@ -237,6 +237,9 @@ class LegendFlags(enum.IntFlag):
 
     SORT = 64
     """Legend entries will be displayed in alphabetical order"""
+
+    REVERSE = 128
+    """Legend entries will be displayed in reverse order"""
 
 class MouseTextFlags(enum.IntFlag):
     __str__ = __repr__
@@ -502,7 +505,7 @@ class HistogramFlags(enum.IntFlag):
 
     NO_OUTLIERS = 8192
     """
-    Exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts
+    Exclude values outside the specified histogram range from the count toward normalizing and cumulative counts
     """
 
     COL_MAJOR = 16384
@@ -604,7 +607,7 @@ class Col(enum.IntEnum):
     """Color of text appearing inside of plots (defaults to `Col.TEXT`)"""
 
     AXIS_TEXT = 13
-    """Axis label and tick lables color (defaults to `Col.TEXT`)"""
+    """Axis label and tick labels color (defaults to `Col.TEXT`)"""
 
     AXIS_GRID = 14
     """Axis grid color (defaults to 25% `Col.AXIS_TEXT`)"""
@@ -725,7 +728,7 @@ class Scale(enum.IntEnum):
     """Date/time scale"""
 
     LOG10 = 2
-    """Base 10 logartithmic scale"""
+    """Base 10 logarithmic scale"""
 
     SYM_LOG = 3
     """Symmetric log scale"""

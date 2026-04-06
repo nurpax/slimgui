@@ -6,9 +6,9 @@ import numpy
 from numpy.typing import NDArray
 
 
-IMGUI_VERSION: str = '1.92.4'
+IMGUI_VERSION: str = '1.92.7'
 
-IMGUI_VERSION_NUM: int = 19240
+IMGUI_VERSION_NUM: int = 19270
 
 VERTEX_SIZE: int = 20
 
@@ -1266,7 +1266,7 @@ class InputTextFlags(enum.IntFlag):
 
     CTRL_ENTER_FOR_NEW_LINE = 256
     """
-    In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter).
+    In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way.
     """
 
     READ_ONLY = 512
@@ -1331,7 +1331,7 @@ class InputTextFlags(enum.IntFlag):
     """
 
     WORD_WRAP = 16777216
-    """InputTextMultine(): word-wrap lines that are too long."""
+    """`input_text_multiline()`: word-wrap lines that are too long."""
 
 class ButtonFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1353,6 +1353,11 @@ class ButtonFlags(enum.IntFlag):
     ENABLE_NAV = 8
     """
     `invisible_button()`: do not disable navigation/tabbing. Otherwise disabled by default.
+    """
+
+    ALLOW_OVERLAP = 4096
+    """
+    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`.
     """
 
 class ChildFlags(enum.IntFlag):
@@ -1467,6 +1472,11 @@ class DragDropFlags(enum.IntFlag):
     Request hiding the `begin_drag_drop_source` tooltip from the `begin_drag_drop_target` site.
     """
 
+    ACCEPT_DRAW_AS_HOVERED = 8192
+    """
+    Accepting item will render as if hovered. Useful for e.g. a `button()` used as a drop target.
+    """
+
     ACCEPT_PEEK_ONLY = 3072
     """For peeking ahead and inspecting the payload before delivery."""
 
@@ -1532,7 +1542,7 @@ class InputFlags(enum.IntFlag):
 
     ROUTE_OVER_ACTIVE = 32768
     """
-    Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. CTRL+A registered by `input_text` will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.
+    Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. Ctrl+A registered by `input_text` will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.
     """
 
     ROUTE_UNLESS_BG_FOCUSED = 65536
@@ -1623,7 +1633,7 @@ class WindowFlags(enum.IntFlag):
 
     NO_NAV_FOCUS = 131072
     """
-    No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by CTRL+TAB)
+    No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by Ctrl+Tab)
     """
 
     UNSAVED_DOCUMENT = 262144
@@ -1667,7 +1677,9 @@ class TreeNodeFlags(enum.IntFlag):
     """Draw frame with background (e.g. for `collapsing_header`)"""
 
     ALLOW_OVERLAP = 4
-    """Hit testing to allow subsequent widgets to overlap this one"""
+    """
+    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`.
+    """
 
     NO_TREE_PUSH_ON_OPEN = 8
     """
@@ -1693,7 +1705,9 @@ class TreeNodeFlags(enum.IntFlag):
     """
 
     LEAF = 256
-    """No collapsing, no arrow (use as a convenience for leaf nodes)."""
+    """
+    No collapsing, no arrow (use as a convenience for leaf nodes). Note: will always open a tree/id scope and return true. If you never use that scope, add `TreeNodeFlags.NO_TREE_PUSH_ON_OPEN`.
+    """
 
     BULLET = 512
     """
@@ -1730,7 +1744,7 @@ class TreeNodeFlags(enum.IntFlag):
 
     NAV_LEFT_JUMPS_TO_PARENT = 131072
     """
-    Nav: left arrow moves back to parent. This is processed in `tree_pop()` when there's an unfullfilled Left nav request remaining.
+    Nav: left arrow moves back to parent. This is processed in `tree_pop()` when there's an unfulfilled Left nav request remaining.
     """
 
     COLLAPSING_HEADER = 26
@@ -1856,7 +1870,7 @@ class TableFlags(enum.IntFlag):
 
     REORDERABLE = 2
     """
-    Enable reordering columns in header row (need calling `table_setup_column()` + `table_headers_row()` to display headers)
+    Enable reordering columns in header row. (Need calling `table_setup_column()` + `table_headers_row()` to display headers, or using `TableFlags.CONTEXT_MENU_IN_BODY` to access context-menu without headers).
     """
 
     HIDEABLE = 4
@@ -1869,12 +1883,12 @@ class TableFlags(enum.IntFlag):
 
     NO_SAVED_SETTINGS = 16
     """
-    Disable persisting columns order, width and sort settings in the .ini file.
+    Disable persisting columns order, width, visibility and sort settings in the .ini file.
     """
 
     CONTEXT_MENU_IN_BODY = 32
     """
-    Right-click on columns body/contents will display table context menu. By default it is available in `table_headers_row()`.
+    Right-click on columns body/contents will also display table context menu. By default it is available in `table_headers_row()`.
     """
 
     ROW_BG = 64
@@ -2164,28 +2178,33 @@ class ColorEditFlags(enum.IntFlag):
 
     NO_DRAG_DROP = 512
     """
-    ColorEdit: disable drag and drop target. `color_button`: disable drag and drop source.
+    ColorEdit: disable drag and drop target/source. `color_button`: disable drag and drop source.
     """
 
     NO_BORDER = 1024
     """`color_button`: disable border (which is enforced by default)"""
 
-    ALPHA_OPAQUE = 2048
+    NO_COLOR_MARKERS = 2048
+    """
+    ColorEdit: disable rendering R/G/B/A color marker. May also be disabled globally by setting style.ColorMarkerSize = 0.
+    """
+
+    ALPHA_OPAQUE = 4096
     """
     ColorEdit, ColorPicker, `color_button`: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling `color_edit4()`/`color_picker4()`. For `color_button()` this does the same as _NoAlpha.
     """
 
-    ALPHA_NO_BG = 4096
+    ALPHA_NO_BG = 8192
     """
     ColorEdit, ColorPicker, `color_button`: disable rendering a checkerboard background behind transparent color.
     """
 
-    ALPHA_PREVIEW_HALF = 8192
+    ALPHA_PREVIEW_HALF = 16384
     """
     ColorEdit, ColorPicker, `color_button`: display half opaque / half transparent preview.
     """
 
-    ALPHA_BAR = 65536
+    ALPHA_BAR = 262144
     """ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker."""
 
     HDR = 524288
@@ -2283,7 +2302,9 @@ class SelectableFlags(enum.IntFlag):
     """Cannot be selected, display grayed out text"""
 
     ALLOW_OVERLAP = 16
-    """(WIP) Hit testing to allow subsequent widgets to overlap this one"""
+    """
+    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`.
+    """
 
     HIGHLIGHT = 32
     """Make the item be displayed as if it is hovered"""
@@ -2303,7 +2324,7 @@ class ConfigFlags(enum.IntFlag):
 
     NAV_ENABLE_KEYBOARD = 1
     """
-    Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.
+    Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + Space/Enter to activate. Note: some features such as basic Tabbing and CtrL+Tab are enabled by regardless of this flag (and may be disabled via other means, see #4828, #9218).
     """
 
     NAV_ENABLE_GAMEPAD = 2
@@ -2515,6 +2536,11 @@ class ItemFlags(enum.IntFlag):
     Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set.
     """
 
+    DISABLED = 64
+    """
+    [Internal] Disable interactions. DOES NOT affect visuals. This is used by `begin_disabled()`/`end_disabled()` and only provided here so you can read back via `get_item_flags()`.
+    """
+
 class SliderFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -2535,7 +2561,7 @@ class SliderFlags(enum.IntFlag):
 
     NO_INPUT = 128
     """
-    Disable CTRL+Click or Enter key allowing to input text directly into the widget.
+    Disable Ctrl+Click or Enter key allowing to input text directly into the widget.
     """
 
     WRAP_AROUND = 256
@@ -2545,7 +2571,7 @@ class SliderFlags(enum.IntFlag):
 
     CLAMP_ON_INPUT = 512
     """
-    Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
+    Clamp value to min/max bounds when input manually with Ctrl+Click. By default Ctrl+Click allows going out of bounds.
     """
 
     CLAMP_ZERO_RANGE = 1024
@@ -2558,6 +2584,11 @@ class SliderFlags(enum.IntFlag):
     Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic.
     """
 
+    COLOR_MARKERS = 4096
+    """
+    `drag_scalar_n()`, `slider_scalar_n()`: Draw R/G/B/A color markers on each component.
+    """
+
     ALWAYS_CLAMP = 1536
 
 class PopupFlags(enum.IntFlag):
@@ -2568,19 +2599,19 @@ class PopupFlags(enum.IntFlag):
 
     NONE = 0
 
-    MOUSE_BUTTON_LEFT = 0
+    MOUSE_BUTTON_LEFT = 4
     """
-    For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as `MouseButton.LEFT`)
-    """
-
-    MOUSE_BUTTON_RIGHT = 1
-    """
-    For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as `MouseButton.RIGHT`)
+    For BeginPopupContext*(): open on Left Mouse release. Only one button allowed!
     """
 
-    MOUSE_BUTTON_MIDDLE = 2
+    MOUSE_BUTTON_RIGHT = 8
     """
-    For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as `MouseButton.MIDDLE`)
+    For BeginPopupContext*(): open on Right Mouse release. Only one button allowed! (default)
+    """
+
+    MOUSE_BUTTON_MIDDLE = 12
+    """
+    For BeginPopupContext*(): open on Middle Mouse release. Only one button allowed!
     """
 
     NO_REOPEN = 32
@@ -2795,28 +2826,31 @@ class Col(enum.IntEnum):
     """Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES`"""
 
     DRAG_DROP_TARGET = 53
-    """Rectangle highlighting a drop target"""
+    """Rectangle border highlighting a drop target"""
 
-    UNSAVED_MARKER = 54
+    DRAG_DROP_TARGET_BG = 54
+    """Rectangle background highlighting a drop target"""
+
+    UNSAVED_MARKER = 55
     """Unsaved Document marker (in window title and tabs)"""
 
-    NAV_CURSOR = 55
+    NAV_CURSOR = 56
     """Color of keyboard/gamepad navigation cursor/rectangle, when visible"""
 
-    NAV_WINDOWING_HIGHLIGHT = 56
-    """Highlight window when using CTRL+TAB"""
+    NAV_WINDOWING_HIGHLIGHT = 57
+    """Highlight window when using Ctrl+Tab"""
 
-    NAV_WINDOWING_DIM_BG = 57
+    NAV_WINDOWING_DIM_BG = 58
     """
-    Darken/colorize entire screen behind the CTRL+TAB window list, when active
+    Darken/colorize entire screen behind the Ctrl+Tab window list, when active
     """
 
-    MODAL_WINDOW_DIM_BG = 58
+    MODAL_WINDOW_DIM_BG = 59
     """
     Darken/colorize entire screen behind a modal window, when one is active
     """
 
-    COUNT = 59
+    COUNT = 60
 
 class Dir(enum.IntEnum):
     NONE = -1
@@ -2901,55 +2935,61 @@ class StyleVar(enum.IntEnum):
     GRAB_ROUNDING = 22
     """Float     GrabRounding"""
 
-    IMAGE_BORDER_SIZE = 23
+    IMAGE_ROUNDING = 23
+    """Float     ImageRounding"""
+
+    IMAGE_BORDER_SIZE = 24
     """Float     ImageBorderSize"""
 
-    TAB_ROUNDING = 24
+    TAB_ROUNDING = 25
     """Float     TabRounding"""
 
-    TAB_BORDER_SIZE = 25
+    TAB_BORDER_SIZE = 26
     """Float     TabBorderSize"""
 
-    TAB_MIN_WIDTH_BASE = 26
+    TAB_MIN_WIDTH_BASE = 27
     """Float     TabMinWidthBase"""
 
-    TAB_MIN_WIDTH_SHRINK = 27
+    TAB_MIN_WIDTH_SHRINK = 28
     """Float     TabMinWidthShrink"""
 
-    TAB_BAR_BORDER_SIZE = 28
+    TAB_BAR_BORDER_SIZE = 29
     """Float     TabBarBorderSize"""
 
-    TAB_BAR_OVERLINE_SIZE = 29
+    TAB_BAR_OVERLINE_SIZE = 30
     """Float     TabBarOverlineSize"""
 
-    TABLE_ANGLED_HEADERS_ANGLE = 30
+    TABLE_ANGLED_HEADERS_ANGLE = 31
     """Float     TableAngledHeadersAngle"""
 
-    TABLE_ANGLED_HEADERS_TEXT_ALIGN = 31
+    TABLE_ANGLED_HEADERS_TEXT_ALIGN = 32
     """ImVec2  TableAngledHeadersTextAlign"""
 
-    TREE_LINES_SIZE = 32
+    TREE_LINES_SIZE = 33
     """Float     TreeLinesSize"""
 
-    TREE_LINES_ROUNDING = 33
+    TREE_LINES_ROUNDING = 34
     """Float     TreeLinesRounding"""
 
-    BUTTON_TEXT_ALIGN = 34
+    BUTTON_TEXT_ALIGN = 35
     """ImVec2    ButtonTextAlign"""
 
-    SELECTABLE_TEXT_ALIGN = 35
+    SELECTABLE_TEXT_ALIGN = 36
     """ImVec2    SelectableTextAlign"""
 
-    SEPARATOR_TEXT_BORDER_SIZE = 36
+    SEPARATOR_SIZE = 37
+    """Float     SeparatorSize"""
+
+    SEPARATOR_TEXT_BORDER_SIZE = 38
     """Float     SeparatorTextBorderSize"""
 
-    SEPARATOR_TEXT_ALIGN = 37
+    SEPARATOR_TEXT_ALIGN = 39
     """ImVec2    SeparatorTextAlign"""
 
-    SEPARATOR_TEXT_PADDING = 38
+    SEPARATOR_TEXT_PADDING = 40
     """ImVec2    SeparatorTextPadding"""
 
-    COUNT = 39
+    COUNT = 41
 
 class TableBgTarget(enum.IntEnum):
     NONE = 0
@@ -4389,7 +4429,7 @@ def end_table() -> None:
 
 
 def table_next_row(flags: TableRowFlags = TableRowFlags.NONE, min_row_height: float = 0.0) -> None:
-    """Append into the first cell of a new row."""
+    """Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0f."""
     ...
 
 
@@ -4630,7 +4670,7 @@ def set_nav_cursor_visible(visible: bool) -> None:
 
 
 def set_next_item_allow_overlap() -> None:
-    """Allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both `selectable()` and `tree_node()` have dedicated flags doing this."""
+    """Allow next item to be overlapped by a subsequent item. Typically useful with `invisible_button()`, `selectable()`, `tree_node()` covering an area where subsequent items may need to be added. Note that both `selectable()` and `tree_node()` have dedicated flags doing this."""
     ...
 
 
@@ -4771,7 +4811,7 @@ def is_key_down(key: Key) -> bool:
 
 
 def is_key_pressed(key: Key, repeat: bool = True) -> bool:
-    """Was key pressed (went from !Down to Down)? if repeat=true, uses io.KeyRepeatDelay / KeyRepeatRate"""
+    """Was key pressed (went from !Down to Down)? Repeat rate uses io.KeyRepeatDelay / KeyRepeatRate."""
     ...
 
 

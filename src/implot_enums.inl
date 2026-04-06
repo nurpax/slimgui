@@ -10,7 +10,7 @@ nb::enum_<ImPlotFlags_>(m, "PlotFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImPlotFlags_None, "Default")
     .value("NO_TITLE", ImPlotFlags_NoTitle,
            "The plot title will not be displayed (titles are also hidden if "
-           "preceeded by double hashes, e.g. \"##MyPlot\")")
+           "preceded by double hashes, e.g. \"##MyPlot\")")
     .value("NO_LEGEND", ImPlotFlags_NoLegend,
            "The legend will not be displayed")
     .value("NO_MOUSE_TEXT", ImPlotFlags_NoMouseText,
@@ -79,7 +79,7 @@ nb::enum_<ImPlotSubplotFlags_>(m, "SubplotFlags", nb::is_flag(),
     .value("NONE", ImPlotSubplotFlags_None, "Default")
     .value("NO_TITLE", ImPlotSubplotFlags_NoTitle,
            "The subplot title will not be displayed (titles are also hidden if "
-           "preceeded by double hashes, e.g. \"##MySubplot\")")
+           "preceded by double hashes, e.g. \"##MySubplot\")")
     .value("NO_LEGEND", ImPlotSubplotFlags_NoLegend,
            "The legend will not be displayed (only applicable if "
            "`SubplotFlags.SHARE_ITEMS` is enabled)")
@@ -125,7 +125,9 @@ nb::enum_<ImPlotLegendFlags_>(m, "LegendFlags", nb::is_flag(),
     .value("HORIZONTAL", ImPlotLegendFlags_Horizontal,
            "Legend entries will be displayed horizontally")
     .value("SORT", ImPlotLegendFlags_Sort,
-           "Legend entries will be displayed in alphabetical order");
+           "Legend entries will be displayed in alphabetical order")
+    .value("REVERSE", ImPlotLegendFlags_Reverse,
+           "Legend entries will be displayed in reverse order");
 nb::enum_<ImPlotMouseTextFlags_>(m, "MouseTextFlags", nb::is_flag(),
                                  nb::is_arithmetic())
     .value("NONE", ImPlotMouseTextFlags_None, "Default")
@@ -249,8 +251,8 @@ nb::enum_<ImPlotHistogramFlags_>(m, "HistogramFlags", nb::is_flag(),
            "Counts will be normalized, i.e. the PDF will be visualized, or the "
            "CDF will be visualized if Cumulative is also set")
     .value("NO_OUTLIERS", ImPlotHistogramFlags_NoOutliers,
-           "Exclude values outside the specifed histogram range from the count "
-           "toward normalizing and cumulative counts")
+           "Exclude values outside the specified histogram range from the "
+           "count toward normalizing and cumulative counts")
     .value("COL_MAJOR", ImPlotHistogramFlags_ColMajor,
            "Data will be read in column major order (not supported by "
            "`plot_histogram`)");
@@ -302,7 +304,7 @@ nb::enum_<ImPlotCol_>(m, "Col", nb::is_arithmetic())
     .value("INLAY_TEXT", ImPlotCol_InlayText,
            "Color of text appearing inside of plots (defaults to `Col.TEXT`)")
     .value("AXIS_TEXT", ImPlotCol_AxisText,
-           "Axis label and tick lables color (defaults to `Col.TEXT`)")
+           "Axis label and tick labels color (defaults to `Col.TEXT`)")
     .value("AXIS_GRID", ImPlotCol_AxisGrid,
            "Axis grid color (defaults to 25% `Col.AXIS_TEXT`)")
     .value("AXIS_TICK", ImPlotCol_AxisTick,
@@ -378,7 +380,7 @@ nb::enum_<ImPlotStyleVar_>(m, "StyleVar", nb::is_arithmetic())
 nb::enum_<ImPlotScale_>(m, "Scale", nb::is_arithmetic())
     .value("LINEAR", ImPlotScale_Linear, "Default linear scale")
     .value("TIME", ImPlotScale_Time, "Date/time scale")
-    .value("LOG10", ImPlotScale_Log10, "Base 10 logartithmic scale")
+    .value("LOG10", ImPlotScale_Log10, "Base 10 logarithmic scale")
     .value("SYM_LOG", ImPlotScale_SymLog, "Symmetric log scale");
 nb::enum_<ImPlotMarker_>(m, "Marker", nb::is_arithmetic())
     .value("NONE", ImPlotMarker_None, "No marker")
