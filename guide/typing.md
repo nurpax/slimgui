@@ -1,5 +1,5 @@
 ---
-url: /guide/typing.md
+url: /slimgui/guide/typing.md
 ---
 # Typing
 

@@ -1,5 +1,5 @@
 ---
-url: /api/imgui.md
+url: /slimgui/api/imgui.md
 ---
 
 # ImGui API reference

@@ -1,5 +1,5 @@
 ---
-url: /recipes/widgets.md
+url: /slimgui/recipes/widgets.md
 ---
 
 # Widgets

@@ -1,5 +1,5 @@
 ---
-url: /guide/getting-started.md
+url: /slimgui/guide/getting-started.md
 ---
 # Getting Started
 
@@ -21,7 +21,7 @@ Browse the example code: [example/](https://github.com/nurpax/slimgui/blob/main/
 ---
 
 ---
-url: /recipes/implot.md
+url: /slimgui/recipes/implot.md
 ---
 
 # ImPlot
@@ -142,7 +142,7 @@ def plot_scatter_basic():
 ---
 
 ---
-url: /recipes/layout.md
+url: /slimgui/recipes/layout.md
 ---
 
 # Layout
@@ -393,7 +393,7 @@ def layout_tabs_basic(state: TabsState):
 ---
 
 ---
-url: /recipes.md
+url: /slimgui/recipes.md
 ---
 # Recipes
 
@@ -412,7 +412,7 @@ python3 example/run_examples.py
 ---
 
 ---
-url: /api/imgui.md
+url: /slimgui/api/imgui.md
 ---
 
 # ImGui API reference
@@ -6518,7 +6518,7 @@ DrawList.vtx_buffer_size -> int:
 ---
 
 ---
-url: /api/implot.md
+url: /slimgui/api/implot.md
 ---
 
 # ImPlot API reference
@@ -9178,7 +9178,7 @@ def show_demo_window(
 ---
 
 ---
-url: /recipes/styles.md
+url: /slimgui/recipes/styles.md
 ---
 
 # Styles
@@ -9379,7 +9379,7 @@ def styles_color_palette_popup(state: PaletteState):
 ---
 
 ---
-url: /guide/typing.md
+url: /slimgui/guide/typing.md
 ---
 # Typing
 
@@ -9423,7 +9423,7 @@ These are distinct from the lower-level types in `slimgui.slimgui_ext.*`, even w
 ---
 
 ---
-url: /recipes/widgets.md
+url: /slimgui/recipes/widgets.md
 ---
 
 # Widgets

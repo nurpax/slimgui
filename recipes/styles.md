@@ -1,5 +1,5 @@
 ---
-url: /recipes/styles.md
+url: /slimgui/recipes/styles.md
 ---
 
 # Styles

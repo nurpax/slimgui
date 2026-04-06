@@ -1,5 +1,5 @@
 ---
-url: /api/implot.md
+url: /slimgui/api/implot.md
 ---
 
 # ImPlot API reference

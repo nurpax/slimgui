@@ -1,5 +1,5 @@
 ---
-url: /recipes/implot.md
+url: /slimgui/recipes/implot.md
 ---
 
 # ImPlot

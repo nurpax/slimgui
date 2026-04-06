@@ -1,5 +1,5 @@
 ---
-url: /guide/getting-started.md
+url: /slimgui/guide/getting-started.md
 ---
 # Getting Started
 

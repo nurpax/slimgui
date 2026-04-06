@@ -6,19 +6,19 @@
 
 ### Guide
 
-- [Getting Started](/guide/getting-started.md)
-- [Typing](/guide/typing.md)
+- [Getting Started](/slimgui/guide/getting-started.md)
+- [Typing](/slimgui/guide/typing.md)
 
 ### API Reference
 
-- [slimgui - ImGui API reference](/api/imgui.md)
-- [slimgui - ImPlot API reference](/api/implot.md)
+- [slimgui - ImGui API reference](/slimgui/api/imgui.md)
+- [slimgui - ImPlot API reference](/slimgui/api/implot.md)
 
 ### Recipes
 
-- [Recipes](/recipes.md)
-- [Widgets](/recipes/widgets.md)
-- [Styles](/recipes/styles.md)
-- [Layout](/recipes/layout.md)
-- [ImPlot](/recipes/implot.md)
+- [Recipes](/slimgui/recipes.md)
+- [Widgets](/slimgui/recipes/widgets.md)
+- [Styles](/slimgui/recipes/styles.md)
+- [Layout](/slimgui/recipes/layout.md)
+- [ImPlot](/slimgui/recipes/implot.md)
 
