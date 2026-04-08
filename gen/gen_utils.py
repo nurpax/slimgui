@@ -132,6 +132,7 @@ def _is_special_case_string(tokens: list[str]) -> Optional[list[str]]:
     exceptions = [
         ['Window', ' ', 'Menu', ' ', 'Button'],
         ['Shortcut', ' ', 'for'],
+        ['Shortcut', ' ', 'to'],
     ]
     for e in exceptions:
         if ''.join(tokens[:len(e)]) == ''.join(e):
@@ -208,6 +209,10 @@ def _best_effort_fix_funcall_args(t: str) -> str:
                 tok_idx += 1
     return ''.join(out)
 
+def _drop_cpp_namespace_prefix(out: list[str]) -> None:
+    if len(out) >= 3 and out[-3:] in (['ImGui', ':', ':'], ['ImPlot', ':', ':']):
+        del out[-3:]
+
 def docstring_fixer(docstring):
     '''Replace imgui function names in a docstring with markdown code blocks in Python naming convention that should match slimgui.'''
     tokens = _tokenize(docstring)
@@ -229,9 +234,11 @@ def docstring_fixer(docstring):
             if (m := _match_funcname_parens(rest)) is not None:
                 shift, name, contents = m
                 contents = _best_effort_fix_funcall_args(contents)
+                _drop_cpp_namespace_prefix(out)
                 out.append(f'`{camel_to_snake(name)}({contents})`')
                 tok_idx += shift
             else:
+                _drop_cpp_namespace_prefix(out)
                 out.append(f'`{camel_to_snake(sym)}`')
                 tok_idx += 1
         else:

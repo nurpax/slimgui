@@ -2555,7 +2555,7 @@ def set_tooltip(
     text: str,
 ) -> None:
     """
-    Set a text-only tooltip. Often used after a ImGui::`is_item_hovered()` check. Override any previous call to `set_tooltip()`.
+    Set a text-only tooltip. Often used after a `is_item_hovered()` check. Override any previous call to `set_tooltip()`.
     """
 ```
 :::
@@ -3837,7 +3837,7 @@ def is_mouse_pos_valid(
 ```python
 def get_mouse_pos() -> tuple[float, float]:
     """
-    Shortcut to ImGui::`get_io()`.MousePos provided by user, to be consistent with other calls
+    Shortcut to `get_io()`.MousePos provided by user, to be consistent with other calls
     """
 ```
 :::
@@ -3887,7 +3887,7 @@ def reset_mouse_drag_delta(
 ```python
 def get_mouse_cursor() -> MouseCursor:
     """
-    Get desired mouse cursor shape. Important: reset in ImGui::`new_frame()`, this is updated during the frame. valid before `render()`. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you
+    Get desired mouse cursor shape. Important: reset in `new_frame()`, this is updated during the frame. valid before `render()`. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you
     """
 ```
 :::
@@ -3933,7 +3933,7 @@ def set_next_frame_want_capture_mouse(
 | MOUSE_BUTTON_RIGHT | React on right mouse button |
 | MOUSE_BUTTON_MIDDLE | React on center mouse button |
 | ENABLE_NAV | `invisible_button()`: do not disable navigation/tabbing. Otherwise disabled by default. |
-| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`. |
+| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling `set_next_item_allow_overlap()`. |
 
 ### Enum: ChildFlags
 
@@ -4456,7 +4456,7 @@ def set_next_frame_want_capture_mouse(
 | SPAN_ALL_COLUMNS | Frame will span all columns of its container table (text will still fit in current column) |
 | ALLOW_DOUBLE_CLICK | Generate press events on double clicks too |
 | DISABLED | Cannot be selected, display grayed out text |
-| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`. |
+| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling `set_next_item_allow_overlap()`. |
 | HIGHLIGHT | Make the item be displayed as if it is hovered |
 | SELECT_ON_NAV | Auto-select when moved into, unless Ctrl is held. Automatic when in a `begin_multi_select()` block. |
 
@@ -4663,7 +4663,7 @@ def set_next_frame_want_capture_mouse(
 | NONE |  |
 | SELECTED | Draw as selected |
 | FRAMED | Draw frame with background (e.g. for `collapsing_header`) |
-| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`. |
+| ALLOW_OVERLAP | Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling `set_next_item_allow_overlap()`. |
 | NO_TREE_PUSH_ON_OPEN | Don't do a `tree_push()` when open (e.g. for `collapsing_header`) = no extra indent nor pushing on ID stack |
 | NO_AUTO_OPEN_ON_LOG | Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes) |
 | DEFAULT_OPEN | Default node to be open |

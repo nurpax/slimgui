@@ -124,7 +124,7 @@ nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags", nb::is_flag(),
     .value("ALLOW_OVERLAP", ImGuiButtonFlags_AllowOverlap,
            "Hit testing will allow subsequent widgets to overlap this one. "
            "Require previous frame HoveredId to match before being usable. "
-           "`shortcut` to calling `set_next_item_allow_overlap()`.");
+           "Shortcut to calling `set_next_item_allow_overlap()`.");
 nb::enum_<ImGuiChildFlags_>(m, "ChildFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImGuiChildFlags_None)
     .value("BORDERS", ImGuiChildFlags_Borders,
@@ -340,7 +340,7 @@ nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", nb::is_flag(),
     .value("ALLOW_OVERLAP", ImGuiTreeNodeFlags_AllowOverlap,
            "Hit testing will allow subsequent widgets to overlap this one. "
            "Require previous frame HoveredId to match before being usable. "
-           "`shortcut` to calling `set_next_item_allow_overlap()`.")
+           "Shortcut to calling `set_next_item_allow_overlap()`.")
     .value("NO_TREE_PUSH_ON_OPEN", ImGuiTreeNodeFlags_NoTreePushOnOpen,
            "Don't do a `tree_push()` when open (e.g. for `collapsing_header`) "
            "= no extra indent nor pushing on ID stack")
@@ -767,7 +767,7 @@ nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags", nb::is_flag(),
     .value("ALLOW_OVERLAP", ImGuiSelectableFlags_AllowOverlap,
            "Hit testing will allow subsequent widgets to overlap this one. "
            "Require previous frame HoveredId to match before being usable. "
-           "`shortcut` to calling `set_next_item_allow_overlap()`.")
+           "Shortcut to calling `set_next_item_allow_overlap()`.")
     .value("HIGHLIGHT", ImGuiSelectableFlags_Highlight,
            "Make the item be displayed as if it is hovered")
     .value("SELECT_ON_NAV", ImGuiSelectableFlags_SelectOnNav,

@@ -1357,7 +1357,7 @@ class ButtonFlags(enum.IntFlag):
 
     ALLOW_OVERLAP = 4096
     """
-    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`.
+    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling `set_next_item_allow_overlap()`.
     """
 
 class ChildFlags(enum.IntFlag):
@@ -1678,7 +1678,7 @@ class TreeNodeFlags(enum.IntFlag):
 
     ALLOW_OVERLAP = 4
     """
-    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`.
+    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling `set_next_item_allow_overlap()`.
     """
 
     NO_TREE_PUSH_ON_OPEN = 8
@@ -2303,7 +2303,7 @@ class SelectableFlags(enum.IntFlag):
 
     ALLOW_OVERLAP = 16
     """
-    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. `shortcut` to calling `set_next_item_allow_overlap()`.
+    Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling `set_next_item_allow_overlap()`.
     """
 
     HIGHLIGHT = 32
@@ -4124,7 +4124,7 @@ def end_tooltip() -> None:
 
 
 def set_tooltip(text: str) -> None:
-    """Set a text-only tooltip. Often used after a ImGui::`is_item_hovered()` check. Override any previous call to `set_tooltip()`."""
+    """Set a text-only tooltip. Often used after a `is_item_hovered()` check. Override any previous call to `set_tooltip()`."""
     ...
 
 
@@ -4893,7 +4893,7 @@ def is_mouse_pos_valid(mouse_pos: tuple[float, float] | None = None) -> bool:
 
 
 def get_mouse_pos() -> tuple[float, float]:
-    """Shortcut to ImGui::`get_io()`.MousePos provided by user, to be consistent with other calls"""
+    """Shortcut to `get_io()`.MousePos provided by user, to be consistent with other calls"""
     ...
 
 
@@ -4917,7 +4917,7 @@ def reset_mouse_drag_delta(button: MouseButton = MouseButton.LEFT) -> None:
 
 
 def get_mouse_cursor() -> MouseCursor:
-    """Get desired mouse cursor shape. Important: reset in ImGui::`new_frame()`, this is updated during the frame. valid before `render()`. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you"""
+    """Get desired mouse cursor shape. Important: reset in `new_frame()`, this is updated during the frame. valid before `render()`. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you"""
     ...
 
 
