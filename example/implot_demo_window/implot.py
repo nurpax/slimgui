@@ -6,7 +6,7 @@ from numpy.typing import NDArray
 from slimgui import imgui
 from slimgui import implot
 
-from slimgui.implot import PlotFlags
+from slimgui.implot import PlotFlags, PlotSpec
 
 _surf_it = False
 
@@ -78,7 +78,7 @@ def show_demo_window(show_window: bool, texture: dict[str, Any]):
 
         if implot.begin_plot("Bar 2 horizontal"):
             ys = np.random.RandomState(13).rand(10)
-            implot.plot_bars("rand", ys, flags=implot.BarsFlags.HORIZONTAL)
+            implot.plot_bars("rand", ys, spec=PlotSpec(flags=implot.BarsFlags.HORIZONTAL))
             implot.end_plot()
 
     if imgui.collapsing_header('Bar chart ticks')[0]:
@@ -180,15 +180,18 @@ def _error_bars():
         implot.setup_axes_limits(0, 6, 0, 10)
         implot.plot_bars("Bar", xs, bar, 0.5)
         implot.plot_error_bars("Bar", xs, bar, err1)
-        implot.set_next_error_bar_style(implot.get_colormap_color(1), 0)
 
-        implot.plot_error_bars("Line", xs, lin1, err1, err2)
-        implot.set_next_marker_style(implot.Marker.SQUARE)
-        implot.plot_line("Line", xs, lin1)
-        implot.push_style_color(implot.Col.ERROR_BAR, implot.get_colormap_color(2))
-        implot.plot_error_bars("Scatter", xs, lin2, err2)
-        implot.plot_error_bars("Scatter", xs, lin2, err3, err4, implot.ErrorBarsFlags.HORIZONTAL)
-        implot.pop_style_color()
+        implot.plot_error_bars("Line", xs, lin1, err1, err2, spec=PlotSpec(line_color=implot.get_colormap_color(1), size=0.0))
+        implot.plot_line("Line", xs, lin1, spec=PlotSpec(marker=implot.Marker.SQUARE))
+        implot.plot_error_bars("Scatter", xs, lin2, err2, spec=PlotSpec(line_color=implot.get_colormap_color(2)))
+        implot.plot_error_bars(
+            "Scatter",
+            xs,
+            lin2,
+            err3,
+            err4,
+            spec=PlotSpec(line_color=implot.get_colormap_color(2), flags=implot.ErrorBarsFlags.HORIZONTAL),
+        )
         implot.plot_scatter("Scatter", xs, lin2)
         implot.end_plot()
 
@@ -300,13 +303,9 @@ def _subplots():
     ]
     def _lineplot(ij, idx):
         if implot.begin_plot(f"Line ({ij})##{idx}", flags=PlotFlags.NO_LEGEND):
-            implot.push_style_color(implot.Col.LINE, (colors[idx]))
-            implot.push_style_var(implot.StyleVar.LINE_WEIGHT, 3.0)
             data_x = np.linspace(0, 3*np.pi, 200)
             data_y = np.sin(data_x)
-            implot.plot_line("the wave", data_x, data_y) # striding should work
-            implot.pop_style_var()
-            implot.pop_style_color()
+            implot.plot_line("the wave", data_x, data_y, spec=PlotSpec(line_color=colors[idx], line_weight=3.0)) # striding should work
             implot.end_plot()
 
     cols = 3
@@ -366,7 +365,7 @@ def _histogram2d():
             _xybins[0],
             _xybins[1],
             range=((-6, 6), (-6, 6)),
-            flags=implot.HistogramFlags(_hist_flags)
+            spec=PlotSpec(flags=implot.HistogramFlags(_hist_flags)),
         )
         implot.end_plot()
 
@@ -432,12 +431,27 @@ def _drag_points():
             B[i, 0] = w1 * P[0, 0] + w2 * P[1, 0] + w3 * P[2, 0] + w4 * P[3, 0]
             B[i, 1] = w1 * P[0, 1] + w2 * P[1, 1] + w3 * P[2, 1] + w4 * P[3, 1]
 
-        implot.set_next_line_style((1, 0.5, 1, 1), 2.0 if hovered[1] or held[1] else 1.0)
-        implot.plot_line("##h1", P[:2, 0], P[:2, 1])
-        implot.set_next_line_style((0, 0.5, 1, 1), 2.0 if hovered[2] or held[2] else 1.0)
-        implot.plot_line("##h2", P[2:, 0], P[2:, 1])
-        implot.set_next_line_style((0, 0.9, 0, 1), 3.0 if hovered[0] or held[0] or hovered[3] or held[3] else 2.0)
-        implot.plot_line("##bez", B[:, 0], B[:, 1])
+        implot.plot_line(
+            "##h1",
+            P[:2, 0],
+            P[:2, 1],
+            spec=PlotSpec(line_color=(1, 0.5, 1, 1), line_weight=2.0 if hovered[1] or held[1] else 1.0),
+        )
+        implot.plot_line(
+            "##h2",
+            P[2:, 0],
+            P[2:, 1],
+            spec=PlotSpec(line_color=(0, 0.5, 1, 1), line_weight=2.0 if hovered[2] or held[2] else 1.0),
+        )
+        implot.plot_line(
+            "##bez",
+            B[:, 0],
+            B[:, 1],
+            spec=PlotSpec(
+                line_color=(0, 0.9, 0, 1),
+                line_weight=3.0 if hovered[0] or held[0] or hovered[3] or held[3] else 2.0,
+            ),
+        )
         implot.end_plot()
 
 
@@ -490,8 +504,12 @@ def _drag_lines():
                           out_held=state["held"])
 
         # Plot the interactive data
-        implot.set_next_line_style(implot.AUTO_COL, 2.0 if state["hovered"][...] or state["held"][...] else 1.0)
-        implot.plot_line("Interactive Data", xs, ys)
+        implot.plot_line(
+            "Interactive Data",
+            xs,
+            ys,
+            spec=PlotSpec(line_weight=2.0 if state["hovered"][...] or state["held"][...] else 1.0),
+        )
         implot.end_plot()
 
     imgui.text(f"x1: {state['x1']:.3f}, x2: {state['x2']:.3f}, y1: {state['y1']:.3f}, y2: {state['y2']:.3f}, f: {state['f']:.3f}")
