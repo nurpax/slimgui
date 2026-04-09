@@ -2412,7 +2412,7 @@ Consider using [ImPlot](https://github.com/epezent/implot) which is much better!
 ```python
 def plot_lines(
     label: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)],
     overlay_text: str | None = None,
     scale_min: float = FLT_MAX,
     scale_max: float = FLT_MAX,
@@ -2425,7 +2425,7 @@ def plot_lines(
 ```python
 def plot_histogram(
     label: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)],
     overlay_text: str | None = None,
     scale_min: float = FLT_MAX,
     scale_max: float = FLT_MAX,

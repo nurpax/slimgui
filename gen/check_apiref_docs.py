@@ -32,6 +32,7 @@ class EnumDoc:
 class ClassDoc:
     methods: dict[str, FuncDoc] = field(default_factory=dict)
     properties: dict[str, FuncDoc] = field(default_factory=dict)
+    constructor_signatures: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -70,6 +71,14 @@ class DocClassMethod:
     start: int
     end: int
     docstring: str | None = None
+
+
+@dataclass
+class DocClassProperties:
+    class_name: str
+    line: int
+    start: int
+    end: int
 
 
 DEFAULT_SPECS = [
@@ -245,6 +254,9 @@ def _parse_pyi_classes(path: Path) -> dict[str, ClassDoc]:
         class_doc = ClassDoc()
         for item in node.body:
             if not isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            if item.name == "__init__":
+                class_doc.constructor_signatures.append(_def_sig_from_source(source, item))
                 continue
             if item.name.startswith("_"):
                 continue
@@ -536,6 +548,17 @@ def _parse_doc_class_methods(path: Path) -> list[DocClassMethod]:
     return out
 
 
+def _parse_doc_class_properties(path: Path) -> list[DocClassProperties]:
+    text = path.read_text(encoding="utf-8")
+    pattern = re.compile(r"::: api-properties\s+([A-Za-z_][A-Za-z0-9_]*)\s*\n(.*?)\n:::", re.DOTALL)
+    out: list[DocClassProperties] = []
+    for match in pattern.finditer(text):
+        class_name = match.group(1)
+        line = text.count("\n", 0, match.start()) + 1
+        out.append(DocClassProperties(class_name=class_name, line=line, start=match.start(), end=match.end()))
+    return out
+
+
 def _normalize_docstring(doc: str | None) -> str | None:
     if doc is None:
         return None
@@ -625,6 +648,28 @@ def _select_matching_member_signature(class_name: str, documented_signature: str
             return sig
     return signatures[0]
 
+def _select_matching_function_signature(documented_signature: str, signatures: list[str], overload_index: int) -> str:
+    for sig in signatures:
+        if _normalize_sig(sig) == documented_signature:
+            return sig
+    if 0 <= overload_index < len(signatures):
+        return signatures[overload_index]
+    return signatures[0]
+
+
+def _documented_function_overload_matches(documented: list[DocSignature], funcs: dict[str, FuncDoc]) -> list[str | None]:
+    overload_counts: dict[str, int] = {}
+    matches: list[str | None] = []
+    for entry in documented:
+        func = funcs.get(entry.name)
+        if func is None:
+            matches.append(None)
+            continue
+        overload_index = overload_counts.get(entry.name, 0)
+        overload_counts[entry.name] = overload_index + 1
+        matches.append(_select_matching_function_signature(entry.signature, func.signatures, overload_index))
+    return matches
+
 
 def _render_enum_block(name: str, enum_doc: EnumDoc) -> str:
     parts = [
@@ -637,6 +682,74 @@ def _render_enum_block(name: str, enum_doc: EnumDoc) -> str:
         description = member.description.replace("|", "\\|")
         parts.append(f"| {member.name} | {description} |")
     return "\n".join(parts) + "\n\n"
+
+
+def _property_type_from_signature(sig: str) -> str:
+    sig = _clean_sig(sig)
+    match = re.match(r"def\s+[A-Za-z_][A-Za-z0-9_]*\s*\(.*\)\s*(.*)$", sig)
+    if not match:
+        return "Any"
+    suffix = match.group(1).strip()
+    if suffix.startswith("->"):
+        return suffix[2:].strip()
+    return "Any"
+
+
+def _constructor_defaults(class_doc: ClassDoc) -> dict[str, str]:
+    if not class_doc.constructor_signatures:
+        return {}
+
+    def _param_count(sig: str) -> int:
+        open_paren = sig.find("(")
+        close_paren = sig.rfind(")")
+        if open_paren == -1 or close_paren == -1 or close_paren < open_paren:
+            return 0
+        params = [p for p in _split_top_level_commas(sig[open_paren + 1:close_paren]) if p and p != "self"]
+        return len(params)
+
+    sig = max(class_doc.constructor_signatures, key=_param_count)
+    open_paren = sig.find("(")
+    close_paren = sig.rfind(")")
+    if open_paren == -1 or close_paren == -1 or close_paren < open_paren:
+        return {}
+
+    defaults: dict[str, str] = {}
+    for param in _split_top_level_commas(sig[open_paren + 1:close_paren]):
+        if not param or param in {"self", "/", "*"} or "=" not in param:
+            continue
+        lhs, rhs = param.split("=", 1)
+        name = lhs.split(":", 1)[0].strip()
+        default = rhs.strip()
+        if name and default:
+            defaults[name] = default
+    return defaults
+
+
+def _render_class_properties_block(class_name: str, class_doc: ClassDoc) -> str:
+    include_defaults = class_name == "PlotSpec"
+    constructor_defaults = _constructor_defaults(class_doc) if include_defaults else {}
+    if include_defaults:
+        parts = [
+            f"::: api-properties {class_name}",
+            "| Property | Type | Default | Description |",
+            "| --- | --- | --- | --- |",
+        ]
+    else:
+        parts = [
+            f"::: api-properties {class_name}",
+            "| Property | Type | Description |",
+            "| --- | --- | --- |",
+        ]
+    for name, func in class_doc.properties.items():
+        prop_type = _property_type_from_signature(func.signatures[0])
+        description = (_normalize_docstring(func.docstring) or "").replace("|", "\\|")
+        if include_defaults:
+            default = constructor_defaults.get(name, "").replace("|", "\\|")
+            parts.append(f"| `{name}` | `{prop_type}` | `{default}` | {description} |")
+        else:
+            parts.append(f"| `{name}` | `{prop_type}` | {description} |")
+    parts.append(":::")
+    return "\n".join(parts)
 
 
 def _check_spec(spec: ApiSpec) -> list[str]:
@@ -653,6 +766,7 @@ def _check_spec(spec: ApiSpec) -> list[str]:
     documented_enums = _parse_doc_enums(spec.doc_path)
     documented_enum_names = {entry.name for entry in documented_enums}
     documented_class_methods = _parse_doc_class_methods(spec.doc_path)
+    documented_class_properties = _parse_doc_class_properties(spec.doc_path)
 
     for entry in documented:
         expected = funcs.get(entry.name)
@@ -737,17 +851,32 @@ def _check_spec(spec: ApiSpec) -> list[str]:
 
         documented_methods_by_class.setdefault(entry.class_name, set()).add(entry.method_name)
 
+    documented_property_classes = {entry.class_name for entry in documented_class_properties}
+    for entry in documented_class_properties:
+        class_doc = classes.get(entry.class_name)
+        if class_doc is None:
+            errors.append(f"{spec.doc_path}:{entry.line}: documented class `{entry.class_name}` not found in {spec.pyi_path} or {spec.module_name}")
+            continue
+        expected_block = _render_class_properties_block(entry.class_name, class_doc)
+        actual_block = spec.doc_path.read_text(encoding="utf-8")[entry.start:entry.end]
+        if actual_block != expected_block:
+            errors.append(f"{spec.doc_path}:{entry.line}: property block mismatch for `{entry.class_name}`")
+
     for class_name, method_names in documented_methods_by_class.items():
         class_doc = classes.get(class_name)
         if class_doc is None:
             continue
         undocumented_methods = sorted(
             name
-            for name in {**class_doc.methods, **class_doc.properties}
+            for name in class_doc.methods
             if name not in method_names and not name.endswith("_internal")
         )
         for method_name in undocumented_methods:
             errors.append(f"{spec.doc_path}: undocumented public method `{class_name}.{method_name}`")
+
+    for class_name, class_doc in classes.items():
+        if class_doc.properties and class_name not in documented_property_classes:
+            errors.append(f"{spec.doc_path}: undocumented public property block `{class_name}`")
 
     return errors
 
@@ -812,10 +941,13 @@ def _sync_spec(spec: ApiSpec) -> bool:
     documented = _parse_doc_signatures(path)
     documented_enums = _parse_doc_enums(path)
     documented_class_methods = _parse_doc_class_methods(path)
+    documented_class_properties = _parse_doc_class_properties(path)
     updated = text
     changed = False
 
-    for entry in reversed(documented_class_methods):
+    replacements: list[tuple[int, int, str]] = []
+
+    for entry in documented_class_methods:
         class_doc = classes.get(entry.class_name)
         if class_doc is None:
             continue
@@ -826,27 +958,30 @@ def _sync_spec(spec: ApiSpec) -> bool:
         if member_doc is None:
             continue
         matching_signature = _select_matching_member_signature(entry.class_name, entry.signature, member_doc.signatures, is_property=is_property)
-        replacement = _render_class_member_block(entry.class_name, member_doc, matching_signature, is_property=is_property)
-        if updated[entry.start:entry.end] != replacement:
-            updated = updated[:entry.start] + replacement + updated[entry.end:]
-            changed = True
+        replacements.append((entry.start, entry.end, _render_class_member_block(entry.class_name, member_doc, matching_signature, is_property=is_property)))
 
-    for entry in reversed(documented_enums):
+    for entry in documented_class_properties:
+        class_doc = classes.get(entry.class_name)
+        if class_doc is None:
+            continue
+        replacements.append((entry.start, entry.end, _render_class_properties_block(entry.class_name, class_doc)))
+
+    for entry in documented_enums:
         enum_doc = enums.get(entry.name)
         if enum_doc is None:
             continue
-        replacement = _render_enum_block(entry.name, enum_doc)
-        if updated[entry.start:entry.end] != replacement:
-            updated = updated[:entry.start] + replacement + updated[entry.end:]
-            changed = True
+        replacements.append((entry.start, entry.end, _render_enum_block(entry.name, enum_doc)))
 
-    for entry in reversed(documented):
+    function_matches = _documented_function_overload_matches(documented, funcs)
+    for entry, matching_signature in zip(documented, function_matches, strict=True):
         func = funcs.get(entry.name)
-        if func is None:
+        if func is None or matching_signature is None:
             continue
-        replacement = _render_api_signature_block(func, entry.signature)
-        if updated[entry.start:entry.end] != replacement:
-            updated = updated[:entry.start] + replacement + updated[entry.end:]
+        replacements.append((entry.start, entry.end, _render_api_signature_block(func, matching_signature)))
+
+    for start, end, replacement in sorted(replacements, key=lambda item: item[0], reverse=True):
+        if updated[start:end] != replacement:
+            updated = updated[:start] + replacement + updated[end:]
             changed = True
 
     if changed:
@@ -867,10 +1002,13 @@ def _sync_spec_preview(spec: ApiSpec) -> tuple[bool, str]:
     documented = _parse_doc_signatures(path)
     documented_enums = _parse_doc_enums(path)
     documented_class_methods = _parse_doc_class_methods(path)
+    documented_class_properties = _parse_doc_class_properties(path)
     updated = original
     changed = False
 
-    for entry in reversed(documented_class_methods):
+    replacements: list[tuple[int, int, str]] = []
+
+    for entry in documented_class_methods:
         class_doc = classes.get(entry.class_name)
         if class_doc is None:
             continue
@@ -881,27 +1019,30 @@ def _sync_spec_preview(spec: ApiSpec) -> tuple[bool, str]:
         if member_doc is None:
             continue
         matching_signature = _select_matching_member_signature(entry.class_name, entry.signature, member_doc.signatures, is_property=is_property)
-        replacement = _render_class_member_block(entry.class_name, member_doc, matching_signature, is_property=is_property)
-        if updated[entry.start:entry.end] != replacement:
-            updated = updated[:entry.start] + replacement + updated[entry.end:]
-            changed = True
+        replacements.append((entry.start, entry.end, _render_class_member_block(entry.class_name, member_doc, matching_signature, is_property=is_property)))
 
-    for entry in reversed(documented_enums):
+    for entry in documented_class_properties:
+        class_doc = classes.get(entry.class_name)
+        if class_doc is None:
+            continue
+        replacements.append((entry.start, entry.end, _render_class_properties_block(entry.class_name, class_doc)))
+
+    for entry in documented_enums:
         enum_doc = enums.get(entry.name)
         if enum_doc is None:
             continue
-        replacement = _render_enum_block(entry.name, enum_doc)
-        if updated[entry.start:entry.end] != replacement:
-            updated = updated[:entry.start] + replacement + updated[entry.end:]
-            changed = True
+        replacements.append((entry.start, entry.end, _render_enum_block(entry.name, enum_doc)))
 
-    for entry in reversed(documented):
+    function_matches = _documented_function_overload_matches(documented, funcs)
+    for entry, matching_signature in zip(documented, function_matches, strict=True):
         func = funcs.get(entry.name)
-        if func is None:
+        if func is None or matching_signature is None:
             continue
-        replacement = _render_api_signature_block(func, entry.signature)
-        if updated[entry.start:entry.end] != replacement:
-            updated = updated[:entry.start] + replacement + updated[entry.end:]
+        replacements.append((entry.start, entry.end, _render_api_signature_block(func, matching_signature)))
+
+    for start, end, replacement in sorted(replacements, key=lambda item: item[0], reverse=True):
+        if updated[start:end] != replacement:
+            updated = updated[:start] + replacement + updated[end:]
             changed = True
 
     if not changed:
