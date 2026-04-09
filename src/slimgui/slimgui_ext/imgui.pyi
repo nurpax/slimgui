@@ -3761,6 +3761,9 @@ def pop_item_flag() -> None:
     ...
 
 
+def get_item_flags() -> int:
+    """Get generic flags of the last item."""
+
 def push_item_width(item_width: float) -> None:
     """Push width of items for common large \"item+label\" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)."""
     ...

@@ -1073,6 +1073,15 @@ def pop_item_flag() -> None:
 ```
 :::
 
+::: api-signature
+```python
+def get_item_flags() -> int:
+    """
+    Get generic flags of the last item.
+    """
+```
+:::
+
 ## Parameter stacks (current window)
 
 ### Functions

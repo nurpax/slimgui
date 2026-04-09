@@ -924,6 +924,7 @@ NB_MODULE(slimgui_ext, top) {
     m.def("pop_style_var", &ImGui::PopStyleVar, "count"_a = 1);
     m.def("push_item_flag", [](ImGuiItemFlags_ option, bool enabled) { ImGui::PushItemFlag(option, enabled); }, "option"_a, "enabled"_a);
     m.def("pop_item_flag", &ImGui::PopItemFlag);
+    m.def("get_item_flags", &ImGui::GetItemFlags, "Get generic flags of the last item.");
 
     // Parameters stacks (current window)
     m.def("push_item_width", &ImGui::PushItemWidth, "item_width"_a);
