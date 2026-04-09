@@ -62,15 +62,33 @@ def test_setup_axis_ticks(frame_scope):
         assert False, "assert that begin_plot actually ran"
 
 def test_random_getter_setters(frame_scope):
-    implot.set_next_marker_style(-1) # both variants should work for this function
-    implot.set_next_marker_style(implot.Marker.CIRCLE)
+    spec = implot.PlotSpec()
+    spec.marker = -1  # both variants should work for this field
+    spec.marker = implot.Marker.CIRCLE
 
     implot.style_colors_classic()
     implot.style_colors_classic(implot.get_style())
 
-    assert implot.get_style_color_name(implot.Col.MARKER_OUTLINE) == 'MarkerOutline'
+    assert implot.get_style_color_name(implot.Col.AXIS_TEXT) == 'AxisText'
     assert implot.get_marker_name(implot.Marker.DIAMOND) == 'Diamond'
 
-    implot.push_style_var(implot.StyleVar.MARKER_SIZE, 10)
-    implot.push_style_var(implot.StyleVar.MARKER_SIZE, 10.5)
+    implot.push_style_var(implot.StyleVar.PLOT_BORDER_SIZE, 10)
+    implot.push_style_var(implot.StyleVar.PLOT_BORDER_SIZE, 10.5)
     implot.pop_style_var(2)
+
+def test_plot_spec_defaults_and_override(frame_scope):
+    xs = np.arange(4, dtype=np.float64)
+    ys = np.array([0.0, 1.0, 0.5, 1.5], dtype=np.float64)
+
+    if implot.begin_plot("##plotspec", size=(-1, 80)):
+        implot.plot_line("default-spec", xs, ys)  # spec defaults to None / ImPlotSpec()
+
+        spec = implot.PlotSpec()
+        spec.line_weight = 2.5
+        spec.marker = implot.Marker.CIRCLE
+        spec.marker_size = 6.0
+        implot.plot_scatter("custom-spec", xs, ys, spec=spec)
+
+        implot.end_plot()
+    else:
+        assert False, "assert that begin_plot actually ran"
