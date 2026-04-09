@@ -18,4 +18,8 @@ The documentation is split into several parts:
 - [ImPlot API reference](/api/implot)
 - [Recipes](/recipes/)
 
-The project source code is hosted on [github.com/nurpax/slimgui](https://github.com/nurpax/slimgui).
+Further reading:
+
+- [Slimgui on GitHub](https://github.com/nurpax/slimgui)
+- [Release notes](https://github.com/nurpax/slimgui/releases)
+- [Full documentation as LLM-friendly Markdown](/llms-full.txt)

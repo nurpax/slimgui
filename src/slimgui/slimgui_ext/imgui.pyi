@@ -4931,12 +4931,10 @@ def set_next_frame_want_capture_mouse(capture: bool) -> None:
 
 
 def get_clipboard_text() -> str:
-    ...
-
+    """Get clipboard text from the current platform backend."""
 
 def set_clipboard_text(text: str) -> None:
-    ...
-
+    """Set clipboard text through the current platform backend."""
 
 def set_nanobind_leak_warnings(enable: bool) -> None:
     ...

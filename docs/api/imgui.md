@@ -84,6 +84,24 @@ def get_style() -> slimgui.slimgui_ext.imgui.Style:
 
 ::: api-signature
 ```python
+def get_platform_io() -> slimgui.slimgui_ext.imgui.PlatformIO:
+    """
+    Access the ImGui `PlatformIO` structure.
+    """
+```
+:::
+
+::: api-signature
+```python
+def new_frame():
+    """
+    ImGui::NewFrame() call but with some Python binding specific book keeping.
+    """
+```
+:::
+
+::: api-signature
+```python
 def end_frame() -> None:
     """
     Ends the Dear ImGui frame. automatically called by `render()`. If you don't need to render data (skipping rendering) you may call `end_frame()` without `render()`... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call `new_frame()` at all!
@@ -219,6 +237,79 @@ def get_version() -> str:
     """
     Get the compiled version string e.g. "1.80 WIP" (essentially the value for IMGUI_VERSION from the compiled version of imgui.cpp)
     """
+```
+:::
+
+### Logging
+
+::: api-signature
+```python
+def log_to_tty(
+    auto_open_depth: int = -1,
+) -> None:
+    """
+    Start logging to tty (stdout)
+    """
+```
+:::
+
+::: api-signature
+```python
+def log_to_file(
+    auto_open_depth: int = -1,
+    filename: str | None = None,
+) -> None:
+    """
+    Start logging to file
+    """
+```
+:::
+
+::: api-signature
+```python
+def log_to_clipboard(
+    auto_open_depth: int = -1,
+) -> None:
+    """
+    Start logging to OS clipboard
+    """
+```
+:::
+
+::: api-signature
+```python
+def log_finish() -> None:
+    """
+    Stop logging (close file, etc.)
+    """
+```
+:::
+
+::: api-signature
+```python
+def log_buttons() -> None:
+    """
+    Helper to display buttons for logging to tty/file/clipboard
+    """
+```
+:::
+
+::: api-signature
+```python
+def log_text(
+    text: str,
+) -> None:
+    """
+    Pass text data straight to log (without being displayed)
+    """
+```
+:::
+
+::: api-signature
+```python
+def set_nanobind_leak_warnings(
+    enable: bool,
+) -> None:
 ```
 :::
 
@@ -961,6 +1052,24 @@ def push_style_var_y(
 def pop_style_var(
     count: int = 1,
 ) -> None:
+```
+:::
+
+::: api-signature
+```python
+def push_item_flag(
+    option: ItemFlags,
+    enabled: bool,
+) -> None:
+    """
+    Modify specified shared item flag, e.g. `push_item_flag(ItemFlags.NO_TAB_STOP, true)`
+    """
+```
+:::
+
+::: api-signature
+```python
+def pop_item_flag() -> None:
 ```
 :::
 
@@ -3557,6 +3666,28 @@ def get_style_color_name(
 ```
 :::
 
+### Clipboard
+
+::: api-signature
+```python
+def get_clipboard_text() -> str:
+    """
+    Get clipboard text from the current platform backend.
+    """
+```
+:::
+
+::: api-signature
+```python
+def set_clipboard_text(
+    text: str,
+) -> None:
+    """
+    Set clipboard text through the current platform backend.
+    """
+```
+:::
+
 ## Text Utilities
 
 ### Functions
@@ -3732,6 +3863,17 @@ def set_next_item_shortcut(
 ) -> None:
     """
     Python bindings note: The original ImGui type for a ImGuiKeyChord is basically ImGuiKey that can be optionally bitwise-OR'd with a modifier key like ImGuiMod_Alt, ImGuiMod_Ctrl, etc.  In Python, this is modeled as a union of `Key` and int.  The int value is the modifier key.  You can use the `|` operator to combine them, e.g. `Key.A | Key.MOD_CTRL`.
+    """
+```
+:::
+
+::: api-signature
+```python
+def set_item_key_owner(
+    key: Key,
+) -> None:
+    """
+    Set key owner to last item ID if it is hovered or active.
     """
 ```
 :::
