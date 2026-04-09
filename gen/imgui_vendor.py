@@ -39,8 +39,8 @@ def vendor_in(src_url, outdir, subdir: str | None = None):
 if __name__ == "__main__":
     imgui_src = "https://github.com/ocornut/imgui/archive/refs/tags/v1.92.7.zip"
     cimgui_src = "https://github.com/cimgui/cimgui/archive/refs/tags/1.92.7.zip"
-    implot_src = "https://github.com/epezent/implot/archive/refs/tags/v0.17.zip"
-    cimplot_src = "https://github.com/cimgui/cimplot/archive/refs/tags/v0.17.zip"
+    implot_src = "https://github.com/epezent/implot/archive/refs/tags/v1.0.zip"
+    cimplot_src = "https://github.com/cimgui/cimplot/archive/refs/tags/v1.0.zip"
     vendor_in(imgui_src, 'src/c/imgui')
     vendor_in(implot_src, 'src/c/implot')
     vendor_in(cimgui_src, 'gen/cimgui', 'generator/output')

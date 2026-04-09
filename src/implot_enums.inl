@@ -232,7 +232,9 @@ nb::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags", nb::is_flag(),
            "Ignore hidden slices when drawing the pie chart (as if they were "
            "not there)")
     .value("EXPLODING", ImPlotPieChartFlags_Exploding,
-           "Explode legend-hovered slice");
+           "Explode legend-hovered slice")
+    .value("NO_SLICE_BORDER", ImPlotPieChartFlags_NoSliceBorder,
+           "Do not draw slice borders");
 nb::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags", nb::is_flag(),
                                nb::is_arithmetic())
     .value("NONE", ImPlotHeatmapFlags_None, "Default")
@@ -276,17 +278,6 @@ nb::enum_<ImPlotCond_>(m, "Cond", nb::is_arithmetic())
            "Set the variable once per runtime session (only the first call "
            "will succeed)");
 nb::enum_<ImPlotCol_>(m, "Col", nb::is_arithmetic())
-    .value("LINE", ImPlotCol_Line,
-           "Plot line/outline color (defaults to next unused color in current "
-           "colormap)")
-    .value("FILL", ImPlotCol_Fill,
-           "Plot fill color for bars (defaults to the current line color)")
-    .value("MARKER_OUTLINE", ImPlotCol_MarkerOutline,
-           "Marker outline color (defaults to the current line color)")
-    .value("MARKER_FILL", ImPlotCol_MarkerFill,
-           "Marker fill color (defaults to the current line color)")
-    .value("ERROR_BAR", ImPlotCol_ErrorBar,
-           "Error bar color (defaults to `Col.TEXT`)")
     .value("FRAME_BG", ImPlotCol_FrameBg,
            "Plot frame background color (defaults to `Col.FRAME_BG`)")
     .value("PLOT_BG", ImPlotCol_PlotBg,
@@ -321,23 +312,10 @@ nb::enum_<ImPlotCol_>(m, "Col", nb::is_arithmetic())
            "Crosshairs color (defaults to `Col.PLOT_BORDER`)")
     .value("COUNT", ImPlotCol_COUNT);
 nb::enum_<ImPlotStyleVar_>(m, "StyleVar", nb::is_arithmetic())
-    .value("LINE_WEIGHT", ImPlotStyleVar_LineWeight,
-           "Float,  plot item line weight in pixels")
-    .value("MARKER", ImPlotStyleVar_Marker, "Int,    marker specification")
-    .value("MARKER_SIZE", ImPlotStyleVar_MarkerSize,
-           "Float,  marker size in pixels (roughly the marker's \"radius\")")
-    .value("MARKER_WEIGHT", ImPlotStyleVar_MarkerWeight,
-           "Float,  plot outline weight of markers in pixels")
-    .value("FILL_ALPHA", ImPlotStyleVar_FillAlpha,
-           "Float,  alpha modifier applied to all plot item fills")
-    .value("ERROR_BAR_SIZE", ImPlotStyleVar_ErrorBarSize,
-           "Float,  error bar whisker width in pixels")
-    .value("ERROR_BAR_WEIGHT", ImPlotStyleVar_ErrorBarWeight,
-           "Float,  error bar whisker weight in pixels")
-    .value("DIGITAL_BIT_HEIGHT", ImPlotStyleVar_DigitalBitHeight,
-           "Float,  digital channels bit height (at 1) in pixels")
-    .value("DIGITAL_BIT_GAP", ImPlotStyleVar_DigitalBitGap,
-           "Float,  digital channels bit padding gap in pixels")
+    .value("PLOT_DEFAULT_SIZE", ImPlotStyleVar_PlotDefaultSize,
+           "ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot")
+    .value("PLOT_MIN_SIZE", ImPlotStyleVar_PlotMinSize,
+           "ImVec2, minimum size plot frame can be when shrunk")
     .value("PLOT_BORDER_SIZE", ImPlotStyleVar_PlotBorderSize,
            "Float,  thickness of border around plot area")
     .value("MINOR_ALPHA", ImPlotStyleVar_MinorAlpha,
@@ -372,10 +350,10 @@ nb::enum_<ImPlotStyleVar_>(m, "StyleVar", nb::is_arithmetic())
     .value("FIT_PADDING", ImPlotStyleVar_FitPadding,
            "ImVec2, additional fit padding as a percentage of the fit extents "
            "(e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)")
-    .value("PLOT_DEFAULT_SIZE", ImPlotStyleVar_PlotDefaultSize,
-           "ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot")
-    .value("PLOT_MIN_SIZE", ImPlotStyleVar_PlotMinSize,
-           "ImVec2, minimum size plot frame can be when shrunk")
+    .value("DIGITAL_PADDING", ImPlotStyleVar_DigitalPadding,
+           "Float,  digital plot padding from bottom in pixels")
+    .value("DIGITAL_SPACING", ImPlotStyleVar_DigitalSpacing,
+           "Float,  digital plot spacing gap in pixels")
     .value("COUNT", ImPlotStyleVar_COUNT);
 nb::enum_<ImPlotScale_>(m, "Scale", nb::is_arithmetic())
     .value("LINEAR", ImPlotScale_Linear, "Default linear scale")
@@ -384,6 +362,7 @@ nb::enum_<ImPlotScale_>(m, "Scale", nb::is_arithmetic())
     .value("SYM_LOG", ImPlotScale_SymLog, "Symmetric log scale");
 nb::enum_<ImPlotMarker_>(m, "Marker", nb::is_arithmetic())
     .value("NONE", ImPlotMarker_None, "No marker")
+    .value("AUTO", ImPlotMarker_Auto, "Automatic marker selection")
     .value("CIRCLE", ImPlotMarker_Circle, "A circle marker (default)")
     .value("SQUARE", ImPlotMarker_Square, "A square maker")
     .value("DIAMOND", ImPlotMarker_Diamond, "A diamond marker")
@@ -391,10 +370,10 @@ nb::enum_<ImPlotMarker_>(m, "Marker", nb::is_arithmetic())
     .value("DOWN", ImPlotMarker_Down, "An downward-pointing triangle marker")
     .value("LEFT", ImPlotMarker_Left, "An leftward-pointing triangle marker")
     .value("RIGHT", ImPlotMarker_Right, "An rightward-pointing triangle marker")
-    .value("CROSS", ImPlotMarker_Cross, "A cross marker (not fillable)")
-    .value("PLUS", ImPlotMarker_Plus, "A plus marker (not fillable)")
+    .value("CROSS", ImPlotMarker_Cross, "A cross marker (not fill-able)")
+    .value("PLUS", ImPlotMarker_Plus, "A plus marker (not fill-able)")
     .value("ASTERISK", ImPlotMarker_Asterisk,
-           "A asterisk marker (not fillable)")
+           "A asterisk marker (not fill-able)")
     .value("COUNT", ImPlotMarker_COUNT);
 nb::enum_<ImPlotColormap_>(m, "Colormap", nb::is_arithmetic())
     .value("DEEP", ImPlotColormap_Deep,

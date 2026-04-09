@@ -94,7 +94,7 @@ Important notes:
     ImplotFunc('ImPlot_SetAxes', 'set_axes', docstring="Select which axis/axes will be used for subsequent plot elements."),
     ImplotFunc('ImPlot_PixelsToPlot_Vec2', 'pixels_to_plot', docstring="Convert pixels to a position in the current plot's coordinate system. Passing `implot.AUTO` uses the current axes."),
     ImplotFunc('ImPlot_PixelsToPlot_Float', 'pixels_to_plot', docstring="Convert pixels to a position in the current plot's coordinate system. Passing `implot.AUTO` uses the current axes."),
-    ImplotFunc('ImPlot_PlotToPixels_PlotPoInt', 'plot_to_pixels', docstring="Convert a position in the current plot's coordinate system to pixels. Passing `implot.AUTO` uses the current axes."),
+    ImplotFunc('ImPlot_PlotToPixels_PlotPoint', 'plot_to_pixels', docstring="Convert a position in the current plot's coordinate system to pixels. Passing `implot.AUTO` uses the current axes."),
     ImplotFunc('ImPlot_PlotToPixels_double', 'plot_to_pixels', docstring="Convert a position in the current plot's coordinate system to pixels. Passing `implot.AUTO` uses the current axes."),
 
     ImplotFunc('ImPlot_GetPlotPos', 'get_plot_pos', docstring="Get the current Plot position (top-left) in pixels."),
@@ -153,11 +153,6 @@ Important notes:
     ImplotFunc('ImPlot_PushStyleVar_Float', 'push_style_var', docstring="Temporarily modify a style variable of float type. Don't forget to call `implot.pop_style_var()`!"),
     ImplotFunc('ImPlot_PushStyleVar_Vec2', 'push_style_var',  docstring="Temporarily modify a style variable of float 2-tuple. Don't forget to call `implot.pop_style_var()`!"),
     ImplotFunc('ImPlot_PopStyleVar', 'pop_style_var', docstring="Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count."),
-
-    ImplotFunc('ImPlot_SetNextLineStyle', 'set_next_line_style', docstring="Set the line color and weight for the next item only."),
-    ImplotFunc('ImPlot_SetNextFillStyle', 'set_next_fill_style', docstring="Set the fill color for the next item only."),
-    ImplotFunc('ImPlot_SetNextMarkerStyle', 'set_next_marker_style', docstring="Set the marker style for the next item only."),
-    ImplotFunc('ImPlot_SetNextErrorBarStyle', 'set_next_error_bar_style', docstring="Set the error bar style for the next item only."),
 
     ImplotFunc('ImPlot_GetLastItemColor', 'get_last_item_color', docstring="Gets the last item primary color (i.e. its legend icon color)"),
     ImplotFunc('ImPlot_GetStyleColorName', 'get_style_color_name', docstring="Returns the string name for an `implot.Col`."),
@@ -224,6 +219,8 @@ class FuncArg:
 
     def unwrap_cpp_arg_value(self) -> str:
         if self.cpp_type.startswith('std::optional<'):
+            if self.cpp_type == 'std::optional<ImPlotSpec>':
+                return f'{self.name}.value_or(ImPlotSpec())'
             return f'{self.name} ? {self.name}.value() : nullptr'
         if 'std::variant<' in self.cpp_type:
             return f'variant_to_int({self.name})' # Note: variant_to_int defined in the file that includes the funcs inl file
@@ -325,6 +322,12 @@ class GenContext:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec4', py_type='tuple[float, float, float, float]', cpp_default=default, py_default=py_default))
                         else:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec4', py_type='tuple[float, float, float, float]'))
+                    case 'const ImPlotSpec':
+                        args = { 'name': arg_name, 'cpp_type': 'std::optional<ImPlotSpec>', 'py_type': 'PlotSpec | None' }
+                        if default is not None:
+                            args['cpp_default'] = 'nb::none()'
+                            args['py_default'] = 'None'
+                        out_args.append(FuncArg(**args))
                     case 'float':
                         args = { 'name': arg_name, 'cpp_type': 'float', 'py_type': 'float' }
                         if default is not None:
@@ -390,7 +393,7 @@ class GenContext:
                         if py_default is not None:
                             py_default = enum_mod_prefix + py_default
                         out_args.append(FuncArg(arg_name, cpp_type=enum_cpp_type, py_type=enum_py_type, cpp_default=cpp_default, py_default=py_default))
-                    case _:
+                    case a:
                         print(f"{f.cim_ov_name}: {a['type']}")
                         assert False
 

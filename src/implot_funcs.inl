@@ -153,20 +153,20 @@ m.def(
 m.def(
     "plot_text",
     [](const char *text, double x, double y, ImVec2 pix_offset,
-       ImPlotTextFlags_ flags) {
-      ImPlot::PlotText(text, x, y, pix_offset, flags);
+       std::optional<ImPlotSpec> spec) {
+      ImPlot::PlotText(text, x, y, pix_offset, spec.value_or(ImPlotSpec()));
     },
     "text"_a, "x"_a, "y"_a, "pix_offset"_a.sig("(0,0)") = ImVec2(0, 0),
-    "flags"_a.sig("TextFlag.NONE") = ImPlotTextFlags_None,
+    "spec"_a.sig("None") = nb::none(),
     "Plots a centered text label at point x,y with an optional pixel offset. "
     "Text color can be changed with `implot.push_style_color(Col.INLAY_TEXT, "
     "...)`.\n");
 m.def(
     "plot_dummy",
-    [](const char *label_id, ImPlotDummyFlags_ flags) {
-      ImPlot::PlotDummy(label_id, flags);
+    [](const char *label_id, std::optional<ImPlotSpec> spec) {
+      ImPlot::PlotDummy(label_id, spec.value_or(ImPlotSpec()));
     },
-    "label_id"_a, "flags"_a.sig("DummyFlag.NONE") = ImPlotDummyFlags_None,
+    "label_id"_a, "spec"_a.sig("None") = nb::none(),
     "Plots a dummy item (i.e. adds a legend entry colored by `Col.LINE`).\n");
 m.def(
     "set_axis", [](ImAxis_ axis) { ImPlot::SetAxis(axis); }, "axis"_a,
@@ -403,39 +403,6 @@ m.def(
     "count"_a.sig("1") = 1,
     "Undo temporary style variable modification(s). Undo multiple pushes at "
     "once by increasing count.\n");
-m.def(
-    "set_next_line_style",
-    [](ImVec4 col, float weight) { ImPlot::SetNextLineStyle(col, weight); },
-    "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1), "weight"_a.sig("AUTO") = -1,
-    "Set the line color and weight for the next item only.\n");
-m.def(
-    "set_next_fill_style",
-    [](ImVec4 col, float alpha_mod) {
-      ImPlot::SetNextFillStyle(col, alpha_mod);
-    },
-    "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1),
-    "alpha_mod"_a.sig("AUTO") = -1,
-    "Set the fill color for the next item only.\n");
-m.def(
-    "set_next_marker_style",
-    [](std::variant<ImPlotMarker_, int> marker, float size, ImVec4 fill,
-       float weight, ImVec4 outline) {
-      ImPlot::SetNextMarkerStyle(variant_to_int(marker), size, fill, weight,
-                                 outline);
-    },
-    "marker"_a.sig("AUTO") = std::variant<ImPlotMarker_, int>(IMPLOT_AUTO),
-    "size"_a.sig("AUTO") = -1, "fill"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1),
-    "weight"_a.sig("AUTO") = -1,
-    "outline"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1),
-    "Set the marker style for the next item only.\n");
-m.def(
-    "set_next_error_bar_style",
-    [](ImVec4 col, float size, float weight) {
-      ImPlot::SetNextErrorBarStyle(col, size, weight);
-    },
-    "col"_a.sig("AUTO_COL") = ImVec4(0, 0, 0, -1), "size"_a.sig("AUTO") = -1,
-    "weight"_a.sig("AUTO") = -1,
-    "Set the error bar style for the next item only.\n");
 m.def(
     "get_last_item_color", []() { return ImPlot::GetLastItemColor(); },
     "Gets the last item primary color (i.e. its legend icon color)\n");

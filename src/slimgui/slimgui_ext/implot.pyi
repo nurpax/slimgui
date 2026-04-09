@@ -467,6 +467,9 @@ class PieChartFlags(enum.IntFlag):
     EXPLODING = 4096
     """Explode legend-hovered slice"""
 
+    NO_SLICE_BORDER = 8192
+    """Do not draw slice borders"""
+
 class HeatmapFlags(enum.IntFlag):
     __str__ = __repr__
 
@@ -565,160 +568,122 @@ class Cond(enum.IntEnum):
     """
 
 class Col(enum.IntEnum):
-    LINE = 0
-    """
-    Plot line/outline color (defaults to next unused color in current colormap)
-    """
-
-    FILL = 1
-    """Plot fill color for bars (defaults to the current line color)"""
-
-    MARKER_OUTLINE = 2
-    """Marker outline color (defaults to the current line color)"""
-
-    MARKER_FILL = 3
-    """Marker fill color (defaults to the current line color)"""
-
-    ERROR_BAR = 4
-    """Error bar color (defaults to `Col.TEXT`)"""
-
-    FRAME_BG = 5
+    FRAME_BG = 0
     """Plot frame background color (defaults to `Col.FRAME_BG`)"""
 
-    PLOT_BG = 6
+    PLOT_BG = 1
     """Plot area background color (defaults to `Col.WINDOW_BG`)"""
 
-    PLOT_BORDER = 7
+    PLOT_BORDER = 2
     """Plot area border color (defaults to `Col.BORDER`)"""
 
-    LEGEND_BG = 8
+    LEGEND_BG = 3
     """Legend background color (defaults to `Col.POPUP_BG`)"""
 
-    LEGEND_BORDER = 9
+    LEGEND_BORDER = 4
     """Legend border color (defaults to `Col.PLOT_BORDER`)"""
 
-    LEGEND_TEXT = 10
+    LEGEND_TEXT = 5
     """Legend text color (defaults to `Col.INLAY_TEXT`)"""
 
-    TITLE_TEXT = 11
+    TITLE_TEXT = 6
     """Plot title text color (defaults to `Col.TEXT`)"""
 
-    INLAY_TEXT = 12
+    INLAY_TEXT = 7
     """Color of text appearing inside of plots (defaults to `Col.TEXT`)"""
 
-    AXIS_TEXT = 13
+    AXIS_TEXT = 8
     """Axis label and tick labels color (defaults to `Col.TEXT`)"""
 
-    AXIS_GRID = 14
+    AXIS_GRID = 9
     """Axis grid color (defaults to 25% `Col.AXIS_TEXT`)"""
 
-    AXIS_TICK = 15
+    AXIS_TICK = 10
     """Axis tick color (defaults to AxisGrid)"""
 
-    AXIS_BG = 16
+    AXIS_BG = 11
     """Background color of axis hover region (defaults to transparent)"""
 
-    AXIS_BG_HOVERED = 17
+    AXIS_BG_HOVERED = 12
     """Axis hover color (defaults to `Col.BUTTON_HOVERED`)"""
 
-    AXIS_BG_ACTIVE = 18
+    AXIS_BG_ACTIVE = 13
     """Axis active color (defaults to `Col.BUTTON_ACTIVE`)"""
 
-    SELECTION = 19
+    SELECTION = 14
     """Box-selection color (defaults to yellow)"""
 
-    CROSSHAIRS = 20
+    CROSSHAIRS = 15
     """Crosshairs color (defaults to `Col.PLOT_BORDER`)"""
 
-    COUNT = 21
+    COUNT = 16
 
 class StyleVar(enum.IntEnum):
-    LINE_WEIGHT = 0
-    """Float,  plot item line weight in pixels"""
+    PLOT_DEFAULT_SIZE = 0
+    """ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot"""
 
-    MARKER = 1
-    """Int,    marker specification"""
+    PLOT_MIN_SIZE = 1
+    """ImVec2, minimum size plot frame can be when shrunk"""
 
-    MARKER_SIZE = 2
-    """Float,  marker size in pixels (roughly the marker's "radius")"""
-
-    MARKER_WEIGHT = 3
-    """Float,  plot outline weight of markers in pixels"""
-
-    FILL_ALPHA = 4
-    """Float,  alpha modifier applied to all plot item fills"""
-
-    ERROR_BAR_SIZE = 5
-    """Float,  error bar whisker width in pixels"""
-
-    ERROR_BAR_WEIGHT = 6
-    """Float,  error bar whisker weight in pixels"""
-
-    DIGITAL_BIT_HEIGHT = 7
-    """Float,  digital channels bit height (at 1) in pixels"""
-
-    DIGITAL_BIT_GAP = 8
-    """Float,  digital channels bit padding gap in pixels"""
-
-    PLOT_BORDER_SIZE = 9
+    PLOT_BORDER_SIZE = 2
     """Float,  thickness of border around plot area"""
 
-    MINOR_ALPHA = 10
+    MINOR_ALPHA = 3
     """Float,  alpha multiplier applied to minor axis grid lines"""
 
-    MAJOR_TICK_LEN = 11
+    MAJOR_TICK_LEN = 4
     """ImVec2, major tick lengths for X and Y axes"""
 
-    MINOR_TICK_LEN = 12
+    MINOR_TICK_LEN = 5
     """ImVec2, minor tick lengths for X and Y axes"""
 
-    MAJOR_TICK_SIZE = 13
+    MAJOR_TICK_SIZE = 6
     """ImVec2, line thickness of major ticks"""
 
-    MINOR_TICK_SIZE = 14
+    MINOR_TICK_SIZE = 7
     """ImVec2, line thickness of minor ticks"""
 
-    MAJOR_GRID_SIZE = 15
+    MAJOR_GRID_SIZE = 8
     """ImVec2, line thickness of major grid lines"""
 
-    MINOR_GRID_SIZE = 16
+    MINOR_GRID_SIZE = 9
     """ImVec2, line thickness of minor grid lines"""
 
-    PLOT_PADDING = 17
+    PLOT_PADDING = 10
     """
     ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
     """
 
-    LABEL_PADDING = 18
+    LABEL_PADDING = 11
     """ImVec2, padding between axes labels, tick labels, and plot edge"""
 
-    LEGEND_PADDING = 19
+    LEGEND_PADDING = 12
     """ImVec2, legend padding from plot edges"""
 
-    LEGEND_INNER_PADDING = 20
+    LEGEND_INNER_PADDING = 13
     """ImVec2, legend inner padding from legend edges"""
 
-    LEGEND_SPACING = 21
+    LEGEND_SPACING = 14
     """ImVec2, spacing between legend entries"""
 
-    MOUSE_POS_PADDING = 22
+    MOUSE_POS_PADDING = 15
     """ImVec2, padding between plot edge and interior info text"""
 
-    ANNOTATION_PADDING = 23
+    ANNOTATION_PADDING = 16
     """ImVec2, text padding around annotation labels"""
 
-    FIT_PADDING = 24
+    FIT_PADDING = 17
     """
     ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)
     """
 
-    PLOT_DEFAULT_SIZE = 25
-    """ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot"""
+    DIGITAL_PADDING = 18
+    """Float,  digital plot padding from bottom in pixels"""
 
-    PLOT_MIN_SIZE = 26
-    """ImVec2, minimum size plot frame can be when shrunk"""
+    DIGITAL_SPACING = 19
+    """Float,  digital plot spacing gap in pixels"""
 
-    COUNT = 27
+    COUNT = 20
 
 class Scale(enum.IntEnum):
     LINEAR = 0
@@ -734,8 +699,11 @@ class Scale(enum.IntEnum):
     """Symmetric log scale"""
 
 class Marker(enum.IntEnum):
-    NONE = -1
+    NONE = -2
     """No marker"""
+
+    AUTO = -1
+    """Automatic marker selection"""
 
     CIRCLE = 0
     """A circle marker (default)"""
@@ -759,13 +727,13 @@ class Marker(enum.IntEnum):
     """An rightward-pointing triangle marker"""
 
     CROSS = 7
-    """A cross marker (not fillable)"""
+    """A cross marker (not fill-able)"""
 
     PLUS = 8
-    """A plus marker (not fillable)"""
+    """A plus marker (not fill-able)"""
 
     ASTERISK = 9
-    """A asterisk marker (not fillable)"""
+    """A asterisk marker (not fill-able)"""
 
     COUNT = 10
 
@@ -872,14 +840,34 @@ class ColorsArray:
 
     def __len__(self) -> int: ...
 
-class Style:
-    """Plot style structure"""
+class PlotSpec:
+    """Per-item plot specification."""
+
+    def __init__(self) -> None: ...
+
+    @property
+    def line_color(self) -> tuple[float, float, float, float]: ...
+
+    @line_color.setter
+    def line_color(self, arg: tuple[float, float, float, float], /) -> None: ...
 
     @property
     def line_weight(self) -> float: ...
 
     @line_weight.setter
     def line_weight(self, arg: float, /) -> None: ...
+
+    @property
+    def fill_color(self) -> tuple[float, float, float, float]: ...
+
+    @fill_color.setter
+    def fill_color(self, arg: tuple[float, float, float, float], /) -> None: ...
+
+    @property
+    def fill_alpha(self) -> float: ...
+
+    @fill_alpha.setter
+    def fill_alpha(self, arg: float, /) -> None: ...
 
     @property
     def marker(self) -> int: ...
@@ -894,40 +882,43 @@ class Style:
     def marker_size(self, arg: float, /) -> None: ...
 
     @property
-    def marker_weight(self) -> float: ...
+    def marker_line_color(self) -> tuple[float, float, float, float]: ...
 
-    @marker_weight.setter
-    def marker_weight(self, arg: float, /) -> None: ...
-
-    @property
-    def fill_alpha(self) -> float: ...
-
-    @fill_alpha.setter
-    def fill_alpha(self, arg: float, /) -> None: ...
+    @marker_line_color.setter
+    def marker_line_color(self, arg: tuple[float, float, float, float], /) -> None: ...
 
     @property
-    def error_bar_size(self) -> float: ...
+    def marker_fill_color(self) -> tuple[float, float, float, float]: ...
 
-    @error_bar_size.setter
-    def error_bar_size(self, arg: float, /) -> None: ...
-
-    @property
-    def error_bar_weight(self) -> float: ...
-
-    @error_bar_weight.setter
-    def error_bar_weight(self, arg: float, /) -> None: ...
+    @marker_fill_color.setter
+    def marker_fill_color(self, arg: tuple[float, float, float, float], /) -> None: ...
 
     @property
-    def digital_bit_height(self) -> float: ...
+    def size(self) -> float: ...
 
-    @digital_bit_height.setter
-    def digital_bit_height(self, arg: float, /) -> None: ...
+    @size.setter
+    def size(self, arg: float, /) -> None: ...
 
     @property
-    def digital_bit_gap(self) -> float: ...
+    def offset(self) -> int: ...
 
-    @digital_bit_gap.setter
-    def digital_bit_gap(self, arg: float, /) -> None: ...
+    @offset.setter
+    def offset(self, arg: int, /) -> None: ...
+
+    @property
+    def stride(self) -> int: ...
+
+    @stride.setter
+    def stride(self, arg: int, /) -> None: ...
+
+    @property
+    def flags(self) -> int: ...
+
+    @flags.setter
+    def flags(self, arg: int, /) -> None: ...
+
+class Style:
+    """Plot style structure"""
 
     @property
     def plot_border_size(self) -> float: ...
@@ -1026,6 +1017,18 @@ class Style:
     def fit_padding(self, arg: tuple[float, float], /) -> None: ...
 
     @property
+    def digital_padding(self) -> float: ...
+
+    @digital_padding.setter
+    def digital_padding(self, arg: float, /) -> None: ...
+
+    @property
+    def digital_spacing(self) -> float: ...
+
+    @digital_spacing.setter
+    def digital_spacing(self, arg: float, /) -> None: ...
+
+    @property
     def plot_default_size(self) -> tuple[float, float]: ...
 
     @plot_default_size.setter
@@ -1107,101 +1110,101 @@ def begin_subplots(title_id: str, rows: int, cols: int, size: tuple[float, float
 def end_subplots() -> None: ...
 
 @overload
-def plot_line(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: LineFlags = LineFlags.NONE) -> None:
+def plot_line(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """
     Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.
     """
 
 @overload
-def plot_line(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: LineFlags = LineFlags.NONE) -> None:
+def plot_line(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None:
     """
     Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.
     """
 
 @overload
-def plot_scatter(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ScatterFlags = ScatterFlags.NONE) -> None:
+def plot_scatter(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`."""
 
 @overload
-def plot_scatter(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: ScatterFlags = ScatterFlags.NONE) -> None: ...
+def plot_scatter(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None: ...
 
 @overload
-def plot_stairs(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: StairsFlags = StairsFlags.NONE) -> None:
+def plot_stairs(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """
     Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`
     """
 
 @overload
-def plot_stairs(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, flags: StairsFlags = StairsFlags.NONE) -> None: ...
+def plot_stairs(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None: ...
 
 @overload
-def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ShadedFlags = ShadedFlags.NONE) -> None:
+def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """
     Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
     """
 
 @overload
-def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
+def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, spec: PlotSpec | None = None) -> None: ...
 
 @overload
-def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, flags: ShadedFlags = ShadedFlags.NONE) -> None: ...
+def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None: ...
 
 @overload
-def plot_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, flags: BarsFlags = BarsFlags.NONE) -> None:
+def plot_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, spec: PlotSpec | None = None) -> None:
     """
     Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.
     """
 
 @overload
-def plot_bars(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, flags: BarsFlags = BarsFlags.NONE) -> None: ...
+def plot_bars(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, spec: PlotSpec | None = None) -> None: ...
 
-def plot_bar_groups(label_ids: Sequence[str], values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], group_size: float = 0.67, shift: float = 0.0, flags: BarGroupsFlags = BarGroupsFlags.NONE) -> None:
+def plot_bar_groups(label_ids: Sequence[str], values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], group_size: float = 0.67, shift: float = 0.0, spec: PlotSpec | None = None) -> None:
     """
     Plots a group of bars. `values` is a matrix with a shape `(item_count, group_count)`. `label_ids` should have `item_count` elements.
     """
 
 @overload
-def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], err: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ErrorBarsFlags = ErrorBarsFlags.NONE) -> None:
+def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], err: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """
     Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
     """
 
 @overload
-def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], neg: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], pos: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: ErrorBarsFlags = ErrorBarsFlags.NONE) -> None: ...
+def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], neg: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], pos: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None: ...
 
 @overload
-def plot_stems(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None:
+def plot_stems(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, spec: PlotSpec | None = None) -> None:
     """Plots stems. Vertical by default."""
 
 @overload
-def plot_stems(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, scale: float = 1.0, start: float = 0.0, flags: StemsFlags = StemsFlags.NONE) -> None: ...
+def plot_stems(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, scale: float = 1.0, start: float = 0.0, spec: PlotSpec | None = None) -> None: ...
 
-def plot_inf_lines(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: InfLinesFlags = InfLinesFlags.NONE) -> None:
+def plot_inf_lines(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """
     Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).
     """
 
-def plot_heatmap(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], scale_min: float = 0, scale_max: float = 0.0, label_fmt: str | None = '%.1f', bounds_min: tuple[float, float] = (0.0, 0.0), bounds_max: tuple[float, float] = (1.0, 1.0), flags: HeatmapFlags = HeatmapFlags.NONE) -> None:
+def plot_heatmap(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], scale_min: float = 0, scale_max: float = 0.0, label_fmt: str | None = '%.1f', bounds_min: tuple[float, float] = (0.0, 0.0), bounds_max: tuple[float, float] = (1.0, 1.0), spec: PlotSpec | None = None) -> None:
     """
     Plots a 2D heatmap chart. `values` is expected to have shape (rows, cols). Leave `scale_min` and `scale_max` both at 0 for automatic color scaling, or set them to a predefined range. `label_fmt` can be set to `None` for no labels.
     """
 
-def plot_histogram(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bins: int | Bin = Bin.STURGES, bar_scale: float = 1.0, range: tuple[float, float] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
+def plot_histogram(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bins: int | Bin = Bin.STURGES, bar_scale: float = 1.0, range: tuple[float, float] | None = None, spec: PlotSpec | None = None) -> float:
     """
     Plots a horizontal histogram. `bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `values` will be used as the range.  Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
     """
 
-def plot_histogram2d(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], x_bins: int | Bin = Bin.STURGES, y_bins: int | Bin = Bin.STURGES, range: tuple[tuple[float, float], tuple[float, float]] | None = None, flags: HistogramFlags = HistogramFlags.NONE) -> float:
+def plot_histogram2d(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], x_bins: int | Bin = Bin.STURGES, y_bins: int | Bin = Bin.STURGES, range: tuple[tuple[float, float], tuple[float, float]] | None = None, spec: PlotSpec | None = None) -> float:
     """
     Plots two dimensional, bivariate histogram as a heatmap. `x_bins` and `y_bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `xs` an `ys` will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
     """
 
-def plot_digital(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], flags: DigitalFlags = DigitalFlags.NONE) -> None:
+def plot_digital(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """
     Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
     """
 
-def plot_image(label_id: str, tex_ref: slimgui_ext.imgui.TextureRef | int, bounds_min: tuple[float, float], bounds_max: tuple[float, float], uv0: tuple[float, float] = (0,0), uv1: tuple[float, float] = (1,1), tint_col: tuple[float, float, float, float] = (1,1,1,1), flags: ImageFlag = ImageFlag.NONE) -> None:
+def plot_image(label_id: str, tex_ref: slimgui_ext.imgui.TextureRef | int, bounds_min: tuple[float, float], bounds_max: tuple[float, float], uv0: tuple[float, float] = (0,0), uv1: tuple[float, float] = (1,1), tint_col: tuple[float, float, float, float] = (1,1,1,1), spec: PlotSpec | None = None) -> None:
     """
     Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot coordinates (y-up) and `uv0`/`uv1` are in texture coordinates (y-down).
     """
@@ -1359,12 +1362,12 @@ def set_next_axes_limits(x_min: float, x_max: float, y_min: float, y_max: float,
 def set_next_axes_to_fit() -> None:
     """Sets all upcoming axes to auto fit to their data."""
 
-def plot_text(text: str, x: float, y: float, pix_offset: tuple[float, float] = (0,0), flags: TextFlag = TextFlag.NONE) -> None:
+def plot_text(text: str, x: float, y: float, pix_offset: tuple[float, float] = (0,0), spec: PlotSpec | None = None) -> None:
     """
     Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with `implot.push_style_color(Col.INLAY_TEXT, ...)`.
     """
 
-def plot_dummy(label_id: str, flags: DummyFlag = DummyFlag.NONE) -> None:
+def plot_dummy(label_id: str, spec: PlotSpec | None = None) -> None:
     """Plots a dummy item (i.e. adds a legend entry colored by `Col.LINE`)."""
 
 def set_axis(axis: Axis) -> None:
@@ -1532,18 +1535,6 @@ def pop_style_var(count: int = 1) -> None:
     """
     Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count.
     """
-
-def set_next_line_style(col: tuple[float, float, float, float] = AUTO_COL, weight: float = AUTO) -> None:
-    """Set the line color and weight for the next item only."""
-
-def set_next_fill_style(col: tuple[float, float, float, float] = AUTO_COL, alpha_mod: float = AUTO) -> None:
-    """Set the fill color for the next item only."""
-
-def set_next_marker_style(marker: Marker | int = AUTO, size: float = AUTO, fill: tuple[float, float, float, float] = AUTO_COL, weight: float = AUTO, outline: tuple[float, float, float, float] = AUTO_COL) -> None:
-    """Set the marker style for the next item only."""
-
-def set_next_error_bar_style(col: tuple[float, float, float, float] = AUTO_COL, size: float = AUTO, weight: float = AUTO) -> None:
-    """Set the error bar style for the next item only."""
 
 def get_last_item_color() -> tuple[float, float, float, float]:
     """Gets the last item primary color (i.e. its legend icon color)"""
