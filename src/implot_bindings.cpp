@@ -67,18 +67,104 @@ void implot_bindings(nb::module_& m) {
 
     nb::class_<ImPlotSpec>(m, "PlotSpec", "Per-item plot specification.")
         .def(nb::init<>())
-        .def_rw("line_color", &ImPlotSpec::LineColor)
-        .def_rw("line_weight", &ImPlotSpec::LineWeight)
-        .def_rw("fill_color", &ImPlotSpec::FillColor)
-        .def_rw("fill_alpha", &ImPlotSpec::FillAlpha)
-        .def_rw("marker", &ImPlotSpec::Marker)
-        .def_rw("marker_size", &ImPlotSpec::MarkerSize)
-        .def_rw("marker_line_color", &ImPlotSpec::MarkerLineColor)
-        .def_rw("marker_fill_color", &ImPlotSpec::MarkerFillColor)
-        .def_rw("size", &ImPlotSpec::Size)
-        .def_rw("offset", &ImPlotSpec::Offset)
-        .def_rw("stride", &ImPlotSpec::Stride)
-        .def_rw("flags", &ImPlotSpec::Flags);
+        .def(
+            "__init__",
+            [](ImPlotSpec *self,
+               ImVec4 line_color,
+               float line_weight,
+               ImVec4 fill_color,
+               float fill_alpha,
+               ImPlotMarker marker,
+               float marker_size,
+               ImVec4 marker_line_color,
+               ImVec4 marker_fill_color,
+               float size,
+               int offset,
+               int stride,
+               ImPlotItemFlags flags) {
+                new (self) ImPlotSpec();
+                self->LineColor = line_color;
+                self->LineWeight = line_weight;
+                self->FillColor = fill_color;
+                self->FillAlpha = fill_alpha;
+                self->Marker = marker;
+                self->MarkerSize = marker_size;
+                self->MarkerLineColor = marker_line_color;
+                self->MarkerFillColor = marker_fill_color;
+                self->Size = size;
+                self->Offset = offset;
+                self->Stride = stride;
+                self->Flags = flags;
+            },
+            "line_color"_a.sig("AUTO_COL") = IMPLOT_AUTO_COL,
+            "line_weight"_a = 1.0f,
+            "fill_color"_a.sig("AUTO_COL") = IMPLOT_AUTO_COL,
+            "fill_alpha"_a = 1.0f,
+            "marker"_a.sig("Marker.NONE") = ImPlotMarker_None,
+            "marker_size"_a = 4.0f,
+            "marker_line_color"_a.sig("AUTO_COL") = IMPLOT_AUTO_COL,
+            "marker_fill_color"_a.sig("AUTO_COL") = IMPLOT_AUTO_COL,
+            "size"_a = 4.0f,
+            "offset"_a = 0,
+            "stride"_a.sig("AUTO") = IMPLOT_AUTO,
+            "flags"_a.sig("ItemFlags.NONE") = ImPlotItemFlags_None
+        )
+        .def_rw(
+            "line_color",
+            &ImPlotSpec::LineColor,
+            "Line color. `AUTO_COL` uses the next colormap color or the current item color."
+        )
+        .def_rw(
+            "line_weight",
+            &ImPlotSpec::LineWeight,
+            "Line weight in pixels. Applies to lines, bar edges, and marker edges."
+        )
+        .def_rw(
+            "fill_color",
+            &ImPlotSpec::FillColor,
+            "Fill color. `AUTO_COL` uses the next colormap color or the current item color."
+        )
+        .def_rw(
+            "fill_alpha",
+            &ImPlotSpec::FillAlpha,
+            "Alpha multiplier for `fill_color` and `marker_fill_color`."
+        )
+        .def_rw(
+            "marker",
+            &ImPlotSpec::Marker,
+            "Marker type. Use `Marker.AUTO` to use the next unused marker."
+        )
+        .def_rw(
+            "marker_size",
+            &ImPlotSpec::MarkerSize,
+            "Marker size, as a radius in pixels."
+        )
+        .def_rw(
+            "marker_line_color",
+            &ImPlotSpec::MarkerLineColor,
+            "Marker edge color. `AUTO_COL` uses `line_color`."
+        )
+        .def_rw(
+            "marker_fill_color",
+            &ImPlotSpec::MarkerFillColor,
+            "Marker face color. `AUTO_COL` uses `line_color`."
+        )
+        .def_rw(
+            "size",
+            &ImPlotSpec::Size,
+            "Size in pixels for error bar whiskers or digital bar height."
+        )
+        .def_rw("offset", &ImPlotSpec::Offset, "Data index offset.")
+        .def_rw(
+            "stride",
+            &ImPlotSpec::Stride,
+            "Data stride in bytes. `AUTO` uses `sizeof(T)` for the plotted data type."
+        )
+        .def_rw(
+            "flags",
+            &ImPlotSpec::Flags,
+            "Optional item flags. Combine common `ItemFlags` with specialized plot flags."
+        );
 
     nb::class_<ImPlotStyle>(m, "Style", "Plot style structure")
         .def_rw("plot_border_size", &ImPlotStyle::PlotBorderSize)

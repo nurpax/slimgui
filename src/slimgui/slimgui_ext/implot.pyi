@@ -843,76 +843,100 @@ class ColorsArray:
 class PlotSpec:
     """Per-item plot specification."""
 
+    @overload
     def __init__(self) -> None: ...
 
+    @overload
+    def __init__(self, line_color: tuple[float, float, float, float] = AUTO_COL, line_weight: float = 1.0, fill_color: tuple[float, float, float, float] = AUTO_COL, fill_alpha: float = 1.0, marker: int = Marker.NONE, marker_size: float = 4.0, marker_line_color: tuple[float, float, float, float] = AUTO_COL, marker_fill_color: tuple[float, float, float, float] = AUTO_COL, size: float = 4.0, offset: int = 0, stride: int = AUTO, flags: int = ItemFlags.NONE) -> None: ...
+
     @property
-    def line_color(self) -> tuple[float, float, float, float]: ...
+    def line_color(self) -> tuple[float, float, float, float]:
+        """
+        Line color. `AUTO_COL` uses the next colormap color or the current item color.
+        """
 
     @line_color.setter
     def line_color(self, arg: tuple[float, float, float, float], /) -> None: ...
 
     @property
-    def line_weight(self) -> float: ...
+    def line_weight(self) -> float:
+        """Line weight in pixels. Applies to lines, bar edges, and marker edges."""
 
     @line_weight.setter
     def line_weight(self, arg: float, /) -> None: ...
 
     @property
-    def fill_color(self) -> tuple[float, float, float, float]: ...
+    def fill_color(self) -> tuple[float, float, float, float]:
+        """
+        Fill color. `AUTO_COL` uses the next colormap color or the current item color.
+        """
 
     @fill_color.setter
     def fill_color(self, arg: tuple[float, float, float, float], /) -> None: ...
 
     @property
-    def fill_alpha(self) -> float: ...
+    def fill_alpha(self) -> float:
+        """Alpha multiplier for `fill_color` and `marker_fill_color`."""
 
     @fill_alpha.setter
     def fill_alpha(self, arg: float, /) -> None: ...
 
     @property
-    def marker(self) -> int: ...
+    def marker(self) -> int:
+        """Marker type. Use `Marker.AUTO` to use the next unused marker."""
 
     @marker.setter
     def marker(self, arg: int, /) -> None: ...
 
     @property
-    def marker_size(self) -> float: ...
+    def marker_size(self) -> float:
+        """Marker size, as a radius in pixels."""
 
     @marker_size.setter
     def marker_size(self, arg: float, /) -> None: ...
 
     @property
-    def marker_line_color(self) -> tuple[float, float, float, float]: ...
+    def marker_line_color(self) -> tuple[float, float, float, float]:
+        """Marker edge color. `AUTO_COL` uses `line_color`."""
 
     @marker_line_color.setter
     def marker_line_color(self, arg: tuple[float, float, float, float], /) -> None: ...
 
     @property
-    def marker_fill_color(self) -> tuple[float, float, float, float]: ...
+    def marker_fill_color(self) -> tuple[float, float, float, float]:
+        """Marker face color. `AUTO_COL` uses `line_color`."""
 
     @marker_fill_color.setter
     def marker_fill_color(self, arg: tuple[float, float, float, float], /) -> None: ...
 
     @property
-    def size(self) -> float: ...
+    def size(self) -> float:
+        """Size in pixels for error bar whiskers or digital bar height."""
 
     @size.setter
     def size(self, arg: float, /) -> None: ...
 
     @property
-    def offset(self) -> int: ...
+    def offset(self) -> int:
+        """Data index offset."""
 
     @offset.setter
     def offset(self, arg: int, /) -> None: ...
 
     @property
-    def stride(self) -> int: ...
+    def stride(self) -> int:
+        """
+        Data stride in bytes. `AUTO` uses `sizeof(T)` for the plotted data type.
+        """
 
     @stride.setter
     def stride(self, arg: int, /) -> None: ...
 
     @property
-    def flags(self) -> int: ...
+    def flags(self) -> int:
+        """
+        Optional item flags. Combine common `ItemFlags` with specialized plot flags.
+        """
 
     @flags.setter
     def flags(self, arg: int, /) -> None: ...
