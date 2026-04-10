@@ -219,8 +219,8 @@ class FuncArg:
 
     def unwrap_cpp_arg_value(self) -> str:
         if self.cpp_type.startswith('std::optional<'):
-            if self.cpp_type == 'std::optional<ImPlotSpec>':
-                return f'{self.name}.value_or(ImPlotSpec())'
+            if self.cpp_type == 'std::optional<PlotSpecWrapper>':
+                return f'resolve_plot_spec({self.name}).spec'
             return f'{self.name} ? {self.name}.value() : nullptr'
         if 'std::variant<' in self.cpp_type:
             return f'variant_to_int({self.name})' # Note: variant_to_int defined in the file that includes the funcs inl file
@@ -323,7 +323,7 @@ class GenContext:
                         else:
                             out_args.append(FuncArg(arg_name, cpp_type='ImVec4', py_type='tuple[float, float, float, float]'))
                     case 'const ImPlotSpec':
-                        args = { 'name': arg_name, 'cpp_type': 'std::optional<ImPlotSpec>', 'py_type': 'PlotSpec | None' }
+                        args = { 'name': arg_name, 'cpp_type': 'std::optional<PlotSpecWrapper>', 'py_type': 'PlotSpec | None' }
                         if default is not None:
                             args['cpp_default'] = 'nb::none()'
                             args['py_default'] = 'None'

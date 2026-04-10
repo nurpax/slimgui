@@ -1,6 +1,8 @@
 import pytest
 from slimgui import imgui, implot
 import numpy as np
+import sys
+import gc
 
 # Define a fixture
 @pytest.fixture
@@ -89,6 +91,78 @@ def test_plot_spec_defaults_and_override(frame_scope):
         spec.marker_size = 6.0
         implot.plot_scatter("custom-spec", xs, ys, spec=spec)
 
+        implot.end_plot()
+    else:
+        assert False, "assert that begin_plot actually ran"
+
+def test_plot_spec_array_backed_fields(frame_scope):
+    xs = np.arange(4, dtype=np.float64)
+    ys = np.array([0.0, 1.0, 0.5, 1.5], dtype=np.float64)
+    colors = np.array([0xFF0000FF, 0xFF00FF00, 0xFFFF0000, 0xFFFFFFFF], dtype=np.uint32)
+    marker_sizes = np.array([4.0, 6.0, 8.0, 10.0], dtype=np.float64)
+
+    spec = implot.PlotSpec(line_colors=colors, marker_sizes=marker_sizes)
+    assert spec.line_colors is colors
+    assert spec.marker_sizes is marker_sizes
+
+    colors[1] = 0xFF112233
+    marker_sizes[2] = 12.0
+
+    if implot.begin_plot("##plotspec-arrays", size=(-1, 80)):
+        spec.marker = implot.Marker.CIRCLE
+        implot.plot_line("line-colors", xs, ys, spec=spec)
+        implot.plot_scatter("marker-sizes", xs, ys, spec=spec)
+        implot.end_plot()
+    else:
+        assert False, "assert that begin_plot actually ran"
+
+def test_plot_spec_array_field_refcounts(frame_scope):
+    colors = np.array([0xFF0000FF, 0xFF00FF00, 0xFFFF0000, 0xFFFFFFFF], dtype=np.uint32)
+    spec = implot.PlotSpec()
+
+    gc.collect()
+    refcount = sys.getrefcount(colors)
+    spec.line_colors = colors
+    gc.collect()
+    assert sys.getrefcount(colors) == refcount + 1
+
+    if implot.begin_plot("##plotspec-refcounts", size=(-1, 80)):
+        xs = np.arange(4, dtype=np.float64)
+        ys = np.array([0.0, 1.0, 0.5, 1.5], dtype=np.float64)
+        implot.plot_line("line-colors", xs, ys, spec=spec)
+        implot.end_plot()
+    else:
+        assert False, "assert that begin_plot actually ran"
+
+    gc.collect()
+    assert sys.getrefcount(colors) == refcount + 1
+
+    spec.line_colors = None
+    gc.collect()
+    assert sys.getrefcount(colors) == refcount
+
+def test_plot_spec_array_field_shape_validation(frame_scope):
+    xs = np.arange(4, dtype=np.float64)
+    ys = np.array([0.0, 1.0, 0.5, 1.5], dtype=np.float64)
+    invalid_colors = np.zeros((2, 2), dtype=np.uint32)
+    spec = implot.PlotSpec(line_colors=invalid_colors)
+
+    if implot.begin_plot("##plotspec-shape", size=(-1, 80)):
+        with pytest.raises(TypeError):
+            implot.plot_line("invalid-shape", xs, ys, spec=spec)
+        implot.end_plot()
+    else:
+        assert False, "assert that begin_plot actually ran"
+
+def test_plot_spec_array_field_length_validation(frame_scope):
+    xs = np.arange(4, dtype=np.float64)
+    ys = np.array([0.0, 1.0, 0.5, 1.5], dtype=np.float64)
+    short_colors = np.array([0xFF0000FF, 0xFF00FF00], dtype=np.uint32)
+    spec = implot.PlotSpec(line_colors=short_colors)
+
+    if implot.begin_plot("##plotspec-length", size=(-1, 80)):
+        with pytest.raises(ValueError):
+            implot.plot_line("invalid-length", xs, ys, spec=spec)
         implot.end_plot()
     else:
         assert False, "assert that begin_plot actually ran"

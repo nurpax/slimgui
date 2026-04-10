@@ -57,6 +57,9 @@ def show_demo_window(show_window: bool, texture: dict[str, Any]):
 
             implot.end_plot()
 
+    if imgui.collapsing_header('PlotSpec Arrays')[0]:
+        _plot_spec_arrays()
+
     if imgui.collapsing_header('Stairs##heading')[0]:
         if implot.begin_plot("Stairs"):
             x_steps = np.arange(0, 10, 1)
@@ -215,6 +218,115 @@ def _styles():
                     implot.style_colors_dark(style)
                 case 3:
                     implot.style_colors_light(style)
+
+
+_plot_spec_arrays_state = {
+    "use_fill_array": True,
+    "use_line_array": True,
+    "use_size_array": True,
+    "active_idx": 2,
+    "line_weight": 3.0,
+    "marker_size": 9.0,
+    "fill_alpha": 1.0,
+    "marker_idx": 0,
+    "xs": np.linspace(0.0, 10.0, 9),
+    "ys": np.array([0.2, 0.8, 0.45, 1.1, 0.7, 1.35, 0.9, 1.55, 1.2], dtype=np.float64),
+    "marker_fill_color": (0.35, 0.55, 0.85, 1.0),
+    "marker_line_color": (0.12, 0.22, 0.34, 1.0),
+    "marker_fill_colors": np.array(
+        [
+            0xFF4E79A7,
+            0xFFF28E2B,
+            0xFFE15759,
+            0xFF76B7B2,
+            0xFF59A14F,
+            0xFFEDC948,
+            0xFFB07AA1,
+            0xFFFF9DA7,
+            0xFF9C755F,
+        ],
+        dtype=np.uint32,
+    ),
+    "marker_line_colors": np.array(
+        [
+            0xFF1D3557,
+            0xFF7A3E00,
+            0xFF6A040F,
+            0xFF184E4A,
+            0xFF1B4332,
+            0xFF7A5C00,
+            0xFF5A3D66,
+            0xFF8F3B4A,
+            0xFF5C4033,
+        ],
+        dtype=np.uint32,
+    ),
+    "marker_sizes": np.array([8.0, 9.0, 10.0, 8.5, 9.5, 11.0, 8.0, 10.5, 9.0], dtype=np.float64),
+}
+
+
+def _plot_spec_arrays():
+    state = _plot_spec_arrays_state
+    marker_values = [
+        implot.Marker.CIRCLE,
+        implot.Marker.SQUARE,
+        implot.Marker.DIAMOND,
+        implot.Marker.CROSS,
+    ]
+    marker_names = ["Circle", "Square", "Diamond", "Cross"]
+
+    _, state["use_fill_array"] = imgui.checkbox("Use fill array", state["use_fill_array"])
+    imgui.same_line()
+    _, state["use_line_array"] = imgui.checkbox("Use outline array", state["use_line_array"])
+    imgui.same_line()
+    _, state["use_size_array"] = imgui.checkbox("Use size array", state["use_size_array"])
+
+    _, state["active_idx"] = imgui.slider_int("Active point", state["active_idx"], 0, state["xs"].shape[0] - 1)
+    _, state["marker_idx"] = imgui.slider_int("Marker kind", state["marker_idx"], 0, len(marker_values) - 1)
+    imgui.same_line()
+    imgui.text(marker_names[state["marker_idx"]])
+
+    _, state["line_weight"] = imgui.slider_float("Outline weight", state["line_weight"], 1.0, 6.0)
+    _, state["marker_size"] = imgui.slider_float("Base marker size", state["marker_size"], 4.0, 18.0)
+    _, state["fill_alpha"] = imgui.slider_float("Fill alpha", state["fill_alpha"], 0.1, 1.0)
+
+    _, state["marker_fill_color"] = imgui.color_edit4("Base fill", state["marker_fill_color"])
+    _, state["marker_line_color"] = imgui.color_edit4("Base outline", state["marker_line_color"])
+
+    idx = state["active_idx"]
+    selected_fill = imgui.color_convert_u32_to_float4(int(state["marker_fill_colors"][idx]))
+    changed, selected_fill = imgui.color_edit4("Selected fill", selected_fill)
+    if changed:
+        state["marker_fill_colors"][idx] = imgui.color_convert_float4_to_u32(selected_fill)
+
+    selected_line = imgui.color_convert_u32_to_float4(int(state["marker_line_colors"][idx]))
+    changed, selected_line = imgui.color_edit4("Selected outline", selected_line)
+    if changed:
+        state["marker_line_colors"][idx] = imgui.color_convert_float4_to_u32(selected_line)
+
+    state["marker_sizes"][idx] = state["marker_size"] * 1.6
+
+    spec_kwargs = dict(
+        marker=marker_values[state["marker_idx"]],
+        marker_size=state["marker_size"],
+        marker_fill_color=state["marker_fill_color"],
+        marker_line_color=state["marker_line_color"],
+        line_weight=state["line_weight"],
+        fill_alpha=state["fill_alpha"],
+    )
+    if state["use_fill_array"]:
+        spec_kwargs["marker_fill_colors"] = state["marker_fill_colors"]
+    if state["use_line_array"]:
+        spec_kwargs["marker_line_colors"] = state["marker_line_colors"]
+    if state["use_size_array"]:
+        spec_kwargs["marker_sizes"] = state["marker_sizes"]
+
+    spec = PlotSpec(**spec_kwargs)
+
+    if implot.begin_plot("##PlotSpecArrays", size=(-1, 250)):
+        implot.setup_axes(None, None, implot.AxisFlags.AUTO_FIT, implot.AxisFlags.AUTO_FIT)
+        implot.plot_scatter("Interactive markers", state["xs"], state["ys"], spec=spec)
+        implot.end_plot()
 
 
 def _heatmaps():

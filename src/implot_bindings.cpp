@@ -23,6 +23,8 @@ using namespace nb::literals;
 typedef nb::ndarray<float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d_f32_rw;
 typedef nb::ndarray<const double, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d;
 typedef nb::ndarray<const double, nb::ndim<2>, nb::device::cpu, nb::c_contig> ndarray_2d;
+typedef nb::ndarray<const uint32_t, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d_u32;
+typedef nb::ndarray<const float, nb::ndim<1>, nb::device::cpu, nb::c_contig> ndarray_1d_f32;
 
 typedef nb::ndarray<bool, nb::shape<>, nb::device::cpu, nb::c_contig> ndarray_scalar_bool_rw;
 typedef nb::ndarray<double, nb::shape<>, nb::device::cpu, nb::c_contig> ndarray_scalar_f64_rw;
@@ -36,6 +38,79 @@ auto with_context(ImPlotContext* ctx, Func&& func) {
     decltype(auto) result = func(); // Use decltype(auto) to preserve references
     ImPlot::SetCurrentContext(prev);
     return result;
+}
+
+struct PlotSpecWrapper {
+    ImPlotSpec spec;
+    nb::object line_colors = nb::none();
+    nb::object fill_colors = nb::none();
+    nb::object marker_sizes = nb::none();
+    nb::object marker_line_colors = nb::none();
+    nb::object marker_fill_colors = nb::none();
+};
+
+struct ResolvedPlotSpec {
+    ImPlotSpec spec;
+    std::optional<ndarray_1d_u32> line_colors;
+    std::optional<ndarray_1d_u32> fill_colors;
+    std::optional<ndarray_1d_f32> marker_sizes;
+    std::optional<ndarray_1d_u32> marker_line_colors;
+    std::optional<ndarray_1d_u32> marker_fill_colors;
+};
+
+static void validate_plot_spec_array_length(const char* name, size_t actual, int expected) {
+    if (expected >= 0 && (int) actual != expected) {
+        throw std::length_error(std::string("`spec.") + name + "` must have length " + std::to_string(expected));
+    }
+}
+
+template <typename T>
+static T cast_plot_spec_array(const nb::object& value, const char* name) {
+    try {
+        return nb::cast<T>(value);
+    } catch (const nb::cast_error&) {
+        std::string msg = std::string("`spec.") + name + "` must be a 1D contiguous NumPy array with a compatible dtype";
+        throw nb::type_error(msg.c_str());
+    }
+}
+
+static ResolvedPlotSpec resolve_plot_spec(const std::optional<PlotSpecWrapper>& spec_opt, int expected_count = -1) {
+    ResolvedPlotSpec resolved;
+    if (!spec_opt) {
+        resolved.spec = ImPlotSpec();
+        return resolved;
+    }
+
+    const PlotSpecWrapper& wrapper = spec_opt.value();
+    resolved.spec = wrapper.spec;
+
+    if (!wrapper.line_colors.is_none()) {
+        resolved.line_colors = cast_plot_spec_array<ndarray_1d_u32>(wrapper.line_colors, "line_colors");
+        validate_plot_spec_array_length("line_colors", resolved.line_colors->shape(0), expected_count);
+        resolved.spec.LineColors = reinterpret_cast<ImU32*>(const_cast<uint32_t*>(resolved.line_colors->data()));
+    }
+    if (!wrapper.fill_colors.is_none()) {
+        resolved.fill_colors = cast_plot_spec_array<ndarray_1d_u32>(wrapper.fill_colors, "fill_colors");
+        validate_plot_spec_array_length("fill_colors", resolved.fill_colors->shape(0), expected_count);
+        resolved.spec.FillColors = reinterpret_cast<ImU32*>(const_cast<uint32_t*>(resolved.fill_colors->data()));
+    }
+    if (!wrapper.marker_sizes.is_none()) {
+        resolved.marker_sizes = cast_plot_spec_array<ndarray_1d_f32>(wrapper.marker_sizes, "marker_sizes");
+        validate_plot_spec_array_length("marker_sizes", resolved.marker_sizes->shape(0), expected_count);
+        resolved.spec.MarkerSizes = const_cast<float*>(resolved.marker_sizes->data());
+    }
+    if (!wrapper.marker_line_colors.is_none()) {
+        resolved.marker_line_colors = cast_plot_spec_array<ndarray_1d_u32>(wrapper.marker_line_colors, "marker_line_colors");
+        validate_plot_spec_array_length("marker_line_colors", resolved.marker_line_colors->shape(0), expected_count);
+        resolved.spec.MarkerLineColors = reinterpret_cast<ImU32*>(const_cast<uint32_t*>(resolved.marker_line_colors->data()));
+    }
+    if (!wrapper.marker_fill_colors.is_none()) {
+        resolved.marker_fill_colors = cast_plot_spec_array<ndarray_1d_u32>(wrapper.marker_fill_colors, "marker_fill_colors");
+        validate_plot_spec_array_length("marker_fill_colors", resolved.marker_fill_colors->shape(0), expected_count);
+        resolved.spec.MarkerFillColors = reinterpret_cast<ImU32*>(const_cast<uint32_t*>(resolved.marker_fill_colors->data()));
+    }
+
+    return resolved;
 }
 
 void implot_bindings(nb::module_& m) {
@@ -65,11 +140,11 @@ void implot_bindings(nb::module_& m) {
             return (size_t)ImPlotCol_COUNT;
         });
 
-    nb::class_<ImPlotSpec>(m, "PlotSpec", "Per-item plot specification.")
+    nb::class_<PlotSpecWrapper>(m, "PlotSpec", "Per-item plot specification.")
         .def(nb::init<>())
         .def(
             "__init__",
-            [](ImPlotSpec *self,
+            [](PlotSpecWrapper *self,
                ImVec4 line_color,
                float line_weight,
                ImVec4 fill_color,
@@ -81,20 +156,30 @@ void implot_bindings(nb::module_& m) {
                float size,
                int offset,
                int stride,
-               ImPlotItemFlags flags) {
-                new (self) ImPlotSpec();
-                self->LineColor = line_color;
-                self->LineWeight = line_weight;
-                self->FillColor = fill_color;
-                self->FillAlpha = fill_alpha;
-                self->Marker = marker;
-                self->MarkerSize = marker_size;
-                self->MarkerLineColor = marker_line_color;
-                self->MarkerFillColor = marker_fill_color;
-                self->Size = size;
-                self->Offset = offset;
-                self->Stride = stride;
-                self->Flags = flags;
+               ImPlotItemFlags flags,
+               nb::object line_colors,
+               nb::object fill_colors,
+               nb::object marker_sizes,
+               nb::object marker_line_colors,
+               nb::object marker_fill_colors) {
+                new (self) PlotSpecWrapper();
+                self->spec.LineColor = line_color;
+                self->spec.LineWeight = line_weight;
+                self->spec.FillColor = fill_color;
+                self->spec.FillAlpha = fill_alpha;
+                self->spec.Marker = marker;
+                self->spec.MarkerSize = marker_size;
+                self->spec.MarkerLineColor = marker_line_color;
+                self->spec.MarkerFillColor = marker_fill_color;
+                self->spec.Size = size;
+                self->spec.Offset = offset;
+                self->spec.Stride = stride;
+                self->spec.Flags = flags;
+                self->line_colors = line_colors;
+                self->fill_colors = fill_colors;
+                self->marker_sizes = marker_sizes;
+                self->marker_line_colors = marker_line_colors;
+                self->marker_fill_colors = marker_fill_colors;
             },
             "line_color"_a.sig("AUTO_COL") = IMPLOT_AUTO_COL,
             "line_weight"_a = 1.0f,
@@ -107,63 +192,124 @@ void implot_bindings(nb::module_& m) {
             "size"_a = 4.0f,
             "offset"_a = 0,
             "stride"_a.sig("AUTO") = IMPLOT_AUTO,
-            "flags"_a.sig("ItemFlags.NONE") = ImPlotItemFlags_None
+            "flags"_a.sig("ItemFlags.NONE") = ImPlotItemFlags_None,
+            "line_colors"_a.none() = nb::none(),
+            "fill_colors"_a.none() = nb::none(),
+            "marker_sizes"_a.none() = nb::none(),
+            "marker_line_colors"_a.none() = nb::none(),
+            "marker_fill_colors"_a.none() = nb::none()
         )
-        .def_rw(
+        .def_prop_rw(
             "line_color",
-            &ImPlotSpec::LineColor,
+            [](const PlotSpecWrapper& self) { return self.spec.LineColor; },
+            [](PlotSpecWrapper& self, ImVec4 value) { self.spec.LineColor = value; },
             "Line color. `AUTO_COL` uses the next colormap color or the current item color."
         )
-        .def_rw(
+        .def_prop_rw(
             "line_weight",
-            &ImPlotSpec::LineWeight,
+            [](const PlotSpecWrapper& self) { return self.spec.LineWeight; },
+            [](PlotSpecWrapper& self, float value) { self.spec.LineWeight = value; },
             "Line weight in pixels. Applies to lines, bar edges, and marker edges."
         )
-        .def_rw(
+        .def_prop_rw(
             "fill_color",
-            &ImPlotSpec::FillColor,
+            [](const PlotSpecWrapper& self) { return self.spec.FillColor; },
+            [](PlotSpecWrapper& self, ImVec4 value) { self.spec.FillColor = value; },
             "Fill color. `AUTO_COL` uses the next colormap color or the current item color."
         )
-        .def_rw(
+        .def_prop_rw(
             "fill_alpha",
-            &ImPlotSpec::FillAlpha,
+            [](const PlotSpecWrapper& self) { return self.spec.FillAlpha; },
+            [](PlotSpecWrapper& self, float value) { self.spec.FillAlpha = value; },
             "Alpha multiplier for `fill_color` and `marker_fill_color`."
         )
-        .def_rw(
+        .def_prop_rw(
             "marker",
-            &ImPlotSpec::Marker,
+            [](const PlotSpecWrapper& self) { return self.spec.Marker; },
+            [](PlotSpecWrapper& self, ImPlotMarker value) { self.spec.Marker = value; },
             "Marker type. Use `Marker.AUTO` to use the next unused marker."
         )
-        .def_rw(
+        .def_prop_rw(
             "marker_size",
-            &ImPlotSpec::MarkerSize,
+            [](const PlotSpecWrapper& self) { return self.spec.MarkerSize; },
+            [](PlotSpecWrapper& self, float value) { self.spec.MarkerSize = value; },
             "Marker size, as a radius in pixels."
         )
-        .def_rw(
+        .def_prop_rw(
             "marker_line_color",
-            &ImPlotSpec::MarkerLineColor,
+            [](const PlotSpecWrapper& self) { return self.spec.MarkerLineColor; },
+            [](PlotSpecWrapper& self, ImVec4 value) { self.spec.MarkerLineColor = value; },
             "Marker edge color. `AUTO_COL` uses `line_color`."
         )
-        .def_rw(
+        .def_prop_rw(
             "marker_fill_color",
-            &ImPlotSpec::MarkerFillColor,
+            [](const PlotSpecWrapper& self) { return self.spec.MarkerFillColor; },
+            [](PlotSpecWrapper& self, ImVec4 value) { self.spec.MarkerFillColor = value; },
             "Marker face color. `AUTO_COL` uses `line_color`."
         )
-        .def_rw(
+        .def_prop_rw(
             "size",
-            &ImPlotSpec::Size,
+            [](const PlotSpecWrapper& self) { return self.spec.Size; },
+            [](PlotSpecWrapper& self, float value) { self.spec.Size = value; },
             "Size in pixels for error bar whiskers or digital bar height."
         )
-        .def_rw("offset", &ImPlotSpec::Offset, "Data index offset.")
-        .def_rw(
+        .def_prop_rw(
+            "offset",
+            [](const PlotSpecWrapper& self) { return self.spec.Offset; },
+            [](PlotSpecWrapper& self, int value) { self.spec.Offset = value; },
+            "Data index offset."
+        )
+        .def_prop_rw(
             "stride",
-            &ImPlotSpec::Stride,
+            [](const PlotSpecWrapper& self) { return self.spec.Stride; },
+            [](PlotSpecWrapper& self, int value) { self.spec.Stride = value; },
             "Data stride in bytes. `AUTO` uses `sizeof(T)` for the plotted data type."
         )
-        .def_rw(
+        .def_prop_rw(
             "flags",
-            &ImPlotSpec::Flags,
+            [](const PlotSpecWrapper& self) { return self.spec.Flags; },
+            [](PlotSpecWrapper& self, ImPlotItemFlags value) { self.spec.Flags = value; },
             "Optional item flags. Combine common `ItemFlags` with specialized plot flags."
+        )
+        .def_prop_rw(
+            "line_colors",
+            [](const PlotSpecWrapper& self) { return self.line_colors; },
+            [](PlotSpecWrapper& self, nb::object value) { self.line_colors = std::move(value); },
+            "Array of packed colors for each line. If `None`, use `line_color` for all lines."
+            ,
+            nb::arg("value").none()
+        )
+        .def_prop_rw(
+            "fill_colors",
+            [](const PlotSpecWrapper& self) { return self.fill_colors; },
+            [](PlotSpecWrapper& self, nb::object value) { self.fill_colors = std::move(value); },
+            "Array of packed colors for each fill. If `None`, use `fill_color` for all fills."
+            ,
+            nb::arg("value").none()
+        )
+        .def_prop_rw(
+            "marker_sizes",
+            [](const PlotSpecWrapper& self) { return self.marker_sizes; },
+            [](PlotSpecWrapper& self, nb::object value) { self.marker_sizes = std::move(value); },
+            "Array of sizes for each marker. If `None`, use `marker_size` for all markers."
+            ,
+            nb::arg("value").none()
+        )
+        .def_prop_rw(
+            "marker_line_colors",
+            [](const PlotSpecWrapper& self) { return self.marker_line_colors; },
+            [](PlotSpecWrapper& self, nb::object value) { self.marker_line_colors = std::move(value); },
+            "Array of packed colors for each marker edge. If `None`, use `marker_line_color` for all markers."
+            ,
+            nb::arg("value").none()
+        )
+        .def_prop_rw(
+            "marker_fill_colors",
+            [](const PlotSpecWrapper& self) { return self.marker_fill_colors; },
+            [](PlotSpecWrapper& self, nb::object value) { self.marker_fill_colors = std::move(value); },
+            "Array of packed colors for each marker face. If `None`, use `marker_fill_color` for all markers."
+            ,
+            nb::arg("value").none()
         );
 
     nb::class_<ImPlotStyle>(m, "Style", "Plot style structure")
@@ -272,118 +418,138 @@ void implot_bindings(nb::module_& m) {
 
     // PlotLine functions
     const char* line_docstring = "Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.";
-    m.def("plot_line", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotLine(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), spec.value_or(ImPlotSpec()));
+    m.def("plot_line", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, xs.shape(0));
+        ImPlot::PlotLine(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "spec"_a.none() = nb::none(), line_docstring);
     const char* line_docstring2 = "Plots a standard 2D line plot. The x values are spaced evenly along the x axis, starting at `xstart` and spaced by `xscale`. The y values are taken from the `values` array.";
-    m.def("plot_line", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotLine(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, spec.value_or(ImPlotSpec()));
+    m.def("plot_line", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, values.shape(0));
+        ImPlot::PlotLine(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, resolved.spec);
     }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "spec"_a.none() = nb::none(), line_docstring2);
 
     // PlotScatter functions
     const char* scatter_docstring = "Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`.";
-    m.def("plot_scatter", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotScatter(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), spec.value_or(ImPlotSpec()));
+    m.def("plot_scatter", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, xs.shape(0));
+        ImPlot::PlotScatter(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "spec"_a.none() = nb::none(), scatter_docstring);
-    m.def("plot_scatter", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotScatter(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, spec.value_or(ImPlotSpec()));
+    m.def("plot_scatter", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, values.shape(0));
+        ImPlot::PlotScatter(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, resolved.spec);
     }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "spec"_a.none() = nb::none(), scatter_docstring);
 
     // PlotStairs functions
     const char stairs_docstring[] = "Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`";
-    m.def("plot_stairs", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotStairs(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), spec.value_or(ImPlotSpec()));
+    m.def("plot_stairs", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, xs.shape(0));
+        ImPlot::PlotStairs(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "spec"_a.none() = nb::none(), stairs_docstring);
-    m.def("plot_stairs", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotStairs(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, spec.value_or(ImPlotSpec()));
+    m.def("plot_stairs", [](const char* label_id, ndarray_1d& values, double xscale, double xstart, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, values.shape(0));
+        ImPlot::PlotStairs(label_id, (const double*)values.data(), values.shape(0), xscale, xstart, resolved.spec);
     }, "label_id"_a, "values"_a, "xscale"_a = 1.0, "xstart"_a = 0.0, "spec"_a.none() = nb::none(), stairs_docstring);
 
     // PlotShaded functions
     const char shaded_docstring[] = "Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.";
-    m.def("plot_shaded", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys1, ndarray_1d& ys2, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotShaded(label_id, (const double*)xs.data(), (const double*)ys1.data(), (const double*)ys2.data(), xs.shape(0), spec.value_or(ImPlotSpec()));
+    m.def("plot_shaded", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys1, ndarray_1d& ys2, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, xs.shape(0));
+        ImPlot::PlotShaded(label_id, (const double*)xs.data(), (const double*)ys1.data(), (const double*)ys2.data(), xs.shape(0), resolved.spec);
     }, "label_id"_a, "xs"_a, "ys1"_a, "ys2"_a, "spec"_a.none() = nb::none(), shaded_docstring);
-    m.def("plot_shaded", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double yref, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotShaded(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), yref, spec.value_or(ImPlotSpec()));
+    m.def("plot_shaded", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double yref, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, xs.shape(0));
+        ImPlot::PlotShaded(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), yref, resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "yref"_a = 0, "spec"_a.none() = nb::none(), shaded_docstring);
-    m.def("plot_shaded", [](const char* label_id, ndarray_1d& values, double yref, double xscale, double xstart, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotShaded(label_id, (const double*)values.data(), values.shape(0), yref, xscale, xstart, spec.value_or(ImPlotSpec()));
+    m.def("plot_shaded", [](const char* label_id, ndarray_1d& values, double yref, double xscale, double xstart, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, values.shape(0));
+        ImPlot::PlotShaded(label_id, (const double*)values.data(), values.shape(0), yref, xscale, xstart, resolved.spec);
     }, "label_id"_a, "values"_a, "yref"_a = 0, "xscale"_a = 1.0, "xstart"_a = 0.0, "spec"_a.none() = nb::none(), shaded_docstring);
 
     // Plots a bar graph. Vertical by default. #bar_size and #shift are in plot units.
     const char bars_docstring[] = "Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.";
-    m.def("plot_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double bar_size, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotBars(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), bar_size, spec.value_or(ImPlotSpec()));
+    m.def("plot_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double bar_size, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, xs.shape(0));
+        ImPlot::PlotBars(label_id, (const double*)xs.data(), (const double*)ys.data(), xs.shape(0), bar_size, resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "bar_size"_a, "spec"_a.none() = nb::none(), bars_docstring);
-    m.def("plot_bars", [](const char* label_id, ndarray_1d& values, double bar_size, double shift, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotBars(label_id, (const double*)values.data(), values.shape(0), bar_size, shift, spec.value_or(ImPlotSpec()));
+    m.def("plot_bars", [](const char* label_id, ndarray_1d& values, double bar_size, double shift, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, values.shape(0));
+        ImPlot::PlotBars(label_id, (const double*)values.data(), values.shape(0), bar_size, shift, resolved.spec);
     }, "label_id"_a, "values"_a, "bar_size"_a = 0.67, "shift"_a = 0.0, "spec"_a.none() = nb::none(), bars_docstring);
 
     // Plots a group of bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements.
     const char bar_groups_docstring[] = "Plots a group of bars. `values` is a matrix with a shape `(item_count, group_count)`. `label_ids` should have `item_count` elements.";
-    m.def("plot_bar_groups", [](std::vector<const char*> label_ids, ndarray_2d& values, double group_size, double shift, std::optional<ImPlotSpec> spec) {
+    m.def("plot_bar_groups", [](std::vector<const char*> label_ids, ndarray_2d& values, double group_size, double shift, std::optional<PlotSpecWrapper> spec) {
         int item_count = values.shape(0);
         int group_count = values.shape(1);
+        auto resolved = resolve_plot_spec(spec, item_count * group_count);
         if (label_ids.size() != item_count) {
             throw std::length_error("`label_ids` must be same the length as `values.shape(0)`");
         }
-        ImPlot::PlotBarGroups(label_ids.data(), (const double*)values.data(), item_count, group_count, group_size, shift, spec.value_or(ImPlotSpec()));
+        ImPlot::PlotBarGroups(label_ids.data(), (const double*)values.data(), item_count, group_count, group_size, shift, resolved.spec);
     }, "label_ids"_a, "values"_a, "group_size"_a = 0.67, "shift"_a = 0.0, "spec"_a.none() = nb::none(), bar_groups_docstring);
 
     // Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
     const char error_bars_docstring[] = "Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.";
-    m.def("plot_error_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ndarray_1d& err, std::optional<ImPlotSpec> spec) {
+    m.def("plot_error_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ndarray_1d& err, std::optional<PlotSpecWrapper> spec) {
         int count = xs.shape(0);
+        auto resolved = resolve_plot_spec(spec, count);
         if (count != ys.shape(0) || count != err.shape(0)) {
             throw std::length_error("`xs`, `ys` and `err` must all be same length");
         }
-        ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)err.data(), count, spec.value_or(ImPlotSpec()));
+        ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)err.data(), count, resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "err"_a, "spec"_a.none() = nb::none(), error_bars_docstring);
-    m.def("plot_error_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ndarray_1d& neg, ndarray_1d& pos, std::optional<ImPlotSpec> spec) {
+    m.def("plot_error_bars", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, ndarray_1d& neg, ndarray_1d& pos, std::optional<PlotSpecWrapper> spec) {
         int count = xs.shape(0);
+        auto resolved = resolve_plot_spec(spec, count);
         if (count != ys.shape(0) || count != neg.shape(0) || count != pos.shape(0)) {
             throw std::length_error("`xs`, `ys`, `neg`, and `pos` must all be same length");
         }
-        ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)neg.data(), (const double*)pos.data(), count, spec.value_or(ImPlotSpec()));
+        ImPlot::PlotErrorBars(label_id, (const double*)xs.data(), (const double*)ys.data(), (const double*)neg.data(), (const double*)pos.data(), count, resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "neg"_a, "pos"_a, "spec"_a.none() = nb::none(), error_bars_docstring);
 
     const char plot_stems_docstring[] = "Plots stems. Vertical by default.";
-    m.def("plot_stems", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double ref, std::optional<ImPlotSpec> spec) {
+    m.def("plot_stems", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, double ref, std::optional<PlotSpecWrapper> spec) {
         int count = xs.shape(0);
+        auto resolved = resolve_plot_spec(spec, count);
         if (count != ys.shape(0)) {
             throw std::length_error("`xs` and `ys` must be the same length");
         }
-        ImPlot::PlotStems(label_id, (const double*)xs.data(), (const double*)ys.data(), count, ref, spec.value_or(ImPlotSpec()));
+        ImPlot::PlotStems(label_id, (const double*)xs.data(), (const double*)ys.data(), count, ref, resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "ref"_a = 0.0, "spec"_a.none() = nb::none(), plot_stems_docstring);
-    m.def("plot_stems", [](const char* label_id, ndarray_1d& values, double ref, double scale, double start, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotStems(label_id, (const double*)values.data(), values.shape(0), ref, scale, start, spec.value_or(ImPlotSpec()));
+    m.def("plot_stems", [](const char* label_id, ndarray_1d& values, double ref, double scale, double start, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, values.shape(0));
+        ImPlot::PlotStems(label_id, (const double*)values.data(), values.shape(0), ref, scale, start, resolved.spec);
     }, "label_id"_a, "values"_a, "ref"_a = 0.0, "scale"_a = 1.0, "start"_a = 0.0, "spec"_a.none() = nb::none());
 
     const char inf_lines_docstring[] = "Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).";
-    m.def("plot_inf_lines", [](const char* label_id, ndarray_1d& values, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotInfLines(label_id, (const double*)values.data(), values.shape(0), spec.value_or(ImPlotSpec()));
+    m.def("plot_inf_lines", [](const char* label_id, ndarray_1d& values, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec, values.shape(0));
+        ImPlot::PlotInfLines(label_id, (const double*)values.data(), values.shape(0), resolved.spec);
     }, "label_id"_a, "values"_a, "spec"_a.none() = nb::none(), inf_lines_docstring);
 
     // Plots a 2D heatmap chart. Values are expected to be in row-major order by default. Leave #scale_min and scale_max both at 0 for automatic color scaling, or set them to a predefined range. #label_fmt can be set to nullptr for no labels.
     const char heatmap_docstring[] = "Plots a 2D heatmap chart. `values` is expected to have shape (rows, cols). Leave `scale_min` and `scale_max` both at 0 for automatic color scaling, or set them to a predefined range. `label_fmt` can be set to `None` for no labels.";
-    m.def("plot_heatmap", [](const char* label_id, ndarray_2d& values, double scale_min, double scale_max, std::optional<const char*> label_fmt, ImPlotPoint bounds_min, ImPlotPoint bounds_max, std::optional<ImPlotSpec> spec) {
-        ImPlot::PlotHeatmap(label_id, (const double*)values.data(), values.shape(0), values.shape(1), scale_min, scale_max, label_fmt ? label_fmt.value() : nullptr, bounds_min, bounds_max, spec.value_or(ImPlotSpec()));
+    m.def("plot_heatmap", [](const char* label_id, ndarray_2d& values, double scale_min, double scale_max, std::optional<const char*> label_fmt, ImPlotPoint bounds_min, ImPlotPoint bounds_max, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec);
+        ImPlot::PlotHeatmap(label_id, (const double*)values.data(), values.shape(0), values.shape(1), scale_min, scale_max, label_fmt ? label_fmt.value() : nullptr, bounds_min, bounds_max, resolved.spec);
     }, "label_id"_a, "values"_a, "scale_min"_a = 0, "scale_max"_a = 0.0, "label_fmt"_a.none() = "%.1f", "bounds_min"_a = ImPlotPoint(0,0), "bounds_max"_a = ImPlotPoint(1,1), "spec"_a.none() = nb::none(), 
     heatmap_docstring);
 
 
     const char histogram_docstring[] = "Plots a horizontal histogram. `bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `values` will be used as the range.  Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.";
-    m.def("plot_histogram", [](const char* label_id, const ndarray_1d& values, std::variant<int, ImPlotBin_> bins, double bar_scale, std::optional<std::tuple<double, double>> range, std::optional<ImPlotSpec> spec) {
+    m.def("plot_histogram", [](const char* label_id, const ndarray_1d& values, std::variant<int, ImPlotBin_> bins, double bar_scale, std::optional<std::tuple<double, double>> range, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec);
         ImPlotRange r = ImPlotRange();
         if (range) {
             r.Min = std::get<0>(*range);
             r.Max = std::get<1>(*range);
         }
-        return ImPlot::PlotHistogram(label_id, values.data(), values.shape(0), variant_to_int(bins), bar_scale, r, spec.value_or(ImPlotSpec()));
+        return ImPlot::PlotHistogram(label_id, values.data(), values.shape(0), variant_to_int(bins), bar_scale, r, resolved.spec);
     }, "label_id"_a, "values"_a, "bins"_a = ImPlotBin_Sturges, "bar_scale"_a = 1.0, "range"_a.none() = nb::none(), "spec"_a.none() = nb::none(), histogram_docstring);
 
     const char histogram2d_docstring[] = "Plots two dimensional, bivariate histogram as a heatmap. `x_bins` and `y_bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `xs` an `ys` will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.";
-    m.def("plot_histogram2d", [](const char* label_id, const ndarray_1d& xs, const ndarray_1d& ys, std::variant<int, ImPlotBin_> x_bins, std::variant<int, ImPlotBin_> y_bins, std::optional<std::tuple<std::tuple<double, double>, std::tuple<double, double>>> range, std::optional<ImPlotSpec> spec) {
+    m.def("plot_histogram2d", [](const char* label_id, const ndarray_1d& xs, const ndarray_1d& ys, std::variant<int, ImPlotBin_> x_bins, std::variant<int, ImPlotBin_> y_bins, std::optional<std::tuple<std::tuple<double, double>, std::tuple<double, double>>> range, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec);
         int count = xs.shape(0);
         if (count != ys.shape(0)) {
             throw std::length_error("`xs` and `ys` must be the same length");
@@ -397,22 +563,24 @@ void implot_bindings(nb::module_& m) {
             ranges.Y.Min = std::get<0>(ry);
             ranges.Y.Max = std::get<1>(ry);
         }
-        return ImPlot::PlotHistogram2D(label_id, xs.data(), ys.data(), count, variant_to_int(x_bins), variant_to_int(y_bins), ranges, spec.value_or(ImPlotSpec()));
+        return ImPlot::PlotHistogram2D(label_id, xs.data(), ys.data(), count, variant_to_int(x_bins), variant_to_int(y_bins), ranges, resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "x_bins"_a = ImPlotBin_Sturges, "y_bins"_a = ImPlotBin_Sturges, "range"_a.none() = nb::none(), "spec"_a.none() = nb::none(), histogram2d_docstring);
 
     // Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
     const char plot_digital_docstring[] = "Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.";
-    m.def("plot_digital", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<ImPlotSpec> spec) {
+    m.def("plot_digital", [](const char* label_id, ndarray_1d& xs, ndarray_1d& ys, std::optional<PlotSpecWrapper> spec) {
         int count = xs.shape(0);
+        auto resolved = resolve_plot_spec(spec, count);
         if (count != ys.shape(0)) {
             throw std::length_error("`xs` and `ys` must be the same length");
         }
-        ImPlot::PlotDigital(label_id, (const double*)xs.data(), (const double*)ys.data(), count, spec.value_or(ImPlotSpec()));
+        ImPlot::PlotDigital(label_id, (const double*)xs.data(), (const double*)ys.data(), count, resolved.spec);
     }, "label_id"_a, "xs"_a, "ys"_a, "spec"_a.none() = nb::none(), plot_digital_docstring);
 
-    m.def("plot_image", [](const char *label_id, TextureRefOrID tex_ref, ImPlotPoint bounds_min, ImPlotPoint bounds_max, ImVec2 uv0, ImVec2 uv1, ImVec4 tint_col, std::optional<ImPlotSpec> spec) {
+    m.def("plot_image", [](const char *label_id, TextureRefOrID tex_ref, ImPlotPoint bounds_min, ImPlotPoint bounds_max, ImVec2 uv0, ImVec2 uv1, ImVec4 tint_col, std::optional<PlotSpecWrapper> spec) {
+        auto resolved = resolve_plot_spec(spec);
         ImPlot::PlotImage(label_id, to_texture_ref(tex_ref), bounds_min, bounds_max, uv0, uv1,
-                          tint_col, spec.value_or(ImPlotSpec()));
+                          tint_col, resolved.spec);
         },
         "label_id"_a, "tex_ref"_a, "bounds_min"_a, "bounds_max"_a,
         "uv0"_a.sig("(0,0)") = ImVec2(0, 0), "uv1"_a.sig("(1,1)") = ImVec2(1, 1),

@@ -4,6 +4,7 @@ from .implot import (
     plot_bars_basic,
     plot_line_basic,
     plot_line_values_only,
+    plot_spec_marker_color_arrays,
     plot_scatter_basic,
 )
 from .layout import (
@@ -30,6 +31,7 @@ __all__ += [
     "plot_bars_basic",
     "plot_bar_groups_basic",
     "plot_scatter_basic",
+    "plot_spec_marker_color_arrays",
 ]
 __all__ += [
     "layout_master_detail_tabs",

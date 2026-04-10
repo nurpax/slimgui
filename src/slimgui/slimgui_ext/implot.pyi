@@ -847,7 +847,7 @@ class PlotSpec:
     def __init__(self) -> None: ...
 
     @overload
-    def __init__(self, line_color: tuple[float, float, float, float] = AUTO_COL, line_weight: float = 1.0, fill_color: tuple[float, float, float, float] = AUTO_COL, fill_alpha: float = 1.0, marker: int = Marker.NONE, marker_size: float = 4.0, marker_line_color: tuple[float, float, float, float] = AUTO_COL, marker_fill_color: tuple[float, float, float, float] = AUTO_COL, size: float = 4.0, offset: int = 0, stride: int = AUTO, flags: int = ItemFlags.NONE) -> None: ...
+    def __init__(self, line_color: tuple[float, float, float, float] = AUTO_COL, line_weight: float = 1.0, fill_color: tuple[float, float, float, float] = AUTO_COL, fill_alpha: float = 1.0, marker: int = Marker.NONE, marker_size: float = 4.0, marker_line_color: tuple[float, float, float, float] = AUTO_COL, marker_fill_color: tuple[float, float, float, float] = AUTO_COL, size: float = 4.0, offset: int = 0, stride: int = AUTO, flags: int = ItemFlags.NONE, line_colors: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None = None, fill_colors: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None = None, marker_sizes: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None = None, marker_line_colors: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None = None, marker_fill_colors: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None = None) -> None: ...
 
     @property
     def line_color(self) -> tuple[float, float, float, float]:
@@ -940,6 +940,51 @@ class PlotSpec:
 
     @flags.setter
     def flags(self, arg: int, /) -> None: ...
+
+    @property
+    def line_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
+        """
+        Array of packed colors for each line. If `None`, use `line_color` for all lines.
+        """
+
+    @line_colors.setter
+    def line_colors(self, value: object | None) -> None: ...
+
+    @property
+    def fill_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
+        """
+        Array of packed colors for each fill. If `None`, use `fill_color` for all fills.
+        """
+
+    @fill_colors.setter
+    def fill_colors(self, value: object | None) -> None: ...
+
+    @property
+    def marker_sizes(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
+        """
+        Array of sizes for each marker. If `None`, use `marker_size` for all markers.
+        """
+
+    @marker_sizes.setter
+    def marker_sizes(self, value: object | None) -> None: ...
+
+    @property
+    def marker_line_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
+        """
+        Array of packed colors for each marker edge. If `None`, use `marker_line_color` for all markers.
+        """
+
+    @marker_line_colors.setter
+    def marker_line_colors(self, value: object | None) -> None: ...
+
+    @property
+    def marker_fill_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
+        """
+        Array of packed colors for each marker face. If `None`, use `marker_fill_color` for all markers.
+        """
+
+    @marker_fill_colors.setter
+    def marker_fill_colors(self, value: object | None) -> None: ...
 
 class Style:
     """Plot style structure"""

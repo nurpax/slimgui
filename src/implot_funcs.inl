@@ -153,8 +153,8 @@ m.def(
 m.def(
     "plot_text",
     [](const char *text, double x, double y, ImVec2 pix_offset,
-       std::optional<ImPlotSpec> spec) {
-      ImPlot::PlotText(text, x, y, pix_offset, spec.value_or(ImPlotSpec()));
+       std::optional<PlotSpecWrapper> spec) {
+      ImPlot::PlotText(text, x, y, pix_offset, resolve_plot_spec(spec).spec);
     },
     "text"_a, "x"_a, "y"_a, "pix_offset"_a.sig("(0,0)") = ImVec2(0, 0),
     "spec"_a.sig("None") = nb::none(),
@@ -163,8 +163,8 @@ m.def(
     "...)`.\n");
 m.def(
     "plot_dummy",
-    [](const char *label_id, std::optional<ImPlotSpec> spec) {
-      ImPlot::PlotDummy(label_id, spec.value_or(ImPlotSpec()));
+    [](const char *label_id, std::optional<PlotSpecWrapper> spec) {
+      ImPlot::PlotDummy(label_id, resolve_plot_spec(spec).spec);
     },
     "label_id"_a, "spec"_a.sig("None") = nb::none(),
     "Plots a dummy item (i.e. adds a legend entry colored by `Col.LINE`).\n");
