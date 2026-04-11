@@ -944,7 +944,7 @@ class PlotSpec:
     @property
     def line_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
         """
-        Array of packed colors for each line. If `None`, use `line_color` for all lines.
+        1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per line segment. If `None`, use `line_color` for all lines.
         """
 
     @line_colors.setter
@@ -953,7 +953,7 @@ class PlotSpec:
     @property
     def fill_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
         """
-        Array of packed colors for each fill. If `None`, use `fill_color` for all fills.
+        1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per filled segment. If `None`, use `fill_color` for all fills.
         """
 
     @fill_colors.setter
@@ -962,7 +962,7 @@ class PlotSpec:
     @property
     def marker_sizes(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
         """
-        Array of sizes for each marker. If `None`, use `marker_size` for all markers.
+        1-dimensional NumPy array of marker sizes, dtype `numpy.float32`, one value per marker. If `None`, use `marker_size` for all markers.
         """
 
     @marker_sizes.setter
@@ -971,7 +971,7 @@ class PlotSpec:
     @property
     def marker_line_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
         """
-        Array of packed colors for each marker edge. If `None`, use `marker_line_color` for all markers.
+        1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker edge. If `None`, use `marker_line_color` for all markers.
         """
 
     @marker_line_colors.setter
@@ -980,7 +980,7 @@ class PlotSpec:
     @property
     def marker_fill_colors(self) -> Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)] | None:
         """
-        Array of packed colors for each marker face. If `None`, use `marker_fill_color` for all markers.
+        1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker face. If `None`, use `marker_fill_color` for all markers.
         """
 
     @marker_fill_colors.setter

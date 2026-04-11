@@ -275,7 +275,7 @@ void implot_bindings(nb::module_& m) {
             "line_colors",
             [](const PlotSpecWrapper& self) { return self.line_colors; },
             [](PlotSpecWrapper& self, nb::object value) { self.line_colors = std::move(value); },
-            "Array of packed colors for each line. If `None`, use `line_color` for all lines."
+            "1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per line segment. If `None`, use `line_color` for all lines."
             ,
             nb::arg("value").none()
         )
@@ -283,7 +283,7 @@ void implot_bindings(nb::module_& m) {
             "fill_colors",
             [](const PlotSpecWrapper& self) { return self.fill_colors; },
             [](PlotSpecWrapper& self, nb::object value) { self.fill_colors = std::move(value); },
-            "Array of packed colors for each fill. If `None`, use `fill_color` for all fills."
+            "1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per filled segment. If `None`, use `fill_color` for all fills."
             ,
             nb::arg("value").none()
         )
@@ -291,7 +291,7 @@ void implot_bindings(nb::module_& m) {
             "marker_sizes",
             [](const PlotSpecWrapper& self) { return self.marker_sizes; },
             [](PlotSpecWrapper& self, nb::object value) { self.marker_sizes = std::move(value); },
-            "Array of sizes for each marker. If `None`, use `marker_size` for all markers."
+            "1-dimensional NumPy array of marker sizes, dtype `numpy.float32`, one value per marker. If `None`, use `marker_size` for all markers."
             ,
             nb::arg("value").none()
         )
@@ -299,7 +299,7 @@ void implot_bindings(nb::module_& m) {
             "marker_line_colors",
             [](const PlotSpecWrapper& self) { return self.marker_line_colors; },
             [](PlotSpecWrapper& self, nb::object value) { self.marker_line_colors = std::move(value); },
-            "Array of packed colors for each marker edge. If `None`, use `marker_line_color` for all markers."
+            "1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker edge. If `None`, use `marker_line_color` for all markers."
             ,
             nb::arg("value").none()
         )
@@ -307,7 +307,7 @@ void implot_bindings(nb::module_& m) {
             "marker_fill_colors",
             [](const PlotSpecWrapper& self) { return self.marker_fill_colors; },
             [](PlotSpecWrapper& self, nb::object value) { self.marker_fill_colors = std::move(value); },
-            "Array of packed colors for each marker face. If `None`, use `marker_fill_color` for all markers."
+            "1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker face. If `None`, use `marker_fill_color` for all markers."
             ,
             nb::arg("value").none()
         );

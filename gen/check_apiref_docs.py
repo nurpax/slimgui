@@ -141,6 +141,31 @@ def _split_top_level_commas(value: str) -> list[str]:
     return parts
 
 
+def _find_matching_paren(value: str, open_index: int) -> int:
+    depth = 0
+    for index in range(open_index, len(value)):
+        ch = value[index]
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+            if depth == 0:
+                return index
+    return -1
+
+
+def _split_top_level_once(value: str, sep: str) -> tuple[str, str] | None:
+    depth = 0
+    for index, ch in enumerate(value):
+        if ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+        elif ch == sep and depth == 0:
+            return value[:index], value[index + 1 :]
+    return None
+
+
 def _format_signature(sig: str) -> str:
     open_paren = sig.find("(")
     close_paren = sig.rfind(")")
@@ -686,13 +711,20 @@ def _render_enum_block(name: str, enum_doc: EnumDoc) -> str:
 
 def _property_type_from_signature(sig: str) -> str:
     sig = _clean_sig(sig)
-    match = re.match(r"def\s+[A-Za-z_][A-Za-z0-9_]*\s*\(.*\)\s*(.*)$", sig)
-    if not match:
+    open_paren = sig.find("(")
+    if open_paren == -1:
         return "Any"
-    suffix = match.group(1).strip()
+    close_paren = _find_matching_paren(sig, open_paren)
+    if close_paren == -1:
+        return "Any"
+    suffix = sig[close_paren + 1 :].strip()
     if suffix.startswith("->"):
-        return suffix[2:].strip()
+        return _display_type(suffix[2:].strip())
     return "Any"
+
+
+def _display_type(prop_type: str) -> str:
+    return re.sub(r"Annotated\[(NDArray\[[^\]]+\]),\s*dict\([^\]]+\)\]", r"\1", prop_type)
 
 
 def _constructor_defaults(class_doc: ClassDoc) -> dict[str, str]:
@@ -715,10 +747,14 @@ def _constructor_defaults(class_doc: ClassDoc) -> dict[str, str]:
 
     defaults: dict[str, str] = {}
     for param in _split_top_level_commas(sig[open_paren + 1:close_paren]):
-        if not param or param in {"self", "/", "*"} or "=" not in param:
+        if not param or param in {"self", "/", "*"}:
             continue
-        lhs, rhs = param.split("=", 1)
-        name = lhs.split(":", 1)[0].strip()
+        split = _split_top_level_once(param, "=")
+        if split is None:
+            continue
+        lhs, rhs = split
+        name_split = _split_top_level_once(lhs, ":")
+        name = (name_split[0] if name_split else lhs).strip()
         default = rhs.strip()
         if name and default:
             defaults[name] = default
@@ -741,7 +777,7 @@ def _render_class_properties_block(class_name: str, class_doc: ClassDoc) -> str:
             "| --- | --- | --- |",
         ]
     for name, func in class_doc.properties.items():
-        prop_type = _property_type_from_signature(func.signatures[0])
+        prop_type = _property_type_from_signature(func.signatures[0]).replace("|", "\\|")
         description = (_normalize_docstring(func.docstring) or "").replace("|", "\\|")
         if include_defaults:
             default = constructor_defaults.get(name, "").replace("|", "\\|")

@@ -1993,11 +1993,11 @@ fields you want to override.
 | `offset` | `int` | `0` | Data index offset. |
 | `stride` | `int` | `AUTO` | Data stride in bytes. `AUTO` uses `sizeof(T)` for the plotted data type. |
 | `flags` | `int` | `ItemFlags.NONE` | Optional item flags. Combine common `ItemFlags` with specialized plot flags. |
-| `line_colors` | `Any` | `(None,), order='C', device='cpu', writable=False)] \| None = None` | Array of packed colors for each line. If `None`, use `line_color` for all lines. |
-| `fill_colors` | `Any` | `(None,), order='C', device='cpu', writable=False)] \| None = None` | Array of packed colors for each fill. If `None`, use `fill_color` for all fills. |
-| `marker_sizes` | `Any` | `(None,), order='C', device='cpu', writable=False)] \| None = None` | Array of sizes for each marker. If `None`, use `marker_size` for all markers. |
-| `marker_line_colors` | `Any` | `(None,), order='C', device='cpu', writable=False)] \| None = None` | Array of packed colors for each marker edge. If `None`, use `marker_line_color` for all markers. |
-| `marker_fill_colors` | `Any` | `(None,), order='C', device='cpu', writable=False)] \| None = None` | Array of packed colors for each marker face. If `None`, use `marker_fill_color` for all markers. |
+| `line_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per line segment. If `None`, use `line_color` for all lines. |
+| `fill_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per filled segment. If `None`, use `fill_color` for all fills. |
+| `marker_sizes` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of marker sizes, dtype `numpy.float32`, one value per marker. If `None`, use `marker_size` for all markers. |
+| `marker_line_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker edge. If `None`, use `marker_line_color` for all markers. |
+| `marker_fill_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker face. If `None`, use `marker_fill_color` for all markers. |
 :::
 
 ### Class: Style
