@@ -1,6 +1,76 @@
 import { defineConfig } from 'vitepress'
 import Token from 'markdown-it/lib/token.mjs'
 import llmstxt from 'vitepress-plugin-llms'
+import type { Plugin } from 'vite'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+
+function extractOrderedLlmsTxtUrls(content: string) {
+	const urls: string[] = []
+	const seen = new Set<string>()
+	for (const match of content.matchAll(/\[[^\]]+\]\(([^)]+\.md)\)/g)) {
+		const url = match[1]
+		if (!seen.has(url)) {
+			urls.push(url)
+			seen.add(url)
+		}
+	}
+	return urls
+}
+
+function splitLlmsFullBlocks(content: string) {
+	const matches = [...content.matchAll(/^---\nurl:\s*([^\n]+)\n---\n/gm)]
+	if (matches.length === 0) return []
+
+	return matches.map((match, index) => {
+		const start = match.index ?? 0
+		const end = matches[index + 1]?.index ?? content.length
+		let block = content.slice(start, end)
+		if (index + 1 < matches.length && block.endsWith('\n---\n\n')) {
+			block = block.slice(0, -'\n---\n\n'.length)
+		}
+		return { url: match[1].trim(), content: block.trimEnd() }
+	})
+}
+
+function sortLlmsFullTxtByLlmsTxt(): Plugin {
+	let outDir = ''
+
+	return {
+		name: 'slimgui-sort-llms-full-txt',
+		enforce: 'post',
+		configResolved(config) {
+			outDir = (config as any).vitepress?.outDir ?? path.resolve('dist')
+		},
+		async writeBundle() {
+			const llmsTxtPath = path.resolve(outDir, 'llms.txt')
+			const llmsFullTxtPath = path.resolve(outDir, 'llms-full.txt')
+			let llmsTxt: string
+			let llmsFullTxt: string
+			try {
+				[llmsTxt, llmsFullTxt] = await Promise.all([
+					fs.readFile(llmsTxtPath, 'utf-8'),
+					fs.readFile(llmsFullTxtPath, 'utf-8'),
+				])
+			} catch {
+				return
+			}
+
+			const order = new Map(extractOrderedLlmsTxtUrls(llmsTxt).map((url, index) => [url, index]))
+			const blocks = splitLlmsFullBlocks(llmsFullTxt)
+			if (blocks.length === 0) return
+
+			blocks.sort((a, b) => {
+				const aOrder = order.get(a.url) ?? Number.MAX_SAFE_INTEGER
+				const bOrder = order.get(b.url) ?? Number.MAX_SAFE_INTEGER
+				if (aOrder !== bOrder) return aOrder - bOrder
+				return a.url.localeCompare(b.url)
+			})
+
+			await fs.writeFile(llmsFullTxtPath, `${blocks.map((block) => block.content).join('\n---\n\n')}\n`, 'utf-8')
+		}
+	}
+}
 
 function installApiSignatureContainer(md: any) {
 	const marker = ':::'
@@ -90,9 +160,9 @@ export default defineConfig({
   description: "Slimgui bindings and examples",
   base: "/slimgui/",
   head: [['link', { rel: 'icon', href: 'data:,' }]],
-  outDir: "dist",
+	outDir: "dist",
 	vite: {
-		plugins: [llmstxt({ injectLLMHint: false })],
+		plugins: [llmstxt({ injectLLMHint: false, excludeIndexPage: false }), sortLlmsFullTxtByLlmsTxt()],
 	},
 	markdown: {
 		config(md) {
