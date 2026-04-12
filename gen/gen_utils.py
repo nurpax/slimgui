@@ -189,15 +189,6 @@ def _best_effort_fix_funcall_args(t: str) -> str:
     out = []
     while tok_idx < len(tokens):
         match tokens[tok_idx:]:
-            case ['0', '.', '0f', *_]:
-                out += ['0.0']
-                tok_idx += 3
-            case ['1', '.', '0f', *_]:
-                out += ['1.0']
-                tok_idx += 3
-            case ['0', '.', '5f', *_]:
-                out += ['0.5']
-                tok_idx += 3
             case ['ImVec2', *_]: # skip ImVec2(...) -> (...)
                 tok_idx += 1
             case _:
@@ -208,6 +199,16 @@ def _best_effort_fix_funcall_args(t: str) -> str:
                     out += [sym]
                 tok_idx += 1
     return ''.join(out)
+
+def _fix_cpp_float_suffixes(s: str) -> str:
+    def replace(match: re.Match) -> str:
+        value = match.group(1)
+        if value.endswith('.'):
+            value += '0'
+        return value
+
+    s = re.sub(r'(?<![\w.%])([+-]?(?:\d+\.\d*|\d+|\.\d+))f\b', replace, s)
+    return re.sub(r'(?<=\.\.)([+-]?(?:\d+\.\d*|\d+|\.\d+))f\b', replace, s)
 
 def _drop_cpp_namespace_prefix(out: list[str]) -> None:
     if len(out) >= 3 and out[-3:] in (['ImGui', ':', ':'], ['ImPlot', ':', ':']):
@@ -252,6 +253,7 @@ def docstring_fixer(docstring):
     ret = ''.join(out)
     if ret == '':
         return ret
+    ret = _fix_cpp_float_suffixes(ret)
     return ret[0].upper() + ret[1:]
 
 if __name__ == '__main__':

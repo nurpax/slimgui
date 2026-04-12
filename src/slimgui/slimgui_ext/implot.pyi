@@ -674,7 +674,7 @@ class StyleVar(enum.IntEnum):
 
     FIT_PADDING = 17
     """
-    ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)
+    ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)
     """
 
     DIGITAL_PADDING = 18

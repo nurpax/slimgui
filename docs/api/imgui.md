@@ -524,7 +524,7 @@ def set_next_window_pos(
     pivot: tuple[float, float] = (0.0, 0.0),
 ) -> None:
     """
-    Set next window position. call before `begin()`. use pivot=(0.5f,0.5f) to center on given point, etc.
+    Set next window position. call before `begin()`. use pivot=(0.5,0.5) to center on given point, etc.
     """
 ```
 :::
@@ -536,7 +536,7 @@ def set_next_window_size(
     cond: Cond = Cond.NONE,
 ) -> None:
     """
-    Set next window size. set axis to 0.0f to force an auto-fit on this axis. call before `begin()`
+    Set next window size. set axis to 0.0 to force an auto-fit on this axis. call before `begin()`
     """
 ```
 :::
@@ -575,7 +575,7 @@ def set_next_window_content_size(
     size: tuple[float, float],
 ) -> None:
     """
-    Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before `begin()`
+    Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0 to leave it automatic. call before `begin()`
     """
 ```
 :::
@@ -607,7 +607,7 @@ def set_next_window_scroll(
     scroll: tuple[float, float],
 ) -> None:
     """
-    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    Set next window scrolling value (use < 0.0 to not affect a given axis).
     """
 ```
 :::
@@ -825,7 +825,7 @@ def set_next_window_scroll(
     scroll: tuple[float, float],
 ) -> None:
     """
-    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    Set next window scrolling value (use < 0.0 to not affect a given axis).
     """
 ```
 :::
@@ -1091,7 +1091,7 @@ def push_item_width(
     item_width: float,
 ) -> None:
     """
-    Push width of items for common large "item+label" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
+    Push width of items for common large "item+label" widgets. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
     """
 ```
 :::
@@ -1108,7 +1108,7 @@ def set_next_item_width(
     item_width: float,
 ) -> None:
     """
-    Set width of the _next_ common large "item+label" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
+    Set width of the _next_ common large "item+label" widget. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
     """
 ```
 :::
@@ -2911,7 +2911,7 @@ def table_next_row(
     min_row_height: float = 0.0,
 ) -> None:
     """
-    Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0f.
+    Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0.
     """
 ```
 :::
@@ -3151,7 +3151,7 @@ def get_column_offset(
     column_index: int = -1,
 ) -> float:
     """
-    Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0f
+    Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0
     """
 ```
 :::
@@ -4009,7 +4009,7 @@ def is_mouse_dragging(
     lock_threshold: float = -1.0,
 ) -> bool:
     """
-    Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0)
     """
 ```
 :::
@@ -4021,7 +4021,7 @@ def get_mouse_drag_delta(
     lock_threshold: float = -1.0,
 ) -> tuple[float, float]:
     """
-    Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0 until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0)
     """
 ```
 :::
@@ -4187,12 +4187,12 @@ def set_next_frame_want_capture_mouse(
 | ALPHA_NO_BG | ColorEdit, ColorPicker, `color_button`: disable rendering a checkerboard background behind transparent color. |
 | ALPHA_PREVIEW_HALF | ColorEdit, ColorPicker, `color_button`: display half opaque / half transparent preview. |
 | ALPHA_BAR | ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker. |
-| HDR | (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well). |
+| HDR | (WIP) ColorEdit: Currently only disable 0.0..1.0 limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well). |
 | DISPLAY_RGB | ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex. |
 | DISPLAY_HSV |  |
 | DISPLAY_HEX |  |
 | UINT8 | ColorEdit, ColorPicker, `color_button`: _display_ values formatted as 0..255. |
-| FLOAT | ColorEdit, ColorPicker, `color_button`: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers. |
+| FLOAT | ColorEdit, ColorPicker, `color_button`: _display_ values formatted as 0.0..1.0 floats instead of 0..255 integers. No round-trip of value via integers. |
 | PICKER_HUE_BAR | ColorPicker: bar for Hue, rectangle for Sat/Value. |
 | PICKER_HUE_WHEEL | ColorPicker: wheel for Hue, triangle for Sat/Value. |
 | INPUT_RGB | ColorEdit, ColorPicker: input and output data in RGB format. |
@@ -4271,11 +4271,11 @@ def set_next_frame_want_capture_mouse(
 | --- | --- |
 | NONE |  |
 | CLOSED | PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason) |
-| ROUND_CORNERS_TOP_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01. |
-| ROUND_CORNERS_TOP_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02. |
-| ROUND_CORNERS_BOTTOM_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04. |
-| ROUND_CORNERS_BOTTOM_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08. |
-| ROUND_CORNERS_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag! |
+| ROUND_CORNERS_TOP_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01. |
+| ROUND_CORNERS_TOP_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02. |
+| ROUND_CORNERS_BOTTOM_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04. |
+| ROUND_CORNERS_BOTTOM_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08. |
+| ROUND_CORNERS_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag! |
 | ROUND_CORNERS_TOP |  |
 | ROUND_CORNERS_BOTTOM |  |
 | ROUND_CORNERS_LEFT |  |
@@ -4621,7 +4621,7 @@ def set_next_frame_want_capture_mouse(
 | NO_INPUT | Disable Ctrl+Click or Enter key allowing to input text directly into the widget. |
 | WRAP_AROUND | Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now. |
 | CLAMP_ON_INPUT | Clamp value to min/max bounds when input manually with Ctrl+Click. By default Ctrl+Click allows going out of bounds. |
-| CLAMP_ZERO_RANGE | Clamp even if min==max==0.0f. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
+| CLAMP_ZERO_RANGE | Clamp even if min==max==0.0. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
 | NO_SPEED_TWEAKS | Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic. |
 | COLOR_MARKERS | `drag_scalar_n()`, `slider_scalar_n()`: Draw R/G/B/A color markers on each component. |
 | ALWAYS_CLAMP |  |

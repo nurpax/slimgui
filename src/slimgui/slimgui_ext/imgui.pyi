@@ -1195,27 +1195,27 @@ class DrawFlags(enum.IntFlag):
 
     ROUND_CORNERS_TOP_LEFT = 16
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01.
+    AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01.
     """
 
     ROUND_CORNERS_TOP_RIGHT = 32
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02.
+    AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02.
     """
 
     ROUND_CORNERS_BOTTOM_LEFT = 64
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04.
+    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04.
     """
 
     ROUND_CORNERS_BOTTOM_RIGHT = 128
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08.
+    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08.
     """
 
     ROUND_CORNERS_NONE = 256
     """
-    AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag!
+    AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag!
     """
 
     ROUND_CORNERS_TOP = 48
@@ -2209,7 +2209,7 @@ class ColorEditFlags(enum.IntFlag):
 
     HDR = 524288
     """
-    (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well).
+    (WIP) ColorEdit: Currently only disable 0.0..1.0 limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well).
     """
 
     DISPLAY_RGB = 1048576
@@ -2228,7 +2228,7 @@ class ColorEditFlags(enum.IntFlag):
 
     FLOAT = 16777216
     """
-    ColorEdit, ColorPicker, `color_button`: _display_ values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers.
+    ColorEdit, ColorPicker, `color_button`: _display_ values formatted as 0.0..1.0 floats instead of 0..255 integers. No round-trip of value via integers.
     """
 
     PICKER_HUE_BAR = 33554432
@@ -2576,7 +2576,7 @@ class SliderFlags(enum.IntFlag):
 
     CLAMP_ZERO_RANGE = 1024
     """
-    Clamp even if min==max==0.0f. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it.
+    Clamp even if min==max==0.0. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it.
     """
 
     NO_SPEED_TWEAKS = 2048
@@ -3561,12 +3561,12 @@ def get_window_height() -> float:
 
 
 def set_next_window_pos(pos: tuple[float, float], cond: Cond = Cond.NONE, pivot: tuple[float, float] = (0.0, 0.0)) -> None:
-    """Set next window position. call before `begin()`. use pivot=(0.5f,0.5f) to center on given point, etc."""
+    """Set next window position. call before `begin()`. use pivot=(0.5,0.5) to center on given point, etc."""
     ...
 
 
 def set_next_window_size(size: tuple[float, float], cond: Cond = Cond.NONE) -> None:
-    """Set next window size. set axis to 0.0f to force an auto-fit on this axis. call before `begin()`"""
+    """Set next window size. set axis to 0.0 to force an auto-fit on this axis. call before `begin()`"""
     ...
 
 
@@ -3575,7 +3575,7 @@ def set_next_window_size_constraints_internal(size_min: tuple[float, float], siz
 
 
 def set_next_window_content_size(size: tuple[float, float]) -> None:
-    """Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before `begin()`"""
+    """Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0 to leave it automatic. call before `begin()`"""
     ...
 
 
@@ -3590,7 +3590,7 @@ def set_next_window_focus() -> None:
 
 
 def set_next_window_scroll(scroll: tuple[float, float]) -> None:
-    """Set next window scrolling value (use < 0.0f to not affect a given axis)."""
+    """Set next window scrolling value (use < 0.0 to not affect a given axis)."""
     ...
 
 
@@ -3765,7 +3765,7 @@ def get_item_flags() -> int:
     """Get generic flags of the last item."""
 
 def push_item_width(item_width: float) -> None:
-    """Push width of items for common large \"item+label\" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)."""
+    """Push width of items for common large \"item+label\" widgets. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side)."""
     ...
 
 
@@ -3774,7 +3774,7 @@ def pop_item_width() -> None:
 
 
 def set_next_item_width(item_width: float) -> None:
-    """Set width of the _next_ common large \"item+label\" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)"""
+    """Set width of the _next_ common large \"item+label\" widget. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side)"""
     ...
 
 
@@ -4432,7 +4432,7 @@ def end_table() -> None:
 
 
 def table_next_row(flags: TableRowFlags = TableRowFlags.NONE, min_row_height: float = 0.0) -> None:
-    """Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0f."""
+    """Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0."""
     ...
 
 
@@ -4535,7 +4535,7 @@ def set_column_width(column_index: int, width: float) -> None:
 
 
 def get_column_offset(column_index: int = -1) -> float:
-    """Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0f"""
+    """Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0"""
     ...
 
 
@@ -4906,12 +4906,12 @@ def get_mouse_pos_on_opening_current_popup() -> tuple[float, float]:
 
 
 def is_mouse_dragging(button: MouseButton, lock_threshold: float = -1.0) -> bool:
-    """Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)"""
+    """Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0)"""
     ...
 
 
 def get_mouse_drag_delta(button: MouseButton = MouseButton.LEFT, lock_threshold: float = -1.0) -> tuple[float, float]:
-    """Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)"""
+    """Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0 until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0)"""
     ...
 
 

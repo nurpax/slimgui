@@ -16,9 +16,14 @@ def test_docstring_fixer():
     txt = gen_utils.docstring_fixer("InvisibleButton(ImVec2(0.0f, 1.0f))")
     assert txt == "`invisible_button((0.0, 1.0))`"
 
-    # disabled check
-    #txt = gen_utils.docstring_fixer("1.0f") # not an imgui function, tho looks like one
-    #assert txt == "1.0"
+    txt = gen_utils.docstring_fixer("use 1.f, 1.0f, 0f, 0.0f and 0.5f as values")
+    assert txt == "Use 1.0, 1.0, 0, 0.0 and 0.5 as values"
+
+    txt = gen_utils.docstring_fixer('format "%.3f" keeps its printf suffix')
+    assert txt == 'Format "%.3f" keeps its printf suffix'
+
+    txt = gen_utils.docstring_fixer("show 0.0f..1.0f limits")
+    assert txt == "Show 0.0..1.0 limits"
 
     txt = gen_utils.docstring_fixer("InvisibleButton(\"##label\", ImVec2(0.0f, 1.0f), ImGuiWindowFlags_NoBackground) xyzzy")
     assert txt == "`invisible_button(\"##label\", (0.0, 1.0), WindowFlags.NO_BACKGROUND)` xyzzy"

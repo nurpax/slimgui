@@ -2175,7 +2175,7 @@ item flags.
 | LEGEND_SPACING | ImVec2, spacing between legend entries |
 | MOUSE_POS_PADDING | ImVec2, padding between plot edge and interior info text |
 | ANNOTATION_PADDING | ImVec2, text padding around annotation labels |
-| FIT_PADDING | ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y) |
+| FIT_PADDING | ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y) |
 | DIGITAL_PADDING | Float,  digital plot padding from bottom in pixels |
 | DIGITAL_SPACING | Float,  digital plot spacing gap in pixels |
 | COUNT |  |

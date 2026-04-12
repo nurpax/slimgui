@@ -5,23 +5,23 @@ nb::enum_<ImDrawFlags_>(m, "DrawFlags", nb::is_flag(), nb::is_arithmetic())
            "(Important: this is always == 1 for legacy reason)")
     .value("ROUND_CORNERS_TOP_LEFT", ImDrawFlags_RoundCornersTopLeft,
            "AddRect(), AddRectFilled(), PathRect(): enable rounding top-left "
-           "corner only (when rounding > 0.0f, we default to all corners). Was "
+           "corner only (when rounding > 0.0, we default to all corners). Was "
            "0x01.")
     .value("ROUND_CORNERS_TOP_RIGHT", ImDrawFlags_RoundCornersTopRight,
            "AddRect(), AddRectFilled(), PathRect(): enable rounding top-right "
-           "corner only (when rounding > 0.0f, we default to all corners). Was "
+           "corner only (when rounding > 0.0, we default to all corners). Was "
            "0x02.")
     .value("ROUND_CORNERS_BOTTOM_LEFT", ImDrawFlags_RoundCornersBottomLeft,
            "AddRect(), AddRectFilled(), PathRect(): enable rounding "
-           "bottom-left corner only (when rounding > 0.0f, we default to all "
+           "bottom-left corner only (when rounding > 0.0, we default to all "
            "corners). Was 0x04.")
     .value("ROUND_CORNERS_BOTTOM_RIGHT", ImDrawFlags_RoundCornersBottomRight,
            "AddRect(), AddRectFilled(), PathRect(): enable rounding "
-           "bottom-right corner only (when rounding > 0.0f, we default to all "
+           "bottom-right corner only (when rounding > 0.0, we default to all "
            "corners). Wax 0x08.")
     .value("ROUND_CORNERS_NONE", ImDrawFlags_RoundCornersNone,
            "AddRect(), AddRectFilled(), PathRect(): disable rounding on all "
-           "corners (when rounding > 0.0f). This is NOT zero, NOT an implicit "
+           "corners (when rounding > 0.0). This is NOT zero, NOT an implicit "
            "flag!")
     .value("ROUND_CORNERS_TOP", ImDrawFlags_RoundCornersTop)
     .value("ROUND_CORNERS_BOTTOM", ImDrawFlags_RoundCornersBottom)
@@ -702,7 +702,7 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
         "ALPHA_BAR", ImGuiColorEditFlags_AlphaBar,
         "ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.")
     .value("HDR", ImGuiColorEditFlags_HDR,
-           "(WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA "
+           "(WIP) ColorEdit: Currently only disable 0.0..1.0 limits in RGBA "
            "edition (note: you probably want to use `ColorEditFlags.FLOAT` "
            "flag as well).")
     .value("DISPLAY_RGB", ImGuiColorEditFlags_DisplayRGB,
@@ -715,7 +715,7 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
            "as 0..255.")
     .value("FLOAT", ImGuiColorEditFlags_Float,
            "ColorEdit, ColorPicker, `color_button`: _display_ values formatted "
-           "as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of "
+           "as 0.0..1.0 floats instead of 0..255 integers. No round-trip of "
            "value via integers.")
     .value("PICKER_HUE_BAR", ImGuiColorEditFlags_PickerHueBar,
            "ColorPicker: bar for Hue, rectangle for Sat/Value.")
@@ -948,7 +948,7 @@ nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
            "Clamp value to min/max bounds when input manually with Ctrl+Click. "
            "By default Ctrl+Click allows going out of bounds.")
     .value("CLAMP_ZERO_RANGE", ImGuiSliderFlags_ClampZeroRange,
-           "Clamp even if min==max==0.0f. Otherwise due to legacy reason "
+           "Clamp even if min==max==0.0. Otherwise due to legacy reason "
            "DragXXX functions don't clamp with those values. When your "
            "clamping limits are dynamic you almost always want to use it.")
     .value("NO_SPEED_TWEAKS", ImGuiSliderFlags_NoSpeedTweaks,

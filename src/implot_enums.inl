@@ -349,7 +349,7 @@ nb::enum_<ImPlotStyleVar_>(m, "StyleVar", nb::is_arithmetic())
            "ImVec2, text padding around annotation labels")
     .value("FIT_PADDING", ImPlotStyleVar_FitPadding,
            "ImVec2, additional fit padding as a percentage of the fit extents "
-           "(e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)")
+           "(e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)")
     .value("DIGITAL_PADDING", ImPlotStyleVar_DigitalPadding,
            "Float,  digital plot padding from bottom in pixels")
     .value("DIGITAL_SPACING", ImPlotStyleVar_DigitalSpacing,
