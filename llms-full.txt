@@ -1,4 +1,34 @@
 ---
+url: /slimgui/index.md
+---
+# Introduction
+
+The Slimgui package provides modern Python bindings for the following libraries:
+
+* [Dear ImGui](https://github.com/ocornut/imgui)
+* [ImPlot](https://github.com/epezent/implot)
+
+Features:
+
+* API design that stays close to Dear ImGui while remaining natural to use from Python
+* Python bindings for Dear ImGui and ImPlot with `.pyi` typing files for good IDE support
+* Integrations for GLFW + PyOpenGL and Pyglet
+
+The documentation is split into several parts:
+
+* [Guide](/guide/getting-started)
+* [Dear ImGui API reference](/api/imgui)
+* [ImPlot API reference](/api/implot)
+* [Recipes](/recipes/)
+
+Further reading:
+
+* [Slimgui on GitHub](https://github.com/nurpax/slimgui)
+* [Release notes](https://github.com/nurpax/slimgui/releases)
+* [Full documentation as LLM-friendly Markdown](/llms-full.txt)
+---
+
+---
 url: /slimgui/guide/getting-started.md
 ---
 # Getting Started
@@ -17,398 +47,49 @@ python example/app.py
 ```
 
 Browse the example code: [example/](https://github.com/nurpax/slimgui/blob/main/example/)
-
 ---
 
 ---
-url: /slimgui/recipes/implot.md
+url: /slimgui/guide/typing.md
 ---
+# Typing
 
-# ImPlot
+Slimgui has been developed with the following goals in mind:
 
-## Line plot from x/y arrays
+* Support typing through `.pyi` files to enable good IDE support such as auto-complete, type checking, and docstrings.
+* Closely match the Dear ImGui API but adapt for Python as necessary. Don't invent new API concepts.
 
-![Line plot from x/y arrays](./images/plot_line_basic.png)
+The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) except somewhat modernized:
 
-Plot a line from explicit `x` and `y` NumPy arrays.
+* Enums in ImGui are exposed as typed Python enums using `enum.IntEnum` and `enum.IntFlag` to make it clear which API functions consume what type of enums.
+* Vector types such as `ImVec2`, `ImVec4`, and `float*` arrays are converted to Python tuples such as `tuple[float, float]` for `ImVec2` and `tuple[float, float, float, float]` for `ImVec4`.
+* Mutable bool args such as `bool* p_open` are input as normal `bool` values and returned as the second element of a 2-tuple. For example, `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]`, where the first element is the boolean return value of `ImGui::Checkbox()` and the second element is the new checkbox state.
 
-This is the most direct `implot.plot_line()` calling pattern: prepare one array for x-coordinates
-and one array for y-values, then submit both arrays inside a `begin_plot()` / `end_plot()` block.
-Use this form when your x-axis is not just an implicit sample index and you want full control over
-the horizontal values shown in the plot.
+## Public and Internal Types
 
-```python
-def plot_line_basic():
-    xs = np.linspace(0.0, 10.0, 200)
-    ys = np.sin(xs)
-
-    if implot.begin_plot("Line Plot"):
-        implot.plot_line("sin(x)", xs, ys)
-        implot.end_plot()
-```
-
-## Line plot from values only
-
-![Line plot from values only](./images/plot_line_values_only.png)
-
-Plot a line from a single value array and let ImPlot infer the x-axis from the sample index.
-
-This overload is useful when you only have y-values and want evenly spaced samples without creating
-a separate x-array yourself. It is a compact way to plot a waveform or time series when the natural
-x-coordinate is just "point 0, point 1, point 2, ...".
+Typical usage imports the public modules:
 
 ```python
-def plot_line_values_only():
-    ys = np.sin(np.linspace(0.0, 3.0 * np.pi, 200))
-
-    if implot.begin_plot("Values Only"):
-        implot.plot_line("wave", ys)
-        implot.end_plot()
+from slimgui import imgui
+from slimgui import implot
 ```
 
-## Bar plot from values
+The underlying bindings live under `slimgui.slimgui_ext.imgui` and
+`slimgui.slimgui_ext.implot`.
 
-![Bar plot from values](./images/plot_bars_basic.png)
+Those `slimgui_ext.*` modules exist because they expose the native binding layer directly.
+The public `slimgui.imgui` and `slimgui.implot` modules then build on top of that layer by:
 
-Plot bars from a one-dimensional NumPy array.
+* re-exporting many enums and binding types
+* adding some higher-level Python wrapper types
 
-`implot.plot_bars()` can consume a single array of values and place each bar at the corresponding
-sample index. This is the simplest form for categorical or small summary data when you do not need
-custom x-positions for the bars.
+For example, some API signatures use wrapper types such as:
 
-```python
-def plot_bars_basic():
-    ys = np.array([0.3, 0.8, 0.55, 0.9, 0.45], dtype=np.float32)
+* `slimgui.imgui.WrappedContext`
+* `slimgui.implot.WrappedContext`
+* `slimgui.imgui.DrawList`
 
-    if implot.begin_plot("Bars"):
-        implot.plot_bars("bars", ys)
-        implot.end_plot()
-```
-
-## Grouped bar plot
-
-![Grouped bar plot](./images/plot_bar_groups_basic.png)
-
-Plot grouped bars from a two-dimensional NumPy array.
-
-`implot.plot_bar_groups()` expects tabular data where each row represents one labeled series and
-each column represents one group position. The call to `setup_axes()` removes axis decorations here
-so the grouped structure is easier to focus on in the example screenshot.
-
-```python
-def plot_bar_groups_basic():
-    values = np.array(
-        [
-            [0.2, 0.4, 0.7, 0.5],
-            [0.6, 0.3, 0.5, 0.8],
-            [0.4, 0.7, 0.2, 0.6],
-        ],
-        dtype=np.float32,
-    )
-
-    if implot.begin_plot("Grouped Bars"):
-        implot.setup_axes(
-            None,
-            None,
-            implot.AxisFlags.NO_DECORATIONS,
-            implot.AxisFlags.NO_DECORATIONS,
-        )
-        implot.plot_bar_groups(["A", "B", "C"], values)
-        implot.end_plot()
-```
-
-## Scatter plot from x/y arrays
-
-![Scatter plot from x/y arrays](./images/plot_scatter_basic.png)
-
-Plot scatter points from x/y NumPy arrays.
-
-Scatter plots use the same explicit x/y array pattern as line plots, but render disconnected points
-instead of a continuous curve. This example builds a simple spiral from polar coordinates to show that
-the points do not need to lie on a regular grid or be evenly spaced.
-
-```python
-def plot_scatter_basic():
-    theta = np.linspace(0.0, 4.0 * np.pi, 80)
-    radius = np.linspace(0.2, 1.0, 80)
-    xs = radius * np.cos(theta)
-    ys = radius * np.sin(theta)
-
-    if implot.begin_plot("Scatter"):
-        implot.plot_scatter("spiral", xs, ys)
-        implot.end_plot()
-```
-
----
-
----
-url: /slimgui/recipes/layout.md
----
-
-# Layout
-
-## Master-detail layout with tabs
-
-![Master-detail layout with tabs](./images/layout_master_detail_tabs.png)
-
-Build a resizable master-detail layout with a child list on the left and tabs on the right.
-
-This follows the same general pattern as the Dear ImGui demo's simple layout example: a left child
-window is used for navigation, `same_line()` places a grouped detail pane beside it, and the right
-side reserves its bottom row for actions by giving the inner child a height of
-`-get_frame_height_with_spacing()`. The result is a compact application-style layout rather than a
-one-off arrangement of widgets.
-
-```python
-def layout_master_detail_tabs(state: LayoutState):
-    imgui.begin_child("left pane", (150, 0), imgui.ChildFlags.BORDERS | imgui.ChildFlags.RESIZE_X)
-    for i in range(12):
-        if imgui.selectable(f"MyObject {i}", state.selected == i, imgui.SelectableFlags.SELECT_ON_NAV)[0]:
-            state.selected = i
-    imgui.end_child()
-
-    imgui.same_line()
-
-    imgui.begin_group()
-    imgui.begin_child("item view", (0, -imgui.get_frame_height_with_spacing()))
-    imgui.text(f"MyObject: {state.selected}")
-    imgui.separator()
-    if imgui.begin_tab_bar("##details-tabs"):
-        if imgui.begin_tab_item("Description")[0]:
-            imgui.text_wrapped(
-                "Use a resizable child window for navigation and reserve a single action row below the details pane."
-            )
-            imgui.end_tab_item()
-        if imgui.begin_tab_item("Details")[0]:
-            imgui.text("ID: 0123456789")
-            imgui.text("Status: Ready")
-            imgui.end_tab_item()
-        imgui.end_tab_bar()
-    imgui.end_child()
-
-    if imgui.button("Revert"):
-        pass
-    imgui.same_line()
-    if imgui.button("Save"):
-        pass
-    imgui.end_group()
-```
-
-## Item width patterns
-
-![Item width patterns](./images/layout_item_width_patterns.png)
-
-Use `push_item_width()` with fixed, right-aligned, and proportional widths.
-
-This recipe demonstrates the width patterns from the Dear ImGui demo: a fixed pixel width, a width
-aligned against the right edge using a negative value, a width derived from
-`get_content_region_avail()`, and the `-FLT_MIN` idiom for "fill until the right edge". These
-patterns are the building blocks for forms that need to stay readable while the window is resized.
-
-```python
-def layout_item_width_patterns(state: WidthState):
-    _changed, state.show_indented = imgui.checkbox("Show indented items", state.show_indented)
-
-    imgui.text("Fixed width")
-    imgui.push_item_width(120)
-    _changed, state.value = imgui.drag_float("float##fixed", state.value, 0.01, 0.0, 1.0)
-    if state.show_indented:
-        imgui.indent()
-        _changed, state.value = imgui.drag_float("float##fixed-indented", state.value, 0.01, 0.0, 1.0)
-        imgui.unindent()
-    imgui.pop_item_width()
-
-    imgui.text("Align to right edge minus 100")
-    imgui.push_item_width(-100)
-    _changed, state.value = imgui.drag_float("float##right-minus-100", state.value, 0.01, 0.0, 1.0)
-    imgui.pop_item_width()
-
-    imgui.text("Half of available width")
-    imgui.push_item_width(imgui.get_content_region_avail()[0] * 0.5)
-    _changed, state.value = imgui.drag_float("float##half-width", state.value, 0.01, 0.0, 1.0)
-    imgui.pop_item_width()
-
-    imgui.text("Align to right edge")
-    imgui.push_item_width(-imgui.FLT_MIN)
-    _changed, state.value = imgui.drag_float("float##fill-right", state.value, 0.01, 0.0, 1.0)
-    imgui.pop_item_width()
-```
-
-## Group sizing
-
-![Group sizing](./images/layout_group_sizing.png)
-
-Capture a group's size and reuse it to size related widgets beside it.
-
-`begin_group()` / `end_group()` lets multiple items behave like one logical item for layout. This
-example measures the first grouped block with `get_item_rect_size()` and then reuses that size for a
-histogram, two action buttons, and a list box beside it. The pattern is useful when different widget
-types should share one visual footprint without hard-coding pixel sizes for each one separately.
-
-```python
-def layout_group_sizing(state: GroupSizingState):
-    imgui.begin_group()
-    imgui.begin_group()
-    imgui.button("AAA")
-    imgui.same_line()
-    imgui.button("BBB")
-    imgui.same_line()
-    imgui.begin_group()
-    imgui.button("CCC")
-    imgui.button("DDD")
-    imgui.end_group()
-    imgui.same_line()
-    imgui.button("EEE")
-    imgui.end_group()
-    imgui.set_item_tooltip("First group hovered")
-
-    group_size = imgui.get_item_rect_size()
-    imgui.plot_histogram(
-        "##values",
-        np.array([0.5, 0.2, 0.8, 0.6, 0.25], dtype=np.float32),
-        graph_size=group_size,
-    )
-
-    half_width = (group_size[0] - imgui.get_style().item_spacing[0]) * 0.5
-    imgui.button("ACTION", (half_width, group_size[1]))
-    imgui.same_line()
-    imgui.button("REACTION", (half_width, group_size[1]))
-    imgui.end_group()
-
-    imgui.same_line()
-    imgui.button("LEVERAGE\nBUZZWORD", group_size)
-    imgui.same_line()
-
-    labels = ["Selected", "Not Selected"]
-    if imgui.begin_list_box("List", group_size):
-        for idx, label in enumerate(labels):
-            if imgui.selectable(label, state.selection == idx)[0]:
-                state.selection = idx
-        imgui.end_list_box()
-```
-
-## Horizontal layout with same\_line()
-
-![Horizontal layout with same\_line()](./images/layout_same_line_basics.png)
-
-Use `same_line()` to keep multiple items on one row instead of advancing to a new line after
-every widget.
-
-This example covers three common horizontal layout patterns: placing text and buttons on the same
-row, using explicit x-offsets for simple aligned columns, and manually wrapping a row of buttons
-when there is no longer enough room to keep adding items on the current line.
-
-```python
-def layout_same_line_basics():
-    imgui.text("Two items: Hello")
-    imgui.same_line()
-    imgui.text_colored((1.0, 1.0, 0.0, 1.0), "Sailor")
-
-    imgui.text("Aligned")
-    imgui.same_line(150)
-    imgui.small_button("x=150")
-    imgui.same_line(300)
-    imgui.small_button("x=300")
-
-    imgui.separator_text("Manual wrapping")
-    button_size = (40, 40)
-    right_edge = imgui.get_cursor_screen_pos()[0] + imgui.get_content_region_avail()[0]
-    spacing_x = imgui.get_style().item_spacing[0]
-    for i in range(10):
-        imgui.push_id(i)
-        imgui.button("Box", button_size)
-        next_x2 = imgui.get_item_rect_max()[0] + spacing_x + button_size[0]
-        if i + 1 < 10 and next_x2 < right_edge:
-            imgui.same_line()
-        imgui.pop_id()
-```
-
-## Text baseline alignment
-
-![Text baseline alignment](./images/layout_text_baseline_alignment.png)
-
-Use `align_text_to_frame_padding()` when a line starts with text and is followed by framed widgets.
-
-Plain text and framed controls do not naturally share the same baseline. This recipe shows the
-common fix: call `align_text_to_frame_padding()` before the text item so that labels, buttons, and
-other controls sit on the same visual row more cleanly.
-
-```python
-def layout_text_baseline_alignment():
-    imgui.text("Without alignment")
-    imgui.same_line()
-    imgui.button("Button A")
-
-    imgui.align_text_to_frame_padding()
-    imgui.text("With alignment")
-    imgui.same_line()
-    imgui.button("Button B")
-
-    imgui.separator_text("Mixed row")
-    imgui.align_text_to_frame_padding()
-    imgui.text("Status")
-    imgui.same_line()
-    imgui.button("Apply")
-    imgui.same_line()
-    imgui.text("Ready")
-    imgui.same_line()
-    imgui.small_button("Help")
-```
-
-## Basic tab bar
-
-![Basic tab bar](./images/layout_tabs_basic.png)
-
-Build a small tabbed interface with `begin_tab_bar()` and `begin_tab_item()`.
-
-Tabs are submitted every frame like the rest of the ImGui UI. The important pattern is to start
-the tab bar, submit each tab item, render the contents only when that tab item is active, and then
-end both the tab item and the tab bar.
-
-```python
-def layout_tabs_basic(state: TabsState):
-    if imgui.begin_tab_bar("##demo-tabs"):
-        if imgui.begin_tab_item("Summary")[0]:
-            imgui.text_wrapped("Use tabs to split related views inside one window.")
-            if imgui.button("Increment counter"):
-                state.counter += 1
-            imgui.text(f"Counter: {state.counter}")
-            imgui.end_tab_item()
-
-        visible, state.closable_details = imgui.begin_tab_item("Details", state.closable_details)
-        if visible:
-            imgui.text("A tab can manage its own open state.")
-            imgui.checkbox("Enable option", True)
-            imgui.end_tab_item()
-
-        if imgui.begin_tab_item("Logs")[0]:
-            imgui.text("Render the tab contents only when the tab is selected.")
-            imgui.bullet_text("Build completed")
-            imgui.bullet_text("Tests passed")
-            imgui.end_tab_item()
-
-        imgui.end_tab_bar()
-```
-
----
-
----
-url: /slimgui/recipes.md
----
-# Recipes
-
-These recipes are focused, runnable examples of common Dear ImGui patterns as expressed through
-Slimgui.
-
-They are organized by task and UI pattern rather than by API symbol, so they work as a practical
-companion to the API reference.
-
-The same examples can also be explored interactively:
-
-```bash
-python3 example/run_examples.py
-```
-
+These are distinct from the lower-level types in `slimgui.slimgui_ext.*`, even when they are related internally.
 ---
 
 ---
@@ -503,6 +184,28 @@ def get_io() -> slimgui.slimgui_ext.imgui.IO:
 def get_style() -> slimgui.slimgui_ext.imgui.Style:
     """
     Access the `Style` structure (colors, sizes). Always use `push_style_color()`, `push_style_var()` to modify style mid-frame!
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_platform_io() -> slimgui.slimgui_ext.imgui.PlatformIO:
+    """
+    Access the ImGui `PlatformIO` structure.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def new_frame():
+    """
+    ImGui::NewFrame() call but with some Python binding specific book keeping.
     """
 ```
 
@@ -671,6 +374,93 @@ def get_version() -> str:
     """
     Get the compiled version string e.g. "1.80 WIP" (essentially the value for IMGUI_VERSION from the compiled version of imgui.cpp)
     """
+```
+
+:::
+
+### Logging
+
+::: api-signature
+
+```python
+def log_to_tty(
+    auto_open_depth: int = -1,
+) -> None:
+    """
+    Start logging to tty (stdout)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_to_file(
+    auto_open_depth: int = -1,
+    filename: str | None = None,
+) -> None:
+    """
+    Start logging to file
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_to_clipboard(
+    auto_open_depth: int = -1,
+) -> None:
+    """
+    Start logging to OS clipboard
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_finish() -> None:
+    """
+    Stop logging (close file, etc.)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_buttons() -> None:
+    """
+    Helper to display buttons for logging to tty/file/clipboard
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_text(
+    text: str,
+) -> None:
+    """
+    Pass text data straight to log (without being displayed)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_nanobind_leak_warnings(
+    enable: bool,
+) -> None:
 ```
 
 :::
@@ -924,7 +714,7 @@ def set_next_window_pos(
     pivot: tuple[float, float] = (0.0, 0.0),
 ) -> None:
     """
-    Set next window position. call before `begin()`. use pivot=(0.5f,0.5f) to center on given point, etc.
+    Set next window position. call before `begin()`. use pivot=(0.5,0.5) to center on given point, etc.
     """
 ```
 
@@ -938,7 +728,7 @@ def set_next_window_size(
     cond: Cond = Cond.NONE,
 ) -> None:
     """
-    Set next window size. set axis to 0.0f to force an auto-fit on this axis. call before `begin()`
+    Set next window size. set axis to 0.0 to force an auto-fit on this axis. call before `begin()`
     """
 ```
 
@@ -981,7 +771,7 @@ def set_next_window_content_size(
     size: tuple[float, float],
 ) -> None:
     """
-    Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before `begin()`
+    Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0 to leave it automatic. call before `begin()`
     """
 ```
 
@@ -1019,7 +809,7 @@ def set_next_window_scroll(
     scroll: tuple[float, float],
 ) -> None:
     """
-    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    Set next window scrolling value (use < 0.0 to not affect a given axis).
     """
 ```
 
@@ -1274,7 +1064,7 @@ def set_next_window_scroll(
     scroll: tuple[float, float],
 ) -> None:
     """
-    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    Set next window scrolling value (use < 0.0 to not affect a given axis).
     """
 ```
 
@@ -1548,6 +1338,39 @@ def pop_style_var(
 
 :::
 
+::: api-signature
+
+```python
+def push_item_flag(
+    option: ItemFlags,
+    enabled: bool,
+) -> None:
+    """
+    Modify specified shared item flag, e.g. `push_item_flag(ItemFlags.NO_TAB_STOP, true)`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_item_flag() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_item_flags() -> int:
+    """
+    Get generic flags of the last item.
+    """
+```
+
+:::
+
 ## Parameter stacks (current window)
 
 ### Functions
@@ -1559,7 +1382,7 @@ def push_item_width(
     item_width: float,
 ) -> None:
     """
-    Push width of items for common large "item+label" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
+    Push width of items for common large "item+label" widgets. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
     """
 ```
 
@@ -1580,7 +1403,7 @@ def set_next_item_width(
     item_width: float,
 ) -> None:
     """
-    Set width of the _next_ common large "item+label" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
+    Set width of the _next_ common large "item+label" widget. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
     """
 ```
 
@@ -3247,7 +3070,7 @@ Consider using [ImPlot](https://github.com/epezent/implot) which is much better!
 ```python
 def plot_lines(
     label: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)],
     overlay_text: str | None = None,
     scale_min: float = FLT_MAX,
     scale_max: float = FLT_MAX,
@@ -3262,7 +3085,7 @@ def plot_lines(
 ```python
 def plot_histogram(
     label: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)],
     overlay_text: str | None = None,
     scale_min: float = FLT_MAX,
     scale_max: float = FLT_MAX,
@@ -3687,7 +3510,7 @@ def table_next_row(
     min_row_height: float = 0.0,
 ) -> None:
     """
-    Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0f.
+    Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0.
     """
 ```
 
@@ -3972,7 +3795,7 @@ def get_column_offset(
     column_index: int = -1,
 ) -> float:
     """
-    Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0f
+    Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0
     """
 ```
 
@@ -4605,6 +4428,32 @@ def get_style_color_name(
 
 :::
 
+### Clipboard
+
+::: api-signature
+
+```python
+def get_clipboard_text() -> str:
+    """
+    Get clipboard text from the current platform backend.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_clipboard_text(
+    text: str,
+) -> None:
+    """
+    Set clipboard text through the current platform backend.
+    """
+```
+
+:::
+
 ## Text Utilities
 
 ### Functions
@@ -4816,6 +4665,19 @@ def set_next_item_shortcut(
 
 :::
 
+::: api-signature
+
+```python
+def set_item_key_owner(
+    key: Key,
+) -> None:
+    """
+    Set key owner to last item ID if it is hovered or active.
+    """
+```
+
+:::
+
 ## Inputs Utilities: Mouse
 
 * To refer to a mouse button, you may use named enums in your code, e.g., `MouseButton.LEFT`, `MouseButton.RIGHT`.
@@ -4960,7 +4822,7 @@ def is_mouse_dragging(
     lock_threshold: float = -1.0,
 ) -> bool:
     """
-    Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0)
     """
 ```
 
@@ -4974,7 +4836,7 @@ def get_mouse_drag_delta(
     lock_threshold: float = -1.0,
 ) -> tuple[float, float]:
     """
-    Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0 until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0)
     """
 ```
 
@@ -5149,12 +5011,12 @@ def set_next_frame_want_capture_mouse(
 | ALPHA\_NO\_BG | ColorEdit, ColorPicker, `color_button`: disable rendering a checkerboard background behind transparent color. |
 | ALPHA\_PREVIEW\_HALF | ColorEdit, ColorPicker, `color_button`: display half opaque / half transparent preview. |
 | ALPHA\_BAR | ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker. |
-| HDR | (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well). |
+| HDR | (WIP) ColorEdit: Currently only disable 0.0..1.0 limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well). |
 | DISPLAY\_RGB | ColorEdit: override *display* type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex. |
 | DISPLAY\_HSV |  |
 | DISPLAY\_HEX |  |
 | UINT8 | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0..255. |
-| FLOAT | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers. |
+| FLOAT | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0.0..1.0 floats instead of 0..255 integers. No round-trip of value via integers. |
 | PICKER\_HUE\_BAR | ColorPicker: bar for Hue, rectangle for Sat/Value. |
 | PICKER\_HUE\_WHEEL | ColorPicker: wheel for Hue, triangle for Sat/Value. |
 | INPUT\_RGB | ColorEdit, ColorPicker: input and output data in RGB format. |
@@ -5233,11 +5095,11 @@ def set_next_frame_want_capture_mouse(
 | --- | --- |
 | NONE |  |
 | CLOSED | PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason) |
-| ROUND\_CORNERS\_TOP\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01. |
-| ROUND\_CORNERS\_TOP\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02. |
-| ROUND\_CORNERS\_BOTTOM\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04. |
-| ROUND\_CORNERS\_BOTTOM\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08. |
-| ROUND\_CORNERS\_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag! |
+| ROUND\_CORNERS\_TOP\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01. |
+| ROUND\_CORNERS\_TOP\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02. |
+| ROUND\_CORNERS\_BOTTOM\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04. |
+| ROUND\_CORNERS\_BOTTOM\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08. |
+| ROUND\_CORNERS\_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag! |
 | ROUND\_CORNERS\_TOP |  |
 | ROUND\_CORNERS\_BOTTOM |  |
 | ROUND\_CORNERS\_LEFT |  |
@@ -5583,7 +5445,7 @@ def set_next_frame_want_capture_mouse(
 | NO\_INPUT | Disable Ctrl+Click or Enter key allowing to input text directly into the widget. |
 | WRAP\_AROUND | Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now. |
 | CLAMP\_ON\_INPUT | Clamp value to min/max bounds when input manually with Ctrl+Click. By default Ctrl+Click allows going out of bounds. |
-| CLAMP\_ZERO\_RANGE | Clamp even if min==max==0.0f. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
+| CLAMP\_ZERO\_RANGE | Clamp even if min==max==0.0. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
 | NO\_SPEED\_TWEAKS | Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic. |
 | COLOR\_MARKERS | `drag_scalar_n()`, `slider_scalar_n()`: Draw R/G/B/A color markers on each component. |
 | ALWAYS\_CLAMP |  |
@@ -6522,7 +6384,6 @@ DrawList.vtx_buffer_size -> int:
 ```
 
 :::
-
 ---
 
 ---
@@ -6749,8 +6610,8 @@ def begin_subplots(
     cols: int,
     size: tuple[float, float],
     flags: SubplotFlags = SubplotFlags.NONE,
-    row_ratios: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu')] | None = None,
-    col_ratios: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu')] | None = None,
+    row_ratios: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu')] | None = None,
+    col_ratios: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu')] | None = None,
 ) -> bool:
     """
     See https://nurpax.github.io/slimgui/apiref_implot.html#subplots for details.
@@ -6840,7 +6701,7 @@ def setup_axis_format(
 ```python
 def setup_axis_ticks(
     axis: int,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     labels: Sequence[str] | None = None,
     keep_default: bool = False,
 ) -> None:
@@ -7078,9 +6939,9 @@ if you try plotting extremely large 64-bit integral types. Proceed with caution!
 ```python
 def plot_line(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: LineFlags = LineFlags.NONE,
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.
@@ -7094,10 +6955,10 @@ def plot_line(
 ```python
 def plot_line(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     xscale: float = 1.0,
     xstart: float = 0.0,
-    flags: LineFlags = LineFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a standard 2D line plot. The x values are taken from the `xs` array, and the y values are taken from the `ys` array.
@@ -7113,9 +6974,9 @@ Plots a standard 2D line plot. The x values are spaced evenly along the x axis, 
 ```python
 def plot_scatter(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: ScatterFlags = ScatterFlags.NONE,
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`.
@@ -7129,10 +6990,10 @@ def plot_scatter(
 ```python
 def plot_scatter(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     xscale: float = 1.0,
     xstart: float = 0.0,
-    flags: ScatterFlags = ScatterFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`.
@@ -7146,9 +7007,9 @@ def plot_scatter(
 ```python
 def plot_stairs(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: StairsFlags = StairsFlags.NONE,
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`
@@ -7162,10 +7023,10 @@ def plot_stairs(
 ```python
 def plot_stairs(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     xscale: float = 1.0,
     xstart: float = 0.0,
-    flags: StairsFlags = StairsFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`
@@ -7179,10 +7040,10 @@ def plot_stairs(
 ```python
 def plot_shaded(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys1: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys2: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: ShadedFlags = ShadedFlags.NONE,
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
@@ -7196,10 +7057,10 @@ def plot_shaded(
 ```python
 def plot_shaded(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     yref: float = 0,
-    flags: ShadedFlags = ShadedFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
@@ -7213,11 +7074,11 @@ def plot_shaded(
 ```python
 def plot_shaded(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     yref: float = 0,
     xscale: float = 1.0,
     xstart: float = 0.0,
-    flags: ShadedFlags = ShadedFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
@@ -7231,10 +7092,10 @@ def plot_shaded(
 ```python
 def plot_bars(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     bar_size: float,
-    flags: BarsFlags = BarsFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.
@@ -7248,10 +7109,10 @@ def plot_bars(
 ```python
 def plot_bars(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     bar_size: float = 0.67,
     shift: float = 0.0,
-    flags: BarsFlags = BarsFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.
@@ -7268,7 +7129,7 @@ def plot_bar_groups(
     values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)],
     group_size: float = 0.67,
     shift: float = 0.0,
-    flags: BarGroupsFlags = BarGroupsFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a group of bars. `values` is a matrix with a shape `(item_count, group_count)`. `label_ids` should have `item_count` elements.
@@ -7282,10 +7143,10 @@ def plot_bar_groups(
 ```python
 def plot_error_bars(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    err: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: ErrorBarsFlags = ErrorBarsFlags.NONE,
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    err: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
@@ -7299,11 +7160,11 @@ def plot_error_bars(
 ```python
 def plot_error_bars(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    neg: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    pos: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: ErrorBarsFlags = ErrorBarsFlags.NONE,
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    neg: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    pos: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
@@ -7317,10 +7178,10 @@ def plot_error_bars(
 ```python
 def plot_stems(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     ref: float = 0.0,
-    flags: StemsFlags = StemsFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots stems. Vertical by default.
@@ -7334,11 +7195,11 @@ def plot_stems(
 ```python
 def plot_stems(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     ref: float = 0.0,
     scale: float = 1.0,
     start: float = 0.0,
-    flags: StemsFlags = StemsFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots stems. Vertical by default.
@@ -7352,8 +7213,8 @@ def plot_stems(
 ```python
 def plot_inf_lines(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: InfLinesFlags = InfLinesFlags.NONE,
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).
@@ -7373,7 +7234,7 @@ def plot_heatmap(
     label_fmt: str | None = '%.1f',
     bounds_min: tuple[float, float] = (0.0, 0.0),
     bounds_max: tuple[float, float] = (1.0, 1.0),
-    flags: HeatmapFlags = HeatmapFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a 2D heatmap chart. `values` is expected to have shape (rows, cols). Leave `scale_min` and `scale_max` both at 0 for automatic color scaling, or set them to a predefined range. `label_fmt` can be set to `None` for no labels.
@@ -7387,9 +7248,9 @@ def plot_heatmap(
 ```python
 def plot_digital(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    flags: DigitalFlags = DigitalFlags.NONE,
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
@@ -7409,7 +7270,7 @@ def plot_image(
     uv0: tuple[float, float] = (0,0),
     uv1: tuple[float, float] = (1,1),
     tint_col: tuple[float, float, float, float] = (1,1,1,1),
-    flags: ImageFlag = ImageFlag.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot coordinates (y-up) and `uv0`/`uv1` are in texture coordinates (y-down).
@@ -7426,7 +7287,7 @@ def plot_text(
     x: float,
     y: float,
     pix_offset: tuple[float, float] = (0,0),
-    flags: TextFlag = TextFlag.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with `implot.push_style_color(Col.INLAY_TEXT, ...)`.
@@ -7440,7 +7301,7 @@ def plot_text(
 ```python
 def plot_dummy(
     label_id: str,
-    flags: DummyFlag = DummyFlag.NONE,
+    spec: PlotSpec | None = None,
 ) -> None:
     """
     Plots a dummy item (i.e. adds a legend entry colored by `Col.LINE`).
@@ -7454,11 +7315,11 @@ def plot_dummy(
 ```python
 def plot_histogram(
     label_id: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     bins: int | Bin = Bin.STURGES,
     bar_scale: float = 1.0,
     range: tuple[float, float] | None = None,
-    flags: HistogramFlags = HistogramFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> float:
     """
     Plots a horizontal histogram. `bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `values` will be used as the range.  Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
@@ -7472,12 +7333,12 @@ def plot_histogram(
 ```python
 def plot_histogram2d(
     label_id: str,
-    xs: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
-    ys: Annotated[NDArray[Any], dict(shape=(None), order='C', device='cpu', writable=False)],
+    xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
+    ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)],
     x_bins: int | Bin = Bin.STURGES,
     y_bins: int | Bin = Bin.STURGES,
     range: tuple[tuple[float, float], tuple[float, float]] | None = None,
-    flags: HistogramFlags = HistogramFlags.NONE,
+    spec: PlotSpec | None = None,
 ) -> float:
     """
     Plots two dimensional, bivariate histogram as a heatmap. `x_bins` and `y_bins` can be a positive integer or a method specified with the `implot.Bin` enum. If `range` is left unspecified, the min/max of `xs` an `ys` will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
@@ -8291,71 +8152,6 @@ def pop_style_var(
 
 :::
 
-The following can be used to modify the style of the next plot item ONLY. They do
-NOT require calls to `pop_style_*`. Leave style attributes you don't want modified to
-`implot.AUTO` or `implot.AUTO_COL`. Automatic styles will be deduced from the current
-values in your `implot.Style` or from Colormap data.
-
-::: api-signature
-
-```python
-def set_next_line_style(
-    col: tuple[float, float, float, float] = AUTO_COL,
-    weight: float = AUTO,
-) -> None:
-    """
-    Set the line color and weight for the next item only.
-    """
-```
-
-:::
-
-::: api-signature
-
-```python
-def set_next_fill_style(
-    col: tuple[float, float, float, float] = AUTO_COL,
-    alpha_mod: float = AUTO,
-) -> None:
-    """
-    Set the fill color for the next item only.
-    """
-```
-
-:::
-
-::: api-signature
-
-```python
-def set_next_marker_style(
-    marker: Marker | int = AUTO,
-    size: float = AUTO,
-    fill: tuple[float, float, float, float] = AUTO_COL,
-    weight: float = AUTO,
-    outline: tuple[float, float, float, float] = AUTO_COL,
-) -> None:
-    """
-    Set the marker style for the next item only.
-    """
-```
-
-:::
-
-::: api-signature
-
-```python
-def set_next_error_bar_style(
-    col: tuple[float, float, float, float] = AUTO_COL,
-    size: float = AUTO,
-    weight: float = AUTO,
-) -> None:
-    """
-    Set the error bar style for the next item only.
-    """
-```
-
-:::
-
 ::: api-signature
 
 ```python
@@ -8404,7 +8200,7 @@ Colormap data will be ignored and a custom color will be used if you have done o
 
 1. Modified an item style color in your `implot.Style` to anything other than `implot.AUTO_COL`.
 2. Pushed an item style color using `push_style_color()`.
-3. Set the next item style with a `set_next_*_style()` function.
+3. Passed an explicit `PlotSpec` with a custom color to a plot item.
 
 ::: api-signature
 
@@ -8804,6 +8600,94 @@ def show_demo_window(
 
 :::
 
+## Class Reference
+
+### Class: PlotSpec
+
+`PlotSpec` configures a single plotted item. Pass it with the `spec=` argument to
+functions such as `plot_line()`, `plot_scatter()`, and `plot_histogram2d()`.
+
+This replaces the old `set_next_*_style()` helpers from earlier ImPlot versions.
+Instead of mutating an implicit “next item” style, create a `PlotSpec` and pass it
+explicitly to the plot call you want to affect.
+
+Typical usage looks like this:
+
+```python
+spec = PlotSpec(
+    line_color=(1, 0, 0, 1),
+    line_weight=2.0,
+    marker=implot.Marker.CIRCLE,
+    flags=implot.ItemFlags.NO_LEGEND | implot.LineFlags.SEGMENTS,
+)
+
+implot.plot_line("My Line", xs, ys, spec=spec)
+```
+
+`PlotSpec()` by itself uses the same defaults as ImPlot, so you only need to set the
+fields you want to override.
+
+::: api-properties PlotSpec
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `line_color` | `tuple[float, float, float, float]` | `AUTO_COL` | Line color. `AUTO_COL` uses the next colormap color or the current item color. |
+| `line_weight` | `float` | `1.0` | Line weight in pixels. Applies to lines, bar edges, and marker edges. |
+| `fill_color` | `tuple[float, float, float, float]` | `AUTO_COL` | Fill color. `AUTO_COL` uses the next colormap color or the current item color. |
+| `fill_alpha` | `float` | `1.0` | Alpha multiplier for `fill_color` and `marker_fill_color`. |
+| `marker` | `int` | `Marker.NONE` | Marker type. Use `Marker.AUTO` to use the next unused marker. |
+| `marker_size` | `float` | `4.0` | Marker size, as a radius in pixels. |
+| `marker_line_color` | `tuple[float, float, float, float]` | `AUTO_COL` | Marker edge color. `AUTO_COL` uses `line_color`. |
+| `marker_fill_color` | `tuple[float, float, float, float]` | `AUTO_COL` | Marker face color. `AUTO_COL` uses `line_color`. |
+| `size` | `float` | `4.0` | Size in pixels for error bar whiskers or digital bar height. |
+| `offset` | `int` | `0` | Data index offset. |
+| `stride` | `int` | `AUTO` | Data stride in bytes. `AUTO` uses `sizeof(T)` for the plotted data type. |
+| `flags` | `int` | `ItemFlags.NONE` | Optional item flags. Combine common `ItemFlags` with specialized plot flags. |
+| `line_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per line segment. If `None`, use `line_color` for all lines. |
+| `fill_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per filled segment. If `None`, use `fill_color` for all fills. |
+| `marker_sizes` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of marker sizes, dtype `numpy.float32`, one value per marker. If `None`, use `marker_size` for all markers. |
+| `marker_line_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker edge. If `None`, use `marker_line_color` for all markers. |
+| `marker_fill_colors` | `NDArray[Any] \| None` | `None` | 1-dimensional NumPy array of packed ImU32 colors, dtype `numpy.uint32`, one value per marker face. If `None`, use `marker_fill_color` for all markers. |
+:::
+
+### Class: Style
+
+`Style` stores the global ImPlot styling state returned by `get_style()`. Modify its
+fields when you want to change default plot appearance globally instead of on a
+single plot item.
+
+Use `PlotSpec` for per-item styling such as line color, markers, or specialized
+item flags.
+
+::: api-properties Style
+| Property | Type | Description |
+| --- | --- | --- |
+| `plot_border_size` | `float` |  |
+| `minor_alpha` | `float` |  |
+| `major_tick_len` | `tuple[float, float]` |  |
+| `minor_tick_len` | `tuple[float, float]` |  |
+| `major_tick_size` | `tuple[float, float]` |  |
+| `minor_tick_size` | `tuple[float, float]` |  |
+| `major_grid_size` | `tuple[float, float]` |  |
+| `minor_grid_size` | `tuple[float, float]` |  |
+| `plot_padding` | `tuple[float, float]` |  |
+| `label_padding` | `tuple[float, float]` |  |
+| `legend_padding` | `tuple[float, float]` |  |
+| `legend_inner_padding` | `tuple[float, float]` |  |
+| `legend_spacing` | `tuple[float, float]` |  |
+| `mouse_pos_padding` | `tuple[float, float]` |  |
+| `annotation_padding` | `tuple[float, float]` |  |
+| `fit_padding` | `tuple[float, float]` |  |
+| `digital_padding` | `float` |  |
+| `digital_spacing` | `float` |  |
+| `plot_default_size` | `tuple[float, float]` |  |
+| `plot_min_size` | `tuple[float, float]` |  |
+| `colors` | `ColorsArray` |  |
+| `colormap` | `int` |  |
+| `use_local_time` | `bool` |  |
+| `use_iso8601` | `bool` |  |
+| `use_24hour_clock` | `bool` |  |
+:::
+
 ## Enum Reference
 
 ### Enum: Axis
@@ -8831,11 +8715,6 @@ def show_demo_window(
 
 | Name | Description |
 | --- | --- |
-| LINE | Plot line/outline color (defaults to next unused color in current colormap) |
-| FILL | Plot fill color for bars (defaults to the current line color) |
-| MARKER\_OUTLINE | Marker outline color (defaults to the current line color) |
-| MARKER\_FILL | Marker fill color (defaults to the current line color) |
-| ERROR\_BAR | Error bar color (defaults to `Col.TEXT`) |
 | FRAME\_BG | Plot frame background color (defaults to `Col.FRAME_BG`) |
 | PLOT\_BG | Plot area background color (defaults to `Col.WINDOW_BG`) |
 | PLOT\_BORDER | Plot area border color (defaults to `Col.BORDER`) |
@@ -8902,6 +8781,7 @@ def show_demo_window(
 | Name | Description |
 | --- | --- |
 | NONE | No marker |
+| AUTO | Automatic marker selection |
 | CIRCLE | A circle marker (default) |
 | SQUARE | A square maker |
 | DIAMOND | A diamond marker |
@@ -8909,9 +8789,9 @@ def show_demo_window(
 | DOWN | An downward-pointing triangle marker |
 | LEFT | An leftward-pointing triangle marker |
 | RIGHT | An rightward-pointing triangle marker |
-| CROSS | A cross marker (not fillable) |
-| PLUS | A plus marker (not fillable) |
-| ASTERISK | A asterisk marker (not fillable) |
+| CROSS | A cross marker (not fill-able) |
+| PLUS | A plus marker (not fill-able) |
+| ASTERISK | A asterisk marker (not fill-able) |
 | COUNT |  |
 
 ### Enum: Scale
@@ -8927,15 +8807,8 @@ def show_demo_window(
 
 | Name | Description |
 | --- | --- |
-| LINE\_WEIGHT | Float,  plot item line weight in pixels |
-| MARKER | Int,    marker specification |
-| MARKER\_SIZE | Float,  marker size in pixels (roughly the marker's "radius") |
-| MARKER\_WEIGHT | Float,  plot outline weight of markers in pixels |
-| FILL\_ALPHA | Float,  alpha modifier applied to all plot item fills |
-| ERROR\_BAR\_SIZE | Float,  error bar whisker width in pixels |
-| ERROR\_BAR\_WEIGHT | Float,  error bar whisker weight in pixels |
-| DIGITAL\_BIT\_HEIGHT | Float,  digital channels bit height (at 1) in pixels |
-| DIGITAL\_BIT\_GAP | Float,  digital channels bit padding gap in pixels |
+| PLOT\_DEFAULT\_SIZE | ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot |
+| PLOT\_MIN\_SIZE | ImVec2, minimum size plot frame can be when shrunk |
 | PLOT\_BORDER\_SIZE | Float,  thickness of border around plot area |
 | MINOR\_ALPHA | Float,  alpha multiplier applied to minor axis grid lines |
 | MAJOR\_TICK\_LEN | ImVec2, major tick lengths for X and Y axes |
@@ -8951,9 +8824,9 @@ def show_demo_window(
 | LEGEND\_SPACING | ImVec2, spacing between legend entries |
 | MOUSE\_POS\_PADDING | ImVec2, padding between plot edge and interior info text |
 | ANNOTATION\_PADDING | ImVec2, text padding around annotation labels |
-| FIT\_PADDING | ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y) |
-| PLOT\_DEFAULT\_SIZE | ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot |
-| PLOT\_MIN\_SIZE | ImVec2, minimum size plot frame can be when shrunk |
+| FIT\_PADDING | ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y) |
+| DIGITAL\_PADDING | Float,  digital plot padding from bottom in pixels |
+| DIGITAL\_SPACING | Float,  digital plot spacing gap in pixels |
 | COUNT |  |
 
 ### Enum: AxisFlags
@@ -9115,6 +8988,7 @@ def show_demo_window(
 | NORMALIZE | Force normalization of pie chart values (i.e. always make a full circle if sum < 0) |
 | IGNORE\_HIDDEN | Ignore hidden slices when drawing the pie chart (as if they were not there) |
 | EXPLODING | Explode legend-hovered slice |
+| NO\_SLICE\_BORDER | Do not draw slice borders |
 
 ### Enum: PlotFlags
 
@@ -9183,7 +9057,69 @@ def show_demo_window(
 | --- | --- |
 | NONE | Default |
 | VERTICAL | Text will be rendered vertically |
+---
 
+---
+url: /slimgui/recipes.md
+---
+# Recipes
+
+These recipes are focused, runnable examples of common Dear ImGui patterns as expressed through
+Slimgui.
+
+They are organized by task and UI pattern rather than by API symbol, so they work as a practical
+companion to the API reference.
+
+The same examples can also be explored interactively:
+
+```bash
+python3 example/run_examples.py
+```
+---
+
+---
+url: /slimgui/recipes/widgets.md
+---
+
+# Widgets
+
+## Simple button
+
+![Simple button](./images/button_simple.png)
+
+Add a simple button.  The `imgui.button` returns `True` if the button was clicked.
+
+```python
+def button_simple():
+    if imgui.button("Test Button"):
+        logging.info("button clicked")
+```
+
+## Colored buttons
+
+![Colored buttons](./images/button_colors.png)
+
+Add a button.  The button base, hover and active states are colored separately.
+
+```python
+def button_colors():
+    for i in range(7):
+        base_color = imgui.color_convert_hsv_to_rgb((i/7.0, 0.6, 0.6, 1))
+        hover_color = imgui.color_convert_hsv_to_rgb((i/7.0, 0.7, 0.7, 1))
+        active_color = imgui.color_convert_hsv_to_rgb((i/7.0, 0.8, 0.8, 1))
+
+        if i > 0:
+            imgui.same_line()
+
+        imgui.push_id(i)
+        imgui.push_style_color(imgui.Col.BUTTON, base_color)
+        imgui.push_style_color(imgui.Col.BUTTON_HOVERED, hover_color)
+        imgui.push_style_color(imgui.Col.BUTTON_ACTIVE, active_color)
+        if imgui.button("Click"):
+            logging.info("Colored button clicked")
+        imgui.pop_style_color(3)
+        imgui.pop_id()
+```
 ---
 
 ---
@@ -9384,93 +9320,435 @@ def styles_color_palette_popup(state: PaletteState):
 
         imgui.end_popup()
 ```
-
 ---
 
 ---
-url: /slimgui/guide/typing.md
+url: /slimgui/recipes/layout.md
 ---
-# Typing
 
-Slimgui has been developed with the following goals in mind:
+# Layout
 
-* Support typing through `.pyi` files to enable good IDE support such as auto-complete, type checking, and docstrings.
-* Closely match the Dear ImGui API but adapt for Python as necessary. Don't invent new API concepts.
+## Master-detail layout with tabs
 
-The Slimgui API is similar to [pyimgui](https://github.com/pyimgui/pyimgui) except somewhat modernized:
+![Master-detail layout with tabs](./images/layout_master_detail_tabs.png)
 
-* Enums in ImGui are exposed as typed Python enums using `enum.IntEnum` and `enum.IntFlag` to make it clear which API functions consume what type of enums.
-* Vector types such as `ImVec2`, `ImVec4`, and `float*` arrays are converted to Python tuples such as `tuple[float, float]` for `ImVec2` and `tuple[float, float, float, float]` for `ImVec4`.
-* Mutable bool args such as `bool* p_open` are input as normal `bool` values and returned as the second element of a 2-tuple. For example, `bool ImGui::Checkbox(const char* label, bool* v)` is translated to `def checkbox(label: str, v: bool) -> tuple[bool, bool]`, where the first element is the boolean return value of `ImGui::Checkbox()` and the second element is the new checkbox state.
+Build a resizable master-detail layout with a child list on the left and tabs on the right.
 
-## Public and Internal Types
-
-Typical usage imports the public modules:
+This follows the same general pattern as the Dear ImGui demo's simple layout example: a left child
+window is used for navigation, `same_line()` places a grouped detail pane beside it, and the right
+side reserves its bottom row for actions by giving the inner child a height of
+`-get_frame_height_with_spacing()`. The result is a compact application-style layout rather than a
+one-off arrangement of widgets.
 
 ```python
-from slimgui import imgui
-from slimgui import implot
+def layout_master_detail_tabs(state: LayoutState):
+    imgui.begin_child("left pane", (150, 0), imgui.ChildFlags.BORDERS | imgui.ChildFlags.RESIZE_X)
+    for i in range(12):
+        if imgui.selectable(f"MyObject {i}", state.selected == i, imgui.SelectableFlags.SELECT_ON_NAV)[0]:
+            state.selected = i
+    imgui.end_child()
+
+    imgui.same_line()
+
+    imgui.begin_group()
+    imgui.begin_child("item view", (0, -imgui.get_frame_height_with_spacing()))
+    imgui.text(f"MyObject: {state.selected}")
+    imgui.separator()
+    if imgui.begin_tab_bar("##details-tabs"):
+        if imgui.begin_tab_item("Description")[0]:
+            imgui.text_wrapped(
+                "Use a resizable child window for navigation and reserve a single action row below the details pane."
+            )
+            imgui.end_tab_item()
+        if imgui.begin_tab_item("Details")[0]:
+            imgui.text("ID: 0123456789")
+            imgui.text("Status: Ready")
+            imgui.end_tab_item()
+        imgui.end_tab_bar()
+    imgui.end_child()
+
+    if imgui.button("Revert"):
+        pass
+    imgui.same_line()
+    if imgui.button("Save"):
+        pass
+    imgui.end_group()
 ```
 
-The underlying bindings live under `slimgui.slimgui_ext.imgui` and
-`slimgui.slimgui_ext.implot`.
+## Item width patterns
 
-Those `slimgui_ext.*` modules exist because they expose the native binding layer directly.
-The public `slimgui.imgui` and `slimgui.implot` modules then build on top of that layer by:
+![Item width patterns](./images/layout_item_width_patterns.png)
 
-* re-exporting many enums and binding types
-* adding some higher-level Python wrapper types
+Use `push_item_width()` with fixed, right-aligned, and proportional widths.
 
-For example, some API signatures use wrapper types such as:
-
-* `slimgui.imgui.WrappedContext`
-* `slimgui.implot.WrappedContext`
-* `slimgui.imgui.DrawList`
-
-These are distinct from the lower-level types in `slimgui.slimgui_ext.*`, even when they are related internally.
-
----
-
----
-url: /slimgui/recipes/widgets.md
----
-
-# Widgets
-
-## Simple button
-
-![Simple button](./images/button_simple.png)
-
-Add a simple button.  The `imgui.button` returns `True` if the button was clicked.
+This recipe demonstrates the width patterns from the Dear ImGui demo: a fixed pixel width, a width
+aligned against the right edge using a negative value, a width derived from
+`get_content_region_avail()`, and the `-FLT_MIN` idiom for "fill until the right edge". These
+patterns are the building blocks for forms that need to stay readable while the window is resized.
 
 ```python
-def button_simple():
-    if imgui.button("Test Button"):
-        logging.info("button clicked")
+def layout_item_width_patterns(state: WidthState):
+    _changed, state.show_indented = imgui.checkbox("Show indented items", state.show_indented)
+
+    imgui.text("Fixed width")
+    imgui.push_item_width(120)
+    _changed, state.value = imgui.drag_float("float##fixed", state.value, 0.01, 0.0, 1.0)
+    if state.show_indented:
+        imgui.indent()
+        _changed, state.value = imgui.drag_float("float##fixed-indented", state.value, 0.01, 0.0, 1.0)
+        imgui.unindent()
+    imgui.pop_item_width()
+
+    imgui.text("Align to right edge minus 100")
+    imgui.push_item_width(-100)
+    _changed, state.value = imgui.drag_float("float##right-minus-100", state.value, 0.01, 0.0, 1.0)
+    imgui.pop_item_width()
+
+    imgui.text("Half of available width")
+    imgui.push_item_width(imgui.get_content_region_avail()[0] * 0.5)
+    _changed, state.value = imgui.drag_float("float##half-width", state.value, 0.01, 0.0, 1.0)
+    imgui.pop_item_width()
+
+    imgui.text("Align to right edge")
+    imgui.push_item_width(-imgui.FLT_MIN)
+    _changed, state.value = imgui.drag_float("float##fill-right", state.value, 0.01, 0.0, 1.0)
+    imgui.pop_item_width()
 ```
 
-## Colored buttons
+## Group sizing
 
-![Colored buttons](./images/button_colors.png)
+![Group sizing](./images/layout_group_sizing.png)
 
-Add a button.  The button base, hover and active states are colored separately.
+Capture a group's size and reuse it to size related widgets beside it.
+
+`begin_group()` / `end_group()` lets multiple items behave like one logical item for layout. This
+example measures the first grouped block with `get_item_rect_size()` and then reuses that size for a
+histogram, two action buttons, and a list box beside it. The pattern is useful when different widget
+types should share one visual footprint without hard-coding pixel sizes for each one separately.
 
 ```python
-def button_colors():
-    for i in range(7):
-        base_color = imgui.color_convert_hsv_to_rgb((i/7.0, 0.6, 0.6, 1))
-        hover_color = imgui.color_convert_hsv_to_rgb((i/7.0, 0.7, 0.7, 1))
-        active_color = imgui.color_convert_hsv_to_rgb((i/7.0, 0.8, 0.8, 1))
+def layout_group_sizing(state: GroupSizingState):
+    imgui.begin_group()
+    imgui.begin_group()
+    imgui.button("AAA")
+    imgui.same_line()
+    imgui.button("BBB")
+    imgui.same_line()
+    imgui.begin_group()
+    imgui.button("CCC")
+    imgui.button("DDD")
+    imgui.end_group()
+    imgui.same_line()
+    imgui.button("EEE")
+    imgui.end_group()
+    imgui.set_item_tooltip("First group hovered")
 
-        if i > 0:
-            imgui.same_line()
+    group_size = imgui.get_item_rect_size()
+    imgui.plot_histogram(
+        "##values",
+        np.array([0.5, 0.2, 0.8, 0.6, 0.25], dtype=np.float32),
+        graph_size=group_size,
+    )
 
+    half_width = (group_size[0] - imgui.get_style().item_spacing[0]) * 0.5
+    imgui.button("ACTION", (half_width, group_size[1]))
+    imgui.same_line()
+    imgui.button("REACTION", (half_width, group_size[1]))
+    imgui.end_group()
+
+    imgui.same_line()
+    imgui.button("LEVERAGE\nBUZZWORD", group_size)
+    imgui.same_line()
+
+    labels = ["Selected", "Not Selected"]
+    if imgui.begin_list_box("List", group_size):
+        for idx, label in enumerate(labels):
+            if imgui.selectable(label, state.selection == idx)[0]:
+                state.selection = idx
+        imgui.end_list_box()
+```
+
+## Horizontal layout with same\_line()
+
+![Horizontal layout with same\_line()](./images/layout_same_line_basics.png)
+
+Use `same_line()` to keep multiple items on one row instead of advancing to a new line after
+every widget.
+
+This example covers three common horizontal layout patterns: placing text and buttons on the same
+row, using explicit x-offsets for simple aligned columns, and manually wrapping a row of buttons
+when there is no longer enough room to keep adding items on the current line.
+
+```python
+def layout_same_line_basics():
+    imgui.text("Two items: Hello")
+    imgui.same_line()
+    imgui.text_colored((1.0, 1.0, 0.0, 1.0), "Sailor")
+
+    imgui.text("Aligned")
+    imgui.same_line(150)
+    imgui.small_button("x=150")
+    imgui.same_line(300)
+    imgui.small_button("x=300")
+
+    imgui.separator_text("Manual wrapping")
+    button_size = (40, 40)
+    right_edge = imgui.get_cursor_screen_pos()[0] + imgui.get_content_region_avail()[0]
+    spacing_x = imgui.get_style().item_spacing[0]
+    for i in range(10):
         imgui.push_id(i)
-        imgui.push_style_color(imgui.Col.BUTTON, base_color)
-        imgui.push_style_color(imgui.Col.BUTTON_HOVERED, hover_color)
-        imgui.push_style_color(imgui.Col.BUTTON_ACTIVE, active_color)
-        if imgui.button("Click"):
-            logging.info("Colored button clicked")
-        imgui.pop_style_color(3)
+        imgui.button("Box", button_size)
+        next_x2 = imgui.get_item_rect_max()[0] + spacing_x + button_size[0]
+        if i + 1 < 10 and next_x2 < right_edge:
+            imgui.same_line()
         imgui.pop_id()
+```
+
+## Text baseline alignment
+
+![Text baseline alignment](./images/layout_text_baseline_alignment.png)
+
+Use `align_text_to_frame_padding()` when a line starts with text and is followed by framed widgets.
+
+Plain text and framed controls do not naturally share the same baseline. This recipe shows the
+common fix: call `align_text_to_frame_padding()` before the text item so that labels, buttons, and
+other controls sit on the same visual row more cleanly.
+
+```python
+def layout_text_baseline_alignment():
+    imgui.text("Without alignment")
+    imgui.same_line()
+    imgui.button("Button A")
+
+    imgui.align_text_to_frame_padding()
+    imgui.text("With alignment")
+    imgui.same_line()
+    imgui.button("Button B")
+
+    imgui.separator_text("Mixed row")
+    imgui.align_text_to_frame_padding()
+    imgui.text("Status")
+    imgui.same_line()
+    imgui.button("Apply")
+    imgui.same_line()
+    imgui.text("Ready")
+    imgui.same_line()
+    imgui.small_button("Help")
+```
+
+## Basic tab bar
+
+![Basic tab bar](./images/layout_tabs_basic.png)
+
+Build a small tabbed interface with `begin_tab_bar()` and `begin_tab_item()`.
+
+Tabs are submitted every frame like the rest of the ImGui UI. The important pattern is to start
+the tab bar, submit each tab item, render the contents only when that tab item is active, and then
+end both the tab item and the tab bar.
+
+```python
+def layout_tabs_basic(state: TabsState):
+    if imgui.begin_tab_bar("##demo-tabs"):
+        if imgui.begin_tab_item("Summary")[0]:
+            imgui.text_wrapped("Use tabs to split related views inside one window.")
+            if imgui.button("Increment counter"):
+                state.counter += 1
+            imgui.text(f"Counter: {state.counter}")
+            imgui.end_tab_item()
+
+        visible, state.closable_details = imgui.begin_tab_item("Details", state.closable_details)
+        if visible:
+            imgui.text("A tab can manage its own open state.")
+            imgui.checkbox("Enable option", True)
+            imgui.end_tab_item()
+
+        if imgui.begin_tab_item("Logs")[0]:
+            imgui.text("Render the tab contents only when the tab is selected.")
+            imgui.bullet_text("Build completed")
+            imgui.bullet_text("Tests passed")
+            imgui.end_tab_item()
+
+        imgui.end_tab_bar()
+```
+---
+
+---
+url: /slimgui/recipes/implot.md
+---
+
+# ImPlot
+
+## Line plot from x/y arrays
+
+![Line plot from x/y arrays](./images/plot_line_basic.png)
+
+Plot a line from explicit `x` and `y` NumPy arrays.
+
+This is the most direct `implot.plot_line()` calling pattern: prepare one array for x-coordinates
+and one array for y-values, then submit both arrays inside a `begin_plot()` / `end_plot()` block.
+Use this form when your x-axis is not just an implicit sample index and you want full control over
+the horizontal values shown in the plot.
+
+```python
+def plot_line_basic():
+    xs = np.linspace(0.0, 10.0, 200)
+    ys = np.sin(xs)
+
+    if implot.begin_plot("Line Plot"):
+        implot.plot_line("sin(x)", xs, ys)
+        implot.end_plot()
+```
+
+## Line plot from values only
+
+![Line plot from values only](./images/plot_line_values_only.png)
+
+Plot a line from a single value array and let ImPlot infer the x-axis from the sample index.
+
+This overload is useful when you only have y-values and want evenly spaced samples without creating
+a separate x-array yourself. It is a compact way to plot a waveform or time series when the natural
+x-coordinate is just "point 0, point 1, point 2, ...".
+
+```python
+def plot_line_values_only():
+    ys = np.sin(np.linspace(0.0, 3.0 * np.pi, 200))
+
+    if implot.begin_plot("Values Only"):
+        implot.plot_line("wave", ys)
+        implot.end_plot()
+```
+
+## Bar plot from values
+
+![Bar plot from values](./images/plot_bars_basic.png)
+
+Plot bars from a one-dimensional NumPy array.
+
+`implot.plot_bars()` can consume a single array of values and place each bar at the corresponding
+sample index. This is the simplest form for categorical or small summary data when you do not need
+custom x-positions for the bars.
+
+```python
+def plot_bars_basic():
+    ys = np.array([0.3, 0.8, 0.55, 0.9, 0.45], dtype=np.float32)
+
+    if implot.begin_plot("Bars"):
+        implot.plot_bars("bars", ys)
+        implot.end_plot()
+```
+
+## Grouped bar plot
+
+![Grouped bar plot](./images/plot_bar_groups_basic.png)
+
+Plot grouped bars from a two-dimensional NumPy array.
+
+`implot.plot_bar_groups()` expects tabular data where each row represents one labeled series and
+each column represents one group position. The call to `setup_axes()` removes axis decorations here
+so the grouped structure is easier to focus on in the example screenshot.
+
+```python
+def plot_bar_groups_basic():
+    values = np.array(
+        [
+            [0.2, 0.4, 0.7, 0.5],
+            [0.6, 0.3, 0.5, 0.8],
+            [0.4, 0.7, 0.2, 0.6],
+        ],
+        dtype=np.float32,
+    )
+
+    if implot.begin_plot("Grouped Bars"):
+        implot.setup_axes(
+            None,
+            None,
+            implot.AxisFlags.NO_DECORATIONS,
+            implot.AxisFlags.NO_DECORATIONS,
+        )
+        implot.plot_bar_groups(["A", "B", "C"], values)
+        implot.end_plot()
+```
+
+## Scatter plot from x/y arrays
+
+![Scatter plot from x/y arrays](./images/plot_scatter_basic.png)
+
+Plot scatter points from x/y NumPy arrays.
+
+Scatter plots use the same explicit x/y array pattern as line plots, but render disconnected points
+instead of a continuous curve. This example builds a simple spiral from polar coordinates to show that
+the points do not need to lie on a regular grid or be evenly spaced.
+
+```python
+def plot_scatter_basic():
+    theta = np.linspace(0.0, 4.0 * np.pi, 80)
+    radius = np.linspace(0.2, 1.0, 80)
+    xs = radius * np.cos(theta)
+    ys = radius * np.sin(theta)
+
+    if implot.begin_plot("Scatter"):
+        implot.plot_scatter("spiral", xs, ys)
+        implot.end_plot()
+```
+
+## Per-point marker color arrays with PlotSpec
+
+![Per-point marker color arrays with PlotSpec](./images/plot_spec_marker_color_arrays.png)
+
+Use `PlotSpec` marker color arrays to style each scatter point with its own fill and outline colors.
+
+Dear ImPlot 1.0 moved next-item styling into `PlotSpec`, including pointer-based arrays such as
+`marker_fill_colors` and `marker_line_colors`. This recipe shows the Python form of that pattern: attach NumPy
+arrays of packed `uint32` colors to a `PlotSpec`, then pass that spec to a plotting call. The
+arrays stay attached to the `PlotSpec`, so the same object can be reused across frames and updated
+by mutating the NumPy arrays in place.
+
+The example uses `plot_scatter()` because marker fill and marker outline colors are applied
+independently to each point. `marker_fill_colors` colors the marker interiors while
+`marker_line_colors` colors the outlines.
+
+```python
+def plot_spec_marker_color_arrays():
+    xs = np.linspace(0.0, 10.0, 9)
+    ys = np.array([0.2, 0.8, 0.45, 1.1, 0.7, 1.35, 0.9, 1.55, 1.2], dtype=np.float64)
+    marker_fill_colors = np.array(
+        [
+            0xFF4E79A7,
+            0xFFF28E2B,
+            0xFFE15759,
+            0xFF76B7B2,
+            0xFF59A14F,
+            0xFFEDC948,
+            0xFFB07AA1,
+            0xFFFF9DA7,
+            0xFF9C755F,
+        ],
+        dtype=np.uint32,
+    )
+    marker_line_colors = np.array(
+        [
+            0xFF1D3557,
+            0xFF7A3E00,
+            0xFF6A040F,
+            0xFF184E4A,
+            0xFF1B4332,
+            0xFF7A5C00,
+            0xFF5A3D66,
+            0xFF8F3B4A,
+            0xFF5C4033,
+        ],
+        dtype=np.uint32,
+    )
+
+    spec = implot.PlotSpec(
+        marker=implot.Marker.CIRCLE,
+        marker_size=8.0,
+        line_weight=3.0,
+        marker_fill_colors=marker_fill_colors,
+        marker_line_colors=marker_line_colors,
+    )
+
+    if implot.begin_plot("PlotSpec Marker Color Arrays"):
+        implot.plot_scatter("points", xs, ys, spec=spec)
+        implot.end_plot()
 ```

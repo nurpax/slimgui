@@ -6,6 +6,7 @@
 
 ### Guide
 
+- [Introduction](/slimgui/index.md)
 - [Getting Started](/slimgui/guide/getting-started.md)
 - [Typing](/slimgui/guide/typing.md)
 

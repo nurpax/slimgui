@@ -98,6 +98,28 @@ def get_style() -> slimgui.slimgui_ext.imgui.Style:
 ::: api-signature
 
 ```python
+def get_platform_io() -> slimgui.slimgui_ext.imgui.PlatformIO:
+    """
+    Access the ImGui `PlatformIO` structure.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def new_frame():
+    """
+    ImGui::NewFrame() call but with some Python binding specific book keeping.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
 def end_frame() -> None:
     """
     Ends the Dear ImGui frame. automatically called by `render()`. If you don't need to render data (skipping rendering) you may call `end_frame()` without `render()`... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call `new_frame()` at all!
@@ -258,6 +280,93 @@ def get_version() -> str:
     """
     Get the compiled version string e.g. "1.80 WIP" (essentially the value for IMGUI_VERSION from the compiled version of imgui.cpp)
     """
+```
+
+:::
+
+### Logging
+
+::: api-signature
+
+```python
+def log_to_tty(
+    auto_open_depth: int = -1,
+) -> None:
+    """
+    Start logging to tty (stdout)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_to_file(
+    auto_open_depth: int = -1,
+    filename: str | None = None,
+) -> None:
+    """
+    Start logging to file
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_to_clipboard(
+    auto_open_depth: int = -1,
+) -> None:
+    """
+    Start logging to OS clipboard
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_finish() -> None:
+    """
+    Stop logging (close file, etc.)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_buttons() -> None:
+    """
+    Helper to display buttons for logging to tty/file/clipboard
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def log_text(
+    text: str,
+) -> None:
+    """
+    Pass text data straight to log (without being displayed)
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_nanobind_leak_warnings(
+    enable: bool,
+) -> None:
 ```
 
 :::
@@ -511,7 +620,7 @@ def set_next_window_pos(
     pivot: tuple[float, float] = (0.0, 0.0),
 ) -> None:
     """
-    Set next window position. call before `begin()`. use pivot=(0.5f,0.5f) to center on given point, etc.
+    Set next window position. call before `begin()`. use pivot=(0.5,0.5) to center on given point, etc.
     """
 ```
 
@@ -525,7 +634,7 @@ def set_next_window_size(
     cond: Cond = Cond.NONE,
 ) -> None:
     """
-    Set next window size. set axis to 0.0f to force an auto-fit on this axis. call before `begin()`
+    Set next window size. set axis to 0.0 to force an auto-fit on this axis. call before `begin()`
     """
 ```
 
@@ -568,7 +677,7 @@ def set_next_window_content_size(
     size: tuple[float, float],
 ) -> None:
     """
-    Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before `begin()`
+    Set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0 to leave it automatic. call before `begin()`
     """
 ```
 
@@ -606,7 +715,7 @@ def set_next_window_scroll(
     scroll: tuple[float, float],
 ) -> None:
     """
-    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    Set next window scrolling value (use < 0.0 to not affect a given axis).
     """
 ```
 
@@ -861,7 +970,7 @@ def set_next_window_scroll(
     scroll: tuple[float, float],
 ) -> None:
     """
-    Set next window scrolling value (use < 0.0f to not affect a given axis).
+    Set next window scrolling value (use < 0.0 to not affect a given axis).
     """
 ```
 
@@ -1135,6 +1244,39 @@ def pop_style_var(
 
 :::
 
+::: api-signature
+
+```python
+def push_item_flag(
+    option: ItemFlags,
+    enabled: bool,
+) -> None:
+    """
+    Modify specified shared item flag, e.g. `push_item_flag(ItemFlags.NO_TAB_STOP, true)`
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def pop_item_flag() -> None:
+```
+
+:::
+
+::: api-signature
+
+```python
+def get_item_flags() -> int:
+    """
+    Get generic flags of the last item.
+    """
+```
+
+:::
+
 ## Parameter stacks (current window)
 
 ### Functions
@@ -1146,7 +1288,7 @@ def push_item_width(
     item_width: float,
 ) -> None:
     """
-    Push width of items for common large "item+label" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
+    Push width of items for common large "item+label" widgets. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
     """
 ```
 
@@ -1167,7 +1309,7 @@ def set_next_item_width(
     item_width: float,
 ) -> None:
     """
-    Set width of the _next_ common large "item+label" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
+    Set width of the _next_ common large "item+label" widget. >0.0: width in pixels, <0.0 align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
     """
 ```
 
@@ -2834,7 +2976,7 @@ Consider using [ImPlot](https://github.com/epezent/implot) which is much better!
 ```python
 def plot_lines(
     label: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)],
     overlay_text: str | None = None,
     scale_min: float = FLT_MAX,
     scale_max: float = FLT_MAX,
@@ -2849,7 +2991,7 @@ def plot_lines(
 ```python
 def plot_histogram(
     label: str,
-    values: Annotated[NDArray[Any], dict(shape=(None), device='cpu', writable=False)],
+    values: Annotated[NDArray[Any], dict(shape=(None,), device='cpu', writable=False)],
     overlay_text: str | None = None,
     scale_min: float = FLT_MAX,
     scale_max: float = FLT_MAX,
@@ -3274,7 +3416,7 @@ def table_next_row(
     min_row_height: float = 0.0,
 ) -> None:
     """
-    Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0f.
+    Append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0.
     """
 ```
 
@@ -3559,7 +3701,7 @@ def get_column_offset(
     column_index: int = -1,
 ) -> float:
     """
-    Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0f
+    Get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..`get_columns_count()` inclusive. column 0 is typically 0.0
     """
 ```
 
@@ -4192,6 +4334,32 @@ def get_style_color_name(
 
 :::
 
+### Clipboard
+
+::: api-signature
+
+```python
+def get_clipboard_text() -> str:
+    """
+    Get clipboard text from the current platform backend.
+    """
+```
+
+:::
+
+::: api-signature
+
+```python
+def set_clipboard_text(
+    text: str,
+) -> None:
+    """
+    Set clipboard text through the current platform backend.
+    """
+```
+
+:::
+
 ## Text Utilities
 
 ### Functions
@@ -4403,6 +4571,19 @@ def set_next_item_shortcut(
 
 :::
 
+::: api-signature
+
+```python
+def set_item_key_owner(
+    key: Key,
+) -> None:
+    """
+    Set key owner to last item ID if it is hovered or active.
+    """
+```
+
+:::
+
 ## Inputs Utilities: Mouse
 
 * To refer to a mouse button, you may use named enums in your code, e.g., `MouseButton.LEFT`, `MouseButton.RIGHT`.
@@ -4547,7 +4728,7 @@ def is_mouse_dragging(
     lock_threshold: float = -1.0,
 ) -> bool:
     """
-    Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    Is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0)
     """
 ```
 
@@ -4561,7 +4742,7 @@ def get_mouse_drag_delta(
     lock_threshold: float = -1.0,
 ) -> tuple[float, float]:
     """
-    Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0f)
+    Return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0 until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0)
     """
 ```
 
@@ -4736,12 +4917,12 @@ def set_next_frame_want_capture_mouse(
 | ALPHA\_NO\_BG | ColorEdit, ColorPicker, `color_button`: disable rendering a checkerboard background behind transparent color. |
 | ALPHA\_PREVIEW\_HALF | ColorEdit, ColorPicker, `color_button`: display half opaque / half transparent preview. |
 | ALPHA\_BAR | ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker. |
-| HDR | (WIP) ColorEdit: Currently only disable 0.0f..1.0f limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well). |
+| HDR | (WIP) ColorEdit: Currently only disable 0.0..1.0 limits in RGBA edition (note: you probably want to use `ColorEditFlags.FLOAT` flag as well). |
 | DISPLAY\_RGB | ColorEdit: override *display* type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex. |
 | DISPLAY\_HSV |  |
 | DISPLAY\_HEX |  |
 | UINT8 | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0..255. |
-| FLOAT | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0.0f..1.0f floats instead of 0..255 integers. No round-trip of value via integers. |
+| FLOAT | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0.0..1.0 floats instead of 0..255 integers. No round-trip of value via integers. |
 | PICKER\_HUE\_BAR | ColorPicker: bar for Hue, rectangle for Sat/Value. |
 | PICKER\_HUE\_WHEEL | ColorPicker: wheel for Hue, triangle for Sat/Value. |
 | INPUT\_RGB | ColorEdit, ColorPicker: input and output data in RGB format. |
@@ -4820,11 +5001,11 @@ def set_next_frame_want_capture_mouse(
 | --- | --- |
 | NONE |  |
 | CLOSED | PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason) |
-| ROUND\_CORNERS\_TOP\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01. |
-| ROUND\_CORNERS\_TOP\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02. |
-| ROUND\_CORNERS\_BOTTOM\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04. |
-| ROUND\_CORNERS\_BOTTOM\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08. |
-| ROUND\_CORNERS\_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag! |
+| ROUND\_CORNERS\_TOP\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01. |
+| ROUND\_CORNERS\_TOP\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02. |
+| ROUND\_CORNERS\_BOTTOM\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04. |
+| ROUND\_CORNERS\_BOTTOM\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08. |
+| ROUND\_CORNERS\_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag! |
 | ROUND\_CORNERS\_TOP |  |
 | ROUND\_CORNERS\_BOTTOM |  |
 | ROUND\_CORNERS\_LEFT |  |
@@ -5170,7 +5351,7 @@ def set_next_frame_want_capture_mouse(
 | NO\_INPUT | Disable Ctrl+Click or Enter key allowing to input text directly into the widget. |
 | WRAP\_AROUND | Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now. |
 | CLAMP\_ON\_INPUT | Clamp value to min/max bounds when input manually with Ctrl+Click. By default Ctrl+Click allows going out of bounds. |
-| CLAMP\_ZERO\_RANGE | Clamp even if min==max==0.0f. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
+| CLAMP\_ZERO\_RANGE | Clamp even if min==max==0.0. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it. |
 | NO\_SPEED\_TWEAKS | Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic. |
 | COLOR\_MARKERS | `drag_scalar_n()`, `slider_scalar_n()`: Draw R/G/B/A color markers on each component. |
 | ALWAYS\_CLAMP |  |
