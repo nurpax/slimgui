@@ -1,3 +1,5 @@
+"""Dear ImGui bindings"""
+
 from collections.abc import Callable, Iterator, Sequence
 import enum
 from typing import Annotated, overload, Any

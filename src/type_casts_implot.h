@@ -4,7 +4,7 @@ template <> struct nanobind::detail::type_caster<ImPlotPoint> {
     template <typename T> using Cast = Value;
 
     // Value name for docstring generation
-    static constexpr auto Name = const_name(NB_TYPING_TUPLE "[") + concat(Caster::Name, Caster::Name) + const_name("]");
+    static constexpr auto Name = const_name("tuple[") + concat(Caster::Name, Caster::Name) + const_name("]");
 
     template <typename T_> static constexpr bool can_cast() { return true; }
 

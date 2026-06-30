@@ -9,7 +9,7 @@ MacOS:
 ```
 python3 -m venv .venv
 . .venv/bin/activate
-pip install nanobind==2.9.2 scikit-build-core click glfw pyopengl numpy requests toml
+pip install nanobind==2.13.0 scikit-build-core click glfw pyopengl numpy requests toml
 bash full_build.sh
 ```
 

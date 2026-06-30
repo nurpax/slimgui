@@ -13,7 +13,7 @@
 ## Build, Test, and Development Commands
 - Read `DEVELOPMENT.md` before changing build or documentation workflows; it is the canonical local workflow guide.
 - `python3 -m venv .venv && . .venv/bin/activate` to set up a local virtualenv.
-- `pip install nanobind==2.9.2 scikit-build-core click glfw pyopengl numpy requests toml` for dev dependencies.
+- `pip install nanobind==2.13.0 scikit-build-core click glfw pyopengl numpy requests toml` for dev dependencies.
 - `bash full_build.sh` builds the native extension and generates typings.
 - `python3 gen/check_apiref_docs.py` validates authored VitePress API markdown against `.pyi` and runtime modules.
 - `pytest` runs the test suite.

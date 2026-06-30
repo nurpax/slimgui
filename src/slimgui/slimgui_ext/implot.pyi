@@ -1,3 +1,5 @@
+"""ImPlot bindings"""
+
 from collections.abc import Iterator, Sequence
 import enum
 from typing import Annotated, overload, Any
@@ -1163,13 +1165,13 @@ def show_metrics_window(closable: bool = False) -> bool:
     """Shows ImPlot metrics/debug information window."""
 
 @overload
-def setup_axis_ticks(axis: int, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], labels: Sequence[str] | None = None, keep_default: bool = False) -> None:
+def setup_axis_ticks(axis: int, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], labels: Sequence[str] | None = None, keep_default: bool = False) -> None: ...
+
+@overload
+def setup_axis_ticks(axis: int, v_min: float, v_max: float, n_ticks: int, labels: Sequence[str] | None = None, keep_default: bool = False) -> None:
     """
     Sets an axis' ticks and optionally the labels. To keep the default ticks, set `keep_default=True`.
     """
-
-@overload
-def setup_axis_ticks(axis: int, v_min: float, v_max: float, n_ticks: int, labels: Sequence[str] | None = None, keep_default: bool = False) -> None: ...
 
 def begin_subplots(title_id: str, rows: int, cols: int, size: tuple[float, float], flags: SubplotFlags = SubplotFlags.NONE, row_ratios: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu')] | None = None, col_ratios: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu')] | None = None) -> bool:
     """
@@ -1191,41 +1193,41 @@ def plot_line(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,),
     """
 
 @overload
-def plot_scatter(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
+def plot_scatter(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None: ...
+
+@overload
+def plot_scatter(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None:
     """Plots a standard 2D scatter plot. Default marker is `Marker.CIRCLE`."""
 
 @overload
-def plot_scatter(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None: ...
+def plot_stairs(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None: ...
 
 @overload
-def plot_stairs(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
+def plot_stairs(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None:
     """
     Plots a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval `[x[i], x[i+1])` has the value `y[i]`
     """
 
 @overload
-def plot_stairs(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None: ...
-
-@overload
-def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
-    """
-    Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
-    """
+def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys1: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys2: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None: ...
 
 @overload
 def plot_shaded(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, spec: PlotSpec | None = None) -> None: ...
 
 @overload
-def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None: ...
+def plot_shaded(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], yref: float = 0, xscale: float = 1.0, xstart: float = 0.0, spec: PlotSpec | None = None) -> None:
+    """
+    Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set `yref` to +/-INFINITY for infinite fill extents.
+    """
 
 @overload
-def plot_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, spec: PlotSpec | None = None) -> None:
+def plot_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float, spec: PlotSpec | None = None) -> None: ...
+
+@overload
+def plot_bars(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, spec: PlotSpec | None = None) -> None:
     """
     Plots a bar graph. Vertical by default. `bar_size` and `shift` are in plot units.
     """
-
-@overload
-def plot_bars(label_id: str, values: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], bar_size: float = 0.67, shift: float = 0.0, spec: PlotSpec | None = None) -> None: ...
 
 def plot_bar_groups(label_ids: Sequence[str], values: Annotated[NDArray[Any], dict(shape=(None, None), order='C', device='cpu', writable=False)], group_size: float = 0.67, shift: float = 0.0, spec: PlotSpec | None = None) -> None:
     """
@@ -1233,13 +1235,13 @@ def plot_bar_groups(label_ids: Sequence[str], values: Annotated[NDArray[Any], di
     """
 
 @overload
-def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], err: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
+def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], err: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None: ...
+
+@overload
+def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], neg: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], pos: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None:
     """
     Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
     """
-
-@overload
-def plot_error_bars(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], neg: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], pos: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], spec: PlotSpec | None = None) -> None: ...
 
 @overload
 def plot_stems(label_id: str, xs: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ys: Annotated[NDArray[Any], dict(shape=(None,), order='C', device='cpu', writable=False)], ref: float = 0.0, spec: PlotSpec | None = None) -> None:
@@ -1278,7 +1280,7 @@ def plot_image(label_id: str, tex_ref: slimgui_ext.imgui.TextureRef | int, bound
     Plots an axis-aligned image. `bounds_min`/`bounds_max` are in plot coordinates (y-up) and `uv0`/`uv1` are in texture coordinates (y-down).
     """
 
-def drag_point(id: int, point: Annotated[NDArray[Any], dict(shape=(2), order='C', device='cpu')], col: tuple[float, float, float, float], size: float = 4.0, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_point(id: int, point: Annotated[NDArray[Any], dict(shape=(2), order='C', device='cpu')], col: tuple[float, float, float, float], size: float = 4.0, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable point at `point`.  The updated drag position will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
@@ -1287,7 +1289,7 @@ def drag_point(id: int, point: Annotated[NDArray[Any], dict(shape=(2), order='C'
     The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
     """
 
-def drag_line_x(id: int, x: Annotated[NDArray[Any], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_line_x(id: int, x: Annotated[NDArray[Any], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable vertical guide line at an x-value. The updated drag position will be written to the `x` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
@@ -1296,7 +1298,7 @@ def drag_line_x(id: int, x: Annotated[NDArray[Any], dict(shape=(), order='C', de
     The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
     """
 
-def drag_line_y(id: int, y: Annotated[NDArray[Any], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_line_y(id: int, y: Annotated[NDArray[Any], dict(shape=(), order='C', device='cpu')], col: tuple[float, float, float, float], thickness: float = 1, flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable horizontal guide line at a y-value. The updated drag position will be written to the `y` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the line is clicked, hovered, or held, respectively.
@@ -1305,7 +1307,7 @@ def drag_line_y(id: int, y: Annotated[NDArray[Any], dict(shape=(), order='C', de
     The input `np.array` arguments are motivated by being able to pass in a mutable reference value that the bound API functions can write to.  See [https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools](https://nurpax.github.io/slimgui/apiref_implot.html#plot-tools) for details.
     """
 
-def drag_rect(id: int, rect: Annotated[NDArray[Any], dict(shape=(2, 2), order='C', device='cpu')], col: tuple[float, float, float, float], flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
+def drag_rect(id: int, rect: Annotated[NDArray[Any], dict(shape=(2, 2), order='C', device='cpu')], col: tuple[float, float, float, float], flags: DragToolFlags = DragToolFlags.NONE, out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None, out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None) -> bool:
     """
     Shows a draggable rectangle at `[[x0, y0], [x1, y1]` coordinates, loaded from `rect`.  The updated drag rectangle will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
     `out_clicked`, `out_hovered`, and `out_held` are optional single bool np.arrays that will be set to `True` if the point is clicked, hovered, or held, respectively.
@@ -1315,13 +1317,13 @@ def drag_rect(id: int, rect: Annotated[NDArray[Any], dict(shape=(2, 2), order='C
     """
 
 @overload
-def annotation(x: float, y: float, col: tuple[float, float, float, float], pix_offset: tuple[float, float], clamp: bool, round: bool = False) -> None:
+def annotation(x: float, y: float, col: tuple[float, float, float, float], pix_offset: tuple[float, float], clamp: bool, round: bool = False) -> None: ...
+
+@overload
+def annotation(x: float, y: float, col: tuple[float, float, float, float], pix_offset: tuple[float, float], clamp: bool, text: str) -> None:
     """
     Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.
     """
-
-@overload
-def annotation(x: float, y: float, col: tuple[float, float, float, float], pix_offset: tuple[float, float], clamp: bool, text: str) -> None: ...
 
 @overload
 def tag_x(x: float, col: tuple[float, float, float, float], round: bool = False) -> None:
@@ -1331,11 +1333,11 @@ def tag_x(x: float, col: tuple[float, float, float, float], round: bool = False)
 def tag_x(x: float, col: tuple[float, float, float, float], text: str) -> None: ...
 
 @overload
-def tag_y(y: float, col: tuple[float, float, float, float], round: bool = False) -> None:
-    """Shows a y-axis tag at the specified coordinate value."""
+def tag_y(y: float, col: tuple[float, float, float, float], round: bool = False) -> None: ...
 
 @overload
-def tag_y(y: float, col: tuple[float, float, float, float], text: str) -> None: ...
+def tag_y(y: float, col: tuple[float, float, float, float], text: str) -> None:
+    """Shows a y-axis tag at the specified coordinate value."""
 
 def begin_plot(title_id: str, size: tuple[float, float] = (-1,0), flags: PlotFlags = PlotFlags.NONE) -> bool:
     """
@@ -1446,22 +1448,22 @@ def set_axes(x_axis: Axis, y_axis: Axis) -> None:
     """Select which axis/axes will be used for subsequent plot elements."""
 
 @overload
-def pixels_to_plot(pix: tuple[float, float], x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]:
+def pixels_to_plot(pix: tuple[float, float], x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]: ...
+
+@overload
+def pixels_to_plot(x: float, y: float, x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]:
     """
     Convert pixels to a position in the current plot's coordinate system. Passing `implot.AUTO` uses the current axes.
     """
 
 @overload
-def pixels_to_plot(x: float, y: float, x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]: ...
+def plot_to_pixels(plt: tuple[float, float], x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]: ...
 
 @overload
-def plot_to_pixels(plt: tuple[float, float], x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]:
+def plot_to_pixels(x: float, y: float, x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]:
     """
     Convert a position in the current plot's coordinate system to pixels. Passing `implot.AUTO` uses the current axes.
     """
-
-@overload
-def plot_to_pixels(x: float, y: float, x_axis: Axis | int = AUTO, y_axis: Axis | int = AUTO) -> tuple[float, float]: ...
 
 def get_plot_pos() -> tuple[float, float]:
     """Get the current Plot position (top-left) in pixels."""
@@ -1569,13 +1571,13 @@ def style_colors_light(dst: Style | None = None) -> None:
     """Style plot colors for ImGui "Light"."""
 
 @overload
-def push_style_color(idx: Col, col: int) -> None:
+def push_style_color(idx: Col, col: int) -> None: ...
+
+@overload
+def push_style_color(idx: Col, col: tuple[float, float, float, float]) -> None:
     """
     Temporarily modify a style color. Don't forget to call `implot.pop_style_color()`!
     """
-
-@overload
-def push_style_color(idx: Col, col: tuple[float, float, float, float]) -> None: ...
 
 def pop_style_color(count: int = 1) -> None:
     """
@@ -1694,13 +1696,13 @@ def map_input_reverse(dst: InputMap | None = None) -> None:
     """
 
 @overload
-def item_icon(col: tuple[float, float, float, float]) -> None:
+def item_icon(col: tuple[float, float, float, float]) -> None: ...
+
+@overload
+def item_icon(col: int) -> None:
     """
     Render icons similar to those that appear in legends (nifty for data lists).
     """
-
-@overload
-def item_icon(col: int) -> None: ...
 
 def colormap_icon(cmap: Colormap) -> None:
     """
