@@ -143,7 +143,7 @@ Use the actual Dear ImGui / cimgui / ImPlot / cimplot versions or commits that w
 4. Reapply the local vendored `imconfig`-related patch:
 
 ```bash
-git cherry-pick 0f477ab1533bec6126f7caa988139549151510f4
+git cherry-pick a2220c6dce2c236581307494dfa02799d84a5885
 ```
 
 5. Re-sync and validate the authored API docs if the public API changed:
