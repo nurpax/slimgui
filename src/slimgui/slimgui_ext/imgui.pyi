@@ -8,9 +8,9 @@ import numpy
 from numpy.typing import NDArray
 
 
-IMGUI_VERSION: str = '1.92.7'
+IMGUI_VERSION: str = '1.92.9'
 
-IMGUI_VERSION_NUM: int = 19270
+IMGUI_VERSION_NUM: int = 19290
 
 VERTEX_SIZE: int = 20
 
@@ -1190,35 +1190,33 @@ class DrawFlags(enum.IntFlag):
 
     NONE = 0
 
-    CLOSED = 1
-    """
-    PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
-    """
-
     ROUND_CORNERS_TOP_LEFT = 16
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01.
+    Round top-left corner only (when rounding > 0.0, we default to all corners).
     """
 
     ROUND_CORNERS_TOP_RIGHT = 32
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02.
+    Round top-right corner only (when rounding > 0.0, we default to all corners).
     """
 
     ROUND_CORNERS_BOTTOM_LEFT = 64
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04.
+    Round bottom-left corner only (when rounding > 0.0, we default to all corners).
     """
 
     ROUND_CORNERS_BOTTOM_RIGHT = 128
     """
-    AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08.
+    Round bottom-right corner only (when rounding > 0.0, we default to all corners).
     """
 
     ROUND_CORNERS_NONE = 256
     """
-    AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag!
+    Disable rounding even if `float rounding > 0.0`. This is NOT zero, NOT an implicit flag!
     """
+
+    ROUND_CORNERS_ALL = 240
+    """(Default!!)"""
 
     ROUND_CORNERS_TOP = 48
 
@@ -1228,7 +1226,8 @@ class DrawFlags(enum.IntFlag):
 
     ROUND_CORNERS_RIGHT = 160
 
-    ROUND_CORNERS_ALL = 240
+    CLOSED = 512
+    """PathStroke(), AddPolyline(): specify that shape should be closed."""
 
 class InputTextFlags(enum.IntFlag):
     __str__ = __repr__
@@ -1258,7 +1257,7 @@ class InputTextFlags(enum.IntFlag):
 
     ENTER_RETURNS_TRUE = 64
     """
-    Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using `is_item_deactivated_after_edit()` instead!
+    Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider disabling LiveEdit! or using `is_item_deactivated_after_edit()` instead!
     """
 
     ESCAPE_CLEARS_ALL = 128
@@ -1801,7 +1800,7 @@ class TabBarFlags(enum.IntFlag):
 
     FITTING_POLICY_MIXED = 128
     """
-    Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling buttons.
+    Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling. Setting TabMinWidthShrink to FLT_MAX makes this behave like `TabBarFlags.FITTING_POLICY_SCROLL`.
     """
 
     FITTING_POLICY_SHRINK = 256
@@ -2239,10 +2238,15 @@ class ColorEditFlags(enum.IntFlag):
     PICKER_HUE_WHEEL = 67108864
     """ColorPicker: wheel for Hue, triangle for Sat/Value."""
 
-    INPUT_RGB = 134217728
+    PICKER_NO_ROTATE = 134217728
+    """
+    ColorPicker: disable rotating Sat/Value triangle. Best set in io.ConfigColorEditFlags once.
+    """
+
+    INPUT_RGB = 268435456
     """ColorEdit, ColorPicker: input and output data in RGB format."""
 
-    INPUT_HSV = 268435456
+    INPUT_HSV = 536870912
     """ColorEdit, ColorPicker: input and output data in HSV format."""
 
 class ComboFlags(enum.IntFlag):
@@ -2506,7 +2510,7 @@ class ItemFlags(enum.IntFlag):
         """Return repr(self)."""
 
     NONE = 0
-    """(Default)"""
+    """Default:"""
 
     NO_TAB_STOP = 1
     """
@@ -2515,7 +2519,7 @@ class ItemFlags(enum.IntFlag):
 
     NO_NAV = 2
     """
-    Disable any form of focusing (keyboard/gamepad directional navigation and `set_keyboard_focus_here()` calls).
+    Disable any form of focusing: keyboard/gamepad directional navigation and `set_keyboard_focus_here()` calls.
     """
 
     NO_NAV_DEFAULT_FOCUS = 4
@@ -2542,6 +2546,18 @@ class ItemFlags(enum.IntFlag):
     """
     [Internal] Disable interactions. DOES NOT affect visuals. This is used by `begin_disabled()`/`end_disabled()` and only provided here so you can read back via `get_item_flags()`.
     """
+
+    LIVE_EDIT_ON_INPUT_TEXT = 128
+    """
+    `input_text`: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus.
+    """
+
+    LIVE_EDIT_ON_INPUT_SCALAR = 256
+    """
+    DragXXX, SliderXXX, `input_scalar`: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus.
+    """
+
+    LIVE_EDIT_ON_INPUT = 384
 
 class SliderFlags(enum.IntFlag):
     __str__ = __repr__
@@ -2740,119 +2756,122 @@ class Col(enum.IntEnum):
     CHECK_MARK = 18
     """`checkbox` tick and `radio_button` circle"""
 
-    SLIDER_GRAB = 19
+    CHECKBOX_SELECTED_BG = 19
+    """`checkbox` background when Selected, otherwise use FrameBg"""
 
-    SLIDER_GRAB_ACTIVE = 20
+    SLIDER_GRAB = 20
 
-    BUTTON = 21
+    SLIDER_GRAB_ACTIVE = 21
 
-    BUTTON_HOVERED = 22
+    BUTTON = 22
 
-    BUTTON_ACTIVE = 23
+    BUTTON_HOVERED = 23
 
-    HEADER = 24
+    BUTTON_ACTIVE = 24
+
+    HEADER = 25
     """
     Header* colors are used for `collapsing_header`, `tree_node`, `selectable`, `menu_item`
     """
 
-    HEADER_HOVERED = 25
+    HEADER_HOVERED = 26
 
-    HEADER_ACTIVE = 26
+    HEADER_ACTIVE = 27
 
-    SEPARATOR = 27
+    SEPARATOR = 28
 
-    SEPARATOR_HOVERED = 28
+    SEPARATOR_HOVERED = 29
 
-    SEPARATOR_ACTIVE = 29
+    SEPARATOR_ACTIVE = 30
 
-    RESIZE_GRIP = 30
+    RESIZE_GRIP = 31
     """Resize grip in lower-right and lower-left corners of windows."""
 
-    RESIZE_GRIP_HOVERED = 31
+    RESIZE_GRIP_HOVERED = 32
 
-    RESIZE_GRIP_ACTIVE = 32
+    RESIZE_GRIP_ACTIVE = 33
 
-    INPUT_TEXT_CURSOR = 33
+    INPUT_TEXT_CURSOR = 34
     """`input_text` cursor/caret"""
 
-    TAB_HOVERED = 34
+    TAB_HOVERED = 35
     """Tab background, when hovered"""
 
-    TAB = 35
+    TAB = 36
     """Tab background, when tab-bar is focused & tab is unselected"""
 
-    TAB_SELECTED = 36
+    TAB_SELECTED = 37
     """Tab background, when tab-bar is focused & tab is selected"""
 
-    TAB_SELECTED_OVERLINE = 37
+    TAB_SELECTED_OVERLINE = 38
     """Tab horizontal overline, when tab-bar is focused & tab is selected"""
 
-    TAB_DIMMED = 38
+    TAB_DIMMED = 39
     """Tab background, when tab-bar is unfocused & tab is unselected"""
 
-    TAB_DIMMED_SELECTED = 39
+    TAB_DIMMED_SELECTED = 40
     """Tab background, when tab-bar is unfocused & tab is selected"""
 
-    TAB_DIMMED_SELECTED_OVERLINE = 40
+    TAB_DIMMED_SELECTED_OVERLINE = 41
 
-    PLOT_LINES = 41
+    PLOT_LINES = 42
 
-    PLOT_LINES_HOVERED = 42
+    PLOT_LINES_HOVERED = 43
 
-    PLOT_HISTOGRAM = 43
+    PLOT_HISTOGRAM = 44
 
-    PLOT_HISTOGRAM_HOVERED = 44
+    PLOT_HISTOGRAM_HOVERED = 45
 
-    TABLE_HEADER_BG = 45
+    TABLE_HEADER_BG = 46
     """Table header background"""
 
-    TABLE_BORDER_STRONG = 46
+    TABLE_BORDER_STRONG = 47
     """Table outer and header borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_BORDER_LIGHT = 47
+    TABLE_BORDER_LIGHT = 48
     """Table inner borders (prefer using Alpha=1.0 here)"""
 
-    TABLE_ROW_BG = 48
+    TABLE_ROW_BG = 49
     """Table row background (even rows)"""
 
-    TABLE_ROW_BG_ALT = 49
+    TABLE_ROW_BG_ALT = 50
     """Table row background (odd rows)"""
 
-    TEXT_LINK = 50
+    TEXT_LINK = 51
     """Hyperlink color"""
 
-    TEXT_SELECTED_BG = 51
+    TEXT_SELECTED_BG = 52
     """Selected text inside an `input_text`"""
 
-    TREE_LINES = 52
+    TREE_LINES = 53
     """Tree node hierarchy outlines when using `TreeNodeFlags.DRAW_LINES`"""
 
-    DRAG_DROP_TARGET = 53
+    DRAG_DROP_TARGET = 54
     """Rectangle border highlighting a drop target"""
 
-    DRAG_DROP_TARGET_BG = 54
+    DRAG_DROP_TARGET_BG = 55
     """Rectangle background highlighting a drop target"""
 
-    UNSAVED_MARKER = 55
+    UNSAVED_MARKER = 56
     """Unsaved Document marker (in window title and tabs)"""
 
-    NAV_CURSOR = 56
+    NAV_CURSOR = 57
     """Color of keyboard/gamepad navigation cursor/rectangle, when visible"""
 
-    NAV_WINDOWING_HIGHLIGHT = 57
+    NAV_WINDOWING_HIGHLIGHT = 58
     """Highlight window when using Ctrl+Tab"""
 
-    NAV_WINDOWING_DIM_BG = 58
+    NAV_WINDOWING_DIM_BG = 59
     """
     Darken/colorize entire screen behind the Ctrl+Tab window list, when active
     """
 
-    MODAL_WINDOW_DIM_BG = 59
+    MODAL_WINDOW_DIM_BG = 60
     """
     Darken/colorize entire screen behind a modal window, when one is active
     """
 
-    COUNT = 60
+    COUNT = 61
 
 class Dir(enum.IntEnum):
     NONE = -1
@@ -2973,25 +2992,34 @@ class StyleVar(enum.IntEnum):
     TREE_LINES_ROUNDING = 34
     """Float     TreeLinesRounding"""
 
-    BUTTON_TEXT_ALIGN = 35
+    MENU_ITEM_ROUNDING = 35
+    """Float     MenuItemRounding"""
+
+    SELECTABLE_ROUNDING = 36
+    """Float     SelectableRounding"""
+
+    DRAG_DROP_TARGET_ROUNDING = 37
+    """Float     DragDropTargetRounding"""
+
+    BUTTON_TEXT_ALIGN = 38
     """ImVec2    ButtonTextAlign"""
 
-    SELECTABLE_TEXT_ALIGN = 36
+    SELECTABLE_TEXT_ALIGN = 39
     """ImVec2    SelectableTextAlign"""
 
-    SEPARATOR_SIZE = 37
+    SEPARATOR_SIZE = 40
     """Float     SeparatorSize"""
 
-    SEPARATOR_TEXT_BORDER_SIZE = 38
+    SEPARATOR_TEXT_BORDER_SIZE = 41
     """Float     SeparatorTextBorderSize"""
 
-    SEPARATOR_TEXT_ALIGN = 39
+    SEPARATOR_TEXT_ALIGN = 42
     """ImVec2    SeparatorTextAlign"""
 
-    SEPARATOR_TEXT_PADDING = 40
+    SEPARATOR_TEXT_PADDING = 43
     """ImVec2    SeparatorTextPadding"""
 
-    COUNT = 41
+    COUNT = 44
 
 class TableBgTarget(enum.IntEnum):
     NONE = 0
@@ -4420,7 +4448,7 @@ def color_button(desc_id: str, col: tuple[float, float, float, float], flags: Co
 
 
 def set_color_edit_options(flags: ColorEditFlags) -> None:
-    """Initialize current options (generally on application startup) if you want to select a default format, picker type, etc. User will be able to change many settings, unless you pass the _NoOptions flag to your calls."""
+    """Set current options for if you want to select a default format, picker type, etc. User will be able to change those settings, unless you pass the _NoOptions flag to your calls."""
     ...
 
 
@@ -4878,7 +4906,7 @@ def is_mouse_double_clicked(button: MouseButton) -> bool:
 
 
 def is_mouse_released_with_delay(button: MouseButton, delay: float) -> bool:
-    """Delayed mouse release (use very sparingly!). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test. This is a very rarely used UI idiom, but some apps use this: e.g. MS Explorer single click on an icon to rename."""
+    """Delayed mouse release. Use sparingly. Prefer higher-level helper `get_item_clicked_count_with_single_click_delay()`. Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test."""
     ...
 
 

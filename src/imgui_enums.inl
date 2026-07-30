@@ -1,37 +1,32 @@
 nb::enum_<ImDrawFlags_>(m, "DrawFlags", nb::is_flag(), nb::is_arithmetic())
     .value("NONE", ImDrawFlags_None)
-    .value("CLOSED", ImDrawFlags_Closed,
-           "PathStroke(), AddPolyline(): specify that shape should be closed "
-           "(Important: this is always == 1 for legacy reason)")
     .value("ROUND_CORNERS_TOP_LEFT", ImDrawFlags_RoundCornersTopLeft,
-           "AddRect(), AddRectFilled(), PathRect(): enable rounding top-left "
-           "corner only (when rounding > 0.0, we default to all corners). Was "
-           "0x01.")
+           "Round top-left corner only (when rounding > 0.0, we default to all "
+           "corners).")
     .value("ROUND_CORNERS_TOP_RIGHT", ImDrawFlags_RoundCornersTopRight,
-           "AddRect(), AddRectFilled(), PathRect(): enable rounding top-right "
-           "corner only (when rounding > 0.0, we default to all corners). Was "
-           "0x02.")
+           "Round top-right corner only (when rounding > 0.0, we default to "
+           "all corners).")
     .value("ROUND_CORNERS_BOTTOM_LEFT", ImDrawFlags_RoundCornersBottomLeft,
-           "AddRect(), AddRectFilled(), PathRect(): enable rounding "
-           "bottom-left corner only (when rounding > 0.0, we default to all "
-           "corners). Was 0x04.")
+           "Round bottom-left corner only (when rounding > 0.0, we default to "
+           "all corners).")
     .value("ROUND_CORNERS_BOTTOM_RIGHT", ImDrawFlags_RoundCornersBottomRight,
-           "AddRect(), AddRectFilled(), PathRect(): enable rounding "
-           "bottom-right corner only (when rounding > 0.0, we default to all "
-           "corners). Wax 0x08.")
+           "Round bottom-right corner only (when rounding > 0.0, we default to "
+           "all corners).")
     .value("ROUND_CORNERS_NONE", ImDrawFlags_RoundCornersNone,
-           "AddRect(), AddRectFilled(), PathRect(): disable rounding on all "
-           "corners (when rounding > 0.0). This is NOT zero, NOT an implicit "
-           "flag!")
+           "Disable rounding even if `float rounding > 0.0`. This is NOT zero, "
+           "NOT an implicit flag!")
+    .value("ROUND_CORNERS_ALL", ImDrawFlags_RoundCornersAll, "(Default!!)")
+    .value("ROUND_CORNERS_DEFAULT_", ImDrawFlags_RoundCornersDefault_,
+           "Default to ALL corners if none of the _RoundCornersXX flags are "
+           "specified!")
     .value("ROUND_CORNERS_TOP", ImDrawFlags_RoundCornersTop)
     .value("ROUND_CORNERS_BOTTOM", ImDrawFlags_RoundCornersBottom)
     .value("ROUND_CORNERS_LEFT", ImDrawFlags_RoundCornersLeft)
     .value("ROUND_CORNERS_RIGHT", ImDrawFlags_RoundCornersRight)
-    .value("ROUND_CORNERS_ALL", ImDrawFlags_RoundCornersAll)
-    .value("ROUND_CORNERS_DEFAULT_", ImDrawFlags_RoundCornersDefault_,
-           "Default to ALL corners if none of the _RoundCornersXX flags are "
-           "specified.")
-    .value("ROUND_CORNERS_MASK_", ImDrawFlags_RoundCornersMask_);
+    .value("ROUND_CORNERS_MASK_", ImDrawFlags_RoundCornersMask_)
+    .value("CLOSED", ImDrawFlags_Closed,
+           "PathStroke(), AddPolyline(): specify that shape should be closed.")
+    .value("INVALID_MASK_", ImDrawFlags_InvalidMask_, "== 0x8000000F,");
 nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
                                 nb::is_arithmetic())
     .value("NONE", ImGuiInputTextFlags_None)
@@ -49,7 +44,7 @@ nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", nb::is_flag(),
            "Pressing TAB input a '\t' character into the text field")
     .value("ENTER_RETURNS_TRUE", ImGuiInputTextFlags_EnterReturnsTrue,
            "Return 'true' when Enter is pressed (as opposed to every time the "
-           "value was modified). Consider using "
+           "value was modified). Consider disabling LiveEdit! or using "
            "`is_item_deactivated_after_edit()` instead!")
     .value("ESCAPE_CLEARS_ALL", ImGuiInputTextFlags_EscapeClearsAll,
            "Escape key clears content if not empty, and deactivate otherwise "
@@ -423,7 +418,9 @@ nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags", nb::is_flag(),
            "Draw selected overline markers over selected tab")
     .value("FITTING_POLICY_MIXED", ImGuiTabBarFlags_FittingPolicyMixed,
            "Shrink down tabs when they don't fit, until width is "
-           "style.TabMinWidthShrink, then enable scrolling buttons.")
+           "style.TabMinWidthShrink, then enable scrolling. Setting "
+           "TabMinWidthShrink to FLT_MAX makes this behave like "
+           "`TabBarFlags.FITTING_POLICY_SCROLL`.")
     .value("FITTING_POLICY_SHRINK", ImGuiTabBarFlags_FittingPolicyShrink,
            "Shrink down tabs when they don't fit")
     .value("FITTING_POLICY_SCROLL", ImGuiTabBarFlags_FittingPolicyScroll,
@@ -721,6 +718,9 @@ nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags", nb::is_flag(),
            "ColorPicker: bar for Hue, rectangle for Sat/Value.")
     .value("PICKER_HUE_WHEEL", ImGuiColorEditFlags_PickerHueWheel,
            "ColorPicker: wheel for Hue, triangle for Sat/Value.")
+    .value("PICKER_NO_ROTATE", ImGuiColorEditFlags_PickerNoRotate,
+           "ColorPicker: disable rotating Sat/Value triangle. Best set in "
+           "io.ConfigColorEditFlags once.")
     .value("INPUT_RGB", ImGuiColorEditFlags_InputRGB,
            "ColorEdit, ColorPicker: input and output data in RGB format.")
     .value("INPUT_HSV", ImGuiColorEditFlags_InputHSV,
@@ -901,13 +901,13 @@ nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", nb::is_flag(),
            "from one item to the next keeps the previous timer for a short "
            "time (standard for tooltips with long delays)");
 nb::enum_<ImGuiItemFlags_>(m, "ItemFlags", nb::is_flag(), nb::is_arithmetic())
-    .value("NONE", ImGuiItemFlags_None, "(Default)")
+    .value("NONE", ImGuiItemFlags_None, "Default:")
     .value("NO_TAB_STOP", ImGuiItemFlags_NoTabStop,
            "Disable keyboard tabbing. This is a \"lighter\" version of "
            "`ItemFlags.NO_NAV`.")
     .value("NO_NAV", ImGuiItemFlags_NoNav,
-           "Disable any form of focusing (keyboard/gamepad directional "
-           "navigation and `set_keyboard_focus_here()` calls).")
+           "Disable any form of focusing: keyboard/gamepad directional "
+           "navigation and `set_keyboard_focus_here()` calls.")
     .value("NO_NAV_DEFAULT_FOCUS", ImGuiItemFlags_NoNavDefaultFocus,
            "Disable item being a candidate for default focus (e.g. used by "
            "title bar items).")
@@ -926,7 +926,16 @@ nb::enum_<ImGuiItemFlags_>(m, "ItemFlags", nb::is_flag(), nb::is_arithmetic())
     .value("DISABLED", ImGuiItemFlags_Disabled,
            "[Internal] Disable interactions. DOES NOT affect visuals. This is "
            "used by `begin_disabled()`/`end_disabled()` and only provided here "
-           "so you can read back via `get_item_flags()`.");
+           "so you can read back via `get_item_flags()`.")
+    .value("LIVE_EDIT_ON_INPUT_TEXT", ImGuiItemFlags_LiveEditOnInputText,
+           "`input_text`: apply keyboard edits to backing value while typing. "
+           "Otherwise, edits are applied when validating, tabbing out or "
+           "losing focus.")
+    .value("LIVE_EDIT_ON_INPUT_SCALAR", ImGuiItemFlags_LiveEditOnInputScalar,
+           "DragXXX, SliderXXX, `input_scalar`: apply keyboard edits to "
+           "backing value while typing. Otherwise, edits are applied when "
+           "validating, tabbing out or losing focus.")
+    .value("LIVE_EDIT_ON_INPUT", ImGuiItemFlags_LiveEditOnInput);
 nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags", nb::is_flag(),
                              nb::is_arithmetic())
     .value("NONE", ImGuiSliderFlags_None)
@@ -1051,6 +1060,8 @@ nb::enum_<ImGuiCol_>(m, "Col", nb::is_arithmetic())
     .value("SCROLLBAR_GRAB_ACTIVE", ImGuiCol_ScrollbarGrabActive)
     .value("CHECK_MARK", ImGuiCol_CheckMark,
            "`checkbox` tick and `radio_button` circle")
+    .value("CHECKBOX_SELECTED_BG", ImGuiCol_CheckboxSelectedBg,
+           "`checkbox` background when Selected, otherwise use FrameBg")
     .value("SLIDER_GRAB", ImGuiCol_SliderGrab)
     .value("SLIDER_GRAB_ACTIVE", ImGuiCol_SliderGrabActive)
     .value("BUTTON", ImGuiCol_Button)
@@ -1192,6 +1203,12 @@ nb::enum_<ImGuiStyleVar_>(m, "StyleVar", nb::is_arithmetic())
            "Float     TreeLinesSize")
     .value("TREE_LINES_ROUNDING", ImGuiStyleVar_TreeLinesRounding,
            "Float     TreeLinesRounding")
+    .value("MENU_ITEM_ROUNDING", ImGuiStyleVar_MenuItemRounding,
+           "Float     MenuItemRounding")
+    .value("SELECTABLE_ROUNDING", ImGuiStyleVar_SelectableRounding,
+           "Float     SelectableRounding")
+    .value("DRAG_DROP_TARGET_ROUNDING", ImGuiStyleVar_DragDropTargetRounding,
+           "Float     DragDropTargetRounding")
     .value("BUTTON_TEXT_ALIGN", ImGuiStyleVar_ButtonTextAlign,
            "ImVec2    ButtonTextAlign")
     .value("SELECTABLE_TEXT_ALIGN", ImGuiStyleVar_SelectableTextAlign,

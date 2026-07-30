@@ -3,13 +3,14 @@
 Prerequisites:
 - clang-format for generating enums
   - macOS: `brew install clang-format`
+  - Linux Mint: `apt install clang-format`
 
 MacOS:
 
 ```
 python3 -m venv .venv
 . .venv/bin/activate
-pip install nanobind==2.13.0 scikit-build-core click glfw pyopengl numpy requests toml
+pip install nanobind==2.13.0 scikit-build-core click glfw pyopengl numpy requests toml pytest
 bash full_build.sh
 ```
 
@@ -123,6 +124,7 @@ Recommended manual publish flow:
 When updating vendored Dear ImGui / ImPlot versions:
 
 1. Edit `gen/imgui_vendor.py` to point at the new upstream versions.
+2. Edit `pyproject.toml` and change `imgui_version` to point to the new version.
 2. Re-vendor the sources & regenerate bindings/stubs:
 
 ```bash
