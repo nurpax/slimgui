@@ -11,7 +11,7 @@ set -e
 python gen/gen_nb_enums.py --cimgui-defs-dir gen/cimgui > src/imgui_enums.inl
 python gen/gen_nb_enums.py --cimgui-defs-dir gen/cimplot --imgui-h src/c/implot/implot.h > src/implot_enums.inl
 python gen/gen_nb_funcs.py --cimgui-defs-dir gen/cimplot > src/implot_funcs.inl
-pip install --no-build-isolation -v .
+pip install --no-build-isolation -v -Ccmake.define.SLIMGUI_GENERATE_STUBS=ON .
 
 # Get the value of tool.slimgui.imgui_version from pyproject.toml and
 # check that slimgui.imgui.get_version() returns the same value.  It's to ensure
@@ -19,7 +19,6 @@ pip install --no-build-isolation -v .
 IMGUI_VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['slimgui']['imgui_version'])")
 python -c "from slimgui import imgui; assert imgui.get_version() == '$IMGUI_VERSION'"
 
-python -m nanobind.stubgen -i build/cp312-abi3-macosx_26_0_arm64 -q -m slimgui_ext -r -O src/slimgui
 # Apply workaround for https://github.com/wjakob/nanobind/issues/1155
 python gen/stubfixer.py src/slimgui/slimgui_ext/implot.pyi -o src/slimgui/slimgui_ext/implot.pyi
 python gen/stubfixer.py src/slimgui/slimgui_ext/imgui.pyi -o src/slimgui/slimgui_ext/imgui.pyi
