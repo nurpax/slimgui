@@ -2770,7 +2770,7 @@ def set_color_edit_options(
     flags: ColorEditFlags,
 ) -> None:
     """
-    Initialize current options (generally on application startup) if you want to select a default format, picker type, etc. User will be able to change many settings, unless you pass the _NoOptions flag to your calls.
+    Set current options for if you want to select a default format, picker type, etc. User will be able to change those settings, unless you pass the _NoOptions flag to your calls.
     """
 ```
 
@@ -4651,7 +4651,7 @@ def is_mouse_released_with_delay(
     delay: float,
 ) -> bool:
     """
-    Delayed mouse release (use very sparingly!). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test. This is a very rarely used UI idiom, but some apps use this: e.g. MS Explorer single click on an icon to rename.
+    Delayed mouse release. Use sparingly. Prefer higher-level helper `get_item_clicked_count_with_single_click_delay()`. Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test.
     """
 ```
 
@@ -4854,6 +4854,7 @@ def set_next_frame_want_capture_mouse(
 | SCROLLBAR\_GRAB\_HOVERED |  |
 | SCROLLBAR\_GRAB\_ACTIVE |  |
 | CHECK\_MARK | `checkbox` tick and `radio_button` circle |
+| CHECKBOX\_SELECTED\_BG | `checkbox` background when Selected, otherwise use FrameBg |
 | SLIDER\_GRAB |  |
 | SLIDER\_GRAB\_ACTIVE |  |
 | BUTTON |  |
@@ -4925,6 +4926,7 @@ def set_next_frame_want_capture_mouse(
 | FLOAT | ColorEdit, ColorPicker, `color_button`: *display* values formatted as 0.0..1.0 floats instead of 0..255 integers. No round-trip of value via integers. |
 | PICKER\_HUE\_BAR | ColorPicker: bar for Hue, rectangle for Sat/Value. |
 | PICKER\_HUE\_WHEEL | ColorPicker: wheel for Hue, triangle for Sat/Value. |
+| PICKER\_NO\_ROTATE | ColorPicker: disable rotating Sat/Value triangle. Best set in io.ConfigColorEditFlags once. |
 | INPUT\_RGB | ColorEdit, ColorPicker: input and output data in RGB format. |
 | INPUT\_HSV | ColorEdit, ColorPicker: input and output data in HSV format. |
 
@@ -5000,17 +5002,17 @@ def set_next_frame_want_capture_mouse(
 | Name | Description |
 | --- | --- |
 | NONE |  |
-| CLOSED | PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason) |
-| ROUND\_CORNERS\_TOP\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01. |
-| ROUND\_CORNERS\_TOP\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02. |
-| ROUND\_CORNERS\_BOTTOM\_LEFT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04. |
-| ROUND\_CORNERS\_BOTTOM\_RIGHT | AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08. |
-| ROUND\_CORNERS\_NONE | AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag! |
+| ROUND\_CORNERS\_TOP\_LEFT | Round top-left corner only (when rounding > 0.0, we default to all corners). |
+| ROUND\_CORNERS\_TOP\_RIGHT | Round top-right corner only (when rounding > 0.0, we default to all corners). |
+| ROUND\_CORNERS\_BOTTOM\_LEFT | Round bottom-left corner only (when rounding > 0.0, we default to all corners). |
+| ROUND\_CORNERS\_BOTTOM\_RIGHT | Round bottom-right corner only (when rounding > 0.0, we default to all corners). |
+| ROUND\_CORNERS\_NONE | Disable rounding even if `float rounding > 0.0`. This is NOT zero, NOT an implicit flag! |
+| ROUND\_CORNERS\_ALL | (Default!!) |
 | ROUND\_CORNERS\_TOP |  |
 | ROUND\_CORNERS\_BOTTOM |  |
 | ROUND\_CORNERS\_LEFT |  |
 | ROUND\_CORNERS\_RIGHT |  |
-| ROUND\_CORNERS\_ALL |  |
+| CLOSED | PathStroke(), AddPolyline(): specify that shape should be closed. |
 
 ### Enum: FocusedFlags
 
@@ -5075,7 +5077,7 @@ def set_next_frame_want_capture_mouse(
 | CHARS\_UPPERCASE | Turn a..z into A..Z |
 | CHARS\_NO\_BLANK | Filter out spaces, tabs |
 | ALLOW\_TAB\_INPUT | Pressing TAB input a '  ' character into the text field |
-| ENTER\_RETURNS\_TRUE | Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider using `is_item_deactivated_after_edit()` instead! |
+| ENTER\_RETURNS\_TRUE | Return 'true' when Enter is pressed (as opposed to every time the value was modified). Consider disabling LiveEdit! or using `is_item_deactivated_after_edit()` instead! |
 | ESCAPE\_CLEARS\_ALL | Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert) |
 | CTRL\_ENTER\_FOR\_NEW\_LINE | In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way. |
 | READ\_ONLY | Read-only mode |
@@ -5099,14 +5101,17 @@ def set_next_frame_want_capture_mouse(
 
 | Name | Description |
 | --- | --- |
-| NONE | (Default) |
+| NONE | Default: |
 | NO\_TAB\_STOP | Disable keyboard tabbing. This is a "lighter" version of `ItemFlags.NO_NAV`. |
-| NO\_NAV | Disable any form of focusing (keyboard/gamepad directional navigation and `set_keyboard_focus_here()` calls). |
+| NO\_NAV | Disable any form of focusing: keyboard/gamepad directional navigation and `set_keyboard_focus_here()` calls. |
 | NO\_NAV\_DEFAULT\_FOCUS | Disable item being a candidate for default focus (e.g. used by title bar items). |
 | BUTTON\_REPEAT | Any button-like behavior will have repeat mode enabled (based on io.KeyRepeatDelay and io.KeyRepeatRate values). Note that you can also call `is_item_active()` after any button to tell if it is being held. |
 | AUTO\_CLOSE\_POPUPS | `menu_item()`/`selectable()` automatically close their parent popup window. |
 | ALLOW\_DUPLICATE\_ID | Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set. |
 | DISABLED | \[Internal] Disable interactions. DOES NOT affect visuals. This is used by `begin_disabled()`/`end_disabled()` and only provided here so you can read back via `get_item_flags()`. |
+| LIVE\_EDIT\_ON\_INPUT\_TEXT | `input_text`: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus. |
+| LIVE\_EDIT\_ON\_INPUT\_SCALAR | DragXXX, SliderXXX, `input_scalar`: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus. |
+| LIVE\_EDIT\_ON\_INPUT |  |
 
 ### Enum: Key
 
@@ -5395,6 +5400,9 @@ def set_next_frame_want_capture_mouse(
 | TABLE\_ANGLED\_HEADERS\_TEXT\_ALIGN | ImVec2  TableAngledHeadersTextAlign |
 | TREE\_LINES\_SIZE | Float     TreeLinesSize |
 | TREE\_LINES\_ROUNDING | Float     TreeLinesRounding |
+| MENU\_ITEM\_ROUNDING | Float     MenuItemRounding |
+| SELECTABLE\_ROUNDING | Float     SelectableRounding |
+| DRAG\_DROP\_TARGET\_ROUNDING | Float     DragDropTargetRounding |
 | BUTTON\_TEXT\_ALIGN | ImVec2    ButtonTextAlign |
 | SELECTABLE\_TEXT\_ALIGN | ImVec2    SelectableTextAlign |
 | SEPARATOR\_SIZE | Float     SeparatorSize |
@@ -5415,7 +5423,7 @@ def set_next_frame_want_capture_mouse(
 | NO\_TAB\_LIST\_SCROLLING\_BUTTONS | Disable scrolling buttons (apply when fitting policy is `TabBarFlags.FITTING_POLICY_SCROLL`) |
 | NO\_TOOLTIP | Disable tooltips when hovering a tab |
 | DRAW\_SELECTED\_OVERLINE | Draw selected overline markers over selected tab |
-| FITTING\_POLICY\_MIXED | Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling buttons. |
+| FITTING\_POLICY\_MIXED | Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling. Setting TabMinWidthShrink to FLT\_MAX makes this behave like `TabBarFlags.FITTING_POLICY_SCROLL`. |
 | FITTING\_POLICY\_SHRINK | Shrink down tabs when they don't fit |
 | FITTING\_POLICY\_SCROLL | Enable scrolling buttons when tabs don't fit |
 

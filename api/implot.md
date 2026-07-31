@@ -984,9 +984,9 @@ def drag_point(
     col: tuple[float, float, float, float],
     size: float = 4.0,
     flags: DragToolFlags = DragToolFlags.NONE,
-    out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
 ) -> bool:
     """
     Shows a draggable point at `point`.  The updated drag position will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
@@ -1014,9 +1014,9 @@ def drag_line_x(
     col: tuple[float, float, float, float],
     thickness: float = 1,
     flags: DragToolFlags = DragToolFlags.NONE,
-    out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
 ) -> bool:
     """
     Shows a draggable vertical guide line at an x-value. The updated drag position will be written to the `x` array.  Color `col` defaults to `imgui.Col.TEXT`.
@@ -1044,9 +1044,9 @@ def drag_line_y(
     col: tuple[float, float, float, float],
     thickness: float = 1,
     flags: DragToolFlags = DragToolFlags.NONE,
-    out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
 ) -> bool:
     """
     Shows a draggable horizontal guide line at a y-value. The updated drag position will be written to the `y` array.  Color `col` defaults to `imgui.Col.TEXT`.
@@ -1073,9 +1073,9 @@ def drag_rect(
     rect: Annotated[NDArray[Any], dict(shape=(2, 2), order='C', device='cpu')],
     col: tuple[float, float, float, float],
     flags: DragToolFlags = DragToolFlags.NONE,
-    out_clicked: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_hovered: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
-    out_held: Annotated[NDArray[numpy.bool], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_clicked: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_hovered: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
+    out_held: Annotated[NDArray[numpy.bool_], dict(shape=(), order='C', device='cpu')] | None = None,
 ) -> bool:
     """
     Shows a draggable rectangle at `[[x0, y0], [x1, y1]` coordinates, loaded from `rect`.  The updated drag rectangle will be written to the `point` array.  Color `col` defaults to `imgui.Col.TEXT`.
