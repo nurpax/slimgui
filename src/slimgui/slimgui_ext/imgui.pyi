@@ -8,9 +8,9 @@ import numpy
 from numpy.typing import NDArray
 
 
-IMGUI_VERSION: str = '1.92.9'
+IMGUI_VERSION: str = '1.92.9b'
 
-IMGUI_VERSION_NUM: int = 19290
+IMGUI_VERSION_NUM: int = 19291
 
 VERTEX_SIZE: int = 20
 
