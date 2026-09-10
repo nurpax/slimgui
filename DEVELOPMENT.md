@@ -14,6 +14,14 @@ pip install nanobind==2.13.0 scikit-build-core click glfw pyopengl numpy request
 bash full_build.sh
 ```
 
+Note about activating the venv: the `. .venv/bin/activate` part can be automated with `direnv` by putting the below in .envrc and running `direnv allow` once:
+
+```
+export VIRTUAL_ENV="$PWD/.venv"
+PATH_add "$VIRTUAL_ENV/bin"
+unset PYTHONHOME
+```
+
 ## How to run tests
 
 ```
