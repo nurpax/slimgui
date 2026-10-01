@@ -28,6 +28,13 @@ def frame_scope(context, null_renderer):
     null_renderer.refresh_font_texture()
     imgui.new_frame()
 
+def test_destroy_current_context_without_argument():
+    imgui_ctx = imgui.create_context()
+    implot.create_context()
+    implot.destroy_context()
+    imgui.destroy_context(imgui_ctx)
+    assert implot.get_current_context() is None
+
 def test_setup_axis_ticks(frame_scope):
     if implot.begin_plot("##ticks", size=(-1, 40)):
         labels = ['S1', 'S2', 'S4', 'S4']

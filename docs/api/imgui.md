@@ -33,8 +33,8 @@ def create_context(
 ::: api-signature
 ```python
 def destroy_context(
-    ctx: slimgui.imgui.WrappedContext | None,
-):
+    ctx: slimgui.imgui.WrappedContext | None = None,
+) -> None:
     """
     Destroy ImGui `Context`.  `None` = destroy current context.
     """

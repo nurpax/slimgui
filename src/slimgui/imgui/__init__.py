@@ -347,7 +347,7 @@ def set_current_context(ctx: WrappedContext) -> None:
     _current_context = ctx
     imgui_ext.set_current_context_internal(ctx.context)
 
-def destroy_context(ctx: WrappedContext | None):
+def destroy_context(ctx: WrappedContext | None = None) -> None:
     '''Destroy ImGui `Context`.  `None` = destroy current context.'''
     global _current_context
     prev_ctx = get_current_context()

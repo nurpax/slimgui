@@ -32,7 +32,7 @@ def set_current_context(ctx: WrappedContext) -> None:
     _current_context = ctx
     implot.set_current_context_internal(ctx.context)
 
-def destroy_context(ctx: WrappedContext | None):
+def destroy_context(ctx: WrappedContext | None = None) -> None:
     '''Destroys an ImPlot context. Call this before `imgui.destroy_context()`. `None` = destroy current context.'''
     global _current_context
     prev_ctx = get_current_context()

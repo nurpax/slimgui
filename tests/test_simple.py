@@ -39,6 +39,12 @@ def test_current_context(imgui_context):
     assert imgui.get_current_context() is not None
     assert imgui_context is imgui.get_current_context()
 
+def test_destroy_current_context_without_argument():
+    imgui.create_context()
+    imgui.get_io().ini_filename = None
+    imgui.destroy_context()
+    assert imgui.get_current_context() is None
+
 def test_style_access(imgui_context):
     styles = imgui.get_style()
     for k, v in zip(imgui.Col, styles.colors):

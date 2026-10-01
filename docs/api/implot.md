@@ -62,8 +62,8 @@ def create_context() -> slimgui.implot.WrappedContext:
 ::: api-signature
 ```python
 def destroy_context(
-    ctx: slimgui.implot.WrappedContext | None,
-):
+    ctx: slimgui.implot.WrappedContext | None = None,
+) -> None:
     """
     Destroys an ImPlot context. Call this before `imgui.destroy_context()`. `None` = destroy current context.
     """
