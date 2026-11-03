@@ -1,4 +1,5 @@
 from .buttons import button_simple, button_colors
+from .text_input import input_text_multiline_submit
 from .implot import (
     plot_bar_groups_basic,
     plot_bars_basic,
@@ -25,6 +26,7 @@ from .styles import (
 font_url = "https://github.com/JetBrains/JetBrainsMono/raw/master/fonts/ttf/JetBrainsMono-Regular.ttf"
 __all__ = ["font_url"]
 __all__ += ["button_simple", "button_colors"]
+__all__ += ["input_text_multiline_submit"]
 __all__ += [
     "plot_line_basic",
     "plot_line_values_only",
